@@ -1,0 +1,143 @@
+@font-face {
+  font-family: 'Mali';
+  src: url('/assets/fonts/Mali-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mali';
+  src: url('/assets/fonts/Mali-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  --cream-pink: #fff1ee;
+  --cream-pink-edge: #f7c6cf;
+  --text: #6b4453;
+  --shadow: 0 4px 12px rgb(150 90 110 / 28%);
+  --world-background: #bfe6cf;
+  --tap-target: 44px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--world-background);
+  overscroll-behavior: none;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--world-background);
+  font-family: 'Mali', sans-serif;
+  color: var(--text);
+}
+
+#game {
+  position: absolute;
+  inset: 0;
+}
+
+#game canvas {
+  display: block;
+  image-rendering: pixelated;
+}
+
+#ui {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.panel {
+  border: 2px solid var(--cream-pink-edge);
+  border-radius: 16px;
+  background: var(--cream-pink);
+  box-shadow: var(--shadow);
+}
+
+#test-line {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  left: 50%;
+  max-width: calc(100% - 140px);
+  margin: 0;
+  padding: 8px 16px;
+  font-size: clamp(14px, 2.4vw, 22px);
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+#fullscreen-button {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  padding: 0;
+  color: var(--text);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+#fullscreen-button svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.5;
+}
+
+#rotate-prompt {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 24px;
+  background: var(--cream-pink);
+  pointer-events: auto;
+}
+
+#rotate-prompt[hidden] {
+  display: none;
+}
+
+#rotate-prompt p {
+  margin: 0;
+  padding: 12px 20px;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.rotate-prompt__gio {
+  width: calc(var(--frame-width) * 3);
+  height: calc(var(--frame-height) * 3);
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: calc(var(--sheet-width) * 3) calc(var(--frame-height) * 3);
+  image-rendering: pixelated;
+  transform: rotate(-14deg);
+}

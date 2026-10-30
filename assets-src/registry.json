@@ -1,0 +1,19 @@
+{
+  "gio_idle": {
+    "name": "gio",
+    "type": "character",
+    "pixellabId": "a7babc4e-8156-42af-91fb-3a8cdf9a049a",
+    "animation": "idle",
+    "group": "05c8fb23-d60e-425d-89cd-5b597b11e27b",
+    "direction": "south",
+    "source": {
+      "kind": "frames",
+      "urlTemplate": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/a7babc4e-8156-42af-91fb-3a8cdf9a049a/animations/3609ffdd-0a0b-4a2b-9ac6-1005bf9ffcbe/south/{i}.png?t=1793391569239"
+    },
+    "frameCount": 9,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "frameRate": 8,
+    "file": "characters/gio_idle.png"
+  }
+}

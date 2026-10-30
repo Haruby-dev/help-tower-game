@@ -1,0 +1,10 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+*.log
+
+# ความลับ: token อยู่ใน .env เท่านั้น ห้าม commit
+.env
+.env.*
+!.env.example

@@ -1,0 +1,29 @@
+{
+  "name": "help-tower-game",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "validate": "tsx tools/validate.ts",
+    "fetch-assets": "tsx tools/fetch-assets.ts"
+  },
+  "dependencies": {
+    "phaser": "3.90.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/node": "26.6.6",
+    "@types/pngjs": "6.0.5",
+    "pngjs": "7.0.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vite": "8.3.5",
+    "vitest": "5.0.5",
+    "zod": "4.6.7"
+  }
+}
