@@ -2,7 +2,13 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { z } from 'zod';
-import { displaySchema, registrySchema, translationsSchema } from '../src/data/schema';
+import {
+  balanceSchema,
+  displaySchema,
+  registrySchema,
+  spriteMetaSchema,
+  translationsSchema,
+} from '../src/data/schema';
 
 export const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -31,14 +37,20 @@ export function checkProject(): string[] {
   const problems: string[] = [];
 
   checkSchema('src/data/display.json', displaySchema, problems);
+  checkSchema('src/data/balance.json', balanceSchema, problems);
+  checkSchema('src/data/sprite-meta.json', spriteMetaSchema, problems);
   checkSchema('src/i18n/th.json', translationsSchema, problems);
   checkSchema('assets-src/registry.json', registrySchema, problems);
   if (problems.length > 0) return problems;
 
   const registry = registrySchema.parse(readJson('assets-src/registry.json'));
+  const spriteMeta = spriteMetaSchema.parse(readJson('src/data/sprite-meta.json'));
   for (const [id, entry] of Object.entries(registry)) {
     if (!existsSync(join(projectRoot, 'public/assets', entry.file))) {
       problems.push(`assets-src/registry.json: ${id} points to missing file ${entry.file}`);
+    }
+    if (entry.type !== 'tileset' && !spriteMeta[id]) {
+      problems.push(`src/data/sprite-meta.json: ${id} has no foot position, run npm run fetch-assets`);
     }
   }
 

@@ -1,7 +1,8 @@
 {
   "game.title": "ช่วยด้วยจ้า ดันติดอยู่ในหอคอย 100 ชั้น!!",
-  "test.overlay_line": "ทดสอบตัวหนังสือไทย ฟอนต์มะลิคมชัดทุกจอจ้า",
+  "location.base": "ชั้นฐาน",
   "orientation.rotate_prompt": "หมุนมือถือเป็นแนวนอนหน่อยนะ",
   "ui.fullscreen_enter": "เต็มจอ",
-  "ui.fullscreen_exit": "ออกจากเต็มจอ"
+  "ui.fullscreen_exit": "ออกจากเต็มจอ",
+  "ui.joystick": "จอยสติ๊กสำหรับเดิน"
 }

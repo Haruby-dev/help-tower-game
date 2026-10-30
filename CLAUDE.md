@@ -34,7 +34,8 @@ Phaser 3 · TypeScript (strict) · Vite · HTML/CSS ซ้อนบนเกม�
 | `npm test` | Vitest ทดสอบสูตรและตรวจข้อมูล |
 | `npm run test:e2e` | Playwright เปิดเกมจริงบนจอคอมและมือถือแนวนอน |
 | `npm run validate` | ตรวจไฟล์ JSON ด้วย Zod และตรวจว่าทุกข้อความมีใน th.json |
-| `npm run fetch-assets` | ดึงภาพตาม `assets-src/registry.json` (ใช้ token จาก `.env`) |
+| `npm run fetch-assets` | ดึงภาพตาม `assets-src/registry.json` (ลิงก์ภาพที่สร้างเสร็จไม่ต้องใช้ token) |
+| `npm run build-map` | สร้างแผนที่ `.tmx` และ `.json` จาก `assets-src/maps/base-layout.json` |
 
 เผยแพร่ด้วย GitHub Actions (`actions/deploy-pages`) ทุกครั้งที่ push ขึ้น `main` ตั้ง `base` ใน `vite.config.ts` เป็น `/<ชื่อ repo>/`
 
@@ -99,19 +100,21 @@ help-tower-game/
 
 | ชื่อในเกม | ประเภท | รหัส PixelLab | ท่าที่ใช้ | ห้ามใช้ / หมายเหตุ |
 | --- | --- | --- | --- | --- |
-| `player_girl` ตัวเอกสาว มือว่าง | character | `797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8` | walk-v3 `e6b0952b` (8 ทิศ 8 เฟรม ผืน 88px) · idle `86b5e3fc` (4 ทิศ) | ห้ามใช้ walk `1f15d457` เพราะถุงตลาดโผล่กลับมา |
-| `player_boy` ตัวเอกหนุ่ม มือว่าง | character | `40671e0d-c132-4b00-9510-82a20d3fd727` | walk-v3 `bc31ddab` · idle `91a9f40e` | ห้ามใช้ walk `b86d9291` · walk-v3 ทิศ north-west เฟรม 3 มีจุดสีฟ้าหลง ต้องลบ |
+| `player_girl` ตัวเอกสาว มือว่าง | character | `797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8` | walk-v3 `e6b0952b` (8 ทิศ 8 เฟรม ผืน 88px) · ท่ายืนใช้ rotations (8 ทิศ ไม่ขยับ) ตามที่ผู้ใช้เลือกใน M1 | ห้ามใช้ walk `1f15d457` และ idle `86b5e3fc` เพราะมีถุงตลาด |
+| `player_boy` ตัวเอกหนุ่ม มือว่าง | character | `40671e0d-c132-4b00-9510-82a20d3fd727` | walk-v3 `bc31ddab` · idle `91a9f40e` | ห้ามใช้ walk `b86d9291` · walk-v3 ทิศ north-west เฟรม 3 มีจุดสีฟ้าหลง ต้องลบ · idle อาจมีถุงตลาดเหมือนตัวสาว ต้องตรวจก่อนใช้ใน M9 |
 | `player_girl_office` ถือถุงตลาด | character | `79beaa66-4ac0-442c-9ac5-5a5dc6771a62` | ใช้เฉพาะฉากบทนำ | |
 | `player_boy_office` ถือถุงตลาด | character | `b64be49d-319d-4294-a2f5-8719bc97f846` | ใช้เฉพาะฉากบทนำ | |
-| `gio` จีโอ | character | `a7babc4e-8156-42af-91fb-3a8cdf9a049a` | hop-v2 `53b83581` (4 ทิศ 9 เฟรม) · idle `05c8fb23` (ทิศใต้) | hop เดิม `4022cb5f` เลิกใช้ · ท่าแม่แบบแมว eating licking yawning ใช้ต่อได้ |
+| `gio` จีโอ | character | `a7babc4e-8156-42af-91fb-3a8cdf9a049a` | hop-v2 `53b83581` (4 ทิศ 9 เฟรม) · idle `05c8fb23` (ทิศใต้) | hop เดิม `4022cb5f` เลิกใช้ · ท่าแม่แบบแมว eating licking yawning ใช้ต่อได้ · ตัวใหญ่เกินเทียบกับตัวเอก ผู้ใช้ขอแก้ภายหลัง ห้ามย่อด้วยโค้ด |
 | ภาพต้นแบบจีโอ P1 | image job | `0e2c1c1d-1d37-49bf-982d-a48a1ae14b14` index 0 | ภาพอ้างอิงสไตล์ | แบบอื่นใน job เดียวกันใช้ในอัลบั้มได้ |
 | ภาพต้นแบบสาวชุดทำงาน G4 | image job | `664f10f0-24e9-4a63-9630-44127461071d` index 4 | ภาพอ้างอิงสไตล์ | |
 | ภาพต้นแบบหนุ่มชุดทำงาน B5 | image job | `f0d42c23-1c8e-4c06-bb03-69aa67e5d1fc` index 13 | ภาพอ้างอิงสไตล์ | |
 | ภาพต้นแบบสาวชุดชาวสวน #6 | image job | `59d8fb01-1377-48b4-8bc7-a3e3a3902563` index 5 | ใช้สร้างชุดชาวสวนใน M9 | ยังไม่เป็นตัวละคร |
 | ไอคอนผักผลไม้แฟนตาซี 32px | image job | `76411d42-984c-464d-9d49-e18d95cff7dc` (64 ภาพ) | ไอคอนพืช | |
 | ฉากโลกในเกตทุ่งหญ้า 320×180 | image job | `bfb1a3fc-a8d5-4ee1-a9d5-b7dac7c1ad33` | ภาพตอนเปิดเกตหรือหน้าเริ่มเกม | |
+| พื้นหญ้าต่อดิน · หญ้าต่อน้ำ | tileset | `88a095aa-15c0-4f4d-802d-6f8ed037399e` · `ec7a4c94-6110-4cf7-b772-27503d5a239a` | พื้นชั้นฐาน ปรับสีนุ่มด้วยโค้ดตามที่ผู้ใช้เลือก | หญ้ารหัสฐาน `1261df7c-e800-4f36-998c-459e0a8e64fc` ใช้ต่อชุดพื้นใหม่ |
+| ของในชั้นฐาน | map object | รายการเต็มใน `assets-src/registry.json` | ถ้ำ โพรง ซุ้มประตูหิน ต้นไม้ 2 แบบ พุ่มไม้ หิน ดอกไม้ | |
 
-ภาพที่ **ไม่ใช้**: `2637fc14` `09a53b62` `8bd0b854` `e4f995ee` `f37de02b` (ลายเส้นที่ผู้ใช้ไม่ชอบ) · `934c62b5` (จีโอสีเทา)
+ภาพที่ **ไม่ใช้**: `2637fc14` `09a53b62` `8bd0b854` `e4f995ee` `f37de02b` (ลายเส้นที่ผู้ใช้ไม่ชอบ) · `934c62b5` (จีโอสีเทา) · `ffab7037` (ซุ้มประตูออกมาเป็นประตูไม้)
 
 ดาวน์โหลด: image job ใช้ `https://api.pixellab.ai/mcp/images/<job id>/download?index=<n>` · ตัวละครใช้ `get_character` แล้วดาวน์โหลด spritesheet
 

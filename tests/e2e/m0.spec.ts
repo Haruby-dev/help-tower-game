@@ -9,17 +9,8 @@ interface GameSnapshot {
   innerWidth: number;
   innerHeight: number;
   zoom: number;
-  gioScreenX: number;
-  gioScreenY: number;
-  gioTexture: string;
   gioFrame: string | number;
   isPaused: boolean;
-}
-
-declare global {
-  interface Window {
-    __game?: import('phaser').Game;
-  }
 }
 
 async function openGame(page: Page): Promise<string[]> {
@@ -37,7 +28,6 @@ function readSnapshot(page: Page): Promise<GameSnapshot> {
   return page.evaluate(() => {
     const game = window.__game!;
     const scene = game.scene.getScene('Base');
-    const camera = scene.cameras.main;
     const gio = scene.children.getByName('gio') as import('phaser').GameObjects.Sprite;
     return {
       canvasWidth: game.canvas.width,
@@ -45,17 +35,14 @@ function readSnapshot(page: Page): Promise<GameSnapshot> {
       devicePixelRatio: window.devicePixelRatio,
       innerWidth: window.innerWidth,
       innerHeight: window.innerHeight,
-      zoom: camera.zoom,
-      gioScreenX: (gio.x - camera.worldView.x) * camera.zoom,
-      gioScreenY: (gio.y - camera.worldView.y) * camera.zoom,
-      gioTexture: gio.texture.key,
+      zoom: scene.cameras.main.zoom,
       gioFrame: gio.frame.name,
       isPaused: game.isPaused,
     };
   });
 }
 
-test('Gio stands in the center at a whole-number zoom with no errors', async ({ page }) => {
+test('renders at a whole-number zoom with no errors', async ({ page }) => {
   const errors = await openGame(page);
   const snapshot = await readSnapshot(page);
 
@@ -65,17 +52,14 @@ test('Gio stands in the center at a whole-number zoom with no errors', async ({ 
   expect(snapshot.zoom).toBe(
     Math.floor(Math.min(snapshot.canvasWidth / 480, snapshot.canvasHeight / 270)),
   );
-  expect(snapshot.gioTexture).toBe('gio_idle');
-  expect(Math.abs(snapshot.gioScreenX - snapshot.canvasWidth / 2)).toBeLessThanOrEqual(snapshot.zoom);
-  expect(Math.abs(snapshot.gioScreenY - snapshot.canvasHeight / 2)).toBeLessThanOrEqual(snapshot.zoom);
   expect(errors).toEqual([]);
 });
 
 test('Thai text uses the bundled Mali font', async ({ page }) => {
   await openGame(page);
-  const line = page.locator('#test-line');
-  await expect(line).toBeVisible();
-  await expect(line).toHaveCSS('font-family', /Mali/);
+  const label = page.locator('#location-label');
+  await expect(label).toBeVisible();
+  await expect(label).toHaveCSS('font-family', /Mali/);
   await page.evaluate(() => document.fonts.ready);
   const fontLoaded = await page.evaluate(() =>
     [...document.fonts].some((font) => font.family.includes('Mali') && font.status === 'loaded'),

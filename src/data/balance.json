@@ -1,0 +1,12 @@
+{
+  "player": {
+    "speed": 96
+  },
+  "gio": {
+    "sitMinMs": 2000,
+    "sitMaxMs": 5000,
+    "hopSpeed": 44,
+    "wanderRadius": 96,
+    "keepAwayDistance": 56
+  }
+}

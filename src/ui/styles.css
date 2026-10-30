@@ -69,16 +69,40 @@ body {
   box-shadow: var(--shadow);
 }
 
-#test-line {
+#location-label {
   position: absolute;
   top: max(12px, env(safe-area-inset-top));
-  left: 50%;
-  max-width: calc(100% - 140px);
+  left: max(12px, env(safe-area-inset-left));
   margin: 0;
-  padding: 8px 16px;
-  font-size: clamp(14px, 2.4vw, 22px);
-  text-align: center;
-  transform: translateX(-50%);
+  padding: 6px 14px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+#joystick {
+  position: absolute;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  left: max(24px, env(safe-area-inset-left));
+  display: grid;
+  place-items: center;
+  width: 124px;
+  height: 124px;
+  border: 3px solid rgb(247 198 207 / 85%);
+  border-radius: 50%;
+  background: rgb(255 241 238 / 45%);
+  box-shadow: var(--shadow);
+  pointer-events: auto;
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+
+.joystick__knob {
+  width: 56px;
+  height: 56px;
+  border: 2px solid var(--cream-pink-edge);
+  border-radius: 50%;
+  background: var(--cream-pink);
+  box-shadow: var(--shadow);
 }
 
 #fullscreen-button {

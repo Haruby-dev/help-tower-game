@@ -44,6 +44,7 @@ const game = new Phaser.Game({
   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--world-background').trim(),
   scale: { mode: Phaser.Scale.NONE },
   render: { pixelArt: true, roundPixels: true, antialias: false },
+  physics: { default: 'arcade', arcade: { gravity: { x: 0, y: 0 } } },
   banner: false,
   scene: [BootScene, BaseScene],
 });

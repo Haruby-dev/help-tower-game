@@ -1,0 +1,146 @@
+[
+  {
+    "index": 0,
+    "corners": {
+      "NE": "upper",
+      "NW": "upper",
+      "SE": "upper",
+      "SW": "lower"
+    }
+  },
+  {
+    "index": 1,
+    "corners": {
+      "NE": "lower",
+      "NW": "upper",
+      "SE": "lower",
+      "SW": "upper"
+    }
+  },
+  {
+    "index": 2,
+    "corners": {
+      "NE": "upper",
+      "NW": "lower",
+      "SE": "lower",
+      "SW": "lower"
+    }
+  },
+  {
+    "index": 3,
+    "corners": {
+      "NE": "upper",
+      "NW": "upper",
+      "SE": "lower",
+      "SW": "lower"
+    }
+  },
+  {
+    "index": 4,
+    "corners": {
+      "NE": "upper",
+      "NW": "lower",
+      "SE": "lower",
+      "SW": "upper"
+    }
+  },
+  {
+    "index": 5,
+    "corners": {
+      "NE": "lower",
+      "NW": "upper",
+      "SE": "lower",
+      "SW": "lower"
+    }
+  },
+  {
+    "index": 6,
+    "corners": {
+      "NE": "lower",
+      "NW": "lower",
+      "SE": "lower",
+      "SW": "lower"
+    }
+  },
+  {
+    "index": 7,
+    "corners": {
+      "NE": "lower",
+      "NW": "lower",
+      "SE": "upper",
+      "SW": "lower"
+    }
+  },
+  {
+    "index": 8,
+    "corners": {
+      "NE": "lower",
+      "NW": "upper",
+      "SE": "upper",
+      "SW": "upper"
+    }
+  },
+  {
+    "index": 9,
+    "corners": {
+      "NE": "lower",
+      "NW": "lower",
+      "SE": "upper",
+      "SW": "upper"
+    }
+  },
+  {
+    "index": 10,
+    "corners": {
+      "NE": "lower",
+      "NW": "lower",
+      "SE": "lower",
+      "SW": "upper"
+    }
+  },
+  {
+    "index": 11,
+    "corners": {
+      "NE": "upper",
+      "NW": "lower",
+      "SE": "upper",
+      "SW": "lower"
+    }
+  },
+  {
+    "index": 12,
+    "corners": {
+      "NE": "upper",
+      "NW": "upper",
+      "SE": "upper",
+      "SW": "upper"
+    }
+  },
+  {
+    "index": 13,
+    "corners": {
+      "NE": "upper",
+      "NW": "upper",
+      "SE": "lower",
+      "SW": "upper"
+    }
+  },
+  {
+    "index": 14,
+    "corners": {
+      "NE": "lower",
+      "NW": "upper",
+      "SE": "upper",
+      "SW": "lower"
+    }
+  },
+  {
+    "index": 15,
+    "corners": {
+      "NE": "upper",
+      "NW": "lower",
+      "SE": "upper",
+      "SW": "upper"
+    }
+  }
+]

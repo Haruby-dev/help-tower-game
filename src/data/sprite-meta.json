@@ -1,0 +1,79 @@
+{
+  "gio_idle": {
+    "footY": {
+      "south": 71
+    }
+  },
+  "gio_hop": {
+    "footY": {
+      "south": 71,
+      "west": 70,
+      "east": 71,
+      "north": 70
+    }
+  },
+  "player_girl_stand": {
+    "footY": {
+      "south": 62,
+      "south-east": 62,
+      "east": 62,
+      "north-east": 62,
+      "north": 62,
+      "north-west": 62,
+      "west": 62,
+      "south-west": 62
+    }
+  },
+  "player_girl_walk": {
+    "footY": {
+      "south": 74,
+      "south-east": 74,
+      "east": 74,
+      "north-east": 74,
+      "north": 75,
+      "north-west": 74,
+      "west": 73,
+      "south-west": 74
+    }
+  },
+  "tree_pink": {
+    "footY": {
+      "default": 119
+    }
+  },
+  "tree_blossom": {
+    "footY": {
+      "default": 124
+    }
+  },
+  "cave": {
+    "footY": {
+      "default": 104
+    }
+  },
+  "burrow": {
+    "footY": {
+      "default": 85
+    }
+  },
+  "stone_gate": {
+    "footY": {
+      "default": 118
+    }
+  },
+  "bush": {
+    "footY": {
+      "default": 55
+    }
+  },
+  "rock": {
+    "footY": {
+      "default": 36
+    }
+  },
+  "flowers": {
+    "footY": {
+      "default": 28
+    }
+  }
+}

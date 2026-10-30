@@ -1,19 +1,151 @@
 {
   "gio_idle": {
-    "name": "gio",
     "type": "character",
     "pixellabId": "a7babc4e-8156-42af-91fb-3a8cdf9a049a",
     "animation": "idle",
     "group": "05c8fb23-d60e-425d-89cd-5b597b11e27b",
-    "direction": "south",
-    "source": {
-      "kind": "frames",
-      "urlTemplate": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/a7babc4e-8156-42af-91fb-3a8cdf9a049a/animations/3609ffdd-0a0b-4a2b-9ac6-1005bf9ffcbe/south/{i}.png?t=1793391569239"
+    "directions": {
+      "south": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/a7babc4e-8156-42af-91fb-3a8cdf9a049a/animations/3609ffdd-0a0b-4a2b-9ac6-1005bf9ffcbe/south/{i}.png?t=1793391569239"
     },
     "frameCount": 9,
     "frameWidth": 84,
     "frameHeight": 84,
     "frameRate": 8,
     "file": "characters/gio_idle.png"
+  },
+  "gio_hop": {
+    "type": "character",
+    "pixellabId": "a7babc4e-8156-42af-91fb-3a8cdf9a049a",
+    "animation": "hop-v2",
+    "group": "53b83581-c7ac-49c5-876f-95db5fe4c447",
+    "directions": {
+      "south": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/a7babc4e-8156-42af-91fb-3a8cdf9a049a/animations/324a2e6e-4cdc-41cc-9104-aa71af2c6ae1/south/{i}.png?t=1793392204722",
+      "west": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/a7babc4e-8156-42af-91fb-3a8cdf9a049a/animations/cb742a30-3d99-4af4-9556-e2f1283371db/west/{i}.png?t=1793392162146",
+      "east": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/a7babc4e-8156-42af-91fb-3a8cdf9a049a/animations/53f25ae5-0079-4889-8dbb-21a8642da1a3/east/{i}.png?t=1793392157969",
+      "north": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/a7babc4e-8156-42af-91fb-3a8cdf9a049a/animations/ff031c98-d761-4a56-8fdf-4f7ae4f636a9/north/{i}.png?t=1793392126969"
+    },
+    "frameCount": 9,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "frameRate": 10,
+    "file": "characters/gio_hop.png"
+  },
+  "player_girl_stand": {
+    "type": "character",
+    "pixellabId": "797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8",
+    "animation": "rotations",
+    "directions": {
+      "south": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/rotations/south.png?t=1793392140",
+      "south-east": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/rotations/south-east.png?t=1793392140",
+      "east": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/rotations/east.png?t=1793392140",
+      "north-east": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/rotations/north-east.png?t=1793392140",
+      "north": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/rotations/north.png?t=1793392140",
+      "north-west": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/rotations/north-west.png?t=1793392140",
+      "west": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/rotations/west.png?t=1793392140",
+      "south-west": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/rotations/south-west.png?t=1793392140"
+    },
+    "frameCount": 1,
+    "frameWidth": 64,
+    "frameHeight": 64,
+    "file": "characters/player_girl_stand.png"
+  },
+  "player_girl_walk": {
+    "type": "character",
+    "pixellabId": "797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8",
+    "animation": "walk-v3",
+    "group": "e6b0952b-fbc1-41ce-b421-d53a7d33a512",
+    "directions": {
+      "south": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/animations/481cb9a6-4fe0-4332-91d8-3b1b569b9e5f/south/{i}.png?t=1793392782849",
+      "south-east": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/animations/87442b3c-d33e-48d7-b547-158dde0f9628/south-east/{i}.png?t=1793392900884",
+      "east": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/animations/fa7e8afe-fcc6-4d2c-80ab-8ed22750f459/east/{i}.png?t=1793392889740",
+      "north-east": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/animations/0cd26618-aea6-4b46-84e8-cfbe0eb60cc1/north-east/{i}.png?t=1793392916319",
+      "north": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/animations/9267c6b5-eec7-41a1-88e1-561e116f60af/north/{i}.png?t=1793392916255",
+      "north-west": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/animations/ee5c94fc-3cc4-47e4-81b3-fa16bd18abb0/north-west/{i}.png?t=1793392913537",
+      "west": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/animations/62727278-11ae-4f65-8ae7-c798012840f9/west/{i}.png?t=1793392893836",
+      "south-west": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8/animations/b6945400-3e4f-45be-a11f-24d34fa84d03/south-west/{i}.png?t=1793392907446"
+    },
+    "frameCount": 8,
+    "frameWidth": 88,
+    "frameHeight": 88,
+    "frameRate": 10,
+    "file": "characters/player_girl_walk.png"
+  },
+  "tiles_grass_dirt": {
+    "type": "tileset",
+    "pixellabId": "88a095aa-15c0-4f4d-802d-6f8ed037399e",
+    "recolor": "soft",
+    "file": "tiles/tiles_grass_dirt.png",
+    "metaFile": "assets-src/tiles/tiles_grass_dirt.meta.json"
+  },
+  "tiles_grass_water": {
+    "type": "tileset",
+    "pixellabId": "ec7a4c94-6110-4cf7-b772-27503d5a239a",
+    "recolor": "soft",
+    "file": "tiles/tiles_grass_water.png",
+    "metaFile": "assets-src/tiles/tiles_grass_water.meta.json"
+  },
+  "tree_pink": {
+    "type": "object",
+    "pixellabId": "557b0313-334a-4152-99f1-631f271984d2",
+    "url": "https://api.pixellab.ai/mcp/map-objects/557b0313-334a-4152-99f1-631f271984d2/download",
+    "width": 96,
+    "height": 128,
+    "file": "tiles/tree_pink.png"
+  },
+  "tree_blossom": {
+    "type": "object",
+    "pixellabId": "732049bb-4811-43ff-9efe-00bf34abe40d",
+    "url": "https://api.pixellab.ai/mcp/map-objects/732049bb-4811-43ff-9efe-00bf34abe40d/download",
+    "width": 96,
+    "height": 128,
+    "file": "tiles/tree_blossom.png"
+  },
+  "cave": {
+    "type": "object",
+    "pixellabId": "f6fca004-d969-487c-bbca-df51734092a6",
+    "url": "https://api.pixellab.ai/mcp/map-objects/f6fca004-d969-487c-bbca-df51734092a6/download",
+    "width": 128,
+    "height": 128,
+    "file": "tiles/cave.png"
+  },
+  "burrow": {
+    "type": "object",
+    "pixellabId": "fe8f8a6c-803d-4360-ac4a-2872b54fa231",
+    "url": "https://api.pixellab.ai/mcp/map-objects/fe8f8a6c-803d-4360-ac4a-2872b54fa231/download",
+    "width": 96,
+    "height": 96,
+    "file": "tiles/burrow.png"
+  },
+  "stone_gate": {
+    "type": "object",
+    "pixellabId": "6806c5eb-845a-4dce-80f1-e8def7b50296",
+    "url": "https://api.pixellab.ai/mcp/map-objects/6806c5eb-845a-4dce-80f1-e8def7b50296/download",
+    "width": 96,
+    "height": 128,
+    "file": "tiles/stone_gate.png"
+  },
+  "bush": {
+    "type": "object",
+    "pixellabId": "80720cc2-c7cb-45d1-8947-01764b4ade78",
+    "url": "https://api.pixellab.ai/mcp/map-objects/80720cc2-c7cb-45d1-8947-01764b4ade78/download",
+    "width": 64,
+    "height": 64,
+    "file": "tiles/bush.png"
+  },
+  "rock": {
+    "type": "object",
+    "pixellabId": "bd4f5347-e0e0-4890-a418-86dd87a4c178",
+    "url": "https://api.pixellab.ai/mcp/map-objects/bd4f5347-e0e0-4890-a418-86dd87a4c178/download",
+    "width": 48,
+    "height": 48,
+    "file": "tiles/rock.png"
+  },
+  "flowers": {
+    "type": "object",
+    "pixellabId": "e3a6188f-2172-4d56-839f-dcce41016d66",
+    "url": "https://api.pixellab.ai/mcp/map-objects/e3a6188f-2172-4d56-839f-dcce41016d66/download",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/flowers.png"
   }
 }

@@ -1,18 +1,19 @@
+import { assetUrl, characterEntry } from '../core/assets';
+import { eventBus } from '../core/events';
 import { t } from '../core/i18n';
 import { gameState } from '../core/state';
-import { eventBus } from '../core/events';
 import { needsRotation } from '../core/viewport';
-import registry from '../../assets-src/registry.json';
+import { createJoystick } from './joystick';
 
 const FULLSCREEN_ICON =
   '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
 
-function createTestLine(uiRoot: HTMLElement): void {
-  const line = document.createElement('p');
-  line.id = 'test-line';
-  line.className = 'panel';
-  line.textContent = t('test.overlay_line');
-  uiRoot.append(line);
+function createLocationLabel(uiRoot: HTMLElement): void {
+  const label = document.createElement('p');
+  label.id = 'location-label';
+  label.className = 'panel';
+  label.textContent = t('location.base');
+  uiRoot.append(label);
 }
 
 function createFullscreenButton(uiRoot: HTMLElement, appRoot: HTMLElement): void {
@@ -43,20 +44,20 @@ async function toggleFullscreen(appRoot: HTMLElement): Promise<void> {
     return;
   }
   await appRoot.requestFullscreen();
-  // เบราว์เซอร์ที่ไม่รองรับการล็อกแนวจอจะแจ้งข้อผิดพลาด จอหมุนชวนหมุนยังทำงานแทนได้
+  // เบราว์เซอร์ที่ไม่รองรับการล็อกแนวจอจะแจ้งข้อผิดพลาด จอชวนหมุนยังทำงานแทนได้
   const orientation = screen.orientation as ScreenOrientation & { lock?: (type: string) => Promise<void> };
   await orientation.lock?.('landscape').catch(() => undefined);
 }
 
 function createRotatePrompt(uiRoot: HTMLElement): void {
-  const gio = registry.gio_idle;
+  const gio = characterEntry('gio_idle');
   const prompt = document.createElement('div');
   prompt.id = 'rotate-prompt';
   prompt.hidden = true;
 
   const sprite = document.createElement('div');
   sprite.className = 'rotate-prompt__gio';
-  sprite.style.backgroundImage = `url("${import.meta.env.BASE_URL}assets/${gio.file}")`;
+  sprite.style.backgroundImage = `url("${assetUrl(gio.file)}")`;
   sprite.style.setProperty('--sheet-width', `${gio.frameWidth * gio.frameCount}px`);
   sprite.style.setProperty('--frame-height', `${gio.frameHeight}px`);
   sprite.style.setProperty('--frame-width', `${gio.frameWidth}px`);
@@ -74,7 +75,8 @@ function createRotatePrompt(uiRoot: HTMLElement): void {
 }
 
 export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
-  createTestLine(uiRoot);
+  createLocationLabel(uiRoot);
+  createJoystick(uiRoot);
   createRotatePrompt(uiRoot);
   createFullscreenButton(uiRoot, appRoot);
 }
