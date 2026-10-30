@@ -85,27 +85,27 @@ test.describe('keyboard', () => {
 
   test('cannot walk into the pond', async ({ page }) => {
     await openGame(page);
-    await teleport(page, 39 * TILE, 20 * TILE);
+    await teleport(page, 27 * TILE, 14 * TILE);
     await page.keyboard.down('s');
     await page.waitForTimeout(1500);
     await page.keyboard.up('s');
     const { y } = await snapshot(page);
-    expect(y).toBeLessThan(22 * TILE);
-    expect(y).toBeGreaterThan(20 * TILE);
+    expect(y).toBeLessThan(16 * TILE);
+    expect(y).toBeGreaterThan(14 * TILE);
   });
 
   test('cannot walk through the cave', async ({ page }) => {
     await openGame(page);
-    await teleport(page, 8.5 * TILE, 10 * TILE);
+    await teleport(page, 5 * TILE, 8 * TILE);
     await page.keyboard.down('w');
     await page.waitForTimeout(1500);
     await page.keyboard.up('w');
-    expect((await snapshot(page)).y).toBeGreaterThan(8 * TILE);
+    expect((await snapshot(page)).y).toBeGreaterThan(6 * TILE);
   });
 
   test('stops at the edge of the map with the camera inside it', async ({ page }) => {
     await openGame(page);
-    await teleport(page, TILE, 18 * TILE);
+    await teleport(page, TILE, 8 * TILE);
     await page.keyboard.down('a');
     await page.waitForTimeout(800);
     await page.keyboard.up('a');
@@ -196,5 +196,5 @@ test('Gio hops around near the burrow without leaving play', async ({ page }) =>
   });
   await expect.poll(async () => (await readGio()).texture, { timeout: 5_000 }).toBe('gio_idle');
   const gio = await readGio();
-  expect(Math.hypot(gio.x - 39 * TILE, gio.y - 10.5 * TILE)).toBeLessThan(200);
+  expect(Math.hypot(gio.x - 27.5 * TILE, gio.y - 9 * TILE)).toBeLessThan(200);
 });

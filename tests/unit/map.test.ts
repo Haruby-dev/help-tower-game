@@ -54,19 +54,19 @@ describe('base map', () => {
   });
 
   it.each([
-    ['in front of the cave', 8.5, 9.5],
-    ['in front of the burrow', 42.5, 9.5],
-    ['in front of the stone gate', 25.5, 7.5],
-    ['the shore of the pond', 39, 20.5],
-    ['the far side of the pond', 39, 31.5],
-    ['the farm clearing', 10, 27],
+    ['in front of the cave', 5, 7.5],
+    ['in front of the burrow', 31, 7.5],
+    ['in front of the stone gate', 18, 6.5],
+    ['the shore of the pond', 27, 14],
+    ['the far side of the pond', 27, 23],
+    ['the farm clearing', 8, 20],
   ])('lets the player walk to %s', (_name, tileX, tileY) => {
     const goal = { x: tileX * tiled.tilewidth, y: tileY * tiled.tilewidth };
     expect(canReach(spawn('player'), goal, obstacles, world, playerBody, 8)).toBe(true);
   });
 
   it('keeps the player out of the pond', () => {
-    const goal = { x: 39 * tiled.tilewidth, y: 26 * tiled.tilewidth };
+    const goal = { x: 27 * tiled.tilewidth, y: 18.5 * tiled.tilewidth };
     expect(canReach(spawn('player'), goal, obstacles, world, playerBody, 8)).toBe(false);
   });
 });
