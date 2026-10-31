@@ -23,7 +23,7 @@ export class BootScene extends Phaser.Scene {
   create(): void {
     for (const [id, entry] of Object.entries(registry)) {
       if (entry.type !== 'character' || !entry.frameRate) continue;
-      const hops = entry.animation === 'hop-v2';
+      const hops = entry.animation === 'gio_hop';
       directionsOf(entry).forEach((direction, row) => {
         this.anims.create({
           key: animationKey(id, direction),

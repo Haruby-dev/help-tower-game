@@ -1,32 +1,37 @@
 {
   "gio_idle": {
     "type": "character",
-    "pixellabId": "a7babc4e-8156-42af-91fb-3a8cdf9a049a",
-    "animation": "idle",
-    "group": "05c8fb23-d60e-425d-89cd-5b597b11e27b",
+    "pixellabId": "de4a7f28-028c-4d22-95dc-c75969e124b8",
+    "animation": "gio_idle",
+    "group": "8327e033-2523-47eb-9a88-01fec6235050",
     "directions": {
-      "south": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/a7babc4e-8156-42af-91fb-3a8cdf9a049a/animations/3609ffdd-0a0b-4a2b-9ac6-1005bf9ffcbe/south/{i}.png?t=1793391569239"
+      "south": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/animations/23ffacae-7aea-4dbd-aee1-334c631b6cee/south/{i}.png?t=1793426421130"
     },
-    "frameCount": 9,
-    "frameWidth": 84,
-    "frameHeight": 84,
+    "frameCount": 8,
+    "frameWidth": 56,
+    "frameHeight": 56,
     "frameRate": 8,
     "file": "characters/gio_idle.png"
   },
   "gio_hop": {
     "type": "character",
-    "pixellabId": "a7babc4e-8156-42af-91fb-3a8cdf9a049a",
-    "animation": "hop-v2",
-    "group": "53b83581-c7ac-49c5-876f-95db5fe4c447",
+    "pixellabId": "de4a7f28-028c-4d22-95dc-c75969e124b8",
+    "animation": "gio_hop",
+    "directionGroups": {
+      "south": "1712125f-3044-4b2c-b9a8-4555ea225776",
+      "west": "1712125f-3044-4b2c-b9a8-4555ea225776",
+      "east": "1712125f-3044-4b2c-b9a8-4555ea225776",
+      "north": "4db519c5-4b83-41c8-ad8e-b070091969b7"
+    },
     "directions": {
-      "south": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/a7babc4e-8156-42af-91fb-3a8cdf9a049a/animations/324a2e6e-4cdc-41cc-9104-aa71af2c6ae1/south/{i}.png?t=1793392204722",
-      "west": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/a7babc4e-8156-42af-91fb-3a8cdf9a049a/animations/cb742a30-3d99-4af4-9556-e2f1283371db/west/{i}.png?t=1793392162146",
-      "east": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/a7babc4e-8156-42af-91fb-3a8cdf9a049a/animations/53f25ae5-0079-4889-8dbb-21a8642da1a3/east/{i}.png?t=1793392157969",
-      "north": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/a7babc4e-8156-42af-91fb-3a8cdf9a049a/animations/ff031c98-d761-4a56-8fdf-4f7ae4f636a9/north/{i}.png?t=1793392126969"
+      "south": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/animations/109737bc-1d7f-4272-b7d6-702f3c138000/south/{i}.png?t=1793426430258",
+      "west": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/animations/0046b7c5-65f0-4876-997b-cf3ba33e603a/west/{i}.png?t=1793426374568",
+      "east": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/animations/f717bab7-6dcf-4f22-882b-9fb602845205/east/{i}.png?t=1793426383629",
+      "north": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/animations/5655be81-ab32-4b7d-b03b-86b2a54c2fd7/north/{i}.png?t=1793426682012"
     },
     "frameCount": 9,
-    "frameWidth": 84,
-    "frameHeight": 84,
+    "frameWidth": 68,
+    "frameHeight": 68,
     "frameRate": 10,
     "file": "characters/gio_hop.png"
   },

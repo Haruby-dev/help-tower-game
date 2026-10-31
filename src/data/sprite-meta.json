@@ -1,15 +1,15 @@
 {
   "gio_idle": {
     "footY": {
-      "south": 71
+      "south": 48
     }
   },
   "gio_hop": {
     "footY": {
-      "south": 71,
-      "west": 70,
-      "east": 71,
-      "north": 70
+      "south": 58,
+      "west": 58,
+      "east": 58,
+      "north": 58
     }
   },
   "player_girl_stand": {

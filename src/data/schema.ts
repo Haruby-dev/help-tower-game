@@ -25,6 +25,8 @@ const characterEntrySchema = z.strictObject({
   pixellabId: z.uuid(),
   animation: z.string().min(1),
   group: z.uuid().optional(),
+  /** ใช้แทน group เมื่อแต่ละทิศมาจากคนละกลุ่มท่า */
+  directionGroups: z.record(z.string().min(1), z.uuid()).optional(),
   directions: z.record(z.string().min(1), z.url()),
   frameCount: z.number().int().positive(),
   frameWidth: z.number().int().positive(),

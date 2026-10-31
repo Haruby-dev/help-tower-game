@@ -160,6 +160,24 @@ test.describe('touch', () => {
     expect((await snapshot(page)).x).toBe(stopped.x);
   });
 
+  test('does not keep walking after rotating mid-drag', async ({ page }) => {
+    await openGame(page);
+    const landscape = page.viewportSize()!;
+    const box = (await page.locator('#joystick').boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 + 50, box.y + box.height / 2);
+    await page.setViewportSize({ width: landscape.height, height: landscape.width });
+    await expect(page.locator('#rotate-prompt')).toBeVisible();
+    await page.setViewportSize(landscape);
+    await expect(page.locator('#rotate-prompt')).toBeHidden();
+    await expect.poll(async () => (await snapshot(page)).texture).toBe('player_girl_stand');
+    const stopped = await snapshot(page);
+    await page.waitForTimeout(300);
+    expect((await snapshot(page)).x).toBe(stopped.x);
+    await page.mouse.up();
+  });
+
   test('keeps the player still while paused in portrait', async ({ page }) => {
     await openGame(page);
     const landscape = page.viewportSize()!;
@@ -171,6 +189,44 @@ test.describe('touch', () => {
     await page.setViewportSize(landscape);
     await expect(page.locator('#rotate-prompt')).toBeHidden();
   });
+});
+
+test('every sprite is drawn at 1:1 with no scaling', async ({ page }) => {
+  await openGame(page);
+  const scaled = await page.evaluate(() => {
+    const scene = window.__game!.scene.getScene('Base');
+    return scene.children.list
+      .filter((child): child is import('phaser').GameObjects.Sprite => 'texture' in child)
+      .filter(
+        (sprite) =>
+          sprite.scaleX !== 1 ||
+          sprite.scaleY !== 1 ||
+          sprite.displayWidth !== sprite.frame.width ||
+          sprite.displayHeight !== sprite.frame.height,
+      )
+      .map((sprite) => sprite.texture.key);
+  });
+  expect(scaled).toEqual([]);
+});
+
+test('the player cannot walk through Gio', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'desktop only');
+  await openGame(page);
+  const gio = await page.evaluate(() => {
+    const scene = window.__game!.scene.getScene('Base') as unknown as {
+      gio: { sitRemainingMs: number };
+      children: import('phaser').GameObjects.DisplayList;
+    };
+    scene.gio.sitRemainingMs = Number.MAX_SAFE_INTEGER;
+    const body = scene.children.getByName('gio_body') as import('phaser').GameObjects.Zone;
+    return { x: body.x, y: body.y };
+  });
+  await teleport(page, gio.x - 40, gio.y);
+  await page.keyboard.down('d');
+  await page.waitForTimeout(1200);
+  await page.keyboard.up('d');
+  const { x } = await snapshot(page);
+  expect(x).toBeLessThan(gio.x);
 });
 
 test('Gio hops around near the burrow without leaving play', async ({ page }) => {

@@ -6,8 +6,8 @@ import balance from '../data/balance.json';
 
 const IDLE_ID = 'gio_idle';
 const HOP_ID = 'gio_hop';
-const BODY_WIDTH = 30;
-const BODY_HEIGHT = 12;
+const BODY_WIDTH = 26;
+const BODY_HEIGHT = 10;
 
 export class Gio {
   readonly body: Phaser.GameObjects.Zone;

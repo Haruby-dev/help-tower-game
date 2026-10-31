@@ -1,3 +1,4 @@
+import { eventBus } from '../core/events';
 import { t } from '../core/i18n';
 import { joystickVector } from '../core/movement';
 import { gameState } from '../core/state';
@@ -50,4 +51,12 @@ export function createJoystick(uiRoot: HTMLElement): void {
   base.addEventListener('pointerup', release);
   base.addEventListener('pointercancel', release);
   base.addEventListener('lostpointercapture', release);
+
+  // หมุนจอระหว่างลาก บางเบราว์เซอร์ไม่แจ้งว่านิ้วหลุด ตัวละครจะเดินค้างเมื่อกลับมาเล่น
+  eventBus.on('rotation-required-changed', (required) => {
+    if (!required) return;
+    activePointer = null;
+    knob.style.transform = '';
+    gameState.setJoystick({ x: 0, y: 0 });
+  });
 }
