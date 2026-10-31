@@ -107,9 +107,9 @@ test.describe('keyboard', () => {
     await openGame(page);
     await teleport(page, 15 * TILE, 5.6 * TILE);
     await page.keyboard.down('w');
-    await page.waitForTimeout(1500);
+    // จอใหญ่บนเครื่องที่ทำงานหนักเดินช้าลง จึงรอจนถึงลานบนแทนการรอเวลาตายตัว
+    await expect.poll(async () => (await snapshot(page)).y, { timeout: 15_000 }).toBeLessThan(3.3 * TILE);
     await page.keyboard.up('w');
-    expect((await snapshot(page)).y).toBeLessThan(3.3 * TILE);
 
     await teleport(page, 10 * TILE, 5.6 * TILE);
     await page.keyboard.down('w');
