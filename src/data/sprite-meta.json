@@ -36,44 +36,224 @@
       "south-west": 74
     }
   },
-  "tree_pink": {
+  "tree_big_0": {
     "footY": {
-      "default": 119
+      "default": 117
     }
   },
-  "tree_blossom": {
+  "tree_big_1": {
     "footY": {
-      "default": 124
+      "default": 115
     }
   },
-  "cave": {
+  "tree_big_2": {
     "footY": {
-      "default": 104
+      "default": 114
     }
   },
-  "burrow": {
+  "tree_big_3": {
     "footY": {
-      "default": 85
+      "default": 114
     }
   },
-  "stone_gate": {
+  "gate_portal": {
     "footY": {
-      "default": 118
+      "default": 87
     }
   },
-  "bush": {
+  "stairs_cliff": {
     "footY": {
-      "default": 55
+      "default": 64
     }
   },
-  "rock": {
+  "monster_burrow": {
     "footY": {
-      "default": 36
+      "default": 52
     }
   },
-  "flowers": {
+  "rock_big_10": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "rock_small_0": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "rock_small_13": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "rock_small_30": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "rock_small_43": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "path_stone_0": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "path_stone_10": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "path_stone_19": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "path_stone_29": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "path_stone_38": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "decor_2": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "decor_3": {
     "footY": {
       "default": 28
+    }
+  },
+  "decor_4": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "decor_9": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "decor_17": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "decor_25": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "decor_26": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "decor_59": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "decal_0": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "decal_1": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "decal_2": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "decal_3": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "decal_8": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "decal_16": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "house_main": {
+    "footY": {
+      "default": 128
+    }
+  },
+  "petal_0": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "petal_1": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "petal_2": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "petal_3": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "petal_4": {
+    "footY": {
+      "default": 4
+    }
+  },
+  "petal_5": {
+    "footY": {
+      "default": 4
+    }
+  },
+  "petal_6": {
+    "footY": {
+      "default": 4
+    }
+  },
+  "petal_7": {
+    "footY": {
+      "default": 1
+    }
+  },
+  "petal_big_0": {
+    "footY": {
+      "default": 9
+    }
+  },
+  "petal_big_1": {
+    "footY": {
+      "default": 9
+    }
+  },
+  "petal_big_2": {
+    "footY": {
+      "default": 9
+    }
+  },
+  "petal_big_3": {
+    "footY": {
+      "default": 9
     }
   }
 }

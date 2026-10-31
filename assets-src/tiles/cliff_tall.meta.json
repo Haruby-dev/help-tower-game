@@ -1,0 +1,252 @@
+[
+  {
+    "index": 10,
+    "corners": {
+      "NE": "lower",
+      "NW": "lower",
+      "SE": "lower",
+      "SW": "lower"
+    },
+    "hinted": false
+  },
+  {
+    "index": 11,
+    "corners": {
+      "NE": "lower",
+      "NW": "lower",
+      "SE": "upper",
+      "SW": "lower"
+    },
+    "hinted": false
+  },
+  {
+    "index": 17,
+    "corners": {
+      "NE": "lower",
+      "NW": "lower",
+      "SE": "upper",
+      "SW": "upper"
+    },
+    "hinted": false
+  },
+  {
+    "index": 18,
+    "corners": {
+      "NE": "lower",
+      "NW": "lower",
+      "SE": "lower",
+      "SW": "upper"
+    },
+    "hinted": false
+  },
+  {
+    "index": 15,
+    "corners": {
+      "NE": "upper",
+      "NW": "lower",
+      "SE": "upper",
+      "SW": "lower"
+    },
+    "hinted": true
+  },
+  {
+    "index": 19,
+    "corners": {
+      "NE": "upper",
+      "NW": "lower",
+      "SE": "upper",
+      "SW": "lower"
+    },
+    "hinted": false
+  },
+  {
+    "index": 24,
+    "corners": {
+      "NE": "upper",
+      "NW": "upper",
+      "SE": "upper",
+      "SW": "upper"
+    },
+    "hinted": false
+  },
+  {
+    "index": 1,
+    "corners": {
+      "NE": "lower",
+      "NW": "upper",
+      "SE": "lower",
+      "SW": "upper"
+    },
+    "hinted": true
+  },
+  {
+    "index": 5,
+    "corners": {
+      "NE": "lower",
+      "NW": "upper",
+      "SE": "lower",
+      "SW": "upper"
+    },
+    "hinted": false
+  },
+  {
+    "index": 16,
+    "corners": {
+      "NE": "lower",
+      "NW": "upper",
+      "SE": "upper",
+      "SW": "upper"
+    },
+    "hinted": false
+  },
+  {
+    "index": 27,
+    "corners": {
+      "NE": "upper",
+      "NW": "lower",
+      "SE": "upper",
+      "SW": "upper"
+    },
+    "hinted": false
+  },
+  {
+    "index": 25,
+    "corners": {
+      "NE": "upper",
+      "NW": "upper",
+      "SE": "transition",
+      "SW": "upper"
+    },
+    "hinted": true
+  },
+  {
+    "index": 3,
+    "corners": {
+      "NE": "upper",
+      "NW": "upper",
+      "SE": "transition",
+      "SW": "transition"
+    },
+    "hinted": true
+  },
+  {
+    "index": 9,
+    "corners": {
+      "NE": "lower",
+      "NW": "upper",
+      "SE": "lower",
+      "SW": "transition"
+    },
+    "hinted": true
+  },
+  {
+    "index": 29,
+    "corners": {
+      "NE": "transition",
+      "NW": "upper",
+      "SE": "lower",
+      "SW": "upper"
+    },
+    "hinted": true
+  },
+  {
+    "index": 7,
+    "corners": {
+      "NE": "transition",
+      "NW": "transition",
+      "SE": "lower",
+      "SW": "lower"
+    },
+    "hinted": true
+  },
+  {
+    "index": 13,
+    "corners": {
+      "NE": "lower",
+      "NW": "transition",
+      "SE": "lower",
+      "SW": "lower"
+    },
+    "hinted": false
+  },
+  {
+    "index": 2,
+    "corners": {
+      "NE": "upper",
+      "NW": "lower",
+      "SE": "transition",
+      "SW": "lower"
+    },
+    "hinted": true
+  },
+  {
+    "index": 0,
+    "corners": {
+      "NE": "upper",
+      "NW": "upper",
+      "SE": "upper",
+      "SW": "transition"
+    },
+    "hinted": true
+  },
+  {
+    "index": 26,
+    "corners": {
+      "NE": "lower",
+      "NW": "upper",
+      "SE": "upper",
+      "SW": "transition"
+    },
+    "hinted": true
+  },
+  {
+    "index": 6,
+    "corners": {
+      "NE": "transition",
+      "NW": "lower",
+      "SE": "lower",
+      "SW": "lower"
+    },
+    "hinted": false
+  },
+  {
+    "index": 4,
+    "corners": {
+      "NE": "upper",
+      "NW": "transition",
+      "SE": "upper",
+      "SW": "lower"
+    },
+    "hinted": true
+  },
+  {
+    "index": 30,
+    "corners": {
+      "NE": "upper",
+      "NW": "transition",
+      "SE": "upper",
+      "SW": "lower"
+    },
+    "hinted": true
+  },
+  {
+    "index": 8,
+    "corners": {
+      "NE": "upper",
+      "NW": "lower",
+      "SE": "transition",
+      "SW": "upper"
+    },
+    "hinted": true
+  },
+  {
+    "index": 12,
+    "corners": {
+      "NE": "transition",
+      "NW": "upper",
+      "SE": "lower",
+      "SW": "upper"
+    },
+    "hinted": true
+  }
+]

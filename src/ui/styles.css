@@ -62,6 +62,12 @@ body {
   pointer-events: none;
 }
 
+#vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 58%, rgb(24 28 48 / 30%) 100%);
+}
+
 .panel {
   border: 2px solid var(--cream-pink-edge);
   border-radius: 16px;

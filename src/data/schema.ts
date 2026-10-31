@@ -47,15 +47,35 @@ const objectEntrySchema = z.strictObject({
 const tilesetEntrySchema = z.strictObject({
   type: z.literal('tileset'),
   pixellabId: z.uuid(),
-  recolor: z.literal('soft').optional(),
   file: z.string().min(1),
   metaFile: z.string().min(1),
+});
+
+/** ภาพที่แก้มือแล้วเก็บในโปรเจกต์ ไม่ดึงจาก PixelLab */
+const localEntrySchema = z.strictObject({
+  type: z.literal('local'),
+  source: z.string().min(1),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  file: z.string().min(1),
+});
+
+/** กล่องสีพร้อมชื่อ ใช้จนกว่าภาพจริงจะมา สลับเป็นภาพจริงด้วยการแก้ทะเบียน */
+const placeholderEntrySchema = z.strictObject({
+  type: z.literal('placeholder'),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  color: z.string().regex(/^#[0-9a-f]{6}$/),
+  labelKey: z.string().min(1),
+  gridSize: z.number().int().positive().optional(),
 });
 
 const assetEntrySchema = z.discriminatedUnion('type', [
   characterEntrySchema,
   objectEntrySchema,
   tilesetEntrySchema,
+  localEntrySchema,
+  placeholderEntrySchema,
 ]);
 
 export const registrySchema = z.record(z.string().regex(/^[a-z0-9_]+$/), assetEntrySchema);
@@ -66,21 +86,21 @@ export const spriteMetaSchema = z.record(
   z.strictObject({ footY: z.record(z.string(), z.number().int().positive()) }),
 );
 
+const cornerSide = z.enum(['lower', 'upper', 'transition']);
+
 export const tilesetMetaSchema = z.array(
   z.strictObject({
     index: z.number().int().nonnegative(),
-    corners: z.strictObject({
-      NW: z.enum(['lower', 'upper']),
-      NE: z.enum(['lower', 'upper']),
-      SW: z.enum(['lower', 'upper']),
-      SE: z.enum(['lower', 'upper']),
-    }),
+    corners: z.strictObject({ NW: cornerSide, NE: cornerSide, SW: cornerSide, SE: cornerSide }),
+    /** แผ่นที่ pattern_4x4 ระบุเพื่อนบ้านเหนือหรือใต้ไว้ เช่น หน้าผาที่กินสองแถว */
+    hinted: z.boolean(),
   }),
 );
 
 export type CharacterEntry = z.infer<typeof characterEntrySchema>;
 export type ObjectEntry = z.infer<typeof objectEntrySchema>;
 export type TilesetEntry = z.infer<typeof tilesetEntrySchema>;
+export type LocalEntry = z.infer<typeof localEntrySchema>;
 export type AssetEntry = z.infer<typeof assetEntrySchema>;
 export type Registry = z.infer<typeof registrySchema>;
 export type SpriteMeta = z.infer<typeof spriteMetaSchema>;

@@ -4,13 +4,13 @@ import { PNG } from 'pngjs';
 import {
   registrySchema,
   type CharacterEntry,
+  type LocalEntry,
   type ObjectEntry,
   type SpriteMeta,
   type TilesetEntry,
   type TilesetMeta,
 } from '../src/data/schema';
 import { projectRoot } from './checks';
-import { softenTiles } from './recolor';
 
 async function downloadBytes(url: string): Promise<Buffer> {
   const response = await fetch(url);
@@ -92,10 +92,23 @@ async function fetchObject(id: string, entry: ObjectEntry, meta: SpriteMeta): Pr
   console.log(`${id}: saved`);
 }
 
+function copyLocal(id: string, entry: LocalEntry, meta: SpriteMeta): void {
+  const image = PNG.sync.read(readFileSync(join(projectRoot, entry.source)));
+  if (image.width !== entry.width || image.height !== entry.height) {
+    throw new Error(`${id} is ${image.width}x${image.height}, expected ${entry.width}x${entry.height}`);
+  }
+  savePng(entry.file, image);
+  meta[id] = { footY: { default: lowestRow(image, 0, 0, image.width, image.height) } };
+  console.log(`${id}: copied`);
+}
+
 interface RawTile {
   corners: TilesetMeta[number]['corners'];
   bounding_box: { x: number; y: number; width: number; height: number };
+  pattern_4x4: { row_0: number[]; row_3: number[] };
 }
+
+const EMPTY_PATTERN = 255;
 
 async function fetchTileset(id: string, entry: TilesetEntry): Promise<void> {
   const base = `https://api.pixellab.ai/mcp/tilesets/${entry.pixellabId}`;
@@ -107,9 +120,9 @@ async function fetchTileset(id: string, entry: TilesetEntry): Promise<void> {
   const tiles: TilesetMeta = raw.tileset_data.tiles.map((tile) => ({
     index: (tile.bounding_box.y / 32) * columns + tile.bounding_box.x / 32,
     corners: tile.corners,
+    hinted: [...tile.pattern_4x4.row_0, ...tile.pattern_4x4.row_3].some((value) => value !== EMPTY_PATTERN),
   }));
 
-  if (entry.recolor === 'soft') softenTiles(image.data);
   savePng(entry.file, image);
   const metaTarget = join(projectRoot, entry.metaFile);
   mkdirSync(dirname(metaTarget), { recursive: true });
@@ -125,7 +138,8 @@ const meta: SpriteMeta = {};
 for (const [id, entry] of Object.entries(registry)) {
   if (entry.type === 'character') await fetchCharacter(id, entry, meta);
   else if (entry.type === 'object') await fetchObject(id, entry, meta);
-  else await fetchTileset(id, entry);
+  else if (entry.type === 'tileset') await fetchTileset(id, entry);
+  else if (entry.type === 'local') copyLocal(id, entry, meta);
 }
 
 writeFileSync(join(projectRoot, 'src/data/sprite-meta.json'), `${JSON.stringify(meta, null, 2)}\n`);

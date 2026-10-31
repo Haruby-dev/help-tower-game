@@ -45,7 +45,12 @@ export function checkProject(): string[] {
 
   const registry = registrySchema.parse(readJson('assets-src/registry.json'));
   const spriteMeta = spriteMetaSchema.parse(readJson('src/data/sprite-meta.json'));
+  const translations = translationsSchema.parse(readJson('src/i18n/th.json'));
   for (const [id, entry] of Object.entries(registry)) {
+    if (entry.type === 'placeholder') {
+      if (!translations[entry.labelKey]) problems.push(`assets-src/registry.json: ${id} has no text ${entry.labelKey}`);
+      continue;
+    }
     if (!existsSync(join(projectRoot, 'public/assets', entry.file))) {
       problems.push(`assets-src/registry.json: ${id} points to missing file ${entry.file}`);
     }
@@ -54,7 +59,6 @@ export function checkProject(): string[] {
     }
   }
 
-  const translations = translationsSchema.parse(readJson('src/i18n/th.json'));
   for (const file of listCodeFiles(join(projectRoot, 'src'))) {
     const label = relative(projectRoot, file);
     const code = readFileSync(file, 'utf8').replace(COMMENT, '');

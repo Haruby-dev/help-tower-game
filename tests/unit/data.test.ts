@@ -20,4 +20,27 @@ describe('project data', () => {
       expect(hop.directionGroups?.[direction]).toBe('1712125f-3044-4b2c-b9a8-4555ea225776');
     }
   });
+
+  it('uses the hand-fixed house file and none of the retired art', () => {
+    const raw = readFileSync(join(projectRoot, 'assets-src/registry.json'), 'utf8');
+    const registry = registrySchema.parse(JSON.parse(raw));
+    const house = registry.house_main;
+    expect(house?.type === 'local' && house.source).toBe('assets-src/house_main_final.png');
+    for (const retired of [
+      '2d3798d1',
+      'a7babc4e',
+      '88a095aa',
+      'ec7a4c94',
+      '557b0313',
+      '732049bb',
+      'f6fca004',
+      'fe8f8a6c',
+      '6806c5eb',
+      '80720cc2',
+      'bd4f5347',
+      'e3a6188f',
+    ]) {
+      expect(raw).not.toContain(retired);
+    }
+  });
 });

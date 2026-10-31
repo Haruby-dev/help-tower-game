@@ -85,32 +85,56 @@ test.describe('keyboard', () => {
 
   test('cannot walk into the pond', async ({ page }) => {
     await openGame(page);
-    await teleport(page, 27 * TILE, 14 * TILE);
+    await teleport(page, 23 * TILE, 10.2 * TILE);
     await page.keyboard.down('s');
     await page.waitForTimeout(1500);
     await page.keyboard.up('s');
     const { y } = await snapshot(page);
-    expect(y).toBeLessThan(16 * TILE);
-    expect(y).toBeGreaterThan(14 * TILE);
+    expect(y).toBeLessThan(11.5 * TILE);
+    expect(y).toBeGreaterThan(10.2 * TILE);
   });
 
-  test('cannot walk through the cave', async ({ page }) => {
+  test('cannot walk through the house', async ({ page }) => {
     await openGame(page);
-    await teleport(page, 5 * TILE, 8 * TILE);
+    await teleport(page, 19 * TILE, 10 * TILE);
     await page.keyboard.down('w');
     await page.waitForTimeout(1500);
     await page.keyboard.up('w');
-    expect((await snapshot(page)).y).toBeGreaterThan(6 * TILE);
+    expect((await snapshot(page)).y).toBeGreaterThan(8.9 * TILE);
+  });
+
+  test('climbs the stairs but cannot walk through the cliff', async ({ page }) => {
+    await openGame(page);
+    await teleport(page, 15 * TILE, 5.6 * TILE);
+    await page.keyboard.down('w');
+    await page.waitForTimeout(1500);
+    await page.keyboard.up('w');
+    expect((await snapshot(page)).y).toBeLessThan(3.3 * TILE);
+
+    await teleport(page, 10 * TILE, 5.6 * TILE);
+    await page.keyboard.down('w');
+    await page.waitForTimeout(1200);
+    await page.keyboard.up('w');
+    expect((await snapshot(page)).y).toBeGreaterThan(4.9 * TILE);
+  });
+
+  test('cannot walk into the forest', async ({ page }) => {
+    await openGame(page);
+    await teleport(page, 26 * TILE, 8.8 * TILE);
+    await page.keyboard.down('d');
+    await page.waitForTimeout(1500);
+    await page.keyboard.up('d');
+    expect((await snapshot(page)).x).toBeLessThan(27 * TILE);
   });
 
   test('stops at the edge of the map with the camera inside it', async ({ page }) => {
     await openGame(page);
-    await teleport(page, TILE, 8 * TILE);
+    await teleport(page, 4.5 * TILE, 8 * TILE);
     await page.keyboard.down('a');
     await page.waitForTimeout(800);
     await page.keyboard.up('a');
     const state = await snapshot(page);
-    expect(state.x).toBeGreaterThanOrEqual(8);
+    expect(state.x).toBeGreaterThanOrEqual(3 * TILE);
     expect(state.viewX).toBeGreaterThanOrEqual(0);
     expect(state.viewY).toBeGreaterThanOrEqual(0);
     expect(state.viewX + state.viewWidth).toBeLessThanOrEqual(state.worldWidth);
@@ -196,13 +220,13 @@ test('every sprite is drawn at 1:1 with no scaling', async ({ page }) => {
   const scaled = await page.evaluate(() => {
     const scene = window.__game!.scene.getScene('Base');
     return scene.children.list
-      .filter((child): child is import('phaser').GameObjects.Sprite => 'texture' in child)
+      .filter((child): child is import('phaser').GameObjects.Sprite => 'texture' in child && child.type !== 'Text')
       .filter(
         (sprite) =>
           sprite.scaleX !== 1 ||
           sprite.scaleY !== 1 ||
-          sprite.displayWidth !== sprite.frame.width ||
-          sprite.displayHeight !== sprite.frame.height,
+          sprite.displayWidth !== sprite.frame.realWidth ||
+          sprite.displayHeight !== sprite.frame.realHeight,
       )
       .map((sprite) => sprite.texture.key);
   });
@@ -229,7 +253,7 @@ test('the player cannot walk through Gio', async ({ page, isMobile }) => {
   expect(x).toBeLessThan(gio.x);
 });
 
-test('Gio hops around near the burrow without leaving play', async ({ page }) => {
+test('Gio hops around near the seat without leaving play', async ({ page }) => {
   await openGame(page);
   const readGio = (): Promise<{ x: number; y: number; texture: string }> =>
     page.evaluate(() => {
@@ -252,5 +276,28 @@ test('Gio hops around near the burrow without leaving play', async ({ page }) =>
   });
   await expect.poll(async () => (await readGio()).texture, { timeout: 5_000 }).toBe('gio_idle');
   const gio = await readGio();
-  expect(Math.hypot(gio.x - 27.5 * TILE, gio.y - 9 * TILE)).toBeLessThan(200);
+  expect(Math.hypot(gio.x - 10 * TILE, gio.y - 6.75 * TILE)).toBeLessThan(200);
+});
+
+test('shows the map art, effects and a box for each missing piece', async ({ page }) => {
+  await openGame(page);
+  const seen = await page.evaluate(() => {
+    const scene = window.__game!.scene.getScene('Base');
+    const keys = scene.children.list
+      .filter((child): child is import('phaser').GameObjects.Image => 'texture' in child)
+      .map((child) => child.texture.key);
+    const texts = scene.children.list
+      .filter((child) => child.type === 'Text')
+      .map((child) => (child as import('phaser').GameObjects.Text).text);
+    return { keys, texts };
+  });
+  for (const key of ['house_main', 'gate_portal', 'stairs_cliff', 'monster_burrow', 'rock_big_10', 'tree_big_0']) {
+    expect(seen.keys).toContain(key);
+  }
+  for (const key of ['campfire', 'food_tray', 'gio_seat', 'dock', 'farm_plots', 'pet_house']) {
+    expect(seen.keys).toContain(key);
+  }
+  expect(seen.texts).toHaveLength(6);
+  expect(seen.keys.filter((key) => key.startsWith('petal_')).length).toBeGreaterThan(20);
+  await expect(page.locator('#vignette')).toHaveCSS('pointer-events', 'none');
 });

@@ -1,5 +1,8 @@
 import Phaser from 'phaser';
 import { animationKey, assetUrl, directionsOf, registry } from '../core/assets';
+import { createPlaceholderTexture } from './sceneArt';
+
+const LABEL_FONT = '700 8px Mali';
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -13,7 +16,7 @@ export class BootScene extends Phaser.Scene {
           frameWidth: entry.frameWidth,
           frameHeight: entry.frameHeight,
         });
-      } else {
+      } else if (entry.type !== 'placeholder') {
         this.load.image(id, assetUrl(entry.file));
       }
     }
@@ -22,6 +25,7 @@ export class BootScene extends Phaser.Scene {
 
   create(): void {
     for (const [id, entry] of Object.entries(registry)) {
+      if (entry.type === 'placeholder') createPlaceholderTexture(this, id, entry);
       if (entry.type !== 'character' || !entry.frameRate) continue;
       const hops = entry.animation === 'gio_hop';
       directionsOf(entry).forEach((direction, row) => {
@@ -36,6 +40,10 @@ export class BootScene extends Phaser.Scene {
         });
       });
     }
-    this.scene.start('Base');
+    // ชื่อบนกล่องแทนภาพใช้ฟอนต์ Mali ถ้าโหลดฟอนต์ไม่ได้ก็ยังเข้าเกมได้
+    void document.fonts
+      .load(LABEL_FONT)
+      .catch(() => undefined)
+      .finally(() => this.scene.start('Base'));
   }
 }

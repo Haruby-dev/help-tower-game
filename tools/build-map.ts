@@ -1,12 +1,14 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { tilesetMetaSchema, type TilesetMeta } from '../src/data/schema';
+import { PNG } from 'pngjs';
+import { createRng } from '../src/core/rng';
+import { registrySchema, tilesetMetaSchema, type TilesetMeta } from '../src/data/schema';
 import { projectRoot } from './checks';
 import {
+  blockedRects,
   buildCorners,
   footprintRect,
   tileCorners,
-  waterRects,
   type MapLayout,
   type Rect,
   type Terrain,
@@ -14,41 +16,55 @@ import {
 } from './map-layout';
 
 const TILE_SIZE = 32;
-const SHEET_TILES = 16;
-const SHEET_COLUMNS = 4;
 
 const readJson = (path: string): unknown => JSON.parse(readFileSync(join(projectRoot, path), 'utf8'));
 
 const layout = readJson('assets-src/maps/base-layout.json') as MapLayout;
+const registry = registrySchema.parse(readJson('assets-src/registry.json'));
+
+type Side = TilesetMeta[number]['corners']['NW'];
 
 interface MapTileset {
   name: string;
-  lower: Terrain;
+  sides: Partial<Record<Terrain, Side>>;
   firstGid: number;
+  columns: number;
+  rows: number;
   tiles: TilesetMeta;
 }
 
-const tilesets: MapTileset[] = [
-  { name: 'tiles_grass_dirt', lower: 'dirt', firstGid: 1, tiles: [] },
-  { name: 'tiles_grass_water', lower: 'water', firstGid: 1 + SHEET_TILES, tiles: [] },
-];
-for (const tileset of tilesets) {
-  tileset.tiles = tilesetMetaSchema.parse(readJson(`assets-src/tiles/${tileset.name}.meta.json`));
-}
+/** ทุกชุดต่อกันผ่านหญ้าปกติ ป่าทึบใช้ภาพหญ้าเข้มแต่เดินไม่ได้ */
+const tilesets: MapTileset[] = [];
+const addTileset = (name: string, sides: MapTileset['sides']): void => {
+  const png = PNG.sync.read(readFileSync(join(projectRoot, 'public/assets/tiles', `${name}.png`)));
+  const previous = tilesets.at(-1);
+  tilesets.push({
+    name,
+    sides,
+    firstGid: previous ? previous.firstGid + previous.columns * previous.rows : 1,
+    columns: png.width / TILE_SIZE,
+    rows: png.height / TILE_SIZE,
+    tiles: tilesetMetaSchema.parse(readJson(`assets-src/tiles/${name}.meta.json`)),
+  });
+};
+addTileset('ground_grass_dirt', { grass: 'upper', dirt: 'lower' });
+addTileset('ground_grass_dark', { grass: 'lower', dark: 'upper', forest: 'upper' });
+addTileset('ground_water', { grass: 'upper', water: 'lower' });
+addTileset('cliff_tall', { grass: 'lower', upper: 'upper', wall: 'transition' });
 
 function gidFor(corners: TileCorners, x: number, y: number): number {
-  const terrains = new Set(Object.values(corners));
-  if (terrains.has('dirt') && terrains.has('water')) {
-    throw new Error(`dirt and water touch at tile ${x},${y}; keep a row of grass between them`);
+  const terrains: Terrain[] = Object.values(corners);
+  const tileset = tilesets.find((candidate) => terrains.every((terrain) => candidate.sides[terrain]));
+  if (!tileset) {
+    throw new Error(`${[...new Set(terrains)].join(' and ')} touch at tile ${x},${y}; keep plain grass between them`);
   }
-  const tileset = terrains.has('water') ? tilesets[1] : tilesets[0];
-  if (!tileset) throw new Error('missing tileset');
-
-  const side = (terrain: Terrain): 'lower' | 'upper' => (terrain === 'grass' ? 'upper' : 'lower');
-  const tile = tileset.tiles.find(
+  const side = (terrain: Terrain): Side => tileset.sides[terrain] as Side;
+  const matches = tileset.tiles.filter(
     ({ corners: c }) =>
       c.NW === side(corners.NW) && c.NE === side(corners.NE) && c.SW === side(corners.SW) && c.SE === side(corners.SE),
   );
+  // บางมุมมีสองแบบ แบบที่ไม่ได้ระบุเพื่อนบ้านคือแบบทั่วไป
+  const tile = matches.find((match) => !match.hinted) ?? matches[0];
   if (!tile) throw new Error(`no tile matches ${JSON.stringify(corners)} in ${tileset.name}`);
   return tileset.firstGid + tile.index;
 }
@@ -62,43 +78,125 @@ for (let y = 0; y < layout.heightTiles; y += 1) {
 }
 
 const toPixels = (tile: number): number => Math.round(tile * TILE_SIZE);
-const collision: Rect[] = [...waterRects(corners, TILE_SIZE)];
-const objects = layout.objects.map((object) => {
+const rectToPixels = (rect: Rect): Rect => ({
+  x: toPixels(rect.x),
+  y: toPixels(rect.y),
+  width: toPixels(rect.width),
+  height: toPixels(rect.height),
+});
+
+const clearAreas = [...layout.openings, ...layout.walkableOverWater].map(rectToPixels);
+const collision: Rect[] = [...blockedRects(corners, TILE_SIZE, clearAreas), ...layout.blockers.map(rectToPixels)];
+
+interface PointObject {
+  name: string;
+  x: number;
+  y: number;
+  properties?: { name: string; type: string; value: number | boolean }[];
+}
+
+const objects: PointObject[] = layout.objects.map((object) => {
+  if (!registry[object.id]) throw new Error(`layout uses ${object.id}, which is not in the registry`);
   const x = toPixels(object.x);
   const y = toPixels(object.y);
   const footprint = layout.footprints[object.id];
   if (footprint) collision.push(footprintRect(footprint, x, y));
-  return { name: object.id, x, y };
+  const shadow = layout.shadows[object.id];
+  const properties: NonNullable<PointObject['properties']> = [];
+  if (layout.flat.includes(object.id)) properties.push({ name: 'flat', type: 'bool', value: true });
+  if (object.submerged) properties.push({ name: 'submerged', type: 'float', value: object.submerged });
+  if (shadow) {
+    properties.push({ name: 'shadowWidth', type: 'int', value: shadow.width });
+    properties.push({ name: 'shadowHeight', type: 'int', value: shadow.height });
+  }
+  return { name: object.id, x, y, ...(properties.length > 0 ? { properties } : {}) };
 });
-const spawns = Object.entries(layout.spawns).map(([name, point]) => ({
+
+const spawns: PointObject[] = Object.entries(layout.spawns).map(([name, point]) => ({
   name,
   x: toPixels(point.x),
   y: toPixels(point.y),
 }));
 
+/** ดอกไม้แบน: ความหนาแน่นนับต่อหนึ่งจอ โรยเฉพาะช่องที่เป็นหญ้าล้วน */
+function scatterFlowers(): PointObject[] {
+  const { seed, screenTiles, smallPerScreen, bigPerScreen, minSpacing, stoneClearance, keepOut } = layout.flowers;
+  const rng = createRng(seed);
+  const pick = <T>(list: T[]): T => list[Math.floor(rng.between(0, list.length))] as T;
+  const smallIds = Object.keys(registry).filter((id) => /^petal_\d+$/.test(id));
+  const bigIds = Object.keys(registry).filter((id) => /^petal_big_\d+$/.test(id));
+  const stones = layout.objects.filter((object) => object.id.startsWith('path_stone'));
+
+  const open: { x: number; y: number }[] = [];
+  for (let y = 0; y < layout.heightTiles; y += 1) {
+    for (let x = 0; x < layout.widthTiles; x += 1) {
+      const terrains = Object.values(tileCorners(corners, x, y));
+      const onGrass = terrains.every((terrain) => terrain === 'grass' || terrain === 'dark');
+      if (onGrass) open.push({ x, y });
+    }
+  }
+
+  const placed: PointObject[] = [];
+  const canPlace = (x: number, y: number): boolean =>
+    !keepOut.some(
+      (area) =>
+        x >= toPixels(area.x) &&
+        x < toPixels(area.x + area.width) &&
+        y >= toPixels(area.y) &&
+        y < toPixels(area.y + area.height),
+    ) &&
+    !stones.some((stone) => Math.hypot(toPixels(stone.x) - x, toPixels(stone.y) - y) < stoneClearance) &&
+    !placed.some((flower) => Math.hypot(flower.x - x, flower.y - y) < minSpacing);
+
+  const sprinkle = (ids: string[], count: number): void => {
+    for (let index = 0, attempts = 0; index < count && attempts < count * 40; attempts += 1) {
+      const tile = pick(open);
+      const x = Math.floor((tile.x + rng.between(0, 1)) * TILE_SIZE);
+      const y = Math.floor((tile.y + rng.between(0, 1)) * TILE_SIZE);
+      if (!canPlace(x, y)) continue;
+      placed.push({ name: pick(ids), x, y });
+      index += 1;
+    }
+  };
+  const screens = open.length / screenTiles;
+  sprinkle(bigIds, Math.round(bigPerScreen * screens));
+  sprinkle(smallIds, Math.round(smallPerScreen * screens));
+  return placed;
+}
+
+const flowers = scatterFlowers();
+
 let nextObjectId = 1;
-const rectObjects = collision.map((rect) => ({
+const rectObject = (name: string, rect: Rect): object => ({
   id: nextObjectId++,
-  name: '',
+  name,
   type: '',
   rotation: 0,
   visible: true,
   ...rect,
-}));
-const pointObject = (point: { name: string; x: number; y: number }): object => ({
+});
+const rectObjects = collision.map((rect) => rectObject('', rect));
+const pointObject = (point: PointObject): object => ({
   id: nextObjectId++,
-  name: point.name,
   type: '',
   rotation: 0,
   visible: true,
   point: true,
   width: 0,
   height: 0,
-  x: point.x,
-  y: point.y,
+  ...point,
 });
 const pointObjects = objects.map(pointObject);
+const flowerObjects = flowers.map(pointObject);
 const spawnObjects = spawns.map(pointObject);
+const effects = layout.effects.map((effect) => ({
+  name: effect.name,
+  x: toPixels(effect.x) - effect.width / 2,
+  y: toPixels(effect.y) - effect.height / 2,
+  width: effect.width,
+  height: effect.height,
+}));
+const effectObjects = effects.map(({ name, ...rect }) => rectObject(name, rect));
 
 const objectGroup = (id: number, name: string, list: object[]): object => ({
   id,
@@ -124,7 +222,7 @@ const tiledJson = {
   height: layout.heightTiles,
   tilewidth: TILE_SIZE,
   tileheight: TILE_SIZE,
-  nextlayerid: 5,
+  nextlayerid: 7,
   nextobjectid: nextObjectId,
   layers: [
     {
@@ -141,31 +239,39 @@ const tiledJson = {
     },
     objectGroup(2, 'collision', rectObjects),
     objectGroup(3, 'objects', pointObjects),
-    objectGroup(4, 'spawns', spawnObjects),
+    objectGroup(4, 'flowers', flowerObjects),
+    objectGroup(5, 'effects', effectObjects),
+    objectGroup(6, 'spawns', spawnObjects),
   ],
   tilesets: tilesets.map((tileset) => ({
     firstgid: tileset.firstGid,
     name: tileset.name,
     image: `../tiles/${tileset.name}.png`,
-    imagewidth: TILE_SIZE * SHEET_COLUMNS,
-    imageheight: TILE_SIZE * SHEET_COLUMNS,
+    imagewidth: TILE_SIZE * tileset.columns,
+    imageheight: TILE_SIZE * tileset.rows,
     tilewidth: TILE_SIZE,
     tileheight: TILE_SIZE,
-    tilecount: SHEET_TILES,
-    columns: SHEET_COLUMNS,
+    tilecount: tileset.columns * tileset.rows,
+    columns: tileset.columns,
     margin: 0,
     spacing: 0,
   })),
 };
 writeFileSync(join(projectRoot, 'public/assets/maps/base.json'), `${JSON.stringify(tiledJson)}\n`);
 
-function tmxObjects(list: { x: number; y: number; name?: string; width?: number; height?: number }[]): string {
+function tmxObjects(list: (Partial<PointObject> & { x: number; y: number; width?: number; height?: number })[]): string {
   return list
     .map((object, index) => {
       const size = object.width ? ` width="${object.width}" height="${object.height}"` : '';
       const name = object.name ? ` name="${object.name}"` : '';
-      const point = object.width ? '/>' : '><point/></object>';
-      return `  <object id="${index + 1}"${name} x="${object.x}" y="${object.y}"${size}${point}`;
+      const properties = object.properties
+        ? `<properties>${object.properties
+            .map((property) => `<property name="${property.name}" type="${property.type}" value="${property.value}"/>`)
+            .join('')}</properties>`
+        : '';
+      const point = object.width ? '' : '<point/>';
+      const body = properties + point;
+      return `  <object id="${index + 1}"${name} x="${object.x}" y="${object.y}"${size}${body ? `>${body}</object>` : '/>'}`;
     })
     .join('\n');
 }
@@ -176,11 +282,11 @@ for (let y = 0; y < layout.heightTiles; y += 1) {
 }
 
 const tmx = `<?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="${layout.widthTiles}" height="${layout.heightTiles}" tilewidth="${TILE_SIZE}" tileheight="${TILE_SIZE}" infinite="0" nextlayerid="5" nextobjectid="${nextObjectId}">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="${layout.widthTiles}" height="${layout.heightTiles}" tilewidth="${TILE_SIZE}" tileheight="${TILE_SIZE}" infinite="0" nextlayerid="7" nextobjectid="${nextObjectId}">
 ${tilesets
   .map(
-    (tileset) => ` <tileset firstgid="${tileset.firstGid}" name="${tileset.name}" tilewidth="${TILE_SIZE}" tileheight="${TILE_SIZE}" tilecount="${SHEET_TILES}" columns="${SHEET_COLUMNS}">
-  <image source="../../public/assets/tiles/${tileset.name}.png" width="${TILE_SIZE * SHEET_COLUMNS}" height="${TILE_SIZE * SHEET_COLUMNS}"/>
+    (tileset) => ` <tileset firstgid="${tileset.firstGid}" name="${tileset.name}" tilewidth="${TILE_SIZE}" tileheight="${TILE_SIZE}" tilecount="${tileset.columns * tileset.rows}" columns="${tileset.columns}">
+  <image source="../../public/assets/tiles/${tileset.name}.png" width="${TILE_SIZE * tileset.columns}" height="${TILE_SIZE * tileset.rows}"/>
  </tileset>`,
   )
   .join('\n')}
@@ -195,11 +301,19 @@ ${tmxObjects(collision)}
  <objectgroup id="3" name="objects">
 ${tmxObjects(objects)}
  </objectgroup>
- <objectgroup id="4" name="spawns">
+ <objectgroup id="4" name="flowers">
+${tmxObjects(flowers)}
+ </objectgroup>
+ <objectgroup id="5" name="effects">
+${tmxObjects(effects)}
+ </objectgroup>
+ <objectgroup id="6" name="spawns">
 ${tmxObjects(spawns)}
  </objectgroup>
 </map>
 `;
 writeFileSync(join(projectRoot, 'assets-src/maps/base.tmx'), tmx);
 
-console.log(`base map: ${ground.length} tiles, ${collision.length} collision boxes, ${objects.length} objects`);
+console.log(
+  `base map: ${ground.length} tiles, ${collision.length} collision boxes, ${objects.length} objects, ${flowers.length} flowers`,
+);

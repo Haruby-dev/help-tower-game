@@ -2,6 +2,12 @@
   "game.title": "ช่วยด้วยจ้า ดันติดอยู่ในหอคอย 100 ชั้น!!",
   "location.base": "ชั้นฐาน",
   "orientation.rotate_prompt": "หมุนมือถือเป็นแนวนอนหน่อยนะ",
+  "placeholder.campfire": "กองไฟ",
+  "placeholder.dock": "ท่าน้ำ",
+  "placeholder.farm_plots": "แปลงผัก",
+  "placeholder.food_tray": "ถาดอาหาร",
+  "placeholder.gio_seat": "ที่นั่งจีโอ",
+  "placeholder.pet_house": "บ้านสัตว์เลี้ยง",
   "ui.fullscreen_enter": "เต็มจอ",
   "ui.fullscreen_exit": "ออกจากเต็มจอ",
   "ui.joystick": "จอยสติ๊กสำหรับเดิน"

@@ -1,4 +1,4 @@
-export type Terrain = 'grass' | 'dirt' | 'water';
+export type Terrain = 'grass' | 'dirt' | 'dark' | 'forest' | 'water' | 'upper' | 'wall';
 
 export interface Rect {
   x: number;
@@ -10,30 +10,44 @@ export interface Rect {
 export interface MapLayout {
   widthTiles: number;
   heightTiles: number;
-  paths: Rect[];
-  ponds: { centerX: number; centerY: number; radiusX: number; radiusY: number }[];
+  terrainLegend: Record<string, Terrain>;
+  /** ผังพื้นเขียนที่จุดมุมของช่อง แต่ละแถวมี widthTiles + 1 ตัว และมี heightTiles + 1 แถว */
+  terrain: string[];
+  blockers: Rect[];
+  openings: Rect[];
+  walkableOverWater: Rect[];
   footprints: Record<string, { width: number; height: number }>;
-  objects: { id: string; x: number; y: number }[];
+  shadows: Record<string, { width: number; height: number }>;
+  flat: string[];
+  flowers: {
+    seed: number;
+    screenTiles: number;
+    smallPerScreen: number;
+    bigPerScreen: number;
+    minSpacing: number;
+    stoneClearance: number;
+    keepOut: Rect[];
+  };
+  effects: { name: string; x: number; y: number; width: number; height: number }[];
+  objects: { id: string; x: number; y: number; submerged?: number }[];
   spawns: Record<string, { x: number; y: number }>;
 }
 
 /** พื้นกำหนดที่จุดมุมของช่อง จึงมีจุดมุมมากกว่าจำนวนช่อง 1 แถว */
 export function buildCorners(layout: MapLayout): Terrain[][] {
-  const corners: Terrain[][] = [];
-  for (let y = 0; y <= layout.heightTiles; y += 1) {
-    const row: Terrain[] = [];
-    for (let x = 0; x <= layout.widthTiles; x += 1) {
-      const onPath = layout.paths.some(
-        (path) => x >= path.x && x < path.x + path.width && y >= path.y && y < path.y + path.height,
-      );
-      const inPond = layout.ponds.some(
-        (pond) => ((x - pond.centerX) / pond.radiusX) ** 2 + ((y - pond.centerY) / pond.radiusY) ** 2 <= 1,
-      );
-      row.push(inPond ? 'water' : onPath ? 'dirt' : 'grass');
-    }
-    corners.push(row);
+  if (layout.terrain.length !== layout.heightTiles + 1) {
+    throw new Error(`terrain needs ${layout.heightTiles + 1} rows, found ${layout.terrain.length}`);
   }
-  return corners;
+  return layout.terrain.map((row, y) => {
+    if (row.length !== layout.widthTiles + 1) {
+      throw new Error(`terrain row ${y} needs ${layout.widthTiles + 1} corners, found ${row.length}`);
+    }
+    return [...row].map((symbol, x) => {
+      const terrain = layout.terrainLegend[symbol];
+      if (!terrain) throw new Error(`unknown terrain ${symbol} at ${x},${y}`);
+      return terrain;
+    });
+  });
 }
 
 function cornerAt(corners: Terrain[][], x: number, y: number): Terrain {
@@ -58,19 +72,40 @@ export function tileCorners(corners: Terrain[][], x: number, y: number): TileCor
   };
 }
 
-/** กันเดินลงน้ำเป็นรายมุมของช่อง ขอบบ่อจึงตรงกับภาพ แล้วรวมแถบยาวเพื่อลดจำนวนกล่อง */
-export function waterRects(corners: Terrain[][], tileSize: number): Rect[] {
+function tileBlocked(corners: Terrain[][], x: number, y: number): boolean {
+  const terrains = Object.values(tileCorners(corners, x, y));
+  if (terrains.every((terrain) => terrain === 'forest')) return true;
+  if (terrains.includes('wall')) return true;
+  return terrains.includes('upper') && !terrains.every((terrain) => terrain === 'upper');
+}
+
+/**
+ * กันเดินทีละครึ่งช่อง: น้ำกันเป็นรายมุมเพื่อให้ขอบบ่อตรงกับภาพ ส่วนป่าและหน้าผากันทั้งช่อง
+ * clear คือพื้นที่ที่เดินได้แม้จะมีหน้าผาหรือน้ำ เช่น บันไดและท่าน้ำ แล้วรวมแถบยาวเพื่อลดจำนวนกล่อง
+ */
+export function blockedRects(corners: Terrain[][], tileSize: number, clear: Rect[] = []): Rect[] {
   const half = tileSize / 2;
   const rows = (corners.length - 1) * 2;
   const columns = ((corners[0]?.length ?? 1) - 1) * 2;
   const rects: Rect[] = [];
+
+  const isClear = (column: number, row: number): boolean =>
+    clear.some(
+      (area) =>
+        column * half >= area.x &&
+        (column + 1) * half <= area.x + area.width &&
+        row * half >= area.y &&
+        (row + 1) * half <= area.y + area.height,
+    );
 
   for (let row = 0; row < rows; row += 1) {
     let start: number | null = null;
     for (let column = 0; column <= columns; column += 1) {
       const blocked =
         column < columns &&
-        cornerAt(corners, Math.round((column + 0.5) / 2), Math.round((row + 0.5) / 2)) === 'water';
+        !isClear(column, row) &&
+        (cornerAt(corners, Math.round((column + 0.5) / 2), Math.round((row + 0.5) / 2)) === 'water' ||
+          tileBlocked(corners, Math.floor(column / 2), Math.floor(row / 2)));
       if (blocked && start === null) start = column;
       if (!blocked && start !== null) {
         rects.push({ x: start * half, y: row * half, width: (column - start) * half, height: half });

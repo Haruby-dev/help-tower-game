@@ -74,7 +74,14 @@ function createRotatePrompt(uiRoot: HTMLElement): void {
   });
 }
 
+function createVignette(uiRoot: HTMLElement): void {
+  const vignette = document.createElement('div');
+  vignette.id = 'vignette';
+  uiRoot.append(vignette);
+}
+
 export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
+  createVignette(uiRoot);
   createLocationLabel(uiRoot);
   createJoystick(uiRoot);
   createRotatePrompt(uiRoot);

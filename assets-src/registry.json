@@ -75,82 +75,410 @@
     "frameRate": 10,
     "file": "characters/player_girl_walk.png"
   },
-  "tiles_grass_dirt": {
+  "ground_grass_dirt": {
     "type": "tileset",
-    "pixellabId": "88a095aa-15c0-4f4d-802d-6f8ed037399e",
-    "recolor": "soft",
-    "file": "tiles/tiles_grass_dirt.png",
-    "metaFile": "assets-src/tiles/tiles_grass_dirt.meta.json"
+    "pixellabId": "e76269b8-2402-4e9e-805a-90e1e135f71e",
+    "file": "tiles/ground_grass_dirt.png",
+    "metaFile": "assets-src/tiles/ground_grass_dirt.meta.json"
   },
-  "tiles_grass_water": {
+  "ground_grass_dark": {
     "type": "tileset",
-    "pixellabId": "ec7a4c94-6110-4cf7-b772-27503d5a239a",
-    "recolor": "soft",
-    "file": "tiles/tiles_grass_water.png",
-    "metaFile": "assets-src/tiles/tiles_grass_water.meta.json"
+    "pixellabId": "bece8982-a24e-4ea1-b9ce-4da6e9fa60da",
+    "file": "tiles/ground_grass_dark.png",
+    "metaFile": "assets-src/tiles/ground_grass_dark.meta.json"
   },
-  "tree_pink": {
-    "type": "object",
-    "pixellabId": "557b0313-334a-4152-99f1-631f271984d2",
-    "url": "https://api.pixellab.ai/mcp/map-objects/557b0313-334a-4152-99f1-631f271984d2/download",
-    "width": 96,
-    "height": 128,
-    "file": "tiles/tree_pink.png"
+  "ground_water": {
+    "type": "tileset",
+    "pixellabId": "5d70adc0-0059-4f40-b159-78dc7a8ef2ed",
+    "file": "tiles/ground_water.png",
+    "metaFile": "assets-src/tiles/ground_water.meta.json"
   },
-  "tree_blossom": {
-    "type": "object",
-    "pixellabId": "732049bb-4811-43ff-9efe-00bf34abe40d",
-    "url": "https://api.pixellab.ai/mcp/map-objects/732049bb-4811-43ff-9efe-00bf34abe40d/download",
-    "width": 96,
-    "height": 128,
-    "file": "tiles/tree_blossom.png"
+  "cliff_tall": {
+    "type": "tileset",
+    "pixellabId": "c6e6f96c-03ba-4258-8cbd-c6f6c368edd9",
+    "file": "tiles/cliff_tall.png",
+    "metaFile": "assets-src/tiles/cliff_tall.meta.json"
   },
-  "cave": {
+  "tree_big_0": {
     "type": "object",
-    "pixellabId": "f6fca004-d969-487c-bbca-df51734092a6",
-    "url": "https://api.pixellab.ai/mcp/map-objects/f6fca004-d969-487c-bbca-df51734092a6/download",
+    "pixellabId": "99d76571-250e-4aee-bf37-370c0aa06640",
+    "url": "https://api.pixellab.ai/mcp/images/99d76571-250e-4aee-bf37-370c0aa06640/download?index=0",
     "width": 128,
     "height": 128,
-    "file": "tiles/cave.png"
+    "file": "tiles/tree_big_0.png"
   },
-  "burrow": {
+  "tree_big_1": {
     "type": "object",
-    "pixellabId": "fe8f8a6c-803d-4360-ac4a-2872b54fa231",
-    "url": "https://api.pixellab.ai/mcp/map-objects/fe8f8a6c-803d-4360-ac4a-2872b54fa231/download",
+    "pixellabId": "99d76571-250e-4aee-bf37-370c0aa06640",
+    "url": "https://api.pixellab.ai/mcp/images/99d76571-250e-4aee-bf37-370c0aa06640/download?index=1",
+    "width": 128,
+    "height": 128,
+    "file": "tiles/tree_big_1.png"
+  },
+  "tree_big_2": {
+    "type": "object",
+    "pixellabId": "99d76571-250e-4aee-bf37-370c0aa06640",
+    "url": "https://api.pixellab.ai/mcp/images/99d76571-250e-4aee-bf37-370c0aa06640/download?index=2",
+    "width": 128,
+    "height": 128,
+    "file": "tiles/tree_big_2.png"
+  },
+  "tree_big_3": {
+    "type": "object",
+    "pixellabId": "99d76571-250e-4aee-bf37-370c0aa06640",
+    "url": "https://api.pixellab.ai/mcp/images/99d76571-250e-4aee-bf37-370c0aa06640/download?index=3",
+    "width": 128,
+    "height": 128,
+    "file": "tiles/tree_big_3.png"
+  },
+  "gate_portal": {
+    "type": "object",
+    "pixellabId": "7e011b1a-583f-4eea-93a8-f1b0843a7760",
+    "url": "https://api.pixellab.ai/mcp/images/7e011b1a-583f-4eea-93a8-f1b0843a7760/download?index=3",
     "width": 96,
     "height": 96,
-    "file": "tiles/burrow.png"
+    "file": "tiles/gate_portal.png"
   },
-  "stone_gate": {
+  "stairs_cliff": {
     "type": "object",
-    "pixellabId": "6806c5eb-845a-4dce-80f1-e8def7b50296",
-    "url": "https://api.pixellab.ai/mcp/map-objects/6806c5eb-845a-4dce-80f1-e8def7b50296/download",
-    "width": 96,
-    "height": 128,
-    "file": "tiles/stone_gate.png"
-  },
-  "bush": {
-    "type": "object",
-    "pixellabId": "80720cc2-c7cb-45d1-8947-01764b4ade78",
-    "url": "https://api.pixellab.ai/mcp/map-objects/80720cc2-c7cb-45d1-8947-01764b4ade78/download",
+    "pixellabId": "1aa1f9ad-8275-4ae1-ad43-8cb204004f6a",
+    "url": "https://api.pixellab.ai/mcp/images/1aa1f9ad-8275-4ae1-ad43-8cb204004f6a/download?index=15",
     "width": 64,
     "height": 64,
-    "file": "tiles/bush.png"
+    "file": "tiles/stairs_cliff.png"
   },
-  "rock": {
+  "monster_burrow": {
     "type": "object",
-    "pixellabId": "bd4f5347-e0e0-4890-a418-86dd87a4c178",
-    "url": "https://api.pixellab.ai/mcp/map-objects/bd4f5347-e0e0-4890-a418-86dd87a4c178/download",
+    "pixellabId": "785857a3-7e33-41d6-ae10-12ad6f679972",
+    "url": "https://api.pixellab.ai/mcp/images/785857a3-7e33-41d6-ae10-12ad6f679972/download?index=6",
+    "width": 64,
+    "height": 64,
+    "file": "tiles/monster_burrow.png"
+  },
+  "rock_big_10": {
+    "type": "object",
+    "pixellabId": "ddbd809c-714e-4b71-ba32-90974bd6da98",
+    "url": "https://api.pixellab.ai/mcp/images/ddbd809c-714e-4b71-ba32-90974bd6da98/download?index=10",
     "width": 48,
     "height": 48,
-    "file": "tiles/rock.png"
+    "file": "tiles/rock_big_10.png"
   },
-  "flowers": {
+  "rock_small_0": {
     "type": "object",
-    "pixellabId": "e3a6188f-2172-4d56-839f-dcce41016d66",
-    "url": "https://api.pixellab.ai/mcp/map-objects/e3a6188f-2172-4d56-839f-dcce41016d66/download",
+    "pixellabId": "f19c4d35-eef6-40fa-92e2-b06114e5e273",
+    "url": "https://api.pixellab.ai/mcp/images/f19c4d35-eef6-40fa-92e2-b06114e5e273/download?index=0",
     "width": 32,
     "height": 32,
-    "file": "tiles/flowers.png"
+    "file": "tiles/rock_small_0.png"
+  },
+  "rock_small_13": {
+    "type": "object",
+    "pixellabId": "f19c4d35-eef6-40fa-92e2-b06114e5e273",
+    "url": "https://api.pixellab.ai/mcp/images/f19c4d35-eef6-40fa-92e2-b06114e5e273/download?index=13",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/rock_small_13.png"
+  },
+  "rock_small_30": {
+    "type": "object",
+    "pixellabId": "f19c4d35-eef6-40fa-92e2-b06114e5e273",
+    "url": "https://api.pixellab.ai/mcp/images/f19c4d35-eef6-40fa-92e2-b06114e5e273/download?index=30",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/rock_small_30.png"
+  },
+  "rock_small_43": {
+    "type": "object",
+    "pixellabId": "f19c4d35-eef6-40fa-92e2-b06114e5e273",
+    "url": "https://api.pixellab.ai/mcp/images/f19c4d35-eef6-40fa-92e2-b06114e5e273/download?index=43",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/rock_small_43.png"
+  },
+  "path_stone_0": {
+    "type": "object",
+    "pixellabId": "340dcad4-27af-45be-96c2-d3a94539775f",
+    "url": "https://api.pixellab.ai/mcp/images/340dcad4-27af-45be-96c2-d3a94539775f/download?index=0",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/path_stone_0.png"
+  },
+  "path_stone_10": {
+    "type": "object",
+    "pixellabId": "340dcad4-27af-45be-96c2-d3a94539775f",
+    "url": "https://api.pixellab.ai/mcp/images/340dcad4-27af-45be-96c2-d3a94539775f/download?index=10",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/path_stone_10.png"
+  },
+  "path_stone_19": {
+    "type": "object",
+    "pixellabId": "340dcad4-27af-45be-96c2-d3a94539775f",
+    "url": "https://api.pixellab.ai/mcp/images/340dcad4-27af-45be-96c2-d3a94539775f/download?index=19",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/path_stone_19.png"
+  },
+  "path_stone_29": {
+    "type": "object",
+    "pixellabId": "340dcad4-27af-45be-96c2-d3a94539775f",
+    "url": "https://api.pixellab.ai/mcp/images/340dcad4-27af-45be-96c2-d3a94539775f/download?index=29",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/path_stone_29.png"
+  },
+  "path_stone_38": {
+    "type": "object",
+    "pixellabId": "340dcad4-27af-45be-96c2-d3a94539775f",
+    "url": "https://api.pixellab.ai/mcp/images/340dcad4-27af-45be-96c2-d3a94539775f/download?index=38",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/path_stone_38.png"
+  },
+  "decor_2": {
+    "type": "object",
+    "pixellabId": "f66a96c8-5f1e-481e-a8e7-85e2181c8645",
+    "url": "https://api.pixellab.ai/mcp/images/f66a96c8-5f1e-481e-a8e7-85e2181c8645/download?index=2",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/decor_2.png"
+  },
+  "decor_3": {
+    "type": "object",
+    "pixellabId": "f66a96c8-5f1e-481e-a8e7-85e2181c8645",
+    "url": "https://api.pixellab.ai/mcp/images/f66a96c8-5f1e-481e-a8e7-85e2181c8645/download?index=3",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/decor_3.png"
+  },
+  "decor_4": {
+    "type": "object",
+    "pixellabId": "f66a96c8-5f1e-481e-a8e7-85e2181c8645",
+    "url": "https://api.pixellab.ai/mcp/images/f66a96c8-5f1e-481e-a8e7-85e2181c8645/download?index=4",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/decor_4.png"
+  },
+  "decor_9": {
+    "type": "object",
+    "pixellabId": "f66a96c8-5f1e-481e-a8e7-85e2181c8645",
+    "url": "https://api.pixellab.ai/mcp/images/f66a96c8-5f1e-481e-a8e7-85e2181c8645/download?index=9",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/decor_9.png"
+  },
+  "decor_17": {
+    "type": "object",
+    "pixellabId": "f66a96c8-5f1e-481e-a8e7-85e2181c8645",
+    "url": "https://api.pixellab.ai/mcp/images/f66a96c8-5f1e-481e-a8e7-85e2181c8645/download?index=17",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/decor_17.png"
+  },
+  "decor_25": {
+    "type": "object",
+    "pixellabId": "f66a96c8-5f1e-481e-a8e7-85e2181c8645",
+    "url": "https://api.pixellab.ai/mcp/images/f66a96c8-5f1e-481e-a8e7-85e2181c8645/download?index=25",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/decor_25.png"
+  },
+  "decor_26": {
+    "type": "object",
+    "pixellabId": "f66a96c8-5f1e-481e-a8e7-85e2181c8645",
+    "url": "https://api.pixellab.ai/mcp/images/f66a96c8-5f1e-481e-a8e7-85e2181c8645/download?index=26",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/decor_26.png"
+  },
+  "decor_59": {
+    "type": "object",
+    "pixellabId": "f66a96c8-5f1e-481e-a8e7-85e2181c8645",
+    "url": "https://api.pixellab.ai/mcp/images/f66a96c8-5f1e-481e-a8e7-85e2181c8645/download?index=59",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/decor_59.png"
+  },
+  "decal_0": {
+    "type": "object",
+    "pixellabId": "c262d95b-61fb-41fc-a92d-946201559cb4",
+    "url": "https://api.pixellab.ai/mcp/images/c262d95b-61fb-41fc-a92d-946201559cb4/download?index=0",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/decal_0.png"
+  },
+  "decal_1": {
+    "type": "object",
+    "pixellabId": "c262d95b-61fb-41fc-a92d-946201559cb4",
+    "url": "https://api.pixellab.ai/mcp/images/c262d95b-61fb-41fc-a92d-946201559cb4/download?index=1",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/decal_1.png"
+  },
+  "decal_2": {
+    "type": "object",
+    "pixellabId": "c262d95b-61fb-41fc-a92d-946201559cb4",
+    "url": "https://api.pixellab.ai/mcp/images/c262d95b-61fb-41fc-a92d-946201559cb4/download?index=2",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/decal_2.png"
+  },
+  "decal_3": {
+    "type": "object",
+    "pixellabId": "c262d95b-61fb-41fc-a92d-946201559cb4",
+    "url": "https://api.pixellab.ai/mcp/images/c262d95b-61fb-41fc-a92d-946201559cb4/download?index=3",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/decal_3.png"
+  },
+  "decal_8": {
+    "type": "object",
+    "pixellabId": "c262d95b-61fb-41fc-a92d-946201559cb4",
+    "url": "https://api.pixellab.ai/mcp/images/c262d95b-61fb-41fc-a92d-946201559cb4/download?index=8",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/decal_8.png"
+  },
+  "decal_16": {
+    "type": "object",
+    "pixellabId": "c262d95b-61fb-41fc-a92d-946201559cb4",
+    "url": "https://api.pixellab.ai/mcp/images/c262d95b-61fb-41fc-a92d-946201559cb4/download?index=16",
+    "width": 32,
+    "height": 32,
+    "file": "tiles/decal_16.png"
+  },
+  "house_main": {
+    "type": "local",
+    "source": "assets-src/house_main_final.png",
+    "width": 159,
+    "height": 128,
+    "file": "tiles/house_main.png"
+  },
+  "petal_0": {
+    "type": "local",
+    "source": "assets-src/flowers/petal_0.png",
+    "width": 7,
+    "height": 7,
+    "file": "tiles/petal_0.png"
+  },
+  "petal_1": {
+    "type": "local",
+    "source": "assets-src/flowers/petal_1.png",
+    "width": 7,
+    "height": 7,
+    "file": "tiles/petal_1.png"
+  },
+  "petal_2": {
+    "type": "local",
+    "source": "assets-src/flowers/petal_2.png",
+    "width": 7,
+    "height": 7,
+    "file": "tiles/petal_2.png"
+  },
+  "petal_3": {
+    "type": "local",
+    "source": "assets-src/flowers/petal_3.png",
+    "width": 7,
+    "height": 7,
+    "file": "tiles/petal_3.png"
+  },
+  "petal_4": {
+    "type": "local",
+    "source": "assets-src/flowers/petal_4.png",
+    "width": 4,
+    "height": 4,
+    "file": "tiles/petal_4.png"
+  },
+  "petal_5": {
+    "type": "local",
+    "source": "assets-src/flowers/petal_5.png",
+    "width": 4,
+    "height": 4,
+    "file": "tiles/petal_5.png"
+  },
+  "petal_6": {
+    "type": "local",
+    "source": "assets-src/flowers/petal_6.png",
+    "width": 4,
+    "height": 4,
+    "file": "tiles/petal_6.png"
+  },
+  "petal_7": {
+    "type": "local",
+    "source": "assets-src/flowers/petal_7.png",
+    "width": 1,
+    "height": 1,
+    "file": "tiles/petal_7.png"
+  },
+  "petal_big_0": {
+    "type": "local",
+    "source": "assets-src/flowers/petal_big_0.png",
+    "width": 9,
+    "height": 9,
+    "file": "tiles/petal_big_0.png"
+  },
+  "petal_big_1": {
+    "type": "local",
+    "source": "assets-src/flowers/petal_big_1.png",
+    "width": 9,
+    "height": 9,
+    "file": "tiles/petal_big_1.png"
+  },
+  "petal_big_2": {
+    "type": "local",
+    "source": "assets-src/flowers/petal_big_2.png",
+    "width": 9,
+    "height": 9,
+    "file": "tiles/petal_big_2.png"
+  },
+  "petal_big_3": {
+    "type": "local",
+    "source": "assets-src/flowers/petal_big_3.png",
+    "width": 9,
+    "height": 9,
+    "file": "tiles/petal_big_3.png"
+  },
+  "campfire": {
+    "type": "placeholder",
+    "width": 32,
+    "height": 32,
+    "color": "#e0703a",
+    "labelKey": "placeholder.campfire"
+  },
+  "food_tray": {
+    "type": "placeholder",
+    "width": 48,
+    "height": 24,
+    "color": "#a9744a",
+    "labelKey": "placeholder.food_tray"
+  },
+  "gio_seat": {
+    "type": "placeholder",
+    "width": 40,
+    "height": 20,
+    "color": "#f2a7bd",
+    "labelKey": "placeholder.gio_seat"
+  },
+  "dock": {
+    "type": "placeholder",
+    "width": 56,
+    "height": 60,
+    "color": "#8a5a3a",
+    "labelKey": "placeholder.dock"
+  },
+  "farm_plots": {
+    "type": "placeholder",
+    "width": 128,
+    "height": 128,
+    "color": "#6d4630",
+    "labelKey": "placeholder.farm_plots",
+    "gridSize": 32
+  },
+  "pet_house": {
+    "type": "placeholder",
+    "width": 200,
+    "height": 72,
+    "color": "#b9c7bd",
+    "labelKey": "placeholder.pet_house"
   }
 }
