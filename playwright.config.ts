@@ -4,6 +4,10 @@ export default defineConfig({
   testDir: 'tests/e2e',
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
+  // เครื่องของ GitHub ไม่มีการ์ดจอ จอใหญ่วาดช้ามาก จึงรันทีละข้อและรอได้นานขึ้น
+  workers: process.env.CI ? 1 : undefined,
+  timeout: process.env.CI ? 120_000 : 30_000,
+  expect: { timeout: process.env.CI ? 30_000 : 5_000 },
   reporter: process.env.CI ? [['list'], ['github']] : 'list',
   use: {
     baseURL: 'http://localhost:4173',

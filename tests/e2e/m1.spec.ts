@@ -272,9 +272,9 @@ test('Gio hops around near the seat without leaving play', async ({ page }) => {
     });
   });
   await page.waitForFunction(() => document.documentElement.dataset.gioHopped === 'yes', undefined, {
-    timeout: 15_000,
+    timeout: 90_000,
   });
-  await expect.poll(async () => (await readGio()).texture, { timeout: 5_000 }).toBe('gio_idle');
+  await expect.poll(async () => (await readGio()).texture, { timeout: 30_000 }).toBe('gio_idle');
   const gio = await readGio();
   expect(Math.hypot(gio.x - 10 * TILE, gio.y - 6.75 * TILE)).toBeLessThan(200);
 });
