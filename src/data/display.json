@@ -1,6 +1,17 @@
 {
   "baseWidth": 640,
   "baseHeight": 360,
+  "night": {
+    "color": "#1b2350",
+    "keys": [
+      { "hour": 6, "alpha": 0.12 },
+      { "hour": 8, "alpha": 0 },
+      { "hour": 17, "alpha": 0 },
+      { "hour": 19, "alpha": 0.2 },
+      { "hour": 21, "alpha": 0.42 },
+      { "hour": 26, "alpha": 0.5 }
+    ]
+  },
   "zoomSteps": [0, 1, 2],
   "touchDefaultZoomStep": 1,
   "lighting": {

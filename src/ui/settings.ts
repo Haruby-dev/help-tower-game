@@ -1,6 +1,7 @@
 import { t } from '../core/i18n';
 import { gameState } from '../core/state';
 import display from '../data/display.json';
+import { createSaveRow } from './saves';
 
 const STORAGE_KEY = 'lighting-enabled';
 const ZOOM_STORAGE_KEY = 'zoom-step';
@@ -127,16 +128,17 @@ export function createSettings(uiRoot: HTMLElement): void {
   close.type = 'button';
   close.className = 'settings-button';
   close.textContent = t('ui.close');
-  close.addEventListener('click', () => {
-    panel.hidden = true;
-  });
+  // เปิดหน้าตั้งค่าเมื่อไหร่ นาฬิกาเกมหยุดทันที
+  const setOpen = (open: boolean): void => {
+    panel.hidden = !open;
+    gameState.setWindowOpen('settings', open);
+  };
+  close.addEventListener('click', () => setOpen(false));
 
-  panel.append(title, row, createZoomRow(), close);
-  button.addEventListener('click', () => {
-    panel.hidden = !panel.hidden;
-  });
+  panel.append(title, row, createZoomRow(), createSaveRow(), close);
+  button.addEventListener('click', () => setOpen(panel.hidden !== false));
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') panel.hidden = true;
+    if (event.key === 'Escape') setOpen(false);
   });
   uiRoot.append(button, panel);
 }

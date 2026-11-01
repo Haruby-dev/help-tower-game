@@ -69,14 +69,69 @@ body {
   box-shadow: var(--shadow);
 }
 
-#location-label {
+#status-panel {
   position: absolute;
   top: max(12px, env(safe-area-inset-top));
   left: max(12px, env(safe-area-inset-left));
+  display: grid;
+  width: 172px;
+  gap: 3px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+#status-clock {
   margin: 0;
-  padding: 6px 14px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
+}
+
+.gauge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.gauge__icon {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border: 1px solid var(--text);
+  border-radius: 3px;
+}
+
+.gauge__label {
+  width: 42px;
+  flex: none;
+}
+
+.gauge__bar {
+  height: 8px;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 4px;
+  background: rgb(107 68 83 / 18%);
+}
+
+.gauge__fill {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.gauge--fullness .gauge__icon,
+.gauge--fullness .gauge__fill {
+  background: #f2a65a;
+}
+
+.gauge--happiness .gauge__icon,
+.gauge--happiness .gauge__fill {
+  background: #ee7fa0;
+}
+
+.gauge--cleanliness .gauge__icon,
+.gauge--cleanliness .gauge__fill {
+  background: #6fc3df;
 }
 
 #joystick {
@@ -240,4 +295,69 @@ body {
 .settings-choices {
   display: flex;
   gap: 6px;
+}
+
+#action-button {
+  position: absolute;
+  right: max(24px, env(safe-area-inset-right));
+  bottom: max(24px, env(safe-area-inset-bottom));
+  min-width: 88px;
+  min-height: 56px;
+  padding: 0 18px;
+  color: inherit;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+#action-button[hidden] {
+  display: none;
+}
+
+#rest-curtain {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #1b2350;
+  color: var(--cream-pink);
+  font-size: 22px;
+  font-weight: 700;
+  pointer-events: auto;
+}
+
+#rest-curtain[hidden] {
+  display: none;
+}
+
+#slot-picker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  min-width: 280px;
+  gap: 10px;
+  padding: 16px;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+}
+
+#slot-picker h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+#notice {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  margin: 0;
+  padding: 8px 16px;
+  transform: translateX(-50%);
+}
+
+#notice[hidden] {
+  display: none;
 }

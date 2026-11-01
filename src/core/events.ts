@@ -1,10 +1,21 @@
+import type { TextKey } from './i18n';
+import type { Point, World } from './state';
 import type { Viewport } from './viewport';
+
+export type RestCause = 'sleep' | 'passed_out' | 'faint';
 
 export interface GameEvents {
   'viewport-changed': Viewport;
   'rotation-required-changed': boolean;
   'lighting-changed': boolean;
   'zoom-step-changed': number;
+  'world-changed': World;
+  'game-started': World;
+  'player-moved': Point;
+  'rest-finished': { cause: RestCause; day: number };
+  'action-changed': TextKey | null;
+  'action-pressed': undefined;
+  notice: TextKey;
 }
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

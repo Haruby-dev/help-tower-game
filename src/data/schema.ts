@@ -5,6 +5,11 @@ const rgbSchema = z.tuple([z.number(), z.number(), z.number()]);
 export const displaySchema = z.strictObject({
   baseWidth: z.number().int().positive(),
   baseHeight: z.number().int().positive(),
+  /** ความมืดของฉากตามเวลา เรียงตามชั่วโมง */
+  night: z.strictObject({
+    color: z.string().regex(/^#[0-9a-f]{6}$/),
+    keys: z.array(z.strictObject({ hour: z.number(), alpha: z.number().min(0).max(1) })).min(2),
+  }),
   zoomSteps: z.array(z.number().int().nonnegative()).min(1),
   touchDefaultZoomStep: z.number().int().nonnegative(),
   lighting: z.strictObject({
@@ -38,6 +43,28 @@ export const balanceSchema = z.strictObject({
   player: z.strictObject({
     speed: z.number().positive(),
   }),
+  time: z.strictObject({
+    realSecondsPerGameHour: z.number().positive(),
+    dayStartHour: z.number(),
+    lateLimitHour: z.number(),
+    restCurtainMs: z.number().nonnegative(),
+  }),
+  gauges: z.strictObject({
+    min: z.number(),
+    max: z.number(),
+    start: z.strictObject({
+      fullness: z.number(),
+      happiness: z.number(),
+      cleanliness: z.number(),
+      homesickness: z.number(),
+    }),
+    fullness: z.strictObject({ awakePerHour: z.number(), asleepPerHour: z.number() }),
+    happiness: z.strictObject({ sleepGain: z.number(), homesickDivisor: z.number().positive() }),
+    cleanliness: z.strictObject({ idlePerHour: z.number() }),
+    homesickness: z.strictObject({ perDay: z.number() }),
+    faint: z.strictObject({ skipHours: z.number(), recoverTo: z.number(), gioFee: z.number() }),
+  }),
+  interact: z.strictObject({ reachPx: z.number().positive() }),
   land: z.strictObject({
     /** ราคาชั่วคราวของที่ดิน 3 แปลง เรียงจากซ้ายไปขวา */
     prices: z.array(z.number().int().positive()).length(3),
@@ -50,6 +77,24 @@ export const balanceSchema = z.strictObject({
     keepAwayDistance: z.number().positive(),
   }),
 });
+
+export const saveFileSchema = z.strictObject({
+  version: z.number().int().positive(),
+  savedAt: z.string(),
+  world: z.strictObject({
+    day: z.number().int().positive(),
+    hour: z.number(),
+    gauges: z.strictObject({
+      fullness: z.number(),
+      happiness: z.number(),
+      cleanliness: z.number(),
+      homesickness: z.number(),
+    }),
+    player: z.strictObject({ x: z.number(), y: z.number() }).nullable(),
+  }),
+});
+
+export type SaveFile = z.infer<typeof saveFileSchema>;
 
 export const translationsSchema = z.record(z.string().min(1), z.string().min(1));
 

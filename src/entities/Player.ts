@@ -31,6 +31,11 @@ export class Player {
     return this.body.y + BODY_HEIGHT / 2;
   }
 
+  moveTo(point: { x: number; y: number }): void {
+    this.physicsBody.reset(point.x, point.y);
+    this.syncSprite();
+  }
+
   private get physicsBody(): Phaser.Physics.Arcade.Body {
     return this.body.body as Phaser.Physics.Arcade.Body;
   }

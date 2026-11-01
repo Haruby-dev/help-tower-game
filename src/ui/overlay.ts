@@ -3,19 +3,13 @@ import { eventBus } from '../core/events';
 import { t } from '../core/i18n';
 import { gameState } from '../core/state';
 import { needsRotation } from '../core/viewport';
+import { createHud } from './hud';
 import { createJoystick } from './joystick';
+import { createSaves } from './saves';
 import { createSettings } from './settings';
 
 const FULLSCREEN_ICON =
   '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
-
-function createLocationLabel(uiRoot: HTMLElement): void {
-  const label = document.createElement('p');
-  label.id = 'location-label';
-  label.className = 'panel';
-  label.textContent = t('location.base');
-  uiRoot.append(label);
-}
 
 function createFullscreenButton(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   // iPhone ไม่รองรับการเต็มจอจากหน้าเว็บ จึงไม่แสดงปุ่มที่กดแล้วไม่เกิดอะไร
@@ -80,11 +74,12 @@ function createRotatePrompt(uiRoot: HTMLElement): void {
 }
 
 export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
-  createLocationLabel(uiRoot);
+  createHud(uiRoot);
   createJoystick(uiRoot);
   createRotatePrompt(uiRoot);
   createFullscreenButton(uiRoot, appRoot);
   createSettings(uiRoot);
+  createSaves(uiRoot);
 }
 
 export function updateRotationRequired(appRoot: HTMLElement): void {

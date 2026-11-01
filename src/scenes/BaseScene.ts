@@ -8,6 +8,7 @@ import type { Vector } from '../core/movement';
 import type { Viewport } from '../core/viewport';
 import { Gio } from '../entities/Gio';
 import { Player } from '../entities/Player';
+import { advanceClock, goToSleep } from '../systems/time';
 import balance from '../data/balance.json';
 import display from '../data/display.json';
 import { LIGHTING_PIPELINE, LightingPipeline, type LightSpot } from './LightingPipeline';
@@ -20,6 +21,7 @@ const DEPTH = {
   ground: -10,
   flat: -8,
   flowers: -7,
+  night: 8000,
   label: 9001,
 } as const;
 
@@ -33,6 +35,19 @@ const PRICE_FONT_PX = 9;
 /** ตำแหน่งตัวเลขราคาเหนือจุดเท้าของป้าย */
 const PRICE_LIFT_PX = 30;
 
+const DOOR_TAP_LIFT = 24;
+const DOOR_TAP_RADIUS = 34;
+
+/** ไล่ความมืดระหว่างจุดเวลาใน display.json */
+export function nightAlpha(hour: number): number {
+  const { keys } = display.night;
+  const next = keys.findIndex((key) => key.hour >= hour);
+  if (next <= 0) return keys[next === 0 ? 0 : keys.length - 1]!.alpha;
+  const before = keys[next - 1]!;
+  const after = keys[next]!;
+  return before.alpha + ((after.alpha - before.alpha) * (hour - before.hour)) / (after.hour - before.hour);
+}
+
 export class BaseScene extends Phaser.Scene {
   private player!: Player;
   private gio!: Gio;
@@ -42,6 +57,8 @@ export class BaseScene extends Phaser.Scene {
   private pool = { x: 0, y: 0, radiusX: 1, radiusY: 1 };
   private glows: Partial<Record<'fire' | 'gate' | 'burrow', LightSpot>> = {};
   private lightingWorld = { width: 1, height: 1 };
+  private door = { x: 0, y: 0 };
+  private night!: Phaser.GameObjects.Rectangle;
 
   constructor() {
     super('Base');
@@ -80,6 +97,7 @@ export class BaseScene extends Phaser.Scene {
       return { x: point.x ?? 0, y: point.y ?? 0 };
     };
 
+    this.door = spawn('door');
     const playerSpawn = spawn('player');
     const gioSpawn = spawn('gio');
     this.player = new Player(this, playerSpawn.x, playerSpawn.y);
@@ -106,10 +124,29 @@ export class BaseScene extends Phaser.Scene {
 
     this.setUpLighting(worldWidth, worldHeight);
 
+    const nightColor = Phaser.Display.Color.HexStringToColor(display.night.color).color;
+    this.night = this.add.rectangle(0, 0, worldWidth, worldHeight, nightColor, 0).setOrigin(0).setDepth(DEPTH.night);
+
+    this.input.keyboard!.on('keydown-E', () => this.useAction());
+    this.input.keyboard!.on('keydown-SPACE', () => this.useAction());
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      const near = Phaser.Math.Distance.Between(pointer.worldX, pointer.worldY, this.door.x, this.door.y - DOOR_TAP_LIFT);
+      if (near < DOOR_TAP_RADIUS) this.useAction();
+    });
+    const stopAction = eventBus.on('action-pressed', () => this.useAction());
+    const stopMoved = eventBus.on('player-moved', (point) => this.player.moveTo(point));
+    const stopStarted = eventBus.on('game-started', (world) => {
+      if (world.player) this.player.moveTo(world.player);
+    });
+    if (gameState.started && gameState.world.player) this.player.moveTo(gameState.world.player);
+
     this.applyViewport(gameState.viewport);
     const stopViewport = eventBus.on('viewport-changed', (viewport) => this.applyViewport(viewport));
     const stopLighting = eventBus.on('lighting-changed', (enabled) => this.applyLighting(enabled));
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      stopAction();
+      stopMoved();
+      stopStarted();
       stopViewport();
       stopLighting();
     });
@@ -118,6 +155,10 @@ export class BaseScene extends Phaser.Scene {
   override update(_time: number, deltaMs: number): void {
     this.player.update(this.readMoveInput());
     this.gio.update(deltaMs, this.player.feetX, this.player.feetY);
+    gameState.trackPlayer({ x: this.player.body.x, y: this.player.body.y });
+    advanceClock(deltaMs, this.door);
+    gameState.setAction(this.nearDoor() ? 'action.sleep' : null);
+    if (gameState.started) this.night.setFillStyle(this.night.fillColor, nightAlpha(gameState.world.hour));
   }
 
   private placeObject(object: Phaser.Types.Tilemaps.TiledObject): void {
@@ -207,6 +248,18 @@ export class BaseScene extends Phaser.Scene {
     } else {
       throw new Error(`map has unknown effect ${effect.name}`);
     }
+  }
+
+  private nearDoor(): boolean {
+    return (
+      gameState.clockRunning &&
+      Phaser.Math.Distance.Between(this.player.body.x, this.player.body.y, this.door.x, this.door.y) <
+        balance.interact.reachPx
+    );
+  }
+
+  private useAction(): void {
+    if (this.nearDoor()) goToSleep(this.door);
   }
 
   private setUpLighting(worldWidth: number, worldHeight: number): void {

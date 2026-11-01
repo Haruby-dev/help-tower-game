@@ -1,6 +1,5 @@
 {
   "game.title": "ช่วยด้วยจ้า ดันติดอยู่ในหอคอย 100 ชั้น!!",
-  "location.base": "ชั้นฐาน",
   "orientation.rotate_prompt": "หมุนมือถือเป็นแนวนอนหน่อยนะ",
   "ui.fullscreen_enter": "เต็มจอ",
   "ui.fullscreen_exit": "ออกจากเต็มจอ",
@@ -14,5 +13,22 @@
   "settings.zoom": "ซูม",
   "settings.zoom_normal": "ปกติ",
   "settings.zoom_near": "ใกล้",
-  "settings.zoom_nearer": "ใกล้มาก"
+  "settings.zoom_nearer": "ใกล้มาก",
+  "hud.day": "วันที่",
+  "gauge.fullness": "อิ่ม",
+  "gauge.happiness": "สุข",
+  "gauge.cleanliness": "สะอาด",
+  "action.sleep": "นอน",
+  "rest.sleep": "หลับปุ๋ย… ตื่นมาเป็น",
+  "rest.passed_out": "เผลอหลับคาที่… ตื่นมาเป็น",
+  "rest.faint": "เป็นลม! จีโอลากกลับบ้าน",
+  "save.choose_slot": "เลือกช่องเซฟ",
+  "save.slot": "ช่อง",
+  "save.empty": "เริ่มใหม่",
+  "save.file": "ไฟล์เซฟ",
+  "save.export": "ส่งออก",
+  "save.import": "นำเข้า",
+  "save.failed": "เซฟไม่สำเร็จ",
+  "save.import_failed": "เปิดไฟล์เซฟนี้ไม่ได้",
+  "save.imported": "นำเข้าเซฟแล้ว"
 }

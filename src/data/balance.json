@@ -2,6 +2,23 @@
   "player": {
     "speed": 96
   },
+  "time": {
+    "realSecondsPerGameHour": 45,
+    "dayStartHour": 6,
+    "lateLimitHour": 26,
+    "restCurtainMs": 1400
+  },
+  "gauges": {
+    "min": 0,
+    "max": 100,
+    "start": { "fullness": 100, "happiness": 100, "cleanliness": 100, "homesickness": 0 },
+    "fullness": { "awakePerHour": 4, "asleepPerHour": 1 },
+    "happiness": { "sleepGain": 20, "homesickDivisor": 5 },
+    "cleanliness": { "idlePerHour": 1 },
+    "homesickness": { "perDay": 1 },
+    "faint": { "skipHours": 10, "recoverTo": 30, "gioFee": 20 }
+  },
+  "interact": { "reachPx": 44 },
   "land": {
     "prices": [500, 1500, 4000]
   },

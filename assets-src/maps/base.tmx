@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="51" height="35" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="839">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="51" height="35" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="840">
  <tileset firstgid="1" name="ground_grass_dirt" tilewidth="32" tileheight="32" tilecount="16" columns="4">
   <image source="../../public/assets/tiles/ground_grass_dirt.png" width="128" height="128"/>
  </tileset>
@@ -899,7 +899,8 @@
   <object id="20" name="fog" x="1136" y="513" width="480" height="100"/>
  </objectgroup>
  <objectgroup id="6" name="spawns">
-  <object id="1" name="player" x="640" y="384"><point/></object>
-  <object id="2" name="gio" x="358" y="363"><point/></object>
+  <object id="1" name="door" x="768" y="280"><point/></object>
+  <object id="2" name="player" x="640" y="384"><point/></object>
+  <object id="3" name="gio" x="358" y="363"><point/></object>
  </objectgroup>
 </map>

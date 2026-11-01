@@ -6,7 +6,9 @@ import { computeViewport, type Viewport } from './core/viewport';
 import display from './data/display.json';
 import { BaseScene } from './scenes/BaseScene';
 import { BootScene } from './scenes/BootScene';
+import { newWorld } from './systems/gauges';
 import { createOverlay, updateRotationRequired } from './ui/overlay';
+import { showSlotPicker } from './ui/saves';
 import './ui/styles.css';
 
 const appRoot = document.getElementById('app')!;
@@ -70,6 +72,11 @@ game.events.once(Phaser.Core.Events.READY, () => {
   window.addEventListener('resize', onScreenChanged);
 });
 
-if (new URLSearchParams(window.location.search).has('test')) {
-  (window as unknown as { __game: Phaser.Game }).__game = game;
+const params = new URLSearchParams(window.location.search);
+if (params.has('test')) {
+  (window as unknown as { __game: Phaser.Game; __state: typeof gameState }).__game = game;
+  (window as unknown as { __state: typeof gameState }).__state = gameState;
 }
+// การทดสอบที่ไม่ได้สนใจเซฟข้ามหน้าเลือกช่อง
+if (params.has('test') && !params.has('saves')) gameState.startGame(1, newWorld());
+else void showSlotPicker(uiRoot);

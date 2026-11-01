@@ -57,7 +57,7 @@ test('renders at a whole-number zoom with no errors', async ({ page, isMobile })
 
 test('Thai text uses the bundled Mali font', async ({ page }) => {
   await openGame(page);
-  const label = page.locator('#location-label');
+  const label = page.locator('#status-clock');
   await expect(label).toBeVisible();
   await expect(label).toHaveCSS('font-family', /Mali/);
   await page.evaluate(() => document.fonts.ready);
