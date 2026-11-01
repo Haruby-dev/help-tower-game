@@ -125,6 +125,46 @@ describe('base map', () => {
     expect(corners[Math.floor(dock.y) - 2]![Math.floor(dock.x)]).toBe('water');
   });
 
+  it('keeps the stepping stones free to walk on', () => {
+    const stones = layout.objects.filter(({ id }) => id.startsWith('path_stone'));
+    expect(stones.length).toBeGreaterThan(0);
+    for (const stone of stones) {
+      const inside = obstacles.filter(
+        (rect) =>
+          stone.x * 32 >= rect.x &&
+          stone.x * 32 <= rect.x + rect.width &&
+          stone.y * 32 >= rect.y &&
+          stone.y * 32 <= rect.y + rect.height,
+      );
+      expect(inside, `stone at ${stone.x},${stone.y}`).toEqual([]);
+    }
+  });
+
+  it('keeps every small rock at least a tile away from the stepping stones', () => {
+    const stones = layout.objects.filter(({ id }) => id.startsWith('path_stone'));
+    const rocks = layout.objects
+      .filter(({ id }) => id.startsWith('rock_small'))
+      .filter(
+        (rock) =>
+          !layout.blockers.some(
+            (area) =>
+              rock.x >= area.x && rock.x <= area.x + area.width && rock.y >= area.y && rock.y <= area.y + area.height,
+          ),
+      );
+    for (const rock of rocks) {
+      for (const stone of stones) {
+        expect(Math.hypot(rock.x - stone.x, rock.y - stone.y), `rock at ${rock.x},${rock.y}`).toBeGreaterThanOrEqual(1);
+      }
+    }
+  });
+
+  it('leaves a wide walkway between the meadow fence and the pond', () => {
+    const wideBody = { width: 28, height: 16 };
+    const start = { x: 17.2 * 32, y: 15 * 32 };
+    const goal = { x: 17.9 * 32, y: 21.5 * 32 };
+    expect(canReach(start, goal, obstacles, world, wideBody, 8)).toBe(true);
+  });
+
   it('has a price sign for each of the 3 land plots', () => {
     const signs = layout.objects.filter(({ id }) => id === 'land_sale_sign');
     expect(signs.map(({ plot }) => plot)).toEqual([0, 1, 2]);
