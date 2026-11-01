@@ -341,3 +341,21 @@ test('the lighting layer leaves the settings button tappable', async ({ page }) 
   expect(box.width).toBeGreaterThanOrEqual(44);
   expect(box.height).toBeGreaterThanOrEqual(44);
 });
+
+test('the zoom choice changes the whole-number zoom and is remembered', async ({ page, isMobile }) => {
+  await openGame(page);
+  const zoomNow = (): Promise<number> =>
+    page.evaluate(() => window.__game!.scene.getScene('Base').cameras.main.zoom);
+  const start = await zoomNow();
+  const fitted = start - (isMobile ? 1 : 0);
+
+  await page.locator('#settings-button').click();
+  await page.locator('[data-zoom-step="2"]').click();
+  await expect.poll(zoomNow).toBe(fitted + 2);
+  const box = (await page.locator('[data-zoom-step="2"]').boundingBox())!;
+  expect(box.height).toBeGreaterThanOrEqual(44);
+
+  await page.reload();
+  await page.waitForFunction(() => window.__game?.scene.isActive('Base'));
+  await expect.poll(zoomNow).toBe(fitted + 2);
+});

@@ -5,6 +5,8 @@ const rgbSchema = z.tuple([z.number(), z.number(), z.number()]);
 export const displaySchema = z.strictObject({
   baseWidth: z.number().int().positive(),
   baseHeight: z.number().int().positive(),
+  zoomSteps: z.array(z.number().int().nonnegative()).min(1),
+  touchDefaultZoomStep: z.number().int().nonnegative(),
   lighting: z.strictObject({
     maskDivisor: z.number().int().positive(),
     seed: z.number().int(),

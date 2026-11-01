@@ -20,6 +20,7 @@ function readViewport(): Viewport {
     devicePixelRatio: window.devicePixelRatio,
     baseWidth: display.baseWidth,
     baseHeight: display.baseHeight,
+    zoomStep: gameState.zoomStep,
   });
 }
 
@@ -64,6 +65,7 @@ function onScreenChanged(): void {
 game.events.once(Phaser.Core.Events.READY, () => {
   onScreenChanged();
   new ResizeObserver(onScreenChanged).observe(appRoot);
+  eventBus.on('zoom-step-changed', onScreenChanged);
   // จอย้ายไปจอที่ความหนาแน่นพิกเซลต่างกันโดยขนาดหน้าต่างไม่เปลี่ยน
   window.addEventListener('resize', onScreenChanged);
 });

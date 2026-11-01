@@ -1,6 +1,8 @@
 {
   "baseWidth": 640,
   "baseHeight": 360,
+  "zoomSteps": [0, 1, 2],
+  "touchDefaultZoomStep": 1,
   "lighting": {
     "maskDivisor": 4,
     "seed": 21,

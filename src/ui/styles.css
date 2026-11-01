@@ -236,3 +236,8 @@ body {
 .rotate-prompt__hint {
   font-size: 14px;
 }
+
+.settings-choices {
+  display: flex;
+  gap: 6px;
+}

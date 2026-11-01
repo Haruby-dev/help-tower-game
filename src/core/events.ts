@@ -4,6 +4,7 @@ export interface GameEvents {
   'viewport-changed': Viewport;
   'rotation-required-changed': boolean;
   'lighting-changed': boolean;
+  'zoom-step-changed': number;
 }
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

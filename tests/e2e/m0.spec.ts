@@ -42,7 +42,7 @@ function readSnapshot(page: Page): Promise<GameSnapshot> {
   });
 }
 
-test('renders at a whole-number zoom with no errors', async ({ page }) => {
+test('renders at a whole-number zoom with no errors', async ({ page, isMobile }) => {
   const errors = await openGame(page);
   const snapshot = await readSnapshot(page);
 
@@ -50,7 +50,7 @@ test('renders at a whole-number zoom with no errors', async ({ page }) => {
   expect(snapshot.canvasHeight).toBe(Math.floor(snapshot.innerHeight * snapshot.devicePixelRatio));
   expect(Number.isInteger(snapshot.zoom)).toBe(true);
   expect(snapshot.zoom).toBe(
-    Math.floor(Math.min(snapshot.canvasWidth / 640, snapshot.canvasHeight / 360)),
+    Math.floor(Math.min(snapshot.canvasWidth / 640, snapshot.canvasHeight / 360)) + (isMobile ? 1 : 0),
   );
   expect(errors).toEqual([]);
 });

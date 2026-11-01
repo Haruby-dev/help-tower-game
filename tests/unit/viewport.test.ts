@@ -3,6 +3,15 @@ import { computeViewport, needsRotation } from '../../src/core/viewport';
 
 const base = { baseWidth: 480, baseHeight: 270 };
 
+describe('zoom step', () => {
+  it('adds whole steps on top of the size that fits the screen', () => {
+    const screen = { cssWidth: 932, cssHeight: 430, devicePixelRatio: 3, baseWidth: 640, baseHeight: 360 };
+    expect(computeViewport(screen).zoom).toBe(3);
+    expect(computeViewport({ ...screen, zoomStep: 1 }).zoom).toBe(4);
+    expect(computeViewport({ ...screen, zoomStep: 2 }).zoom).toBe(5);
+  });
+});
+
 describe('computeViewport', () => {
   it.each([
     { name: 'Full HD', cssWidth: 1920, cssHeight: 1080, devicePixelRatio: 1, zoom: 4 },

@@ -4,6 +4,8 @@ export interface ViewportInput {
   devicePixelRatio: number;
   baseWidth: number;
   baseHeight: number;
+  /** ขยายเพิ่มจากขนาดที่พอดีจอกี่เท่า เป็นจำนวนเต็มเพื่อให้ภาพยังคม */
+  zoomStep?: number;
 }
 
 export interface Viewport {
@@ -18,10 +20,10 @@ export interface Viewport {
 }
 
 export function computeViewport(input: ViewportInput): Viewport {
-  const { cssWidth, cssHeight, devicePixelRatio, baseWidth, baseHeight } = input;
+  const { cssWidth, cssHeight, devicePixelRatio, baseWidth, baseHeight, zoomStep = 0 } = input;
   const canvasWidth = Math.max(1, Math.floor(cssWidth * devicePixelRatio));
   const canvasHeight = Math.max(1, Math.floor(cssHeight * devicePixelRatio));
-  const zoom = Math.max(1, Math.floor(Math.min(canvasWidth / baseWidth, canvasHeight / baseHeight)));
+  const zoom = Math.max(1, Math.floor(Math.min(canvasWidth / baseWidth, canvasHeight / baseHeight))) + zoomStep;
 
   return {
     canvasWidth,

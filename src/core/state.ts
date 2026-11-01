@@ -7,6 +7,7 @@ class GameState {
   private currentRotationRequired = false;
   private currentJoystick: Vector = { x: 0, y: 0 };
   private currentLightingEnabled = true;
+  private currentZoomStep = 0;
 
   get viewport(): Viewport {
     if (!this.currentViewport) throw new Error('viewport has not been set');
@@ -19,6 +20,16 @@ class GameState {
 
   get joystick(): Vector {
     return this.currentJoystick;
+  }
+
+  get zoomStep(): number {
+    return this.currentZoomStep;
+  }
+
+  setZoomStep(step: number): void {
+    if (step === this.currentZoomStep) return;
+    this.currentZoomStep = step;
+    eventBus.emit('zoom-step-changed', step);
   }
 
   get lightingEnabled(): boolean {

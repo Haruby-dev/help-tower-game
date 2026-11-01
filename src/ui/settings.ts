@@ -1,7 +1,10 @@
 import { t } from '../core/i18n';
 import { gameState } from '../core/state';
+import display from '../data/display.json';
 
 const STORAGE_KEY = 'lighting-enabled';
+const ZOOM_STORAGE_KEY = 'zoom-step';
+const ZOOM_LABELS = ['settings.zoom_normal', 'settings.zoom_near', 'settings.zoom_nearer'] as const;
 const SETTINGS_ICON =
   '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>';
 
@@ -22,8 +25,66 @@ function storeLighting(enabled: boolean): void {
   }
 }
 
+/** จอสัมผัสเริ่มใกล้กว่าจอคอม เพราะจอเล็กและตัวละครจะดูเล็กเกินไป */
+function readStoredZoomStep(): number {
+  const fallback = window.matchMedia('(pointer: coarse)').matches ? display.touchDefaultZoomStep : 0;
+  try {
+    const stored = Number(window.localStorage.getItem(ZOOM_STORAGE_KEY) ?? fallback);
+    return display.zoomSteps.includes(stored) ? stored : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function storeZoomStep(step: number): void {
+  try {
+    window.localStorage.setItem(ZOOM_STORAGE_KEY, String(step));
+  } catch {
+    // ไม่เก็บค่าก็ไม่กระทบการเล่น
+  }
+}
+
+function createZoomRow(): HTMLElement {
+  const row = document.createElement('div');
+  row.className = 'settings-row';
+  const label = document.createElement('span');
+  label.textContent = t('settings.zoom');
+  const choices = document.createElement('div');
+  choices.className = 'settings-choices';
+  choices.setAttribute('role', 'radiogroup');
+  choices.setAttribute('aria-label', t('settings.zoom'));
+
+  const buttons = display.zoomSteps.map((step, index) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'settings-button';
+    button.dataset.zoomStep = String(step);
+    button.setAttribute('role', 'radio');
+    button.textContent = t(ZOOM_LABELS[index] ?? 'settings.zoom_normal');
+    return button;
+  });
+  const showChoice = (): void => {
+    for (const button of buttons) {
+      button.setAttribute('aria-checked', String(Number(button.dataset.zoomStep) === gameState.zoomStep));
+    }
+  };
+  for (const button of buttons) {
+    button.addEventListener('click', () => {
+      const step = Number(button.dataset.zoomStep);
+      gameState.setZoomStep(step);
+      storeZoomStep(step);
+      showChoice();
+    });
+  }
+  showChoice();
+  choices.append(...buttons);
+  row.append(label, choices);
+  return row;
+}
+
 export function createSettings(uiRoot: HTMLElement): void {
   gameState.setLightingEnabled(readStoredLighting());
+  gameState.setZoomStep(readStoredZoomStep());
 
   const button = document.createElement('button');
   button.id = 'settings-button';
@@ -70,7 +131,7 @@ export function createSettings(uiRoot: HTMLElement): void {
     panel.hidden = true;
   });
 
-  panel.append(title, row, close);
+  panel.append(title, row, createZoomRow(), close);
   button.addEventListener('click', () => {
     panel.hidden = !panel.hidden;
   });

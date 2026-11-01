@@ -10,5 +10,9 @@
   "settings.lighting": "เอฟเฟกต์แสง",
   "settings.on": "เปิด",
   "settings.off": "ปิด",
-  "orientation.rotate_hint": "ถ้าจอไม่หมุน ลองปิด \"ล็อกการหมุนหน้าจอ\" ในศูนย์ควบคุมก่อนนะ"
+  "orientation.rotate_hint": "ถ้าจอไม่หมุน ลองปิด \"ล็อกการหมุนหน้าจอ\" ในศูนย์ควบคุมก่อนนะ",
+  "settings.zoom": "ซูม",
+  "settings.zoom_normal": "ปกติ",
+  "settings.zoom_near": "ใกล้",
+  "settings.zoom_nearer": "ใกล้มาก"
 }
