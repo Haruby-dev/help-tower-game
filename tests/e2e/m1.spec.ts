@@ -105,17 +105,17 @@ test.describe('keyboard', () => {
 
   test('reaches the plateau around the left end but cannot walk through the cliff', async ({ page }) => {
     await openGame(page);
-    await teleport(page, 19 * TILE, 3.2 * TILE);
+    await teleport(page, 18.8 * TILE, 2.4 * TILE);
     await page.keyboard.down('d');
     // จอใหญ่บนเครื่องที่ทำงานหนักเดินช้าลง จึงรอจนถึงลานบนแทนการรอเวลาตายตัว
     await expect.poll(async () => (await snapshot(page)).x, { timeout: 15_000 }).toBeGreaterThan(21.5 * TILE);
     await page.keyboard.up('d');
 
-    await teleport(page, 29 * TILE, 7 * TILE);
+    await teleport(page, 29 * TILE, 8 * TILE);
     await page.keyboard.down('w');
     await page.waitForTimeout(1200);
     await page.keyboard.up('w');
-    expect((await snapshot(page)).y).toBeGreaterThan(5.9 * TILE);
+    expect((await snapshot(page)).y).toBeGreaterThan(6.9 * TILE);
   });
 
   test('cannot walk into the forest', async ({ page }) => {

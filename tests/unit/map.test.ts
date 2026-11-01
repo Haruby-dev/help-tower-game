@@ -58,7 +58,7 @@ const reachable = (tileX: number, tileY: number): boolean =>
 
 describe('base map', () => {
   it('is the whole v3.1 blueprint, using only the new ground sets', () => {
-    expect([tiled.width, tiled.height]).toEqual([47, 31]);
+    expect([tiled.width, tiled.height]).toEqual([51, 31]);
     expect(tiled.tilesets.map(({ name }) => name)).toEqual([
       'ground_grass_dirt',
       'ground_grass_dark',
@@ -88,8 +88,9 @@ describe('base map', () => {
   it.each([
     ['in front of the house door', 24, 8.8],
     ['in front of the burrow', 33, 8.4],
-    ['the plateau, around the left end of the cliff', 22, 3.5],
-    ['behind the gate on the plateau', 25, 1.9],
+    ['the plateau, around the left end of the cliff', 22, 2.4],
+    ['behind the gate on the plateau', 25, 1],
+    ['in front of the gate', 25, 3.75],
     ['the north shore of the pond', 25, 14.2],
     ['the south shore of the pond', 26, 21.5],
     ['the farm', 7, 12],
@@ -103,7 +104,8 @@ describe('base map', () => {
   it.each([
     ['the middle of the pond', 27, 18],
     ['the dense forest', 1, 8],
-    ['the restaurant behind the trees and fog', 40, 10],
+    ['the restaurant behind the trees and fog', 42, 10],
+    ['the far side of the restaurant', 48, 16],
     ['the land plots not bought yet', 10, 6],
     ['the pets meadow under the fog', 10, 19],
   ])('keeps the player out of %s', (_name, tileX, tileY) => {
@@ -111,11 +113,11 @@ describe('base map', () => {
   });
 
   it('has no way up the cliff except the stones around its left end', () => {
-    const wallRow = layout.terrain.findIndex((row) => row.includes('='));
-    const clear = layout.openings;
-    expect(clear).toHaveLength(1);
-    expect(clear[0]!.y + clear[0]!.height).toBeLessThanOrEqual(wallRow);
-    expect(clear[0]!.x + clear[0]!.width).toBeLessThanOrEqual(layout.terrain[wallRow]!.indexOf('=') + 2);
+    expect(layout.openings).toEqual([]);
+    const rightEnd = { x: 33 * 32, y: 7 * 32 };
+    const plateau = { x: 28 * 32, y: 2 * 32 };
+    const leftOfCliffCut = [...obstacles, { name: '', x: 15 * 32, y: 0, width: 5 * 32, height: 10 * 32 }];
+    expect(canReach(rightEnd, plateau, leftOfCliffCut, world, playerBody, 8)).toBe(false);
   });
 
   it('puts the dock on the south shore, pointing north into the water', () => {
