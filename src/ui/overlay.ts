@@ -67,7 +67,11 @@ function createRotatePrompt(uiRoot: HTMLElement): void {
   message.className = 'panel';
   message.textContent = t('orientation.rotate_prompt');
 
-  prompt.append(sprite, message);
+  const hint = document.createElement('p');
+  hint.className = 'panel rotate-prompt__hint';
+  hint.textContent = t('orientation.rotate_hint');
+
+  prompt.append(sprite, message, hint);
   uiRoot.append(prompt);
 
   eventBus.on('rotation-required-changed', (required) => {

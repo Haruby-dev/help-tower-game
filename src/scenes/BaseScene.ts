@@ -11,7 +11,7 @@ import { Player } from '../entities/Player';
 import balance from '../data/balance.json';
 import display from '../data/display.json';
 import { LIGHTING_PIPELINE, LightingPipeline, type LightSpot } from './LightingPipeline';
-import { createCanopyMask, softEllipseTexture, waterlineTexture, type ShadeArea } from './sceneArt';
+import { createCanopyMask, softEllipseTexture, type ShadeArea } from './sceneArt';
 
 type MoveKeys = Record<'up' | 'down' | 'left' | 'right' | 'w' | 'a' | 's' | 'd', Phaser.Input.Keyboard.Key>;
 
@@ -192,8 +192,6 @@ export class BaseScene extends Phaser.Scene {
       this.glows.gate = { x, y, radius: width / 2 };
     } else if (effect.name === 'glow_burrow') {
       this.glows.burrow = { x, y, radius: width / 2 };
-    } else if (effect.name === 'waterline') {
-      this.add.image(x, y, waterlineTexture(this, width, height)).setDepth(y + 1);
     } else if (effect.name === 'fog') {
       const key = softEllipseTexture(this, { width, height, color: '238, 243, 240', alpha: 0.72, solidUntil: 0.45 });
       const fog = this.add.image(x, y, key).setDepth(y + height / 2);

@@ -109,3 +109,15 @@ test('A narrow desktop window keeps running and stays sharp', async ({ page, isM
   expect(snapshot.isPaused).toBe(false);
   expect(snapshot.zoom).toBe(1);
 });
+
+test('A game opened in portrait starts once the phone is rotated', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'touch screens only');
+  const landscape = page.viewportSize()!;
+  await page.setViewportSize({ width: landscape.height, height: landscape.width });
+  await page.goto('/help-tower-game/?test');
+  await expect(page.locator('#rotate-prompt')).toBeVisible();
+  await expect(page.locator('.rotate-prompt__hint')).toBeVisible();
+  await page.setViewportSize(landscape);
+  await expect(page.locator('#rotate-prompt')).toBeHidden();
+  await page.waitForFunction(() => window.__game?.scene.isActive('Base'), undefined, { timeout: 60_000 });
+});

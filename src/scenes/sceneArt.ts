@@ -57,18 +57,6 @@ export function softEllipseTexture(scene: Phaser.Scene, ellipse: SoftEllipse): s
   return key;
 }
 
-/** แถบน้ำขอบคมรอบหิน ไม่มีการไล่จาง */
-export function waterlineTexture(scene: Phaser.Scene, width: number, height: number): string {
-  const key = `waterline_${width}x${height}`;
-  if (scene.textures.exists(key)) return key;
-  const graphics = scene.make.graphics({}, false);
-  graphics.fillStyle(0xecfafa, 0.7);
-  graphics.fillEllipse(width / 2, height / 2, width, height);
-  graphics.generateTexture(key, width, height);
-  graphics.destroy();
-  return key;
-}
-
 export interface ShadeArea {
   x: number;
   y: number;

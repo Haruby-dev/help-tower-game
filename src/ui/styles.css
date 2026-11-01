@@ -232,3 +232,7 @@ body {
 .settings-button[aria-checked='true'] {
   background: var(--cream-pink-edge);
 }
+
+.rotate-prompt__hint {
+  font-size: 14px;
+}

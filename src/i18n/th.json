@@ -9,5 +9,6 @@
   "ui.close": "ปิด",
   "settings.lighting": "เอฟเฟกต์แสง",
   "settings.on": "เปิด",
-  "settings.off": "ปิด"
+  "settings.off": "ปิด",
+  "orientation.rotate_hint": "ถ้าจอไม่หมุน ลองปิด \"ล็อกการหมุนหน้าจอ\" ในศูนย์ควบคุมก่อนนะ"
 }

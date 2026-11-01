@@ -148,6 +148,13 @@ describe('base map', () => {
     }
   });
 
+  it('keeps the stepping stones away from where Gio sits', () => {
+    const seat = layout.objects.find(({ id }) => id === 'gio_seat')!;
+    for (const stone of layout.objects.filter(({ id }) => id.startsWith('path_stone'))) {
+      expect(Math.hypot(stone.x - seat.x, stone.y - seat.y)).toBeGreaterThanOrEqual(1.5);
+    }
+  });
+
   it('keeps every small rock at least a tile away from the stepping stones', () => {
     const stones = layout.objects.filter(({ id }) => id.startsWith('path_stone'));
     const rocks = layout.objects
