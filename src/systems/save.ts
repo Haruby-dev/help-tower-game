@@ -1,14 +1,17 @@
 import { get, set } from 'idb-keyval';
-import type { World } from '../core/state';
+import { emptyWallet, type World } from '../core/state';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 export const SLOT_COUNT = 3;
 
 const slotKey = (slot: number): string => `save-slot-${slot}`;
 
 /** เพิ่มตัวแปลงที่นี่ทุกครั้งที่เปลี่ยนรูปแบบเซฟ คีย์คือเวอร์ชันต้นทาง */
-const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<string, unknown>> = {};
+const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<string, unknown>> = {
+  // เวอร์ชัน 2 เพิ่มกระเป๋าเงิน เซฟเก่ายังไม่มีเงินจึงเริ่มจากศูนย์
+  1: (save) => ({ ...save, world: { ...(save.world as object), wallet: emptyWallet() } }),
+};
 
 export function toSaveFile(world: World): SaveFile {
   return { version: SAVE_VERSION, savedAt: new Date().toISOString(), world };

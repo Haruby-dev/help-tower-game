@@ -320,7 +320,8 @@ test('the settings switch turns the lighting layer off and on', async ({ page })
     page.evaluate(() => window.__game!.scene.getScene('Base').cameras.main.postPipelines.length);
   expect(await lightingLayers()).toBe(1);
 
-  await page.locator('#settings-button').click();
+  await page.locator('#phone-button').click();
+  await page.locator('[data-app="settings"]').click();
   const toggle = page.locator('#lighting-toggle');
   await expect(toggle).toBeVisible();
   const box = (await toggle.boundingBox())!;
@@ -335,9 +336,9 @@ test('the settings switch turns the lighting layer off and on', async ({ page })
   expect(await lightingLayers()).toBe(1);
 });
 
-test('the lighting layer leaves the settings button tappable', async ({ page }) => {
+test('the lighting layer leaves the phone button tappable', async ({ page }) => {
   await openGame(page);
-  const box = (await page.locator('#settings-button').boundingBox())!;
+  const box = (await page.locator('#phone-button').boundingBox())!;
   expect(box.width).toBeGreaterThanOrEqual(44);
   expect(box.height).toBeGreaterThanOrEqual(44);
 });
@@ -349,7 +350,8 @@ test('the zoom choice changes the whole-number zoom and is remembered', async ({
   const start = await zoomNow();
   const fitted = start - (isMobile ? 1 : 0);
 
-  await page.locator('#settings-button').click();
+  await page.locator('#phone-button').click();
+  await page.locator('[data-app="settings"]').click();
   await page.locator('[data-zoom-step="2"]').click();
   await expect.poll(zoomNow).toBe(fitted + 2);
   const box = (await page.locator('[data-zoom-step="2"]').boundingBox())!;

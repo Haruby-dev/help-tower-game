@@ -35,6 +35,8 @@ const PRICE_FONT_PX = 9;
 /** ตำแหน่งตัวเลขราคาเหนือจุดเท้าของป้าย */
 const PRICE_LIFT_PX = 30;
 
+const STANDING_STILL: Vector = { x: 0, y: 0 };
+const PLAYER_HEAD_PX = 66;
 const DOOR_TAP_LIFT = 24;
 const DOOR_TAP_RADIUS = 34;
 
@@ -153,9 +155,15 @@ export class BaseScene extends Phaser.Scene {
   }
 
   override update(_time: number, deltaMs: number): void {
-    this.player.update(this.readMoveInput());
+    this.player.update(gameState.clockRunning ? this.readMoveInput() : STANDING_STILL);
     this.gio.update(deltaMs, this.player.feetX, this.player.feetY);
     gameState.trackPlayer({ x: this.player.body.x, y: this.player.body.y });
+    const camera = this.cameras.main;
+    const screenScale = camera.zoom / window.devicePixelRatio;
+    gameState.trackPlayerScreen({
+      x: (this.player.feetX - camera.worldView.x) * screenScale,
+      y: (this.player.feetY - PLAYER_HEAD_PX - camera.worldView.y) * screenScale,
+    });
     advanceClock(deltaMs, this.door);
     gameState.setAction(this.nearDoor() ? 'action.sleep' : null);
     if (gameState.started) this.night.setFillStyle(this.night.fillColor, nightAlpha(gameState.world.hour));

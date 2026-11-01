@@ -34,23 +34,25 @@ const teleport = (page: Page, x: number, y: number): Promise<void> =>
     [x, y],
   );
 
-test('shows the day, time and 3 gauges, and the clock runs', async ({ page }) => {
+test('shows the portrait with 15 beads, the coin pill and the phone clock', async ({ page }) => {
   await open(page);
-  await expect(page.locator('#status-clock')).toContainText('06:');
-  await expect(page.locator('.gauge')).toHaveCount(3);
+  await expect(page.locator('#phone-cover-time')).toContainText('06:');
+  await expect(page.locator('.bead')).toHaveCount(15);
+  await expect(page.locator('#coin-pill')).toContainText('0');
+  await expect(page.locator('#portrait')).toHaveAttribute('data-mood', 'happy');
   const before = await world(page);
   await expect.poll(async () => (await world(page)).hour).toBeGreaterThan(before.hour);
   await expect.poll(async () => (await world(page)).fullness).toBeLessThan(100);
 });
 
-test('the clock stops while settings are open', async ({ page }) => {
+test('the clock stops while the phone is open', async ({ page }) => {
   await open(page);
-  await page.locator('#settings-button').click();
+  await page.locator('#phone-button').click();
   await page.waitForTimeout(100);
   const paused = await world(page);
   await page.waitForTimeout(400);
   expect((await world(page)).hour).toBe(paused.hour);
-  await page.keyboard.press('Escape');
+  await page.locator('#phone-close').click();
   await expect.poll(async () => (await world(page)).hour).toBeGreaterThan(paused.hour);
 });
 
@@ -102,8 +104,72 @@ test('fainting wakes the player at home and skips time', async ({ page }) => {
 
 test('exports a save file', async ({ page }) => {
   await open(page);
-  await page.locator('#settings-button').click();
+  await page.locator('#phone-button').click();
+  await page.locator('[data-app="settings"]').click();
   const download = page.waitForEvent('download');
   await page.locator('#save-export').click();
   expect((await download).suggestedFilename()).toContain('help-tower-save-1-day-1');
+});
+
+test('opens the phone with 11 apps and placeholders for later systems', async ({ page }) => {
+  await open(page);
+  await page.locator('#phone-button').click();
+  await expect(page.locator('.phone-app')).toHaveCount(11);
+  for (const box of await page.locator('.phone-app').evaluateAll((apps) => apps.map((app) => ({ width: (app as HTMLElement).offsetWidth, height: (app as HTMLElement).offsetHeight })))) {
+    expect(box.width).toBeGreaterThanOrEqual(44);
+    expect(box.height).toBeGreaterThanOrEqual(44);
+  }
+  await page.locator('[data-app="shop"]').click();
+  await expect(page.locator('.phone-page__empty')).toBeVisible();
+  await page.locator('[data-app="support"]').click();
+  await expect(page.locator('.phone-content')).not.toContainText('฿');
+  await page.locator('#phone-close').click();
+  await expect(page.locator('#phone')).toBeHidden();
+});
+
+test('every money change shows in the wallet log and the coin pill', async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const change = (window as unknown as { __changeMoney: (c: string, a: number, l: string, k: string) => void }).__changeMoney;
+    change('coins', 1250, 'wallet.test_income', 'wallet.category_test');
+    change('stars', 38, 'wallet.test_income', 'wallet.category_test');
+  });
+  await expect(page.locator('#coin-pill')).toContainText('1,250');
+  await page.locator('#phone-button').click();
+  await expect(page.locator('[data-balance="coins"]')).toHaveText('1,250');
+  await expect(page.locator('[data-balance="stars"]')).toHaveText('38');
+  await expect(page.locator('.wallet-entry')).toHaveCount(2);
+  await expect(page.locator('#wallet-net')).toHaveText('+1,250');
+});
+
+test('faces, red beads, the warning bubble and stink lines follow the gauges', async ({ page }) => {
+  await open(page);
+  const setGauges = (fullness: number, cleanliness: number): Promise<void> =>
+    page.evaluate(
+      ([full, clean]) => {
+        const state = window.__state!;
+        state.setWorld({ ...state.world, gauges: { ...state.world.gauges, fullness: full, cleanliness: clean } });
+      },
+      [fullness, cleanliness],
+    );
+  await setGauges(50, 100);
+  await expect(page.locator('#portrait')).toHaveAttribute('data-mood', 'normal');
+  await setGauges(25, 20);
+  await expect(page.locator('#portrait')).toHaveAttribute('data-mood', 'tired');
+  await expect(page.locator('#portrait')).toHaveClass(/portrait--dirty/);
+  await expect(page.locator('.bead--pulse')).toHaveCount(2);
+  await setGauges(10, 100);
+  await expect(page.locator('#portrait')).toHaveAttribute('data-mood', 'faint');
+  await expect(page.locator('.bead--fullness.bead--alert')).toHaveCount(5);
+  await expect(page.locator('#player-bubble')).toBeVisible();
+  await expect(page.locator('#player-bubble')).toContainText('หิว');
+});
+
+test('Tab and Esc open and close the phone on a keyboard', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'desktop only');
+  await open(page);
+  await page.keyboard.press('Tab');
+  await expect(page.locator('#phone')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#phone')).toBeHidden();
 });

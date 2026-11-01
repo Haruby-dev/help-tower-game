@@ -18,6 +18,17 @@
     "homesickness": { "perDay": 1 },
     "faint": { "skipHours": 10, "recoverTo": 30, "gioFee": 20 }
   },
+  "hud": {
+    "beadsPerGauge": 5,
+    "moodHappyFrom": 70,
+    "moodNormalFrom": 40,
+    "moodTiredFrom": 15,
+    "pulseAt": 30,
+    "alertAt": 15,
+    "dirtyBelow": 30,
+    "bubbleMs": 1800
+  },
+  "wallet": { "logLimit": 200 },
   "interact": { "reachPx": 44 },
   "land": {
     "prices": [500, 1500, 4000]

@@ -10,3 +10,4 @@ playwright-report/
 !.env.example
 .venv/
 __pycache__/
+*.zip

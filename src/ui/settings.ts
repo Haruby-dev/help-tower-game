@@ -6,8 +6,6 @@ import { createSaveRow } from './saves';
 const STORAGE_KEY = 'lighting-enabled';
 const ZOOM_STORAGE_KEY = 'zoom-step';
 const ZOOM_LABELS = ['settings.zoom_normal', 'settings.zoom_near', 'settings.zoom_nearer'] as const;
-const SETTINGS_ICON =
-  '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>';
 
 /** ค่าที่จำไว้เฉพาะเครื่องนี้ ถ้าเบราว์เซอร์ไม่ให้เก็บก็ยังเล่นได้ */
 function readStoredLighting(): boolean {
@@ -83,22 +81,52 @@ function createZoomRow(): HTMLElement {
   return row;
 }
 
-export function createSettings(uiRoot: HTMLElement): void {
+function createFullscreenRow(appRoot: HTMLElement): HTMLElement | null {
+  // iPhone ไม่รองรับการเต็มจอจากหน้าเว็บ จึงไม่แสดงปุ่มที่กดแล้วไม่เกิดอะไร
+  if (!document.fullscreenEnabled) return null;
+  const row = document.createElement('div');
+  row.className = 'settings-row';
+  const label = document.createElement('span');
+  label.textContent = t('settings.fullscreen');
+  const button = document.createElement('button');
+  button.id = 'fullscreen-button';
+  button.type = 'button';
+  button.className = 'settings-button';
+  const updateLabel = (): void => {
+    button.textContent = t(document.fullscreenElement ? 'ui.fullscreen_exit' : 'ui.fullscreen_enter');
+  };
+  updateLabel();
+  document.addEventListener('fullscreenchange', updateLabel);
+  button.addEventListener('click', () => {
+    void toggleFullscreen(appRoot);
+  });
+  row.append(label, button);
+  return row;
+}
+
+async function toggleFullscreen(appRoot: HTMLElement): Promise<void> {
+  if (document.fullscreenElement) {
+    await document.exitFullscreen();
+    return;
+  }
+  await appRoot.requestFullscreen();
+  // เบราว์เซอร์ที่ไม่รองรับการล็อกแนวจอจะแจ้งข้อผิดพลาด จอชวนหมุนยังทำงานแทนได้
+  const orientation = screen.orientation as ScreenOrientation & { lock?: (type: string) => Promise<void> };
+  await orientation.lock?.('landscape').catch(() => undefined);
+}
+
+let appRootForPage: HTMLElement | null = null;
+
+/** อ่านค่าที่จำไว้ตั้งแต่เปิดเกม ไม่ต้องรอเปิดโทรศัพท์ */
+export function initSettings(appRoot: HTMLElement): void {
+  appRootForPage = appRoot;
   gameState.setLightingEnabled(readStoredLighting());
   gameState.setZoomStep(readStoredZoomStep());
+}
 
-  const button = document.createElement('button');
-  button.id = 'settings-button';
-  button.type = 'button';
-  button.className = 'panel';
-  button.innerHTML = SETTINGS_ICON;
-  button.setAttribute('aria-label', t('ui.settings'));
-
-  const panel = document.createElement('div');
-  panel.id = 'settings-panel';
-  panel.className = 'panel';
-  panel.hidden = true;
-
+export function createSettingsPage(): HTMLElement {
+  const page = document.createElement('div');
+  page.className = 'phone-page';
   const title = document.createElement('h2');
   title.textContent = t('ui.settings');
 
@@ -124,21 +152,8 @@ export function createSettings(uiRoot: HTMLElement): void {
   });
   row.append(label, toggle);
 
-  const close = document.createElement('button');
-  close.type = 'button';
-  close.className = 'settings-button';
-  close.textContent = t('ui.close');
-  // เปิดหน้าตั้งค่าเมื่อไหร่ นาฬิกาเกมหยุดทันที
-  const setOpen = (open: boolean): void => {
-    panel.hidden = !open;
-    gameState.setWindowOpen('settings', open);
-  };
-  close.addEventListener('click', () => setOpen(false));
-
-  panel.append(title, row, createZoomRow(), createSaveRow(), close);
-  button.addEventListener('click', () => setOpen(panel.hidden !== false));
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') setOpen(false);
-  });
-  uiRoot.append(button, panel);
+  page.append(title, row, createZoomRow(), createSaveRow());
+  const fullscreen = appRootForPage ? createFullscreenRow(appRootForPage) : null;
+  if (fullscreen) page.append(fullscreen);
+  return page;
 }

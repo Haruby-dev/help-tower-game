@@ -57,7 +57,7 @@ test('renders at a whole-number zoom with no errors', async ({ page, isMobile })
 
 test('Thai text uses the bundled Mali font', async ({ page }) => {
   await openGame(page);
-  const label = page.locator('#status-clock');
+  const label = page.locator('#coin-pill');
   await expect(label).toBeVisible();
   await expect(label).toHaveCSS('font-family', /Mali/);
   await page.evaluate(() => document.fonts.ready);
@@ -69,6 +69,8 @@ test('Thai text uses the bundled Mali font', async ({ page }) => {
 
 test('Fullscreen button is at least 44px, or absent where fullscreen is unsupported', async ({ page }) => {
   await openGame(page);
+  await page.locator('#phone-button').click();
+  await page.locator('[data-app="settings"]').click();
   const button = page.locator('#fullscreen-button');
   if (!(await page.evaluate(() => document.fullscreenEnabled))) {
     await expect(button).toHaveCount(0);

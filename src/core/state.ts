@@ -15,6 +15,27 @@ export interface GaugeValues {
   homesickness: number;
 }
 
+export type Currency = 'coins' | 'stars';
+
+export interface WalletEntry {
+  day: number;
+  hour: number;
+  currency: Currency;
+  amount: number;
+  /** key ใน th.json */
+  label: string;
+  category: string;
+}
+
+export interface Wallet {
+  coins: number;
+  stars: number;
+  log: WalletEntry[];
+  daily: { day: number; coins: number; stars: number }[];
+}
+
+export const emptyWallet = (): Wallet => ({ coins: 0, stars: 0, log: [], daily: [] });
+
 /** ความจริงของเกมที่อยู่ในเซฟ */
 export interface World {
   day: number;
@@ -23,6 +44,7 @@ export interface World {
   gauges: GaugeValues;
   /** null คือยังไม่เคยวาง ให้ใช้จุดเกิดบนแผนที่ */
   player: Point | null;
+  wallet: Wallet;
 }
 
 class GameState {
@@ -35,6 +57,7 @@ class GameState {
   private currentSlot: number | null = null;
   private currentAction: TextKey | null = null;
   private openWindows = new Set<string>();
+  private currentPlayerScreen: Point = { x: 0, y: 0 };
 
   get viewport(): Viewport {
     if (!this.currentViewport) throw new Error('viewport has not been set');
@@ -77,6 +100,15 @@ class GameState {
   setWorld(world: World): void {
     this.currentWorld = world;
     eventBus.emit('world-changed', world);
+  }
+
+  /** ตำแหน่งเหนือหัวตัวเอกบนหน้าจอ ใช้วางฟองคำพูด */
+  get playerScreen(): Point {
+    return this.currentPlayerScreen;
+  }
+
+  trackPlayerScreen(point: Point): void {
+    this.currentPlayerScreen = point;
   }
 
   /** ฉากรายงานตำแหน่งทุกเฟรม ไม่ต้องแจ้งใคร */

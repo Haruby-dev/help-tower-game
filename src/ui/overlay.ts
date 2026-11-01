@@ -5,44 +5,9 @@ import { gameState } from '../core/state';
 import { needsRotation } from '../core/viewport';
 import { createHud } from './hud';
 import { createJoystick } from './joystick';
+import { createPhone } from './phone';
 import { createSaves } from './saves';
-import { createSettings } from './settings';
-
-const FULLSCREEN_ICON =
-  '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
-
-function createFullscreenButton(uiRoot: HTMLElement, appRoot: HTMLElement): void {
-  // iPhone ไม่รองรับการเต็มจอจากหน้าเว็บ จึงไม่แสดงปุ่มที่กดแล้วไม่เกิดอะไร
-  if (!document.fullscreenEnabled) return;
-
-  const button = document.createElement('button');
-  button.id = 'fullscreen-button';
-  button.type = 'button';
-  button.className = 'panel';
-  button.innerHTML = FULLSCREEN_ICON;
-
-  const updateLabel = (): void => {
-    button.setAttribute('aria-label', t(document.fullscreenElement ? 'ui.fullscreen_exit' : 'ui.fullscreen_enter'));
-  };
-  updateLabel();
-  document.addEventListener('fullscreenchange', updateLabel);
-
-  button.addEventListener('click', () => {
-    void toggleFullscreen(appRoot);
-  });
-  uiRoot.append(button);
-}
-
-async function toggleFullscreen(appRoot: HTMLElement): Promise<void> {
-  if (document.fullscreenElement) {
-    await document.exitFullscreen();
-    return;
-  }
-  await appRoot.requestFullscreen();
-  // เบราว์เซอร์ที่ไม่รองรับการล็อกแนวจอจะแจ้งข้อผิดพลาด จอชวนหมุนยังทำงานแทนได้
-  const orientation = screen.orientation as ScreenOrientation & { lock?: (type: string) => Promise<void> };
-  await orientation.lock?.('landscape').catch(() => undefined);
-}
+import { initSettings } from './settings';
 
 function createRotatePrompt(uiRoot: HTMLElement): void {
   const gio = characterEntry('gio_idle');
@@ -77,8 +42,8 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   createHud(uiRoot);
   createJoystick(uiRoot);
   createRotatePrompt(uiRoot);
-  createFullscreenButton(uiRoot, appRoot);
-  createSettings(uiRoot);
+  initSettings(appRoot);
+  createPhone(uiRoot);
   createSaves(uiRoot);
 }
 

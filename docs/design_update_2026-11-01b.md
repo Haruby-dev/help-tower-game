@@ -159,3 +159,19 @@ Mockups: `docs/level/2026-11-01/ui12_wallet.png` and `ui10_flip_closed.png`, `ui
   - Can be sold for Sugar Stars.
   - The default skin is lavender.
 - **The vintage pink flip phone mock (`ui6`, `ui7`) is rejected.**
+
+## B12. HUD gauges & portrait faces (user decision, 2026-11-02 — replaces the ring gauges)
+
+- **Gauge style = BEADS around the portrait, not rings.** See `docs/level/2026-11-01/ui15_gauges.png`, panel D.
+  - Each gauge (อิ่ม / สุข / สะอาด) is a short arc of 5 beads, 20% per bead, in that gauge's colour. Empty beads are pale.
+  - A partly filled bead can show a half fill.
+- **Low warnings:**
+  - ≤30% (the GDD penalty zone): the last lit bead pulses slowly, like breathing. No fast blinking.
+  - ≤15%: that gauge's beads turn red, and the character says one bubble line once, e.g. "หิวจังเลย…" (put it in the data file).
+- **No separate energy gauge.** Time and อิ่ม already act as energy (GDD).
+- **Portrait faces:**
+  - Files: `assets-src/art_2026-11-02/portrait/portrait_girl_{happy,normal,tired,faint}.png`, 41×30 each. They are the head crop of `player_girl_walk.png` frame 0, with the face pixels edited. Do not scale them except with the HUD's integer zoom.
+  - The face follows the LOWER of อิ่ม and สุข, because only those two make you faint: happy 70–100 · normal 40–70 · tired 15–40 · faint 0–15.
+  - Low สะอาด does not change the face. Below 30, show code-drawn stink lines and a tiny fly around the portrait instead.
+  - Code effects: sparkles (happy), sweat drop (tired), dizzy stars and pale bluish portrait background (faint).
+  - Boy faces come later; until then use his normal face for all states.

@@ -64,6 +64,17 @@ export const balanceSchema = z.strictObject({
     homesickness: z.strictObject({ perDay: z.number() }),
     faint: z.strictObject({ skipHours: z.number(), recoverTo: z.number(), gioFee: z.number() }),
   }),
+  hud: z.strictObject({
+    beadsPerGauge: z.number().int().positive(),
+    moodHappyFrom: z.number(),
+    moodNormalFrom: z.number(),
+    moodTiredFrom: z.number(),
+    pulseAt: z.number(),
+    alertAt: z.number(),
+    dirtyBelow: z.number(),
+    bubbleMs: z.number().positive(),
+  }),
+  wallet: z.strictObject({ logLimit: z.number().int().positive() }),
   interact: z.strictObject({ reachPx: z.number().positive() }),
   land: z.strictObject({
     /** ราคาชั่วคราวของที่ดิน 3 แปลง เรียงจากซ้ายไปขวา */
@@ -91,10 +102,36 @@ export const saveFileSchema = z.strictObject({
       homesickness: z.number(),
     }),
     player: z.strictObject({ x: z.number(), y: z.number() }).nullable(),
+    wallet: z.strictObject({
+      coins: z.number(),
+      stars: z.number(),
+      log: z.array(
+        z.strictObject({
+          day: z.number(),
+          hour: z.number(),
+          currency: z.enum(['coins', 'stars']),
+          amount: z.number(),
+          label: z.string(),
+          category: z.string(),
+        }),
+      ),
+      daily: z.array(z.strictObject({ day: z.number(), coins: z.number(), stars: z.number() })),
+    }),
   }),
 });
 
 export type SaveFile = z.infer<typeof saveFileSchema>;
+
+/** บทพูดฟองคำพูดของตัวเอก แก้ได้โดยไม่แตะโค้ด */
+export const linesSchema = z.strictObject({
+  player: z.strictObject({
+    lowGauge: z.strictObject({
+      fullness: z.string().min(1),
+      happiness: z.string().min(1),
+      cleanliness: z.string().min(1),
+    }),
+  }),
+});
 
 export const translationsSchema = z.record(z.string().min(1), z.string().min(1));
 

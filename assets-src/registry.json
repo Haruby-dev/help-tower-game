@@ -3581,5 +3581,45 @@
     "type": "not_used",
     "pixellab_job": "0c1d6656",
     "reason": "ของแต่งร้านแนวบ้าน ๆ ชุดเก่า ผู้ใช้ไม่เอา ห้ามนำมาใช้"
+  },
+  "portrait_girl_happy": {
+    "type": "local",
+    "width": 41,
+    "height": 30,
+    "source": "assets-src/art_2026-11-02/portrait/portrait_girl_happy.png",
+    "file": "portraits/portrait_girl_happy.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "หน้าตัวเอกในหน้าจอ ใช้ใน HTML ขยายตามซูมจำนวนเต็มเท่านั้น"
+  },
+  "portrait_girl_normal": {
+    "type": "local",
+    "width": 41,
+    "height": 30,
+    "source": "assets-src/art_2026-11-02/portrait/portrait_girl_normal.png",
+    "file": "portraits/portrait_girl_normal.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "หน้าตัวเอกในหน้าจอ ใช้ใน HTML ขยายตามซูมจำนวนเต็มเท่านั้น"
+  },
+  "portrait_girl_tired": {
+    "type": "local",
+    "width": 41,
+    "height": 30,
+    "source": "assets-src/art_2026-11-02/portrait/portrait_girl_tired.png",
+    "file": "portraits/portrait_girl_tired.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "หน้าตัวเอกในหน้าจอ ใช้ใน HTML ขยายตามซูมจำนวนเต็มเท่านั้น"
+  },
+  "portrait_girl_faint": {
+    "type": "local",
+    "width": 41,
+    "height": 30,
+    "source": "assets-src/art_2026-11-02/portrait/portrait_girl_faint.png",
+    "file": "portraits/portrait_girl_faint.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "หน้าตัวเอกในหน้าจอ ใช้ใน HTML ขยายตามซูมจำนวนเต็มเท่านั้น"
   }
 }

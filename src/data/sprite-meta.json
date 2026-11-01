@@ -1490,5 +1490,25 @@
     "footY": {
       "default": 36
     }
+  },
+  "portrait_girl_happy": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "portrait_girl_normal": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "portrait_girl_tired": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "portrait_girl_faint": {
+    "footY": {
+      "default": 30
+    }
   }
 }

@@ -1,4 +1,4 @@
-import type { GaugeValues, World } from '../core/state';
+import { emptyWallet, type GaugeValues, type World } from '../core/state';
 import balance from '../data/balance.json';
 
 const { gauges, time } = balance;
@@ -20,6 +20,7 @@ export function newWorld(): World {
     hour: time.dayStartHour,
     gauges: { ...gauges.start },
     player: null,
+    wallet: emptyWallet(),
   };
 }
 
