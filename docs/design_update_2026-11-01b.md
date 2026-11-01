@@ -53,7 +53,7 @@ Dialogue lines are in `docs/dialogue_zone1_draft.json`. They are a draft written
   - Boom Boom: honey and wax, plus pollination.
   - Bubble: cleanliness, and washing trays.
   - Mumu: milk, which becomes butter, cream and cheese.
-- **Name check (ask the user):** the GDD names are ไข่ป๊อก / หนึบหนับ / บึ้มบึ้ม / บับเบิ้ล / มูมู่เมฆ, but the art designs were made as Kai Pok / Nueb Nub / Boom Boom / Bubble / Mumu Mek, a marshmallow cow. Ask the user which names to show in game, and update the GDD pet descriptions to match the new designs: Kai Pok is a bread-loaf chicken with butter on its head, and Mumu Mek is a marshmallow cow with a bell tail.
+- **Names (decided by the user):** show ปังป๊อก (was ไข่ป๊อก) / หนึบหนับ / บึ้มบึ้ม / บับเบิ้ล / มูมู่เมฆ. Keep the asset ids (`kai_pok_*`) as they are. Pangpok is a bread-loaf chicken with butter on its head; Mumu Mek is a marshmallow cow with a bell tail.
 - **New, small:** Bubble also gives "fizzy bubble water", used for the soda-jelly drink.
 
 ## B4. Drinks — a new menu category
@@ -136,3 +136,26 @@ Dialogue lines are in `docs/dialogue_zone1_draft.json`. They are a draft written
 - **Special outfits use hoods or hats** (chef hat, Puinun sheep hood, straw hat, cupcake hood). They cover the hair, so outfits do not multiply with hairstyles.
 - Plain outfits are recoloured in code.
 - **Build the character creator** so that adding a hairstyle is just a new registry entry. Use placeholders until the art arrives.
+
+## B11. Phone UI (direction approved, final art not made yet)
+
+Mockups: `docs/level/2026-11-01/ui12_wallet.png` and `ui10_flip_closed.png`, `ui11_flip_skins.png`.
+
+- **Top bar:** only the portrait with its ring gauges (top left) and the coin pill (top right). **Remove the name/day pill.** The day, time and weather now live in the phone.
+- **Closed phone = the menu button:** a square clamshell foldable in the bottom-right corner. Two round cameras on the left, a tall cover screen on the right showing the time and the day. A red badge shows unread letters.
+- **Tap = open:** a short animation where the phone flips open and turns into a wide, book-style screen with a fold line in the middle.
+  - The left page shows the app grid.
+  - The right page shows the selected app.
+  - The status bar shows time · day · weather.
+- **Apps (11):** กระเป๋า, **กระเป๋าเงิน (new)**, ร้านค้า, สมุดสูตร, อัลบั้ม, สัตว์เลี้ยง, เกต, จดหมาย, ชุด/ทรงผม, ตั้งค่า, **สนับสนุนเดฟ (new; placeholder only, no details yet, no real-money flow)**.
+- **Wallet app (กระเป๋าเงิน):**
+  - Two balance cards: coins and Sugar Stars.
+  - Tabs for today / this week / all, with the net total.
+  - A transaction log listing each income and expense: what it was, the category (ร้านอาหาร, จีโอ, ร้านค้า, สัตว์เลี้ยง, ...) and the amount.
+  - **Every coin or Sugar Star change must write a log entry.** Keep the log in the save data, capped (for example the last 200 entries plus daily totals).
+- **Phone skins and cases (later, cosmetic):**
+  - Body colour is a palette swap in code.
+  - Ears, strap charms and case patterns are small overlay sprites.
+  - Can be sold for Sugar Stars.
+  - The default skin is lavender.
+- **The vintage pink flip phone mock (`ui6`, `ui7`) is rejected.**
