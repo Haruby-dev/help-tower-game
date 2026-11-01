@@ -85,56 +85,56 @@ test.describe('keyboard', () => {
 
   test('cannot walk into the pond', async ({ page }) => {
     await openGame(page);
-    await teleport(page, 23 * TILE, 10.2 * TILE);
+    await teleport(page, 25 * TILE, 14 * TILE);
     await page.keyboard.down('s');
     await page.waitForTimeout(1500);
     await page.keyboard.up('s');
     const { y } = await snapshot(page);
-    expect(y).toBeLessThan(11.5 * TILE);
-    expect(y).toBeGreaterThan(10.2 * TILE);
+    expect(y).toBeLessThan(15.5 * TILE);
+    expect(y).toBeGreaterThanOrEqual(14 * TILE);
   });
 
   test('cannot walk through the house', async ({ page }) => {
     await openGame(page);
-    await teleport(page, 19 * TILE, 10 * TILE);
+    await teleport(page, 24 * TILE, 9.2 * TILE);
     await page.keyboard.down('w');
     await page.waitForTimeout(1500);
     await page.keyboard.up('w');
-    expect((await snapshot(page)).y).toBeGreaterThan(8.9 * TILE);
+    expect((await snapshot(page)).y).toBeGreaterThan(8.1 * TILE);
   });
 
-  test('climbs the stairs but cannot walk through the cliff', async ({ page }) => {
+  test('reaches the plateau around the left end but cannot walk through the cliff', async ({ page }) => {
     await openGame(page);
-    await teleport(page, 15 * TILE, 5.6 * TILE);
-    await page.keyboard.down('w');
+    await teleport(page, 19 * TILE, 3.2 * TILE);
+    await page.keyboard.down('d');
     // จอใหญ่บนเครื่องที่ทำงานหนักเดินช้าลง จึงรอจนถึงลานบนแทนการรอเวลาตายตัว
-    await expect.poll(async () => (await snapshot(page)).y, { timeout: 15_000 }).toBeLessThan(3.3 * TILE);
-    await page.keyboard.up('w');
+    await expect.poll(async () => (await snapshot(page)).x, { timeout: 15_000 }).toBeGreaterThan(21.5 * TILE);
+    await page.keyboard.up('d');
 
-    await teleport(page, 10 * TILE, 5.6 * TILE);
+    await teleport(page, 29 * TILE, 7 * TILE);
     await page.keyboard.down('w');
     await page.waitForTimeout(1200);
     await page.keyboard.up('w');
-    expect((await snapshot(page)).y).toBeGreaterThan(4.9 * TILE);
+    expect((await snapshot(page)).y).toBeGreaterThan(5.9 * TILE);
   });
 
   test('cannot walk into the forest', async ({ page }) => {
     await openGame(page);
-    await teleport(page, 26 * TILE, 8.8 * TILE);
-    await page.keyboard.down('d');
+    await teleport(page, 5 * TILE, 25 * TILE);
+    await page.keyboard.down('a');
     await page.waitForTimeout(1500);
-    await page.keyboard.up('d');
-    expect((await snapshot(page)).x).toBeLessThan(27 * TILE);
+    await page.keyboard.up('a');
+    expect((await snapshot(page)).x).toBeGreaterThanOrEqual(2 * TILE);
   });
 
   test('stops at the edge of the map with the camera inside it', async ({ page }) => {
     await openGame(page);
-    await teleport(page, 4.5 * TILE, 8 * TILE);
+    await teleport(page, 4.5 * TILE, 25 * TILE);
     await page.keyboard.down('a');
     await page.waitForTimeout(800);
     await page.keyboard.up('a');
     const state = await snapshot(page);
-    expect(state.x).toBeGreaterThanOrEqual(3 * TILE);
+    expect(state.x).toBeGreaterThanOrEqual(2 * TILE);
     expect(state.viewX).toBeGreaterThanOrEqual(0);
     expect(state.viewY).toBeGreaterThanOrEqual(0);
     expect(state.viewX + state.viewWidth).toBeLessThanOrEqual(state.worldWidth);
@@ -276,10 +276,10 @@ test('Gio hops around near the seat without leaving play', async ({ page }) => {
   });
   await expect.poll(async () => (await readGio()).texture, { timeout: 30_000 }).toBe('gio_idle');
   const gio = await readGio();
-  expect(Math.hypot(gio.x - 10 * TILE, gio.y - 6.75 * TILE)).toBeLessThan(200);
+  expect(Math.hypot(gio.x - 11.2 * TILE, gio.y - 11.35 * TILE)).toBeLessThan(200);
 });
 
-test('shows the map art, effects and a box for each missing piece', async ({ page }) => {
+test('shows the map art with no shadows and a price on each land sign', async ({ page }) => {
   await openGame(page);
   const seen = await page.evaluate(() => {
     const scene = window.__game!.scene.getScene('Base');
@@ -291,13 +291,53 @@ test('shows the map art, effects and a box for each missing piece', async ({ pag
       .map((child) => (child as import('phaser').GameObjects.Text).text);
     return { keys, texts };
   });
-  for (const key of ['house_main', 'gate_portal', 'stairs_cliff', 'monster_burrow', 'rock_big_10', 'tree_big_0']) {
+  for (const key of [
+    'house_main',
+    'gate_portal',
+    'monster_burrow',
+    'rock_big_10',
+    'tree_big_0',
+    'campfire',
+    'food_tray_3',
+    'gio_seat',
+    'fishing_dock',
+    'fence_straight',
+    'fence_straight_vines',
+    'fence_post',
+    'land_sale_sign',
+  ]) {
     expect(seen.keys).toContain(key);
   }
-  for (const key of ['campfire', 'food_tray', 'gio_seat', 'dock', 'farm_plots', 'pet_house']) {
-    expect(seen.keys).toContain(key);
-  }
-  expect(seen.texts).toHaveLength(6);
+  expect(seen.keys).not.toContain('stairs_cliff');
+  expect(seen.texts).toEqual(['500', '1500', '4000']);
   expect(seen.keys.filter((key) => key.startsWith('petal_')).length).toBeGreaterThan(20);
-  await expect(page.locator('#vignette')).toHaveCSS('pointer-events', 'none');
+  expect(seen.keys.filter((key) => key.startsWith('soft_') && !key.includes('238__243__240'))).toEqual([]);
+});
+
+test('the settings switch turns the lighting layer off and on', async ({ page }) => {
+  await openGame(page);
+  const lightingLayers = (): Promise<number> =>
+    page.evaluate(() => window.__game!.scene.getScene('Base').cameras.main.postPipelines.length);
+  expect(await lightingLayers()).toBe(1);
+
+  await page.locator('#settings-button').click();
+  const toggle = page.locator('#lighting-toggle');
+  await expect(toggle).toBeVisible();
+  const box = (await toggle.boundingBox())!;
+  expect(box.height).toBeGreaterThanOrEqual(44);
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-checked', 'false');
+  expect(await lightingLayers()).toBe(0);
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-checked', 'true');
+  expect(await lightingLayers()).toBe(1);
+});
+
+test('the lighting layer leaves the settings button tappable', async ({ page }) => {
+  await openGame(page);
+  const box = (await page.locator('#settings-button').boundingBox())!;
+  expect(box.width).toBeGreaterThanOrEqual(44);
+  expect(box.height).toBeGreaterThanOrEqual(44);
 });

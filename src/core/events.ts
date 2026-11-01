@@ -3,6 +3,7 @@ import type { Viewport } from './viewport';
 export interface GameEvents {
   'viewport-changed': Viewport;
   'rotation-required-changed': boolean;
+  'lighting-changed': boolean;
 }
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

@@ -21,6 +21,33 @@ describe('project data', () => {
     }
   });
 
+  it('lists every file from the 1 Nov art update with the same tone and currency', () => {
+    const registry = registrySchema.parse(
+      JSON.parse(readFileSync(join(projectRoot, 'assets-src/registry.json'), 'utf8')),
+    );
+    const additions = JSON.parse(
+      readFileSync(join(projectRoot, 'assets-src/art_2026-11-01/registry_additions.json'), 'utf8'),
+    ) as { name: string; file: string; jade_tone: boolean; currency?: string }[];
+    expect(additions).toHaveLength(250);
+    for (const addition of additions) {
+      const entry = registry[addition.name];
+      if (entry?.type !== 'local' && entry?.type !== 'local_tileset') throw new Error(`${addition.name} is missing`);
+      expect(entry.source).toBe(addition.file);
+      expect(entry.jade_tone).toBe(addition.jade_tone);
+      if (entry.type === 'local') expect(entry.currency).toBe(addition.currency);
+    }
+  });
+
+  it('marks the stairs and the rustic decor as not used', () => {
+    const registry = registrySchema.parse(
+      JSON.parse(readFileSync(join(projectRoot, 'assets-src/registry.json'), 'utf8')),
+    );
+    const stairs = registry.stairs_cliff;
+    expect(stairs?.type).toBe('not_used');
+    const rustic = registry.decor_rustic_rejected;
+    expect(rustic?.type === 'not_used' && rustic.pixellab_job).toBe('0c1d6656');
+  });
+
   it('uses the hand-fixed house file and none of the retired art', () => {
     const raw = readFileSync(join(projectRoot, 'assets-src/registry.json'), 'utf8');
     const registry = registrySchema.parse(JSON.parse(raw));

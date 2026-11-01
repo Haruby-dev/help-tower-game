@@ -62,12 +62,6 @@ body {
   pointer-events: none;
 }
 
-#vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at center, transparent 58%, rgb(24 28 48 / 30%) 100%);
-}
-
 .panel {
   border: 2px solid var(--cream-pink-edge);
   border-radius: 16px;
@@ -170,4 +164,71 @@ body {
   background-size: calc(var(--sheet-width) * 3) calc(var(--frame-height) * 3);
   image-rendering: pixelated;
   transform: rotate(-14deg);
+}
+
+#settings-button {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(68px, calc(env(safe-area-inset-right) + 56px));
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  padding: 0;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+#settings-button svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#settings-panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  min-width: 260px;
+  gap: 12px;
+  padding: 16px;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+}
+
+#settings-panel[hidden] {
+  display: none;
+}
+
+#settings-panel h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.settings-button {
+  min-width: 72px;
+  min-height: 44px;
+  border: 2px solid var(--cream-pink-edge);
+  border-radius: 12px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.settings-button[aria-checked='true'] {
+  background: var(--cream-pink-edge);
 }

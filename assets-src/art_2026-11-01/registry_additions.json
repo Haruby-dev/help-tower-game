@@ -1,0 +1,3109 @@
+[
+ {
+  "name": "campfire",
+  "file": "assets-src/art_2026-11-01/yard/campfire.png",
+  "pixellab_job": "82ecfdc3-6dbf-4ae5-b344-45e034321e46",
+  "index": 8,
+  "size": [
+   61,
+   59
+  ],
+  "jade_tone": true,
+  "note": "tier 1 cooking (yard)"
+ },
+ {
+  "name": "food_tray_3",
+  "file": "assets-src/art_2026-11-01/yard/food_tray_3.png",
+  "pixellab_job": "8d48bcf9-8e3c-48f0-882a-45947f336a81",
+  "index": 15,
+  "size": [
+   52,
+   32
+  ],
+  "jade_tone": true,
+  "note": "low tray, 3 plates"
+ },
+ {
+  "name": "gio_seat",
+  "file": "assets-src/art_2026-11-01/yard/gio_seat.png",
+  "pixellab_job": "9bbd7cf0-2a78-4655-9fea-999fa9023aa4",
+  "index": 4,
+  "size": [
+   36,
+   29
+  ],
+  "jade_tone": true,
+  "note": ""
+ },
+ {
+  "name": "stump_table",
+  "file": "assets-src/art_2026-11-01/restaurant/stump_table.png",
+  "pixellab_job": "7c103ffd-56d7-4e0c-89bf-f2069386a6e4",
+  "index": 2,
+  "size": [
+   61,
+   56
+  ],
+  "jade_tone": true,
+  "note": ""
+ },
+ {
+  "name": "stump_seat",
+  "file": "assets-src/art_2026-11-01/restaurant/stump_seat.png",
+  "pixellab_job": "4c6d87ef-7c78-438a-851a-eb4a4f8b5691",
+  "index": 2,
+  "size": [
+   32,
+   27
+  ],
+  "jade_tone": true,
+  "note": "one seat LEFT and one RIGHT of each table"
+ },
+ {
+  "name": "order_counter",
+  "file": "assets-src/art_2026-11-01/restaurant/order_counter.png",
+  "pixellab_job": "bbb16b04-d1d5-4e06-af03-7d6a3cf19a7c",
+  "index": 9,
+  "size": [
+   58,
+   56
+  ],
+  "jade_tone": true,
+  "note": ""
+ },
+ {
+  "name": "shop_sign",
+  "file": "assets-src/art_2026-11-01/restaurant/shop_sign.png",
+  "pixellab_job": "c4b0869b-32cf-4be1-a5f1-2818becabc96",
+  "index": 2,
+  "size": [
+   52,
+   55
+  ],
+  "jade_tone": true,
+  "note": ""
+ },
+ {
+  "name": "kitchen_smart",
+  "file": "assets-src/art_2026-11-01/restaurant/kitchen_smart.png",
+  "pixellab_job": "6bd9d824-9404-40de-b54e-43c5072b53dd",
+  "index": 0,
+  "size": [
+   210,
+   76
+  ],
+  "jade_tone": false,
+  "note": "kitchen skin A; slots x=42,83,126,166 y=31"
+ },
+ {
+  "name": "kitchen_pastel",
+  "file": "assets-src/art_2026-11-01/restaurant/kitchen_pastel.png",
+  "pixellab_job": "b3e53c9a-4766-4d14-b4ad-cdb17c68db71",
+  "index": 0,
+  "size": [
+   195,
+   60
+  ],
+  "jade_tone": false,
+  "note": "kitchen skin B; slots x=49.5,79.5,111,142.5 y=19"
+ },
+ {
+  "name": "drink_bar_smart",
+  "file": "assets-src/art_2026-11-01/restaurant/drink_bar_smart.png",
+  "pixellab_job": "86be8084-e569-4ecc-9958-c1fa42728497",
+  "index": 0,
+  "size": [
+   114,
+   98
+  ],
+  "jade_tone": false,
+  "note": "goes with kitchen skin A"
+ },
+ {
+  "name": "drink_bar_pastel",
+  "file": "assets-src/art_2026-11-01/restaurant/drink_bar_pastel.png",
+  "pixellab_job": "417d0eff-8f99-4989-971b-41fe43f46a7f",
+  "index": 1,
+  "size": [
+   106,
+   102
+  ],
+  "jade_tone": false,
+  "note": "goes with kitchen skin B (slight angle is intended)"
+ },
+ {
+  "name": "decor_mushroom_lamp",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/mushroom_lamp.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 0,
+  "size": [
+   35,
+   59
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_light_post",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/light_post.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 1,
+  "size": [
+   22,
+   60
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_cupcake_pot",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/cupcake_pot.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 2,
+  "size": [
+   38,
+   59
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_macaron_stool",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/macaron_stool.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 3,
+  "size": [
+   38,
+   42
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_bunny_menu_board",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/bunny_menu_board.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 4,
+  "size": [
+   39,
+   60
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_strawberry_crate",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/strawberry_crate.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 5,
+  "size": [
+   45,
+   39
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_polka_plates",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/polka_plates.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 6,
+  "size": [
+   43,
+   47
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_milk_carton_planter",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/milk_carton_planter.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 7,
+  "size": [
+   38,
+   58
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_striped_parasol",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/striped_parasol.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 8,
+  "size": [
+   52,
+   59
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_swissroll_flowerbox",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/swissroll_flowerbox.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 9,
+  "size": [
+   45,
+   46
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_cookie_jar",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/cookie_jar.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 10,
+  "size": [
+   34,
+   49
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_heart_balloon_sign",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/heart_balloon_sign.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 11,
+  "size": [
+   30,
+   57
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_cloud_lamp",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/cloud_lamp.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 12,
+  "size": [
+   40,
+   55
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_donut_cushion",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/donut_cushion.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 13,
+  "size": [
+   52,
+   47
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_icecream_planter",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/icecream_planter.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 14,
+  "size": [
+   42,
+   54
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "decor_candy_barrel",
+  "file": "assets-src/art_2026-11-01/restaurant/decor/candy_barrel.png",
+  "pixellab_job": "8361659c-6acd-489e-8a30-fd003dc28e19",
+  "index": 15,
+  "size": [
+   40,
+   53
+  ],
+  "jade_tone": false,
+  "note": "player-placeable shop decor"
+ },
+ {
+  "name": "ground_deck_wood",
+  "file": "assets-src/art_2026-11-01/tiles/deck_wood_16.png",
+  "pixellab_tileset": "4c55aa28-783b-4b24-a4d3-f1c73c332918",
+  "jade_tone": true,
+  "note": "dirt(lower)->wood(upper) Wang 16x32px. Pick tiles from the tileset /metadata corners+bounding_box, NOT from the old layout. Base tiles: dirt b54654de-de62-48b5-828f-b552e0a91290, wood a564cf0c-60b1-4615-a03d-c046b8f8e7b6"
+ },
+ {
+  "name": "equip_pot",
+  "file": "assets-src/art_2026-11-01/equipment/pot.png",
+  "pixellab_job": "e650cd41-f4c3-44cf-9894-4f64b9f61c44",
+  "index": 18,
+  "size": [
+   29,
+   23
+  ],
+  "jade_tone": false,
+  "note": "tier 2 main"
+ },
+ {
+  "name": "equip_pot_skin50",
+  "file": "assets-src/art_2026-11-01/equipment/skins/pot_skin50.png",
+  "pixellab_job": "e650cd41-f4c3-44cf-9894-4f64b9f61c44",
+  "index": 49,
+  "size": [
+   27,
+   23
+  ],
+  "jade_tone": false,
+  "note": "tier 2 cosmetic shop skin"
+ },
+ {
+  "name": "equip_pot_skin53",
+  "file": "assets-src/art_2026-11-01/equipment/skins/pot_skin53.png",
+  "pixellab_job": "e650cd41-f4c3-44cf-9894-4f64b9f61c44",
+  "index": 52,
+  "size": [
+   26,
+   22
+  ],
+  "jade_tone": false,
+  "note": "tier 2 cosmetic shop skin"
+ },
+ {
+  "name": "equip_pot_skin28",
+  "file": "assets-src/art_2026-11-01/equipment/skins/pot_skin28.png",
+  "pixellab_job": "e650cd41-f4c3-44cf-9894-4f64b9f61c44",
+  "index": 27,
+  "size": [
+   29,
+   23
+  ],
+  "jade_tone": false,
+  "note": "tier 2 cosmetic shop skin"
+ },
+ {
+  "name": "equip_pot_skin27",
+  "file": "assets-src/art_2026-11-01/equipment/skins/pot_skin27.png",
+  "pixellab_job": "e650cd41-f4c3-44cf-9894-4f64b9f61c44",
+  "index": 26,
+  "size": [
+   29,
+   23
+  ],
+  "jade_tone": false,
+  "note": "tier 2 cosmetic shop skin"
+ },
+ {
+  "name": "equip_pot_skin47",
+  "file": "assets-src/art_2026-11-01/equipment/skins/pot_skin47.png",
+  "pixellab_job": "e650cd41-f4c3-44cf-9894-4f64b9f61c44",
+  "index": 46,
+  "size": [
+   26,
+   23
+  ],
+  "jade_tone": false,
+  "note": "tier 2 cosmetic shop skin"
+ },
+ {
+  "name": "equip_pot_skin64",
+  "file": "assets-src/art_2026-11-01/equipment/skins/pot_skin64.png",
+  "pixellab_job": "e650cd41-f4c3-44cf-9894-4f64b9f61c44",
+  "index": 63,
+  "size": [
+   26,
+   23
+  ],
+  "jade_tone": false,
+  "note": "tier 2 cosmetic shop skin"
+ },
+ {
+  "name": "equip_pot_skin44",
+  "file": "assets-src/art_2026-11-01/equipment/skins/pot_skin44.png",
+  "pixellab_job": "e650cd41-f4c3-44cf-9894-4f64b9f61c44",
+  "index": 43,
+  "size": [
+   27,
+   22
+  ],
+  "jade_tone": false,
+  "note": "tier 2 cosmetic shop skin"
+ },
+ {
+  "name": "equip_pan",
+  "file": "assets-src/art_2026-11-01/equipment/pan.png",
+  "pixellab_job": "360f4172-759e-496c-a9c3-3f567e12bf54",
+  "index": 61,
+  "size": [
+   28,
+   23
+  ],
+  "jade_tone": false,
+  "note": "tier 2 main"
+ },
+ {
+  "name": "equip_pan_skin17",
+  "file": "assets-src/art_2026-11-01/equipment/skins/pan_skin17.png",
+  "pixellab_job": "360f4172-759e-496c-a9c3-3f567e12bf54",
+  "index": 16,
+  "size": [
+   28,
+   22
+  ],
+  "jade_tone": false,
+  "note": "tier 2 cosmetic shop skin"
+ },
+ {
+  "name": "equip_oven",
+  "file": "assets-src/art_2026-11-01/equipment/oven.png",
+  "pixellab_job": "19227016-57d1-4c30-813e-e86be73926ee",
+  "index": 46,
+  "size": [
+   21,
+   24
+  ],
+  "jade_tone": false,
+  "note": "tier 3 main"
+ },
+ {
+  "name": "equip_oven_skin1",
+  "file": "assets-src/art_2026-11-01/equipment/skins/oven_skin1.png",
+  "pixellab_job": "19227016-57d1-4c30-813e-e86be73926ee",
+  "index": 0,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "note": "tier 3 cosmetic shop skin"
+ },
+ {
+  "name": "equip_oven_skin3",
+  "file": "assets-src/art_2026-11-01/equipment/skins/oven_skin3.png",
+  "pixellab_job": "19227016-57d1-4c30-813e-e86be73926ee",
+  "index": 2,
+  "size": [
+   27,
+   24
+  ],
+  "jade_tone": false,
+  "note": "tier 3 cosmetic shop skin"
+ },
+ {
+  "name": "equip_oven_skin4",
+  "file": "assets-src/art_2026-11-01/equipment/skins/oven_skin4.png",
+  "pixellab_job": "19227016-57d1-4c30-813e-e86be73926ee",
+  "index": 3,
+  "size": [
+   27,
+   24
+  ],
+  "jade_tone": false,
+  "note": "tier 3 cosmetic shop skin"
+ },
+ {
+  "name": "equip_oven_skin24",
+  "file": "assets-src/art_2026-11-01/equipment/skins/oven_skin24.png",
+  "pixellab_job": "19227016-57d1-4c30-813e-e86be73926ee",
+  "index": 23,
+  "size": [
+   22,
+   24
+  ],
+  "jade_tone": false,
+  "note": "tier 3 cosmetic shop skin"
+ },
+ {
+  "name": "equip_oven_skin59",
+  "file": "assets-src/art_2026-11-01/equipment/skins/oven_skin59.png",
+  "pixellab_job": "19227016-57d1-4c30-813e-e86be73926ee",
+  "index": 58,
+  "size": [
+   21,
+   24
+  ],
+  "jade_tone": false,
+  "note": "tier 3 cosmetic shop skin"
+ },
+ {
+  "name": "equip_mortar",
+  "file": "assets-src/art_2026-11-01/equipment/mortar.png",
+  "pixellab_job": "40bd691c-045a-41ce-b635-814004f7eb82",
+  "index": 52,
+  "size": [
+   21,
+   27
+  ],
+  "jade_tone": false,
+  "note": "tier 3 main"
+ },
+ {
+  "name": "equip_mortar_skin2",
+  "file": "assets-src/art_2026-11-01/equipment/skins/mortar_skin2.png",
+  "pixellab_job": "40bd691c-045a-41ce-b635-814004f7eb82",
+  "index": 1,
+  "size": [
+   21,
+   25
+  ],
+  "jade_tone": false,
+  "note": "tier 3 cosmetic shop skin"
+ },
+ {
+  "name": "equip_mortar_skin3",
+  "file": "assets-src/art_2026-11-01/equipment/skins/mortar_skin3.png",
+  "pixellab_job": "40bd691c-045a-41ce-b635-814004f7eb82",
+  "index": 2,
+  "size": [
+   26,
+   25
+  ],
+  "jade_tone": false,
+  "note": "tier 3 cosmetic shop skin"
+ },
+ {
+  "name": "equip_mortar_skin4",
+  "file": "assets-src/art_2026-11-01/equipment/skins/mortar_skin4.png",
+  "pixellab_job": "40bd691c-045a-41ce-b635-814004f7eb82",
+  "index": 3,
+  "size": [
+   21,
+   26
+  ],
+  "jade_tone": false,
+  "note": "tier 3 cosmetic shop skin"
+ },
+ {
+  "name": "equip_smart_cooker",
+  "file": "assets-src/art_2026-11-01/equipment/smart_cooker.png",
+  "pixellab_job": "92bcde90-8cfc-42d8-a760-459e5a7a9892",
+  "index": 19,
+  "size": [
+   20,
+   28
+  ],
+  "jade_tone": false,
+  "note": "tier 4 main"
+ },
+ {
+  "name": "equip_smart_cooker_skin41",
+  "file": "assets-src/art_2026-11-01/equipment/skins/smart_cooker_skin41.png",
+  "pixellab_job": "92bcde90-8cfc-42d8-a760-459e5a7a9892",
+  "index": 40,
+  "size": [
+   24,
+   28
+  ],
+  "jade_tone": false,
+  "note": "tier 4 cosmetic shop skin"
+ },
+ {
+  "name": "equip_star_stove",
+  "file": "assets-src/art_2026-11-01/equipment/star_stove.png",
+  "pixellab_job": "a9689978-3e13-4749-8e3d-a275d9c37d2c",
+  "index": 51,
+  "size": [
+   28,
+   26
+  ],
+  "jade_tone": false,
+  "note": "tier 5 main"
+ },
+ {
+  "name": "equip_star_stove_skin59",
+  "file": "assets-src/art_2026-11-01/equipment/skins/star_stove_skin59.png",
+  "pixellab_job": "a9689978-3e13-4749-8e3d-a275d9c37d2c",
+  "index": 58,
+  "size": [
+   28,
+   26
+  ],
+  "jade_tone": false,
+  "note": "tier 5 cosmetic shop skin"
+ },
+ {
+  "name": "equip_star_stove_skin63",
+  "file": "assets-src/art_2026-11-01/equipment/skins/star_stove_skin63.png",
+  "pixellab_job": "a9689978-3e13-4749-8e3d-a275d9c37d2c",
+  "index": 62,
+  "size": [
+   28,
+   26
+  ],
+  "jade_tone": false,
+  "note": "tier 5 cosmetic shop skin"
+ },
+ {
+  "name": "equip_star_stove_skin22",
+  "file": "assets-src/art_2026-11-01/equipment/skins/star_stove_skin22.png",
+  "pixellab_job": "a9689978-3e13-4749-8e3d-a275d9c37d2c",
+  "index": 21,
+  "size": [
+   28,
+   25
+  ],
+  "jade_tone": false,
+  "note": "tier 5 cosmetic shop skin"
+ },
+ {
+  "name": "equip_star_stove_skin43",
+  "file": "assets-src/art_2026-11-01/equipment/skins/star_stove_skin43.png",
+  "pixellab_job": "a9689978-3e13-4749-8e3d-a275d9c37d2c",
+  "index": 42,
+  "size": [
+   28,
+   27
+  ],
+  "jade_tone": false,
+  "note": "tier 5 cosmetic shop skin"
+ },
+ {
+  "name": "home_coop_kaipok",
+  "file": "assets-src/art_2026-11-01/pet_homes/coop_kaipok.png",
+  "pixellab_job": "4f48f0ee-7715-4926-8df0-604bd4af8a4b",
+  "index": 2,
+  "size": [
+   71,
+   75
+  ],
+  "jade_tone": false,
+  "note": "player-placeable in pets meadow: land"
+ },
+ {
+  "name": "home_barn_mumumek",
+  "file": "assets-src/art_2026-11-01/pet_homes/barn_mumumek.png",
+  "pixellab_job": "13210c77-ff15-46bf-a8a9-aa79bcf33b9e",
+  "index": 2,
+  "size": [
+   104,
+   100
+  ],
+  "jade_tone": false,
+  "note": "player-placeable in pets meadow: land"
+ },
+ {
+  "name": "home_hive_boomboom",
+  "file": "assets-src/art_2026-11-01/pet_homes/hive_boomboom.png",
+  "pixellab_job": "c5a16cd3-7547-4d3a-a9a0-a6d422ec1eba",
+  "index": 12,
+  "size": [
+   51,
+   56
+  ],
+  "jade_tone": false,
+  "note": "player-placeable in pets meadow: land"
+ },
+ {
+  "name": "home_leafspot_nuebnub",
+  "file": "assets-src/art_2026-11-01/pet_homes/leafspot_nuebnub.png",
+  "pixellab_job": "0b76ade9-c7c2-410a-aa19-dd6a5c822d5c",
+  "index": 0,
+  "size": [
+   47,
+   61
+  ],
+  "jade_tone": false,
+  "note": "player-placeable in pets meadow: land cell next to water"
+ },
+ {
+  "name": "home_shellbed_bubble",
+  "file": "assets-src/art_2026-11-01/pet_homes/shellbed_bubble.png",
+  "pixellab_job": "63fe11c5-244a-4c71-b688-d111285ea1b5",
+  "index": 8,
+  "size": [
+   54,
+   53
+  ],
+  "jade_tone": false,
+  "note": "player-placeable in pets meadow: water cell only"
+ },
+ {
+  "name": "fence_straight",
+  "file": "assets-src/art_2026-11-01/map/fence_straight.png",
+  "pixellab_job": "163b0a06-524f-46be-94f6-7266b3f3f92e",
+  "index": 0,
+  "size": [
+   30,
+   21
+  ],
+  "jade_tone": true,
+  "note": "1 grid cell"
+ },
+ {
+  "name": "fence_straight_vines",
+  "file": "assets-src/art_2026-11-01/map/fence_straight_vines.png",
+  "pixellab_job": "163b0a06-524f-46be-94f6-7266b3f3f92e",
+  "index": 3,
+  "size": [
+   30,
+   22
+  ],
+  "jade_tone": true,
+  "note": "variant: mix in about 1 in 4"
+ },
+ {
+  "name": "fence_post",
+  "file": "assets-src/art_2026-11-01/map/fence_post.png",
+  "pixellab_job": "163b0a06-524f-46be-94f6-7266b3f3f92e",
+  "index": 32,
+  "size": [
+   6,
+   27
+  ],
+  "jade_tone": true,
+  "note": "ends and corners"
+ },
+ {
+  "name": "fence_gate",
+  "file": "assets-src/art_2026-11-01/map/fence_gate.png",
+  "pixellab_job": "163b0a06-524f-46be-94f6-7266b3f3f92e",
+  "index": 17,
+  "size": [
+   26,
+   22
+  ],
+  "jade_tone": true,
+  "note": "closed gate, 1 cell"
+ },
+ {
+  "name": "land_sale_sign",
+  "file": "assets-src/art_2026-11-01/map/land_sale_sign.png",
+  "pixellab_job": "26e604b4-9354-4027-8ec0-88e23cdfdcf6",
+  "index": 0,
+  "size": [
+   40,
+   50
+  ],
+  "jade_tone": true,
+  "note": "blank board: draw the price in code on the board"
+ },
+ {
+  "name": "fishing_dock",
+  "file": "assets-src/art_2026-11-01/map/fishing_dock.png",
+  "pixellab_job": "90b7b7a8-d774-4c8f-8bac-79fc196025f0",
+  "index": 0,
+  "size": [
+   61,
+   94
+  ],
+  "jade_tone": true,
+  "note": "baked water disc already removed; land must be SOUTH of the pond, dock points north into the water"
+ },
+ {
+  "name": "weed_01",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_01.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 0,
+  "size": [
+   22,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_02",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_02.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 1,
+  "size": [
+   25,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_03",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_03.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 2,
+  "size": [
+   22,
+   26
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_04",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_04.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 3,
+  "size": [
+   22,
+   21
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_05",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_05.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 4,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_06",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_06.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 5,
+  "size": [
+   24,
+   28
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_07",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_07.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 6,
+  "size": [
+   26,
+   23
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_08",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_08.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 7,
+  "size": [
+   22,
+   20
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_09",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_09.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 8,
+  "size": [
+   22,
+   25
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_10",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_10.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 9,
+  "size": [
+   25,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_11",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_11.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 10,
+  "size": [
+   22,
+   26
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_12",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_12.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 11,
+  "size": [
+   24,
+   21
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_13",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_13.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 12,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_14",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_14.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 13,
+  "size": [
+   24,
+   28
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_15",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_15.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 14,
+  "size": [
+   26,
+   23
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_16",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_16.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 15,
+  "size": [
+   22,
+   20
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_17",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_17.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 16,
+  "size": [
+   23,
+   26
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_18",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_18.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 17,
+  "size": [
+   27,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_19",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_19.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 18,
+  "size": [
+   21,
+   20
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_20",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_20.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 19,
+  "size": [
+   23,
+   29
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_21",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_21.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 20,
+  "size": [
+   26,
+   25
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_22",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_22.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 21,
+  "size": [
+   22,
+   20
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_23",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_23.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 22,
+  "size": [
+   26,
+   23
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_24",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_24.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 23,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_25",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_25.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 24,
+  "size": [
+   23,
+   26
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_26",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_26.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 25,
+  "size": [
+   27,
+   23
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_27",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_27.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 26,
+  "size": [
+   25,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_28",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_28.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 27,
+  "size": [
+   24,
+   28
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_29",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_29.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 28,
+  "size": [
+   26,
+   23
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_30",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_30.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 29,
+  "size": [
+   27,
+   25
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_31",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_31.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 30,
+  "size": [
+   28,
+   26
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_32",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_32.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 31,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_33",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_33.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 32,
+  "size": [
+   23,
+   27
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_34",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_34.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 33,
+  "size": [
+   28,
+   25
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_35",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_35.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 34,
+  "size": [
+   27,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_36",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_36.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 35,
+  "size": [
+   25,
+   26
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_37",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_37.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 36,
+  "size": [
+   26,
+   23
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_38",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_38.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 37,
+  "size": [
+   22,
+   21
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_39",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_39.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 38,
+  "size": [
+   26,
+   23
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_40",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_40.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 39,
+  "size": [
+   26,
+   25
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_41",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_41.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 40,
+  "size": [
+   23,
+   25
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_42",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_42.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 41,
+  "size": [
+   28,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_43",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_43.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 42,
+  "size": [
+   25,
+   26
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_44",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_44.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 43,
+  "size": [
+   28,
+   25
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_45",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_45.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 44,
+  "size": [
+   28,
+   27
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_46",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_46.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 45,
+  "size": [
+   29,
+   26
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_47",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_47.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 46,
+  "size": [
+   28,
+   25
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_48",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_48.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 47,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_49",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_49.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 48,
+  "size": [
+   21,
+   26
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_50",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_50.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 49,
+  "size": [
+   28,
+   23
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_51",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_51.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 50,
+  "size": [
+   23,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_52",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_52.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 51,
+  "size": [
+   24,
+   29
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_53",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_53.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 52,
+  "size": [
+   27,
+   22
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_54",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_54.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 53,
+  "size": [
+   23,
+   21
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_55",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_55.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 54,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_56",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_56.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 55,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_57",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_57.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 56,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_58",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_58.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 57,
+  "size": [
+   28,
+   27
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_59",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_59.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 58,
+  "size": [
+   25,
+   25
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_60",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_60.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 59,
+  "size": [
+   28,
+   24
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_61",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_61.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 60,
+  "size": [
+   28,
+   25
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_62",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_62.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 61,
+  "size": [
+   26,
+   23
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_63",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_63.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 62,
+  "size": [
+   27,
+   25
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "weed_64",
+  "file": "assets-src/art_2026-11-01/map/weeds/weed_64.png",
+  "pixellab_job": "292b6041-715b-4f34-a284-bb521bda4002",
+  "index": 63,
+  "size": [
+   27,
+   25
+  ],
+  "jade_tone": true,
+  "note": "unbought plots; random mix"
+ },
+ {
+  "name": "ground_farm_soil",
+  "file": "assets-src/art_2026-11-01/tiles/farm_soil_16.png",
+  "pixellab_tileset": "bdab1420-946e-4a2f-acba-5a0a28820057",
+  "jade_tone": true,
+  "note": "grass(lower, chained to grass base f08dadb0)->tilled soil(upper) Wang 16x32px; pick tiles by /metadata corners+bounding_box. Watered = same tiles darkened in code (r*0.72, g*0.70, b*0.75)."
+ },
+ {
+  "name": "toy_slide_02",
+  "file": "assets-src/art_2026-11-01/playground/slide/slide_02.png",
+  "pixellab_job": "bfc9c84e-5542-4c7c-ae61-dd73cd180770",
+  "index": 1,
+  "size": [
+   100,
+   96
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_slide_01",
+  "file": "assets-src/art_2026-11-01/playground/slide/slide_01.png",
+  "pixellab_job": "bfc9c84e-5542-4c7c-ae61-dd73cd180770",
+  "index": 0,
+  "size": [
+   101,
+   96
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_slide_03",
+  "file": "assets-src/art_2026-11-01/playground/slide/slide_03.png",
+  "pixellab_job": "bfc9c84e-5542-4c7c-ae61-dd73cd180770",
+  "index": 2,
+  "size": [
+   105,
+   98
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_slide_04",
+  "file": "assets-src/art_2026-11-01/playground/slide/slide_04.png",
+  "pixellab_job": "bfc9c84e-5542-4c7c-ae61-dd73cd180770",
+  "index": 3,
+  "size": [
+   103,
+   96
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_treehouse_01",
+  "file": "assets-src/art_2026-11-01/playground/treehouse/treehouse_01.png",
+  "pixellab_job": "336a0f90-103e-40e6-8b76-9bc25e07812a",
+  "index": 0,
+  "size": [
+   58,
+   100
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_treehouse_02",
+  "file": "assets-src/art_2026-11-01/playground/treehouse/treehouse_02.png",
+  "pixellab_job": "336a0f90-103e-40e6-8b76-9bc25e07812a",
+  "index": 1,
+  "size": [
+   71,
+   98
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_treehouse_03",
+  "file": "assets-src/art_2026-11-01/playground/treehouse/treehouse_03.png",
+  "pixellab_job": "336a0f90-103e-40e6-8b76-9bc25e07812a",
+  "index": 2,
+  "size": [
+   61,
+   98
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_treehouse_04",
+  "file": "assets-src/art_2026-11-01/playground/treehouse/treehouse_04.png",
+  "pixellab_job": "336a0f90-103e-40e6-8b76-9bc25e07812a",
+  "index": 3,
+  "size": [
+   56,
+   106
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_swing_01",
+  "file": "assets-src/art_2026-11-01/playground/swing/swing_01.png",
+  "pixellab_job": "dab7ae1f-0ee9-45ef-829e-2a155586cca5",
+  "index": 0,
+  "size": [
+   79,
+   78
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_swing_02",
+  "file": "assets-src/art_2026-11-01/playground/swing/swing_02.png",
+  "pixellab_job": "dab7ae1f-0ee9-45ef-829e-2a155586cca5",
+  "index": 1,
+  "size": [
+   77,
+   78
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_swing_03",
+  "file": "assets-src/art_2026-11-01/playground/swing/swing_03.png",
+  "pixellab_job": "dab7ae1f-0ee9-45ef-829e-2a155586cca5",
+  "index": 2,
+  "size": [
+   77,
+   74
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_swing_04",
+  "file": "assets-src/art_2026-11-01/playground/swing/swing_04.png",
+  "pixellab_job": "dab7ae1f-0ee9-45ef-829e-2a155586cca5",
+  "index": 3,
+  "size": [
+   72,
+   77
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_sandbox_01",
+  "file": "assets-src/art_2026-11-01/playground/sandbox/sandbox_01.png",
+  "pixellab_job": "59142712-c82f-4a66-866c-dc832fb93e50",
+  "index": 0,
+  "size": [
+   58,
+   46
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_sandbox_02",
+  "file": "assets-src/art_2026-11-01/playground/sandbox/sandbox_02.png",
+  "pixellab_job": "59142712-c82f-4a66-866c-dc832fb93e50",
+  "index": 1,
+  "size": [
+   60,
+   50
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_sandbox_03",
+  "file": "assets-src/art_2026-11-01/playground/sandbox/sandbox_03.png",
+  "pixellab_job": "59142712-c82f-4a66-866c-dc832fb93e50",
+  "index": 2,
+  "size": [
+   60,
+   48
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_sandbox_04",
+  "file": "assets-src/art_2026-11-01/playground/sandbox/sandbox_04.png",
+  "pixellab_job": "59142712-c82f-4a66-866c-dc832fb93e50",
+  "index": 3,
+  "size": [
+   62,
+   47
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_sandbox_05",
+  "file": "assets-src/art_2026-11-01/playground/sandbox/sandbox_05.png",
+  "pixellab_job": "59142712-c82f-4a66-866c-dc832fb93e50",
+  "index": 4,
+  "size": [
+   58,
+   52
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_sandbox_06",
+  "file": "assets-src/art_2026-11-01/playground/sandbox/sandbox_06.png",
+  "pixellab_job": "59142712-c82f-4a66-866c-dc832fb93e50",
+  "index": 5,
+  "size": [
+   62,
+   52
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_sandbox_07",
+  "file": "assets-src/art_2026-11-01/playground/sandbox/sandbox_07.png",
+  "pixellab_job": "59142712-c82f-4a66-866c-dc832fb93e50",
+  "index": 6,
+  "size": [
+   62,
+   50
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_sandbox_12",
+  "file": "assets-src/art_2026-11-01/playground/sandbox/sandbox_12.png",
+  "pixellab_job": "59142712-c82f-4a66-866c-dc832fb93e50",
+  "index": 11,
+  "size": [
+   54,
+   49
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_sandbox_14",
+  "file": "assets-src/art_2026-11-01/playground/sandbox/sandbox_14.png",
+  "pixellab_job": "59142712-c82f-4a66-866c-dc832fb93e50",
+  "index": 13,
+  "size": [
+   60,
+   50
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_sandbox_15",
+  "file": "assets-src/art_2026-11-01/playground/sandbox/sandbox_15.png",
+  "pixellab_job": "59142712-c82f-4a66-866c-dc832fb93e50",
+  "index": 14,
+  "size": [
+   60,
+   51
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_sandbox_16",
+  "file": "assets-src/art_2026-11-01/playground/sandbox/sandbox_16.png",
+  "pixellab_job": "59142712-c82f-4a66-866c-dc832fb93e50",
+  "index": 15,
+  "size": [
+   60,
+   44
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_01",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_01.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 0,
+  "size": [
+   60,
+   45
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_02",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_02.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 1,
+  "size": [
+   60,
+   52
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_03",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_03.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 2,
+  "size": [
+   56,
+   57
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_04",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_04.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 3,
+  "size": [
+   58,
+   53
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_05",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_05.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 4,
+  "size": [
+   59,
+   45
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_06",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_06.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 5,
+  "size": [
+   55,
+   56
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_07",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_07.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 6,
+  "size": [
+   60,
+   53
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_08",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_08.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 7,
+  "size": [
+   56,
+   45
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_09",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_09.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 8,
+  "size": [
+   60,
+   53
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_10",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_10.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 9,
+  "size": [
+   56,
+   54
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_11",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_11.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 10,
+  "size": [
+   60,
+   51
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_12",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_12.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 11,
+  "size": [
+   58,
+   48
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_13",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_13.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 12,
+  "size": [
+   60,
+   52
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_14",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_14.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 13,
+  "size": [
+   60,
+   51
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_15",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_15.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 14,
+  "size": [
+   60,
+   54
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_seesaw_16",
+  "file": "assets-src/art_2026-11-01/playground/seesaw/seesaw_16.png",
+  "pixellab_job": "6a5333d9-fa72-4c94-b7d0-7d9b63d76184",
+  "index": 15,
+  "size": [
+   60,
+   51
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_afk_bench_02",
+  "file": "assets-src/art_2026-11-01/playground/afk_bench/afk_bench_02.png",
+  "pixellab_job": "7e83e444-0321-4d5d-be99-8443d1fa05e8",
+  "index": 1,
+  "size": [
+   60,
+   59
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_afk_bench_01",
+  "file": "assets-src/art_2026-11-01/playground/afk_bench/afk_bench_01.png",
+  "pixellab_job": "7e83e444-0321-4d5d-be99-8443d1fa05e8",
+  "index": 0,
+  "size": [
+   59,
+   60
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_afk_bench_03",
+  "file": "assets-src/art_2026-11-01/playground/afk_bench/afk_bench_03.png",
+  "pixellab_job": "7e83e444-0321-4d5d-be99-8443d1fa05e8",
+  "index": 2,
+  "size": [
+   59,
+   53
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_afk_bench_04",
+  "file": "assets-src/art_2026-11-01/playground/afk_bench/afk_bench_04.png",
+  "pixellab_job": "7e83e444-0321-4d5d-be99-8443d1fa05e8",
+  "index": 3,
+  "size": [
+   59,
+   58
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_afk_bench_05",
+  "file": "assets-src/art_2026-11-01/playground/afk_bench/afk_bench_05.png",
+  "pixellab_job": "7e83e444-0321-4d5d-be99-8443d1fa05e8",
+  "index": 4,
+  "size": [
+   60,
+   53
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_afk_bench_06",
+  "file": "assets-src/art_2026-11-01/playground/afk_bench/afk_bench_06.png",
+  "pixellab_job": "7e83e444-0321-4d5d-be99-8443d1fa05e8",
+  "index": 5,
+  "size": [
+   60,
+   56
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_afk_bench_07",
+  "file": "assets-src/art_2026-11-01/playground/afk_bench/afk_bench_07.png",
+  "pixellab_job": "7e83e444-0321-4d5d-be99-8443d1fa05e8",
+  "index": 6,
+  "size": [
+   58,
+   58
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_afk_bench_08",
+  "file": "assets-src/art_2026-11-01/playground/afk_bench/afk_bench_08.png",
+  "pixellab_job": "7e83e444-0321-4d5d-be99-8443d1fa05e8",
+  "index": 7,
+  "size": [
+   58,
+   56
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_afk_bench_09",
+  "file": "assets-src/art_2026-11-01/playground/afk_bench/afk_bench_09.png",
+  "pixellab_job": "7e83e444-0321-4d5d-be99-8443d1fa05e8",
+  "index": 8,
+  "size": [
+   61,
+   53
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_afk_bench_10",
+  "file": "assets-src/art_2026-11-01/playground/afk_bench/afk_bench_10.png",
+  "pixellab_job": "7e83e444-0321-4d5d-be99-8443d1fa05e8",
+  "index": 9,
+  "size": [
+   60,
+   49
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_afk_bench_11",
+  "file": "assets-src/art_2026-11-01/playground/afk_bench/afk_bench_11.png",
+  "pixellab_job": "7e83e444-0321-4d5d-be99-8443d1fa05e8",
+  "index": 10,
+  "size": [
+   58,
+   58
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_afk_bench_12",
+  "file": "assets-src/art_2026-11-01/playground/afk_bench/afk_bench_12.png",
+  "pixellab_job": "7e83e444-0321-4d5d-be99-8443d1fa05e8",
+  "index": 11,
+  "size": [
+   58,
+   59
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_afk_bench_15",
+  "file": "assets-src/art_2026-11-01/playground/afk_bench/afk_bench_15.png",
+  "pixellab_job": "7e83e444-0321-4d5d-be99-8443d1fa05e8",
+  "index": 14,
+  "size": [
+   60,
+   49
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_afk_bench_16",
+  "file": "assets-src/art_2026-11-01/playground/afk_bench/afk_bench_16.png",
+  "pixellab_job": "7e83e444-0321-4d5d-be99-8443d1fa05e8",
+  "index": 15,
+  "size": [
+   56,
+   56
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_01",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_01.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 0,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_02",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_02.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 1,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_03",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_03.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 2,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_04",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_04.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 3,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_05",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_05.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 4,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_06",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_06.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 5,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_07",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_07.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 6,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_08",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_08.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 7,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_09",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_09.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 8,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_10",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_10.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 9,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_11",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_11.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 10,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_12",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_12.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 11,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_13",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_13.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 12,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_14",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_14.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 13,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_15",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_15.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 14,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_16",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_16.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 15,
+  "size": [
+   26,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_17",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_17.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 16,
+  "size": [
+   24,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_18",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_18.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 17,
+  "size": [
+   24,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_19",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_19.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 18,
+  "size": [
+   28,
+   18
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_20",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_20.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 19,
+  "size": [
+   28,
+   18
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_21",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_21.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 20,
+  "size": [
+   24,
+   27
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_22",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_22.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 21,
+  "size": [
+   24,
+   25
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_23",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_23.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 22,
+  "size": [
+   24,
+   23
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_24",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_24.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 23,
+  "size": [
+   24,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_25",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_25.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 24,
+  "size": [
+   24,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_26",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_26.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 25,
+  "size": [
+   28,
+   18
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_27",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_27.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 26,
+  "size": [
+   23,
+   25
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_28",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_28.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 27,
+  "size": [
+   24,
+   22
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_29",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_29.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 28,
+  "size": [
+   24,
+   27
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_30",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_30.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 29,
+  "size": [
+   24,
+   25
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_31",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_31.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 30,
+  "size": [
+   24,
+   26
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_32",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_32.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 31,
+  "size": [
+   24,
+   24
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_33",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_33.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 32,
+  "size": [
+   18,
+   27
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_34",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_34.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 33,
+  "size": [
+   22,
+   25
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_35",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_35.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 34,
+  "size": [
+   24,
+   23
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_36",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_36.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 35,
+  "size": [
+   24,
+   23
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_37",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_37.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 36,
+  "size": [
+   24,
+   23
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_38",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_38.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 37,
+  "size": [
+   24,
+   23
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_39",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_39.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 38,
+  "size": [
+   24,
+   23
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_40",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_40.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 39,
+  "size": [
+   24,
+   23
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_41",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_41.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 40,
+  "size": [
+   18,
+   27
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_42",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_42.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 41,
+  "size": [
+   22,
+   25
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_43",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_43.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 42,
+  "size": [
+   24,
+   23
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_44",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_44.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 43,
+  "size": [
+   24,
+   23
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_45",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_45.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 44,
+  "size": [
+   24,
+   23
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_46",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_46.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 45,
+  "size": [
+   24,
+   23
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_47",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_47.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 46,
+  "size": [
+   24,
+   22
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_48",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_48.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 47,
+  "size": [
+   24,
+   21
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_49",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_49.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 48,
+  "size": [
+   24,
+   23
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_50",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_50.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 49,
+  "size": [
+   32,
+   26
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_51",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_51.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 50,
+  "size": [
+   24,
+   26
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_52",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_52.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 51,
+  "size": [
+   24,
+   25
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_53",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_53.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 52,
+  "size": [
+   24,
+   27
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_54",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_54.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 53,
+  "size": [
+   24,
+   27
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_55",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_55.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 54,
+  "size": [
+   24,
+   23
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_56",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_56.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 55,
+  "size": [
+   24,
+   22
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_57",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_57.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 56,
+  "size": [
+   24,
+   26
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_58",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_58.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 57,
+  "size": [
+   30,
+   25
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_59",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_59.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 58,
+  "size": [
+   24,
+   23
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_60",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_60.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 59,
+  "size": [
+   24,
+   22
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_61",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_61.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 60,
+  "size": [
+   24,
+   22
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_62",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_62.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 61,
+  "size": [
+   24,
+   22
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_63",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_63.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 62,
+  "size": [
+   24,
+   22
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "toy_ball_64",
+  "file": "assets-src/art_2026-11-01/playground/ball/ball_64.png",
+  "pixellab_job": "546dfc28-89ac-44bc-9a01-d5f916443237",
+  "index": 63,
+  "size": [
+   24,
+   22
+  ],
+  "jade_tone": false,
+  "currency": "stars",
+  "note": "playground toy: Sugar Stars only (any order)"
+ },
+ {
+  "name": "food_tray_6",
+  "file": "assets-src/art_2026-11-01/yard/food_tray_6.png",
+  "pixellab_job": "e14687dd-7e8d-4abc-b328-7749b4c7af2d",
+  "index": 13,
+  "size": [
+   60,
+   36
+  ],
+  "jade_tone": true,
+  "note": "tray upgrade, matches food_tray_3"
+ },
+ {
+  "name": "food_tray_10",
+  "file": "assets-src/art_2026-11-01/yard/food_tray_10.png",
+  "pixellab_job": "a91b3dba-c437-47cc-950f-4a12abd15814",
+  "index": 3,
+  "size": [
+   82,
+   36
+  ],
+  "jade_tone": true,
+  "note": "tray upgrade, matches food_tray_3"
+ }
+]

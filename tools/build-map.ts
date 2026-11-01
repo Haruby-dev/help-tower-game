@@ -26,6 +26,7 @@ type Side = TilesetMeta[number]['corners']['NW'];
 
 interface MapTileset {
   name: string;
+  file: string;
   sides: Partial<Record<Terrain, Side>>;
   firstGid: number;
   columns: number;
@@ -36,21 +37,25 @@ interface MapTileset {
 /** ทุกชุดต่อกันผ่านหญ้าปกติ ป่าทึบใช้ภาพหญ้าเข้มแต่เดินไม่ได้ */
 const tilesets: MapTileset[] = [];
 const addTileset = (name: string, sides: MapTileset['sides']): void => {
-  const png = PNG.sync.read(readFileSync(join(projectRoot, 'public/assets/tiles', `${name}.png`)));
+  const entry = registry[name];
+  if (entry?.type !== 'tileset' && entry?.type !== 'local_tileset') throw new Error(`${name} is not a tileset`);
+  const png = PNG.sync.read(readFileSync(join(projectRoot, 'public/assets', entry.file)));
   const previous = tilesets.at(-1);
   tilesets.push({
     name,
+    file: entry.file,
     sides,
     firstGid: previous ? previous.firstGid + previous.columns * previous.rows : 1,
     columns: png.width / TILE_SIZE,
     rows: png.height / TILE_SIZE,
-    tiles: tilesetMetaSchema.parse(readJson(`assets-src/tiles/${name}.meta.json`)),
+    tiles: tilesetMetaSchema.parse(readJson(entry.metaFile)),
   });
 };
 addTileset('ground_grass_dirt', { grass: 'upper', dirt: 'lower' });
 addTileset('ground_grass_dark', { grass: 'lower', dark: 'upper', forest: 'upper' });
 addTileset('ground_water', { grass: 'upper', water: 'lower' });
 addTileset('cliff_tall', { grass: 'lower', upper: 'upper', wall: 'transition' });
+addTileset('ground_farm_soil', { grass: 'lower', soil: 'upper' });
 
 function gidFor(corners: TileCorners, x: number, y: number): number {
   const terrains: Terrain[] = Object.values(corners);
@@ -96,19 +101,17 @@ interface PointObject {
 }
 
 const objects: PointObject[] = layout.objects.map((object) => {
-  if (!registry[object.id]) throw new Error(`layout uses ${object.id}, which is not in the registry`);
+  const entry = registry[object.id];
+  if (!entry || entry.type === 'not_used') throw new Error(`layout uses ${object.id}, which is not usable`);
+  if (entry.type === 'local' && entry.lazy) throw new Error(`layout uses ${object.id}, which does not load at boot`);
   const x = toPixels(object.x);
   const y = toPixels(object.y);
   const footprint = layout.footprints[object.id];
   if (footprint) collision.push(footprintRect(footprint, x, y));
-  const shadow = layout.shadows[object.id];
   const properties: NonNullable<PointObject['properties']> = [];
   if (layout.flat.includes(object.id)) properties.push({ name: 'flat', type: 'bool', value: true });
   if (object.submerged) properties.push({ name: 'submerged', type: 'float', value: object.submerged });
-  if (shadow) {
-    properties.push({ name: 'shadowWidth', type: 'int', value: shadow.width });
-    properties.push({ name: 'shadowHeight', type: 'int', value: shadow.height });
-  }
+  if (object.plot !== undefined) properties.push({ name: 'plot', type: 'int', value: object.plot });
   return { name: object.id, x, y, ...(properties.length > 0 ? { properties } : {}) };
 });
 
@@ -246,7 +249,7 @@ const tiledJson = {
   tilesets: tilesets.map((tileset) => ({
     firstgid: tileset.firstGid,
     name: tileset.name,
-    image: `../tiles/${tileset.name}.png`,
+    image: `../${tileset.file}`,
     imagewidth: TILE_SIZE * tileset.columns,
     imageheight: TILE_SIZE * tileset.rows,
     tilewidth: TILE_SIZE,
@@ -286,7 +289,7 @@ const tmx = `<?xml version="1.0" encoding="UTF-8"?>
 ${tilesets
   .map(
     (tileset) => ` <tileset firstgid="${tileset.firstGid}" name="${tileset.name}" tilewidth="${TILE_SIZE}" tileheight="${TILE_SIZE}" tilecount="${tileset.columns * tileset.rows}" columns="${tileset.columns}">
-  <image source="../../public/assets/tiles/${tileset.name}.png" width="${TILE_SIZE * tileset.columns}" height="${TILE_SIZE * tileset.rows}"/>
+  <image source="../../public/assets/${tileset.file}" width="${TILE_SIZE * tileset.columns}" height="${TILE_SIZE * tileset.rows}"/>
  </tileset>`,
   )
   .join('\n')}

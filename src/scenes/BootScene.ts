@@ -16,7 +16,11 @@ export class BootScene extends Phaser.Scene {
           frameWidth: entry.frameWidth,
           frameHeight: entry.frameHeight,
         });
-      } else if (entry.type !== 'placeholder') {
+      } else if (
+        entry.type === 'object' ||
+        entry.type === 'tileset' ||
+        ((entry.type === 'local' || entry.type === 'local_tileset') && !entry.lazy)
+      ) {
         this.load.image(id, assetUrl(entry.file));
       }
     }

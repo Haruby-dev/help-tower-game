@@ -50,7 +50,7 @@ test('renders at a whole-number zoom with no errors', async ({ page }) => {
   expect(snapshot.canvasHeight).toBe(Math.floor(snapshot.innerHeight * snapshot.devicePixelRatio));
   expect(Number.isInteger(snapshot.zoom)).toBe(true);
   expect(snapshot.zoom).toBe(
-    Math.floor(Math.min(snapshot.canvasWidth / 480, snapshot.canvasHeight / 270)),
+    Math.floor(Math.min(snapshot.canvasWidth / 640, snapshot.canvasHeight / 360)),
   );
   expect(errors).toEqual([]);
 });

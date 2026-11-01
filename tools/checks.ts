@@ -51,10 +51,11 @@ export function checkProject(): string[] {
       if (!translations[entry.labelKey]) problems.push(`assets-src/registry.json: ${id} has no text ${entry.labelKey}`);
       continue;
     }
+    if (entry.type === 'not_used') continue;
     if (!existsSync(join(projectRoot, 'public/assets', entry.file))) {
       problems.push(`assets-src/registry.json: ${id} points to missing file ${entry.file}`);
     }
-    if (entry.type !== 'tileset' && !spriteMeta[id]) {
+    if (entry.type !== 'tileset' && entry.type !== 'local_tileset' && !spriteMeta[id]) {
       problems.push(`src/data/sprite-meta.json: ${id} has no foot position, run npm run fetch-assets`);
     }
   }

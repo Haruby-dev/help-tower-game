@@ -61,11 +61,6 @@
       "default": 87
     }
   },
-  "stairs_cliff": {
-    "footY": {
-      "default": 64
-    }
-  },
   "monster_burrow": {
     "footY": {
       "default": 52
@@ -254,6 +249,1246 @@
   "petal_big_3": {
     "footY": {
       "default": 9
+    }
+  },
+  "campfire": {
+    "footY": {
+      "default": 59
+    }
+  },
+  "gio_seat": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "food_tray_3": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "stump_table": {
+    "footY": {
+      "default": 56
+    }
+  },
+  "stump_seat": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "order_counter": {
+    "footY": {
+      "default": 56
+    }
+  },
+  "shop_sign": {
+    "footY": {
+      "default": 55
+    }
+  },
+  "kitchen_smart": {
+    "footY": {
+      "default": 76
+    }
+  },
+  "kitchen_pastel": {
+    "footY": {
+      "default": 60
+    }
+  },
+  "drink_bar_smart": {
+    "footY": {
+      "default": 98
+    }
+  },
+  "drink_bar_pastel": {
+    "footY": {
+      "default": 102
+    }
+  },
+  "decor_mushroom_lamp": {
+    "footY": {
+      "default": 59
+    }
+  },
+  "decor_light_post": {
+    "footY": {
+      "default": 60
+    }
+  },
+  "decor_cupcake_pot": {
+    "footY": {
+      "default": 59
+    }
+  },
+  "decor_macaron_stool": {
+    "footY": {
+      "default": 42
+    }
+  },
+  "decor_bunny_menu_board": {
+    "footY": {
+      "default": 60
+    }
+  },
+  "decor_strawberry_crate": {
+    "footY": {
+      "default": 39
+    }
+  },
+  "decor_polka_plates": {
+    "footY": {
+      "default": 47
+    }
+  },
+  "decor_milk_carton_planter": {
+    "footY": {
+      "default": 58
+    }
+  },
+  "decor_striped_parasol": {
+    "footY": {
+      "default": 59
+    }
+  },
+  "decor_swissroll_flowerbox": {
+    "footY": {
+      "default": 46
+    }
+  },
+  "decor_cookie_jar": {
+    "footY": {
+      "default": 49
+    }
+  },
+  "decor_heart_balloon_sign": {
+    "footY": {
+      "default": 57
+    }
+  },
+  "decor_cloud_lamp": {
+    "footY": {
+      "default": 55
+    }
+  },
+  "decor_donut_cushion": {
+    "footY": {
+      "default": 47
+    }
+  },
+  "decor_icecream_planter": {
+    "footY": {
+      "default": 54
+    }
+  },
+  "decor_candy_barrel": {
+    "footY": {
+      "default": 53
+    }
+  },
+  "equip_pot": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "equip_pot_skin50": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "equip_pot_skin53": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "equip_pot_skin28": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "equip_pot_skin27": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "equip_pot_skin47": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "equip_pot_skin64": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "equip_pot_skin44": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "equip_pan": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "equip_pan_skin17": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "equip_oven": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "equip_oven_skin1": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "equip_oven_skin3": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "equip_oven_skin4": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "equip_oven_skin24": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "equip_oven_skin59": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "equip_mortar": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "equip_mortar_skin2": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "equip_mortar_skin3": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "equip_mortar_skin4": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "equip_smart_cooker": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "equip_smart_cooker_skin41": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "equip_star_stove": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "equip_star_stove_skin59": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "equip_star_stove_skin63": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "equip_star_stove_skin22": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "equip_star_stove_skin43": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "home_coop_kaipok": {
+    "footY": {
+      "default": 75
+    }
+  },
+  "home_barn_mumumek": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "home_hive_boomboom": {
+    "footY": {
+      "default": 56
+    }
+  },
+  "home_leafspot_nuebnub": {
+    "footY": {
+      "default": 61
+    }
+  },
+  "home_shellbed_bubble": {
+    "footY": {
+      "default": 53
+    }
+  },
+  "fence_straight": {
+    "footY": {
+      "default": 21
+    }
+  },
+  "fence_straight_vines": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "fence_post": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "fence_gate": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "land_sale_sign": {
+    "footY": {
+      "default": 50
+    }
+  },
+  "fishing_dock": {
+    "footY": {
+      "default": 94
+    }
+  },
+  "weed_01": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_02": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_03": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "weed_04": {
+    "footY": {
+      "default": 21
+    }
+  },
+  "weed_05": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_06": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "weed_07": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "weed_08": {
+    "footY": {
+      "default": 20
+    }
+  },
+  "weed_09": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "weed_10": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_11": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "weed_12": {
+    "footY": {
+      "default": 21
+    }
+  },
+  "weed_13": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_14": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "weed_15": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "weed_16": {
+    "footY": {
+      "default": 20
+    }
+  },
+  "weed_17": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "weed_18": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_19": {
+    "footY": {
+      "default": 20
+    }
+  },
+  "weed_20": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "weed_21": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "weed_22": {
+    "footY": {
+      "default": 20
+    }
+  },
+  "weed_23": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "weed_24": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_25": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "weed_26": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "weed_27": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_28": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "weed_29": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "weed_30": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "weed_31": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "weed_32": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_33": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "weed_34": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "weed_35": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_36": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "weed_37": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "weed_38": {
+    "footY": {
+      "default": 21
+    }
+  },
+  "weed_39": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "weed_40": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "weed_41": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "weed_42": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_43": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "weed_44": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "weed_45": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "weed_46": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "weed_47": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "weed_48": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_49": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "weed_50": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "weed_51": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_52": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "weed_53": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "weed_54": {
+    "footY": {
+      "default": 21
+    }
+  },
+  "weed_55": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_56": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_57": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_58": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "weed_59": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "weed_60": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "weed_61": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "weed_62": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "weed_63": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "weed_64": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "toy_slide_02": {
+    "footY": {
+      "default": 96
+    }
+  },
+  "toy_slide_01": {
+    "footY": {
+      "default": 96
+    }
+  },
+  "toy_slide_03": {
+    "footY": {
+      "default": 98
+    }
+  },
+  "toy_slide_04": {
+    "footY": {
+      "default": 96
+    }
+  },
+  "toy_treehouse_01": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "toy_treehouse_02": {
+    "footY": {
+      "default": 98
+    }
+  },
+  "toy_treehouse_03": {
+    "footY": {
+      "default": 98
+    }
+  },
+  "toy_treehouse_04": {
+    "footY": {
+      "default": 106
+    }
+  },
+  "toy_swing_01": {
+    "footY": {
+      "default": 78
+    }
+  },
+  "toy_swing_02": {
+    "footY": {
+      "default": 78
+    }
+  },
+  "toy_swing_03": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "toy_swing_04": {
+    "footY": {
+      "default": 77
+    }
+  },
+  "toy_sandbox_01": {
+    "footY": {
+      "default": 46
+    }
+  },
+  "toy_sandbox_02": {
+    "footY": {
+      "default": 50
+    }
+  },
+  "toy_sandbox_03": {
+    "footY": {
+      "default": 48
+    }
+  },
+  "toy_sandbox_04": {
+    "footY": {
+      "default": 47
+    }
+  },
+  "toy_sandbox_05": {
+    "footY": {
+      "default": 52
+    }
+  },
+  "toy_sandbox_06": {
+    "footY": {
+      "default": 52
+    }
+  },
+  "toy_sandbox_07": {
+    "footY": {
+      "default": 50
+    }
+  },
+  "toy_sandbox_12": {
+    "footY": {
+      "default": 49
+    }
+  },
+  "toy_sandbox_14": {
+    "footY": {
+      "default": 50
+    }
+  },
+  "toy_sandbox_15": {
+    "footY": {
+      "default": 51
+    }
+  },
+  "toy_sandbox_16": {
+    "footY": {
+      "default": 44
+    }
+  },
+  "toy_seesaw_01": {
+    "footY": {
+      "default": 45
+    }
+  },
+  "toy_seesaw_02": {
+    "footY": {
+      "default": 52
+    }
+  },
+  "toy_seesaw_03": {
+    "footY": {
+      "default": 57
+    }
+  },
+  "toy_seesaw_04": {
+    "footY": {
+      "default": 53
+    }
+  },
+  "toy_seesaw_05": {
+    "footY": {
+      "default": 45
+    }
+  },
+  "toy_seesaw_06": {
+    "footY": {
+      "default": 56
+    }
+  },
+  "toy_seesaw_07": {
+    "footY": {
+      "default": 53
+    }
+  },
+  "toy_seesaw_08": {
+    "footY": {
+      "default": 45
+    }
+  },
+  "toy_seesaw_09": {
+    "footY": {
+      "default": 53
+    }
+  },
+  "toy_seesaw_10": {
+    "footY": {
+      "default": 54
+    }
+  },
+  "toy_seesaw_11": {
+    "footY": {
+      "default": 51
+    }
+  },
+  "toy_seesaw_12": {
+    "footY": {
+      "default": 48
+    }
+  },
+  "toy_seesaw_13": {
+    "footY": {
+      "default": 52
+    }
+  },
+  "toy_seesaw_14": {
+    "footY": {
+      "default": 51
+    }
+  },
+  "toy_seesaw_15": {
+    "footY": {
+      "default": 54
+    }
+  },
+  "toy_seesaw_16": {
+    "footY": {
+      "default": 51
+    }
+  },
+  "toy_afk_bench_02": {
+    "footY": {
+      "default": 59
+    }
+  },
+  "toy_afk_bench_01": {
+    "footY": {
+      "default": 60
+    }
+  },
+  "toy_afk_bench_03": {
+    "footY": {
+      "default": 53
+    }
+  },
+  "toy_afk_bench_04": {
+    "footY": {
+      "default": 58
+    }
+  },
+  "toy_afk_bench_05": {
+    "footY": {
+      "default": 53
+    }
+  },
+  "toy_afk_bench_06": {
+    "footY": {
+      "default": 56
+    }
+  },
+  "toy_afk_bench_07": {
+    "footY": {
+      "default": 58
+    }
+  },
+  "toy_afk_bench_08": {
+    "footY": {
+      "default": 56
+    }
+  },
+  "toy_afk_bench_09": {
+    "footY": {
+      "default": 53
+    }
+  },
+  "toy_afk_bench_10": {
+    "footY": {
+      "default": 49
+    }
+  },
+  "toy_afk_bench_11": {
+    "footY": {
+      "default": 58
+    }
+  },
+  "toy_afk_bench_12": {
+    "footY": {
+      "default": 59
+    }
+  },
+  "toy_afk_bench_15": {
+    "footY": {
+      "default": 49
+    }
+  },
+  "toy_afk_bench_16": {
+    "footY": {
+      "default": 56
+    }
+  },
+  "toy_ball_01": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_02": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_03": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_04": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_05": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_06": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_07": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_08": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_09": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_10": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_11": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_12": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_13": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_14": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_15": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_16": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_17": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_18": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_19": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "toy_ball_20": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "toy_ball_21": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "toy_ball_22": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "toy_ball_23": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "toy_ball_24": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_25": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_26": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "toy_ball_27": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "toy_ball_28": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "toy_ball_29": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "toy_ball_30": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "toy_ball_31": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "toy_ball_32": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "toy_ball_33": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "toy_ball_34": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "toy_ball_35": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "toy_ball_36": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "toy_ball_37": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "toy_ball_38": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "toy_ball_39": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "toy_ball_40": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "toy_ball_41": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "toy_ball_42": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "toy_ball_43": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "toy_ball_44": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "toy_ball_45": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "toy_ball_46": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "toy_ball_47": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "toy_ball_48": {
+    "footY": {
+      "default": 21
+    }
+  },
+  "toy_ball_49": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "toy_ball_50": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "toy_ball_51": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "toy_ball_52": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "toy_ball_53": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "toy_ball_54": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "toy_ball_55": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "toy_ball_56": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "toy_ball_57": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "toy_ball_58": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "toy_ball_59": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "toy_ball_60": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "toy_ball_61": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "toy_ball_62": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "toy_ball_63": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "toy_ball_64": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "food_tray_6": {
+    "footY": {
+      "default": 36
+    }
+  },
+  "food_tray_10": {
+    "footY": {
+      "default": 36
     }
   }
 }

@@ -57,13 +57,14 @@ const reachable = (tileX: number, tileY: number): boolean =>
   );
 
 describe('base map', () => {
-  it('is the left 30 columns of the blueprint, using only the new ground sets', () => {
-    expect([tiled.width, tiled.height]).toEqual([30, 17]);
+  it('is the whole v3.1 blueprint, using only the new ground sets', () => {
+    expect([tiled.width, tiled.height]).toEqual([47, 31]);
     expect(tiled.tilesets.map(({ name }) => name)).toEqual([
       'ground_grass_dirt',
       'ground_grass_dark',
       'ground_water',
       'cliff_tall',
+      'ground_farm_soil',
     ]);
   });
 
@@ -85,31 +86,52 @@ describe('base map', () => {
   });
 
   it.each([
-    ['in front of the house door', 19, 9.6],
-    ['in front of the burrow', 25, 8.3],
-    ['the terrace, by the stairs', 15, 3.1],
-    ['behind the gate on the terrace', 15, 1.4],
-    ['the shore of the pond', 22, 10.5],
-    ['the far side of the pond', 22, 15.4],
-    ['the farm plots', 7, 11],
-    ['the dock', 19.4, 11.8],
-    ['the campfire', 12.3, 9.6],
+    ['in front of the house door', 24, 8.8],
+    ['in front of the burrow', 33, 8.4],
+    ['the plateau, around the left end of the cliff', 22, 3.5],
+    ['behind the gate on the plateau', 25, 1.9],
+    ['the north shore of the pond', 25, 14.2],
+    ['the south shore of the pond', 26, 21.5],
+    ['the farm', 7, 12],
+    ['the end of the dock', 23.5, 18.8],
+    ['the campfire', 17, 11.6],
+    ['the playground', 25, 26],
   ])('lets the player walk to %s', (_name, tileX, tileY) => {
     expect(reachable(tileX, tileY)).toBe(true);
   });
 
   it.each([
-    ['the middle of the pond', 22, 13],
+    ['the middle of the pond', 27, 18],
     ['the dense forest', 1, 8],
-    ['the forest where the restaurant will open', 29, 8],
-    ['the middle of the cliff wall', 10, 4],
-    ['the pet house under the fog', 6.5, 14.8],
+    ['the restaurant behind the trees and fog', 40, 10],
+    ['the land plots not bought yet', 10, 6],
+    ['the pets meadow under the fog', 10, 19],
   ])('keeps the player out of %s', (_name, tileX, tileY) => {
     expect(reachable(tileX, tileY)).toBe(false);
   });
 
+  it('has no way up the cliff except the stones around its left end', () => {
+    const wallRow = layout.terrain.findIndex((row) => row.includes('='));
+    const clear = layout.openings;
+    expect(clear).toHaveLength(1);
+    expect(clear[0]!.y + clear[0]!.height).toBeLessThanOrEqual(wallRow);
+    expect(clear[0]!.x + clear[0]!.width).toBeLessThanOrEqual(layout.terrain[wallRow]!.indexOf('=') + 2);
+  });
+
+  it('puts the dock on the south shore, pointing north into the water', () => {
+    const dock = layout.objects.find(({ id }) => id === 'fishing_dock')!;
+    const corners = buildCorners(layout);
+    expect(corners[Math.floor(dock.y)]![Math.floor(dock.x)]).toBe('grass');
+    expect(corners[Math.floor(dock.y) - 2]![Math.floor(dock.x)]).toBe('water');
+  });
+
+  it('has a price sign for each of the 3 land plots', () => {
+    const signs = layout.objects.filter(({ id }) => id === 'land_sale_sign');
+    expect(signs.map(({ plot }) => plot)).toEqual([0, 1, 2]);
+  });
+
   it('places every object from the registry and none from the retired set', () => {
-    const retired = ['tree_pink', 'tree_blossom', 'cave', 'burrow', 'stone_gate', 'bush', 'rock', 'flowers'];
+    const retired = ['tree_pink', 'tree_blossom', 'cave', 'burrow', 'stone_gate', 'bush', 'rock', 'flowers', 'stairs_cliff'];
     for (const { id } of layout.objects) {
       expect(registry[id], id).toBeDefined();
       expect(retired).not.toContain(id);
@@ -128,6 +150,11 @@ describe('placement rules', () => {
     for (const flower of flowers) {
       for (const terrain of Object.values(tileOf(flower))) expect(['grass', 'dark']).toContain(terrain);
     }
+  });
+
+  it('has no shadow anywhere in the map data', () => {
+    expect(JSON.stringify(layout)).not.toContain('shadow');
+    expect(JSON.stringify(tiled)).not.toContain('shadow');
   });
 
   it('keeps flowers off the farm', () => {

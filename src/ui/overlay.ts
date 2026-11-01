@@ -4,6 +4,7 @@ import { t } from '../core/i18n';
 import { gameState } from '../core/state';
 import { needsRotation } from '../core/viewport';
 import { createJoystick } from './joystick';
+import { createSettings } from './settings';
 
 const FULLSCREEN_ICON =
   '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
@@ -74,18 +75,12 @@ function createRotatePrompt(uiRoot: HTMLElement): void {
   });
 }
 
-function createVignette(uiRoot: HTMLElement): void {
-  const vignette = document.createElement('div');
-  vignette.id = 'vignette';
-  uiRoot.append(vignette);
-}
-
 export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
-  createVignette(uiRoot);
   createLocationLabel(uiRoot);
   createJoystick(uiRoot);
   createRotatePrompt(uiRoot);
   createFullscreenButton(uiRoot, appRoot);
+  createSettings(uiRoot);
 }
 
 export function updateRotationRequired(appRoot: HTMLElement): void {

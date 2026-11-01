@@ -8,37 +8,40 @@ import type { Vector } from '../core/movement';
 import type { Viewport } from '../core/viewport';
 import { Gio } from '../entities/Gio';
 import { Player } from '../entities/Player';
-import { shadowTexture, softEllipseTexture } from './sceneArt';
+import balance from '../data/balance.json';
+import display from '../data/display.json';
+import { LIGHTING_PIPELINE, LightingPipeline, type LightSpot } from './LightingPipeline';
+import { createCanopyMask, softEllipseTexture, waterlineTexture, type ShadeArea } from './sceneArt';
 
 type MoveKeys = Record<'up' | 'down' | 'left' | 'right' | 'w' | 'a' | 's' | 'd', Phaser.Input.Keyboard.Key>;
 
-/** ลำดับชั้นภาพที่ไม่เรียงตามเท้า ค่าลบอยู่ใต้ตัวละครเสมอ ระลอกอยู่เหนือหินกลางบ่อ หมอกอยู่เหนือบ้านสัตว์เลี้ยงแต่หลังแนวต้นไม้ด้านล่าง */
+/** ลำดับชั้นภาพที่ไม่เรียงตามเท้า ค่าลบอยู่ใต้ตัวละครเสมอ */
 const DEPTH = {
   ground: -10,
-  deepWater: -9,
   flat: -8,
   flowers: -7,
-  sun: -6,
-  shadow: -5,
-  ripple: 500,
-  fog: 507,
   label: 9001,
 } as const;
 
-const PLAYER_SHADOW = { width: 30, height: 10 };
-const GIO_SHADOW = { width: 40, height: 12 };
+const LIGHT_MASK_KEY = 'light_mask';
+const TREE_SHADE = { lift: 24, width: 96, height: 72 };
 const FOG_DRIFT_PX = 6;
 const FOG_DRIFT_MS = 5000;
 const FOG_MIN_ALPHA = 0.8;
 const LABEL_FONT_PX = 8;
+const PRICE_FONT_PX = 9;
+/** ตำแหน่งตัวเลขราคาเหนือจุดเท้าของป้าย */
+const PRICE_LIFT_PX = 30;
 
 export class BaseScene extends Phaser.Scene {
   private player!: Player;
   private gio!: Gio;
   private keys!: MoveKeys;
-  private playerShadow!: Phaser.GameObjects.Image;
-  private gioShadow!: Phaser.GameObjects.Image;
   private labels: Phaser.GameObjects.Text[] = [];
+  private shadeAreas: ShadeArea[] = [];
+  private pool = { x: 0, y: 0, radiusX: 1, radiusY: 1 };
+  private glows: Partial<Record<'fire' | 'gate' | 'burrow', LightSpot>> = {};
+  private lightingWorld = { width: 1, height: 1 };
 
   constructor() {
     super('Base');
@@ -46,6 +49,8 @@ export class BaseScene extends Phaser.Scene {
 
   create(): void {
     this.labels = [];
+    this.shadeAreas = [];
+    this.glows = {};
     const map = this.make.tilemap({ key: 'base_map' });
     const tilesets = map.tilesets.map((tileset) => map.addTilesetImage(tileset.name, tileset.name)!);
     map.createLayer('ground', tilesets)!.setDepth(DEPTH.ground);
@@ -79,12 +84,6 @@ export class BaseScene extends Phaser.Scene {
     const gioSpawn = spawn('gio');
     this.player = new Player(this, playerSpawn.x, playerSpawn.y);
     this.gio = new Gio(this, gioSpawn.x, gioSpawn.y, createRng(Date.now()));
-    this.playerShadow = this.add
-      .image(playerSpawn.x, playerSpawn.y, shadowTexture(this, PLAYER_SHADOW.width, PLAYER_SHADOW.height))
-      .setDepth(DEPTH.shadow);
-    this.gioShadow = this.add
-      .image(gioSpawn.x, gioSpawn.y, shadowTexture(this, GIO_SHADOW.width, GIO_SHADOW.height))
-      .setDepth(DEPTH.shadow);
 
     this.physics.add.collider(this.player.body, obstacles);
     this.physics.add.collider(this.gio.body, obstacles);
@@ -105,16 +104,20 @@ export class BaseScene extends Phaser.Scene {
     camera.setBounds(0, 0, worldWidth, worldHeight);
     camera.startFollow(this.player.sprite, true);
 
+    this.setUpLighting(worldWidth, worldHeight);
+
     this.applyViewport(gameState.viewport);
-    const stopListening = eventBus.on('viewport-changed', (viewport) => this.applyViewport(viewport));
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, stopListening);
+    const stopViewport = eventBus.on('viewport-changed', (viewport) => this.applyViewport(viewport));
+    const stopLighting = eventBus.on('lighting-changed', (enabled) => this.applyLighting(enabled));
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      stopViewport();
+      stopLighting();
+    });
   }
 
   override update(_time: number, deltaMs: number): void {
     this.player.update(this.readMoveInput());
     this.gio.update(deltaMs, this.player.feetX, this.player.feetY);
-    this.playerShadow.setPosition(this.player.feetX, this.player.feetY);
-    this.gioShadow.setPosition(this.gio.body.x, this.gio.sprite.y);
   }
 
   private placeObject(object: Phaser.Types.Tilemaps.TiledObject): void {
@@ -132,10 +135,29 @@ export class BaseScene extends Phaser.Scene {
     const submerged = this.property<number>(object, 'submerged');
     if (submerged) image.setCrop(0, 0, entry.width, Math.round(entry.height * submerged));
 
-    const shadowWidth = this.property<number>(object, 'shadowWidth');
-    const shadowHeight = this.property<number>(object, 'shadowHeight');
-    if (shadowWidth && shadowHeight) {
-      this.add.image(x, y, shadowTexture(this, shadowWidth, shadowHeight)).setDepth(DEPTH.shadow);
+    const plot = this.property<number>(object, 'plot');
+    if (plot !== undefined) {
+      const price = this.add
+        .text(x, y - PRICE_LIFT_PX, String(balance.land.prices[plot]), {
+          fontFamily: 'Mali',
+          fontSize: `${PRICE_FONT_PX}px`,
+          fontStyle: 'bold',
+          color: '#5a3a22',
+        })
+        .setOrigin(0.5)
+        .setDepth(y + 1);
+      this.labels.push(price);
+    }
+
+    // ต้นไม้ทำให้เกิดร่มเงาบนพื้นรอบต้น
+    if (id.startsWith('tree_big')) {
+      this.shadeAreas.push({
+        x,
+        y: y - TREE_SHADE.lift,
+        width: TREE_SHADE.width,
+        height: TREE_SHADE.height,
+        blobs: display.lighting.treeBlobs,
+      });
     }
 
     if (entry.type === 'placeholder') {
@@ -160,18 +182,21 @@ export class BaseScene extends Phaser.Scene {
     const x = (effect.x ?? 0) + width / 2;
     const y = (effect.y ?? 0) + height / 2;
 
-    if (effect.name === 'sun') {
-      const key = softEllipseTexture(this, { width, height, color: '255, 236, 150', alpha: 0.26, solidUntil: 0.2 });
-      this.add.image(x, y, key).setDepth(DEPTH.sun);
-    } else if (effect.name === 'deep_water') {
-      const key = softEllipseTexture(this, { width, height, color: '12, 62, 92', alpha: 0.42, solidUntil: 0.35 });
-      this.add.image(x, y, key).setDepth(DEPTH.deepWater);
-    } else if (effect.name === 'ripple') {
-      const key = softEllipseTexture(this, { width, height, color: '236, 250, 250', alpha: 0.6, solidUntil: 0.5 });
-      this.add.image(x, y, key).setDepth(DEPTH.ripple);
+    if (effect.name === 'light_pool') {
+      this.pool = { x, y, radiusX: width / 2, radiusY: height / 2 };
+    } else if (effect.name === 'canopy') {
+      this.shadeAreas.push({ x, y, width, height, blobs: display.lighting.patchBlobs });
+    } else if (effect.name === 'glow_fire') {
+      this.glows.fire = { x, y, radius: width / 2 };
+    } else if (effect.name === 'glow_gate') {
+      this.glows.gate = { x, y, radius: width / 2 };
+    } else if (effect.name === 'glow_burrow') {
+      this.glows.burrow = { x, y, radius: width / 2 };
+    } else if (effect.name === 'waterline') {
+      this.add.image(x, y, waterlineTexture(this, width, height)).setDepth(y + 1);
     } else if (effect.name === 'fog') {
       const key = softEllipseTexture(this, { width, height, color: '238, 243, 240', alpha: 0.72, solidUntil: 0.45 });
-      const fog = this.add.image(x, y, key).setDepth(DEPTH.fog);
+      const fog = this.add.image(x, y, key).setDepth(y + height / 2);
       this.tweens.add({
         targets: fog,
         x: x + FOG_DRIFT_PX,
@@ -184,6 +209,36 @@ export class BaseScene extends Phaser.Scene {
     } else {
       throw new Error(`map has unknown effect ${effect.name}`);
     }
+  }
+
+  private setUpLighting(worldWidth: number, worldHeight: number): void {
+    const renderer = this.game.renderer;
+    if (!(renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer)) return;
+    if (!renderer.pipelines.getPostPipeline(LIGHTING_PIPELINE)) {
+      renderer.pipelines.addPostPipeline(LIGHTING_PIPELINE, LightingPipeline);
+    }
+    if (!this.textures.exists(LIGHT_MASK_KEY)) {
+      createCanopyMask(this, LIGHT_MASK_KEY, worldWidth, worldHeight, this.shadeAreas, createRng(display.lighting.seed));
+    }
+    this.lightingWorld = { width: worldWidth, height: worldHeight };
+    this.applyLighting(gameState.lightingEnabled);
+  }
+
+  private applyLighting(enabled: boolean): void {
+    const { fire, gate, burrow } = this.glows;
+    const camera = this.cameras.main;
+    if (!(this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) || !fire || !gate || !burrow) return;
+    camera.removePostPipeline(LIGHTING_PIPELINE);
+    if (!enabled) return;
+    camera.setPostPipeline(LIGHTING_PIPELINE);
+    const pipeline = camera.getPostPipeline(LIGHTING_PIPELINE) as LightingPipeline;
+    pipeline.configure({
+      maskKey: LIGHT_MASK_KEY,
+      worldWidth: this.lightingWorld.width,
+      worldHeight: this.lightingWorld.height,
+      pool: this.pool,
+      glows: [fire, gate, burrow],
+    });
   }
 
   private property<T>(object: Phaser.Types.Tilemaps.TiledObject, name: string): T | undefined {

@@ -1,4 +1,4 @@
-export type Terrain = 'grass' | 'dirt' | 'dark' | 'forest' | 'water' | 'upper' | 'wall';
+export type Terrain = 'grass' | 'dirt' | 'dark' | 'forest' | 'water' | 'upper' | 'wall' | 'soil';
 
 export interface Rect {
   x: number;
@@ -17,7 +17,6 @@ export interface MapLayout {
   openings: Rect[];
   walkableOverWater: Rect[];
   footprints: Record<string, { width: number; height: number }>;
-  shadows: Record<string, { width: number; height: number }>;
   flat: string[];
   flowers: {
     seed: number;
@@ -29,7 +28,7 @@ export interface MapLayout {
     keepOut: Rect[];
   };
   effects: { name: string; x: number; y: number; width: number; height: number }[];
-  objects: { id: string; x: number; y: number; submerged?: number }[];
+  objects: { id: string; x: number; y: number; submerged?: number; plot?: number }[];
   spawns: Record<string, { x: number; y: number }>;
 }
 

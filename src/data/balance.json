@@ -2,6 +2,9 @@
   "player": {
     "speed": 96
   },
+  "land": {
+    "prices": [500, 1500, 4000]
+  },
   "gio": {
     "sitMinMs": 2000,
     "sitMaxMs": 5000,

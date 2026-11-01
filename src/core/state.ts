@@ -6,6 +6,7 @@ class GameState {
   private currentViewport: Viewport | null = null;
   private currentRotationRequired = false;
   private currentJoystick: Vector = { x: 0, y: 0 };
+  private currentLightingEnabled = true;
 
   get viewport(): Viewport {
     if (!this.currentViewport) throw new Error('viewport has not been set');
@@ -18,6 +19,16 @@ class GameState {
 
   get joystick(): Vector {
     return this.currentJoystick;
+  }
+
+  get lightingEnabled(): boolean {
+    return this.currentLightingEnabled;
+  }
+
+  setLightingEnabled(enabled: boolean): void {
+    if (enabled === this.currentLightingEnabled) return;
+    this.currentLightingEnabled = enabled;
+    eventBus.emit('lighting-changed', enabled);
   }
 
   setViewport(viewport: Viewport): void {
