@@ -58,7 +58,7 @@ const reachable = (tileX: number, tileY: number): boolean =>
 
 describe('base map', () => {
   it('is the whole v3.1 blueprint, using only the new ground sets', () => {
-    expect([tiled.width, tiled.height]).toEqual([51, 31]);
+    expect([tiled.width, tiled.height]).toEqual([51, 35]);
     expect(tiled.tilesets.map(({ name }) => name)).toEqual([
       'ground_grass_dirt',
       'ground_grass_dark',
@@ -96,7 +96,8 @@ describe('base map', () => {
     ['the farm', 7, 12],
     ['the end of the dock', 23.5, 18.8],
     ['the campfire', 17, 11.6],
-    ['the playground', 25, 26],
+    ['the middle of the playground', 25, 28],
+    ['the far corner of the playground', 36, 30],
   ])('lets the player walk to %s', (_name, tileX, tileY) => {
     expect(reachable(tileX, tileY)).toBe(true);
   });
@@ -112,7 +113,12 @@ describe('base map', () => {
     expect(reachable(tileX, tileY)).toBe(false);
   });
 
-  it('has no way up the cliff except the stones around its left end', () => {
+  it('has no stones on the way up to the gate', () => {
+    const stones = layout.objects.filter(({ id }) => id.startsWith('path_stone'));
+    expect(stones.filter((stone) => stone.y < 9)).toEqual([]);
+  });
+
+  it('has no way up the cliff except around its left end', () => {
     expect(layout.openings).toEqual([]);
     const rightEnd = { x: 33 * 32, y: 7 * 32 };
     const plateau = { x: 28 * 32, y: 2 * 32 };

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="51" height="31" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="806">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="51" height="35" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="840">
  <tileset firstgid="1" name="ground_grass_dirt" tilewidth="32" tileheight="32" tilecount="16" columns="4">
   <image source="../../public/assets/tiles/ground_grass_dirt.png" width="128" height="128"/>
  </tileset>
@@ -15,7 +15,7 @@
  <tileset firstgid="81" name="ground_farm_soil" tilewidth="32" tileheight="32" tilecount="16" columns="4">
   <image source="../../public/assets/world/tiles/farm_soil_16.png" width="128" height="128"/>
  </tileset>
- <layer id="1" name="ground" width="51" height="31">
+ <layer id="1" name="ground" width="51" height="35">
   <data encoding="csv">
 29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,18,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,28,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,
 29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,18,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,28,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,
@@ -39,12 +39,16 @@
 29,29,29,18,13,13,13,13,13,13,13,13,13,13,13,13,13,13,41,43,39,39,39,39,39,39,39,39,44,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,28,29,29,
 29,29,29,18,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,41,42,42,42,42,42,42,42,42,48,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,28,29,29,
 29,29,29,18,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,28,29,29,
-29,29,29,18,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,14,4,4,4,4,4,4,4,1,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,28,29,29,
-29,29,29,18,13,13,13,13,13,13,13,13,13,13,13,13,13,13,14,4,6,7,7,7,7,7,7,7,3,4,4,4,4,1,13,13,13,13,13,13,13,13,13,13,13,13,13,13,28,29,29,
-29,29,29,18,13,13,13,13,13,13,13,13,13,13,14,4,4,4,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,3,1,13,13,13,13,13,13,13,13,13,13,13,13,13,28,29,29,
-29,29,29,18,13,13,13,13,13,13,13,13,13,13,2,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,12,13,13,13,13,13,13,13,13,13,13,13,13,13,28,29,29,
-29,29,29,25,27,13,13,13,13,13,13,13,13,13,9,11,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,16,13,13,13,13,13,13,13,13,13,13,13,24,26,32,29,29,
-29,29,29,29,25,27,13,13,13,13,13,13,13,13,13,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,16,13,13,13,13,13,13,13,13,13,13,13,13,28,29,29,29,29,
+29,29,29,18,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,14,4,4,4,4,4,4,4,4,4,1,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,28,29,29,
+29,29,29,18,13,13,13,13,13,13,13,13,13,13,13,13,13,14,4,4,6,7,7,7,7,7,7,7,7,7,3,4,4,4,4,1,13,13,13,13,13,13,13,13,13,13,13,13,28,29,29,
+29,29,29,18,13,13,13,13,13,13,13,13,14,4,4,4,4,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,3,4,1,13,13,13,13,13,13,13,13,13,13,28,29,29,
+29,29,29,18,13,13,13,13,13,13,13,13,2,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,12,13,13,13,13,13,13,13,13,13,13,28,29,29,
+29,29,29,18,13,13,13,13,13,13,13,13,2,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,12,13,13,13,13,13,13,13,13,13,13,28,29,29,
+29,29,29,18,13,13,13,13,13,13,13,13,2,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,12,13,13,13,13,13,13,13,13,13,13,28,29,29,
+29,29,29,18,13,13,13,13,13,13,13,13,2,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,12,13,13,13,13,13,13,13,13,13,13,28,29,29,
+29,29,29,18,13,13,13,13,13,13,13,13,2,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,12,13,13,13,13,13,13,13,13,13,13,28,29,29,
+29,29,29,25,27,13,13,13,13,13,13,13,9,10,11,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,16,13,13,13,13,13,13,13,13,24,26,32,29,29,
+29,29,29,29,25,27,13,13,13,13,13,13,13,13,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,16,13,13,13,13,13,13,13,13,13,28,29,29,29,29,
 29,29,29,29,29,25,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,32,29,29,29,29,
 29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,
 29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29
@@ -194,145 +198,167 @@
   <object id="141" x="0" y="912" width="64" height="16"/>
   <object id="142" x="1600" y="912" width="32" height="16"/>
   <object id="143" x="0" y="928" width="64" height="16"/>
-  <object id="144" x="640" y="928" width="224" height="16"/>
-  <object id="145" x="1600" y="928" width="32" height="16"/>
-  <object id="146" x="0" y="944" width="64" height="16"/>
-  <object id="147" x="640" y="944" width="224" height="16"/>
-  <object id="148" x="1600" y="944" width="32" height="16"/>
-  <object id="149" x="0" y="960" width="1632" height="16"/>
-  <object id="150" x="0" y="976" width="1632" height="16"/>
-  <object id="151" x="128" y="112" width="384" height="170"/>
-  <object id="152" x="128" y="496" width="384" height="240"/>
-  <object id="153" x="1136" y="80" width="464" height="480"/>
-  <object id="154" x="1098" y="282" width="38" height="224"/>
-  <object id="155" x="1024" y="0" width="96" height="192"/>
-  <object id="156" x="774" y="92" width="52" height="14"/>
-  <object id="157" x="694" y="192" width="148" height="70"/>
-  <object id="158" x="1033" y="234" width="46" height="16"/>
-  <object id="159" x="524" y="333" width="40" height="16"/>
-  <object id="160" x="601" y="328" width="52" height="14"/>
-  <object id="161" x="142" y="165" width="18" height="7"/>
-  <object id="162" x="270" y="206" width="18" height="7"/>
-  <object id="163" x="466" y="205" width="18" height="7"/>
-  <object id="164" x="932" y="662" width="18" height="7"/>
-  <object id="165" x="948" y="515" width="18" height="7"/>
-  <object id="166" x="967" y="531" width="18" height="7"/>
-  <object id="167" x="413" y="278" width="18" height="7"/>
-  <object id="168" x="433" y="289" width="18" height="7"/>
-  <object id="169" x="645" y="212" width="28" height="12"/>
-  <object id="170" x="1010" y="196" width="28" height="12"/>
-  <object id="171" x="389" y="225" width="28" height="12"/>
-  <object id="172" x="1058" y="87" width="28" height="12"/>
-  <object id="173" x="1148" y="94" width="28" height="12"/>
-  <object id="174" x="1042" y="487" width="28" height="12"/>
-  <object id="175" x="1426" y="692" width="28" height="12"/>
-  <object id="176" x="242" y="785" width="28" height="12"/>
-  <object id="177" x="370" y="849" width="28" height="12"/>
-  <object id="178" x="1218" y="801" width="28" height="12"/>
-  <object id="179" x="1096" y="282" width="28" height="12"/>
-  <object id="180" x="1090" y="353" width="28" height="12"/>
-  <object id="181" x="1112" y="423" width="28" height="12"/>
-  <object id="182" x="0" y="31" width="28" height="12"/>
-  <object id="183" x="37" y="-3" width="28" height="12"/>
-  <object id="184" x="93" y="38" width="28" height="12"/>
-  <object id="185" x="127" y="0" width="28" height="12"/>
-  <object id="186" x="179" y="37" width="28" height="12"/>
-  <object id="187" x="211" y="-5" width="28" height="12"/>
-  <object id="188" x="255" y="40" width="28" height="12"/>
-  <object id="189" x="307" y="-8" width="28" height="12"/>
-  <object id="190" x="347" y="41" width="28" height="12"/>
-  <object id="191" x="392" y="1" width="28" height="12"/>
-  <object id="192" x="435" y="42" width="28" height="12"/>
-  <object id="193" x="477" y="-8" width="28" height="12"/>
-  <object id="194" x="528" y="40" width="28" height="12"/>
-  <object id="195" x="558" y="-8" width="28" height="12"/>
-  <object id="196" x="1108" y="33" width="28" height="12"/>
-  <object id="197" x="1141" y="-4" width="28" height="12"/>
-  <object id="198" x="1200" y="42" width="28" height="12"/>
-  <object id="199" x="1241" y="-9" width="28" height="12"/>
-  <object id="200" x="1399" y="41" width="28" height="12"/>
-  <object id="201" x="1445" y="4" width="28" height="12"/>
-  <object id="202" x="1488" y="35" width="28" height="12"/>
-  <object id="203" x="1530" y="-5" width="28" height="12"/>
-  <object id="204" x="1580" y="37" width="28" height="12"/>
-  <object id="205" x="1622" y="-7" width="28" height="12"/>
-  <object id="206" x="25" y="97" width="28" height="12"/>
-  <object id="207" x="76" y="141" width="28" height="12"/>
-  <object id="208" x="1598" y="122" width="28" height="12"/>
-  <object id="209" x="10" y="187" width="28" height="12"/>
-  <object id="210" x="77" y="227" width="28" height="12"/>
-  <object id="211" x="1587" y="205" width="28" height="12"/>
-  <object id="212" x="25" y="268" width="28" height="12"/>
-  <object id="213" x="64" y="313" width="28" height="12"/>
-  <object id="214" x="1588" y="291" width="28" height="12"/>
-  <object id="215" x="20" y="357" width="28" height="12"/>
-  <object id="216" x="79" y="407" width="28" height="12"/>
-  <object id="217" x="1596" y="379" width="28" height="12"/>
-  <object id="218" x="14" y="441" width="28" height="12"/>
-  <object id="219" x="68" y="492" width="28" height="12"/>
-  <object id="220" x="1594" y="463" width="28" height="12"/>
-  <object id="221" x="13" y="534" width="28" height="12"/>
-  <object id="222" x="75" y="577" width="28" height="12"/>
-  <object id="223" x="1594" y="556" width="28" height="12"/>
-  <object id="224" x="1551" y="593" width="28" height="12"/>
-  <object id="225" x="21" y="617" width="28" height="12"/>
-  <object id="226" x="78" y="662" width="28" height="12"/>
-  <object id="227" x="1585" y="633" width="28" height="12"/>
-  <object id="228" x="1541" y="677" width="28" height="12"/>
-  <object id="229" x="11" y="706" width="28" height="12"/>
-  <object id="230" x="70" y="745" width="28" height="12"/>
-  <object id="231" x="1600" y="729" width="28" height="12"/>
-  <object id="232" x="1540" y="760" width="28" height="12"/>
-  <object id="233" x="21" y="795" width="28" height="12"/>
-  <object id="234" x="66" y="839" width="28" height="12"/>
-  <object id="235" x="1593" y="814" width="28" height="12"/>
-  <object id="236" x="1547" y="855" width="28" height="12"/>
-  <object id="237" x="22" y="879" width="28" height="12"/>
-  <object id="238" x="65" y="913" width="28" height="12"/>
-  <object id="239" x="1592" y="893" width="28" height="12"/>
-  <object id="240" x="1554" y="933" width="28" height="12"/>
-  <object id="241" x="18" y="967" width="28" height="12"/>
-  <object id="242" x="74" y="1001" width="28" height="12"/>
-  <object id="243" x="1589" y="988" width="28" height="12"/>
-  <object id="244" x="1549" y="1019" width="28" height="12"/>
-  <object id="245" x="137" y="980" width="28" height="12"/>
-  <object id="246" x="172" y="948" width="28" height="12"/>
-  <object id="247" x="210" y="980" width="28" height="12"/>
-  <object id="248" x="265" y="946" width="28" height="12"/>
-  <object id="249" x="310" y="974" width="28" height="12"/>
-  <object id="250" x="344" y="943" width="28" height="12"/>
-  <object id="251" x="395" y="972" width="28" height="12"/>
-  <object id="252" x="425" y="949" width="28" height="12"/>
-  <object id="253" x="483" y="977" width="28" height="12"/>
-  <object id="254" x="524" y="950" width="28" height="12"/>
-  <object id="255" x="566" y="980" width="28" height="12"/>
-  <object id="256" x="603" y="953" width="28" height="12"/>
-  <object id="257" x="653" y="981" width="28" height="12"/>
-  <object id="258" x="686" y="952" width="28" height="12"/>
-  <object id="259" x="737" y="975" width="28" height="12"/>
-  <object id="260" x="769" y="953" width="28" height="12"/>
-  <object id="261" x="814" y="974" width="28" height="12"/>
-  <object id="262" x="864" y="943" width="28" height="12"/>
-  <object id="263" x="909" y="980" width="28" height="12"/>
-  <object id="264" x="950" y="946" width="28" height="12"/>
-  <object id="265" x="992" y="981" width="28" height="12"/>
-  <object id="266" x="1035" y="948" width="28" height="12"/>
-  <object id="267" x="1073" y="977" width="28" height="12"/>
-  <object id="268" x="1119" y="947" width="28" height="12"/>
-  <object id="269" x="1175" y="982" width="28" height="12"/>
-  <object id="270" x="1204" y="951" width="28" height="12"/>
-  <object id="271" x="1254" y="978" width="28" height="12"/>
-  <object id="272" x="1423" y="952" width="28" height="12"/>
-  <object id="273" x="1465" y="975" width="28" height="12"/>
-  <object id="274" x="1515" y="943" width="28" height="12"/>
-  <object id="275" x="1029" y="71" width="28" height="12"/>
-  <object id="276" x="1016" y="135" width="28" height="12"/>
-  <object id="277" x="1317" y="39" width="28" height="12"/>
-  <object id="278" x="1368" y="1" width="28" height="12"/>
-  <object id="279" x="1413" y="33" width="28" height="12"/>
-  <object id="280" x="1327" y="977" width="28" height="12"/>
-  <object id="281" x="1372" y="951" width="28" height="12"/>
-  <object id="282" x="1423" y="977" width="28" height="12"/>
+  <object id="144" x="1600" y="928" width="32" height="16"/>
+  <object id="145" x="0" y="944" width="64" height="16"/>
+  <object id="146" x="1600" y="944" width="32" height="16"/>
+  <object id="147" x="0" y="960" width="64" height="16"/>
+  <object id="148" x="1600" y="960" width="32" height="16"/>
+  <object id="149" x="0" y="976" width="64" height="16"/>
+  <object id="150" x="1600" y="976" width="32" height="16"/>
+  <object id="151" x="0" y="992" width="64" height="16"/>
+  <object id="152" x="1600" y="992" width="32" height="16"/>
+  <object id="153" x="0" y="1008" width="64" height="16"/>
+  <object id="154" x="1600" y="1008" width="32" height="16"/>
+  <object id="155" x="0" y="1024" width="64" height="16"/>
+  <object id="156" x="1600" y="1024" width="32" height="16"/>
+  <object id="157" x="0" y="1040" width="64" height="16"/>
+  <object id="158" x="1600" y="1040" width="32" height="16"/>
+  <object id="159" x="0" y="1056" width="64" height="16"/>
+  <object id="160" x="640" y="1056" width="224" height="16"/>
+  <object id="161" x="1600" y="1056" width="32" height="16"/>
+  <object id="162" x="0" y="1072" width="64" height="16"/>
+  <object id="163" x="640" y="1072" width="224" height="16"/>
+  <object id="164" x="1600" y="1072" width="32" height="16"/>
+  <object id="165" x="0" y="1088" width="1632" height="16"/>
+  <object id="166" x="0" y="1104" width="1632" height="16"/>
+  <object id="167" x="128" y="112" width="384" height="170"/>
+  <object id="168" x="128" y="496" width="384" height="240"/>
+  <object id="169" x="1136" y="80" width="464" height="480"/>
+  <object id="170" x="1098" y="282" width="38" height="224"/>
+  <object id="171" x="1024" y="0" width="96" height="192"/>
+  <object id="172" x="774" y="92" width="52" height="14"/>
+  <object id="173" x="694" y="192" width="148" height="70"/>
+  <object id="174" x="1033" y="234" width="46" height="16"/>
+  <object id="175" x="524" y="333" width="40" height="16"/>
+  <object id="176" x="601" y="328" width="52" height="14"/>
+  <object id="177" x="142" y="165" width="18" height="7"/>
+  <object id="178" x="270" y="206" width="18" height="7"/>
+  <object id="179" x="466" y="205" width="18" height="7"/>
+  <object id="180" x="932" y="662" width="18" height="7"/>
+  <object id="181" x="948" y="515" width="18" height="7"/>
+  <object id="182" x="967" y="531" width="18" height="7"/>
+  <object id="183" x="413" y="278" width="18" height="7"/>
+  <object id="184" x="433" y="289" width="18" height="7"/>
+  <object id="185" x="645" y="212" width="28" height="12"/>
+  <object id="186" x="1010" y="196" width="28" height="12"/>
+  <object id="187" x="389" y="225" width="28" height="12"/>
+  <object id="188" x="1058" y="87" width="28" height="12"/>
+  <object id="189" x="1148" y="94" width="28" height="12"/>
+  <object id="190" x="1042" y="487" width="28" height="12"/>
+  <object id="191" x="1426" y="692" width="28" height="12"/>
+  <object id="192" x="242" y="785" width="28" height="12"/>
+  <object id="193" x="370" y="977" width="28" height="12"/>
+  <object id="194" x="1260" y="801" width="28" height="12"/>
+  <object id="195" x="1096" y="282" width="28" height="12"/>
+  <object id="196" x="1090" y="353" width="28" height="12"/>
+  <object id="197" x="1112" y="423" width="28" height="12"/>
+  <object id="198" x="0" y="31" width="28" height="12"/>
+  <object id="199" x="37" y="-3" width="28" height="12"/>
+  <object id="200" x="93" y="38" width="28" height="12"/>
+  <object id="201" x="127" y="0" width="28" height="12"/>
+  <object id="202" x="179" y="37" width="28" height="12"/>
+  <object id="203" x="211" y="-5" width="28" height="12"/>
+  <object id="204" x="255" y="40" width="28" height="12"/>
+  <object id="205" x="307" y="-8" width="28" height="12"/>
+  <object id="206" x="347" y="41" width="28" height="12"/>
+  <object id="207" x="392" y="1" width="28" height="12"/>
+  <object id="208" x="435" y="42" width="28" height="12"/>
+  <object id="209" x="477" y="-8" width="28" height="12"/>
+  <object id="210" x="528" y="40" width="28" height="12"/>
+  <object id="211" x="558" y="-8" width="28" height="12"/>
+  <object id="212" x="1108" y="33" width="28" height="12"/>
+  <object id="213" x="1141" y="-4" width="28" height="12"/>
+  <object id="214" x="1200" y="42" width="28" height="12"/>
+  <object id="215" x="1241" y="-9" width="28" height="12"/>
+  <object id="216" x="1399" y="41" width="28" height="12"/>
+  <object id="217" x="1445" y="4" width="28" height="12"/>
+  <object id="218" x="1488" y="35" width="28" height="12"/>
+  <object id="219" x="1530" y="-5" width="28" height="12"/>
+  <object id="220" x="1580" y="37" width="28" height="12"/>
+  <object id="221" x="1622" y="-7" width="28" height="12"/>
+  <object id="222" x="25" y="97" width="28" height="12"/>
+  <object id="223" x="76" y="141" width="28" height="12"/>
+  <object id="224" x="1598" y="122" width="28" height="12"/>
+  <object id="225" x="10" y="187" width="28" height="12"/>
+  <object id="226" x="77" y="227" width="28" height="12"/>
+  <object id="227" x="1587" y="205" width="28" height="12"/>
+  <object id="228" x="25" y="268" width="28" height="12"/>
+  <object id="229" x="64" y="313" width="28" height="12"/>
+  <object id="230" x="1588" y="291" width="28" height="12"/>
+  <object id="231" x="20" y="357" width="28" height="12"/>
+  <object id="232" x="79" y="407" width="28" height="12"/>
+  <object id="233" x="1596" y="379" width="28" height="12"/>
+  <object id="234" x="14" y="441" width="28" height="12"/>
+  <object id="235" x="68" y="492" width="28" height="12"/>
+  <object id="236" x="1594" y="463" width="28" height="12"/>
+  <object id="237" x="13" y="534" width="28" height="12"/>
+  <object id="238" x="75" y="577" width="28" height="12"/>
+  <object id="239" x="1594" y="556" width="28" height="12"/>
+  <object id="240" x="1551" y="593" width="28" height="12"/>
+  <object id="241" x="21" y="617" width="28" height="12"/>
+  <object id="242" x="78" y="662" width="28" height="12"/>
+  <object id="243" x="1585" y="633" width="28" height="12"/>
+  <object id="244" x="1541" y="677" width="28" height="12"/>
+  <object id="245" x="11" y="706" width="28" height="12"/>
+  <object id="246" x="70" y="745" width="28" height="12"/>
+  <object id="247" x="1600" y="729" width="28" height="12"/>
+  <object id="248" x="1540" y="760" width="28" height="12"/>
+  <object id="249" x="21" y="795" width="28" height="12"/>
+  <object id="250" x="66" y="967" width="28" height="12"/>
+  <object id="251" x="1593" y="814" width="28" height="12"/>
+  <object id="252" x="1547" y="983" width="28" height="12"/>
+  <object id="253" x="22" y="1007" width="28" height="12"/>
+  <object id="254" x="65" y="1041" width="28" height="12"/>
+  <object id="255" x="1592" y="1021" width="28" height="12"/>
+  <object id="256" x="1554" y="1061" width="28" height="12"/>
+  <object id="257" x="18" y="1095" width="28" height="12"/>
+  <object id="258" x="74" y="1129" width="28" height="12"/>
+  <object id="259" x="1589" y="1116" width="28" height="12"/>
+  <object id="260" x="1549" y="1147" width="28" height="12"/>
+  <object id="261" x="137" y="1108" width="28" height="12"/>
+  <object id="262" x="172" y="1076" width="28" height="12"/>
+  <object id="263" x="210" y="1108" width="28" height="12"/>
+  <object id="264" x="265" y="1074" width="28" height="12"/>
+  <object id="265" x="310" y="1102" width="28" height="12"/>
+  <object id="266" x="344" y="1071" width="28" height="12"/>
+  <object id="267" x="395" y="1100" width="28" height="12"/>
+  <object id="268" x="425" y="1077" width="28" height="12"/>
+  <object id="269" x="483" y="1105" width="28" height="12"/>
+  <object id="270" x="524" y="1078" width="28" height="12"/>
+  <object id="271" x="566" y="1108" width="28" height="12"/>
+  <object id="272" x="603" y="1081" width="28" height="12"/>
+  <object id="273" x="653" y="1109" width="28" height="12"/>
+  <object id="274" x="686" y="1080" width="28" height="12"/>
+  <object id="275" x="737" y="1103" width="28" height="12"/>
+  <object id="276" x="769" y="1081" width="28" height="12"/>
+  <object id="277" x="814" y="1102" width="28" height="12"/>
+  <object id="278" x="864" y="1071" width="28" height="12"/>
+  <object id="279" x="909" y="1108" width="28" height="12"/>
+  <object id="280" x="950" y="1074" width="28" height="12"/>
+  <object id="281" x="992" y="1109" width="28" height="12"/>
+  <object id="282" x="1035" y="1076" width="28" height="12"/>
+  <object id="283" x="1073" y="1105" width="28" height="12"/>
+  <object id="284" x="1119" y="1075" width="28" height="12"/>
+  <object id="285" x="1175" y="1110" width="28" height="12"/>
+  <object id="286" x="1204" y="1079" width="28" height="12"/>
+  <object id="287" x="1254" y="1106" width="28" height="12"/>
+  <object id="288" x="1423" y="1080" width="28" height="12"/>
+  <object id="289" x="1465" y="1103" width="28" height="12"/>
+  <object id="290" x="1515" y="1071" width="28" height="12"/>
+  <object id="291" x="1029" y="71" width="28" height="12"/>
+  <object id="292" x="1016" y="135" width="28" height="12"/>
+  <object id="293" x="1317" y="39" width="28" height="12"/>
+  <object id="294" x="1368" y="1" width="28" height="12"/>
+  <object id="295" x="1413" y="33" width="28" height="12"/>
+  <object id="296" x="1327" y="1105" width="28" height="12"/>
+  <object id="297" x="1372" y="1079" width="28" height="12"/>
+  <object id="298" x="1423" y="1105" width="28" height="12"/>
+  <object id="299" x="21" y="852" width="28" height="12"/>
+  <object id="300" x="72" y="894" width="28" height="12"/>
+  <object id="301" x="15" y="935" width="28" height="12"/>
+  <object id="302" x="1592" y="852" width="28" height="12"/>
+  <object id="303" x="1548" y="897" width="28" height="12"/>
+  <object id="304" x="1596" y="942" width="28" height="12"/>
  </objectgroup>
  <objectgroup id="3" name="objects">
   <object id="1" name="gate_portal" x="800" y="106"><point/></object>
@@ -342,501 +368,513 @@
   <object id="5" name="food_tray_3" x="627" y="342"><point/></object>
   <object id="6" name="gio_seat" x="358" y="371"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
   <object id="7" name="fishing_dock" x="752" y="672"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="8" name="path_stone_0" x="525" y="274"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="9" name="path_stone_19" x="539" y="246"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="10" name="path_stone_29" x="530" y="216"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="11" name="path_stone_10" x="547" y="186"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="12" name="path_stone_38" x="566" y="158"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="13" name="path_stone_0" x="590" y="130"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="14" name="path_stone_19" x="600" y="101"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="15" name="path_stone_29" x="629" y="78"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="16" name="path_stone_10" x="670" y="70"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="17" name="path_stone_38" x="712" y="80"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="18" name="path_stone_0" x="733" y="371"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="19" name="path_stone_19" x="760" y="395"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="20" name="path_stone_29" x="738" y="421"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="21" name="path_stone_10" x="451" y="381"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="22" name="path_stone_38" x="408" y="395"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="23" name="path_stone_0" x="363" y="390"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="24" name="path_stone_19" x="558" y="454"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="25" name="path_stone_29" x="541" y="483"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="26" name="path_stone_10" x="560" y="515"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="27" name="path_stone_38" x="547" y="549"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="28" name="path_stone_0" x="550" y="592"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="29" name="path_stone_19" x="550" y="634"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="30" name="path_stone_29" x="573" y="672"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="31" name="path_stone_10" x="602" y="712"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="32" name="path_stone_38" x="880" y="349"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="33" name="path_stone_0" x="928" y="339"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="34" name="path_stone_19" x="979" y="354"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="35" name="path_stone_29" x="371" y="307"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="36" name="path_stone_10" x="342" y="293"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="37" name="fence_post" x="128" y="256"><point/></object>
-  <object id="38" name="fence_straight" x="144" y="256"><point/></object>
-  <object id="39" name="fence_straight" x="176" y="256"><point/></object>
-  <object id="40" name="fence_straight" x="208" y="256"><point/></object>
-  <object id="41" name="fence_straight_vines" x="240" y="256"><point/></object>
-  <object id="42" name="fence_post" x="256" y="256"><point/></object>
-  <object id="43" name="fence_post" x="256" y="256"><point/></object>
-  <object id="44" name="fence_straight" x="272" y="256"><point/></object>
-  <object id="45" name="fence_straight" x="304" y="256"><point/></object>
-  <object id="46" name="fence_straight" x="336" y="256"><point/></object>
-  <object id="47" name="fence_straight_vines" x="368" y="256"><point/></object>
-  <object id="48" name="fence_post" x="384" y="256"><point/></object>
-  <object id="49" name="fence_post" x="384" y="256"><point/></object>
-  <object id="50" name="fence_straight" x="400" y="256"><point/></object>
-  <object id="51" name="fence_straight" x="432" y="256"><point/></object>
-  <object id="52" name="fence_straight" x="464" y="256"><point/></object>
-  <object id="53" name="fence_straight_vines" x="496" y="256"><point/></object>
-  <object id="54" name="fence_post" x="512" y="256"><point/></object>
-  <object id="55" name="fence_post" x="128" y="496"><point/></object>
-  <object id="56" name="fence_straight" x="144" y="496"><point/></object>
-  <object id="57" name="fence_straight" x="176" y="496"><point/></object>
-  <object id="58" name="fence_straight" x="208" y="496"><point/></object>
-  <object id="59" name="fence_straight_vines" x="240" y="496"><point/></object>
-  <object id="60" name="fence_straight" x="272" y="496"><point/></object>
-  <object id="61" name="fence_straight" x="304" y="496"><point/></object>
-  <object id="62" name="fence_straight" x="336" y="496"><point/></object>
-  <object id="63" name="fence_straight_vines" x="368" y="496"><point/></object>
-  <object id="64" name="fence_straight" x="400" y="496"><point/></object>
-  <object id="65" name="fence_straight" x="432" y="496"><point/></object>
-  <object id="66" name="fence_straight" x="464" y="496"><point/></object>
-  <object id="67" name="fence_straight_vines" x="496" y="496"><point/></object>
-  <object id="68" name="fence_post" x="512" y="496"><point/></object>
-  <object id="69" name="fence_post" x="128" y="720"><point/></object>
-  <object id="70" name="fence_straight" x="144" y="720"><point/></object>
-  <object id="71" name="fence_straight" x="176" y="720"><point/></object>
-  <object id="72" name="fence_straight" x="208" y="720"><point/></object>
-  <object id="73" name="fence_straight_vines" x="240" y="720"><point/></object>
-  <object id="74" name="fence_straight" x="272" y="720"><point/></object>
-  <object id="75" name="fence_straight" x="304" y="720"><point/></object>
-  <object id="76" name="fence_straight" x="336" y="720"><point/></object>
-  <object id="77" name="fence_straight_vines" x="368" y="720"><point/></object>
-  <object id="78" name="fence_straight" x="400" y="720"><point/></object>
-  <object id="79" name="fence_straight" x="432" y="720"><point/></object>
-  <object id="80" name="fence_straight" x="464" y="720"><point/></object>
-  <object id="81" name="fence_straight_vines" x="496" y="720"><point/></object>
-  <object id="82" name="fence_post" x="512" y="720"><point/></object>
-  <object id="83" name="fence_post" x="128" y="528"><point/></object>
-  <object id="84" name="fence_post" x="128" y="560"><point/></object>
-  <object id="85" name="fence_post" x="128" y="592"><point/></object>
-  <object id="86" name="fence_post" x="128" y="624"><point/></object>
-  <object id="87" name="fence_post" x="128" y="656"><point/></object>
-  <object id="88" name="fence_post" x="128" y="688"><point/></object>
-  <object id="89" name="fence_post" x="512" y="528"><point/></object>
-  <object id="90" name="fence_post" x="512" y="560"><point/></object>
-  <object id="91" name="fence_post" x="512" y="592"><point/></object>
-  <object id="92" name="fence_post" x="512" y="624"><point/></object>
-  <object id="93" name="fence_post" x="512" y="656"><point/></object>
-  <object id="94" name="fence_post" x="512" y="688"><point/></object>
-  <object id="95" name="fence_post" x="128" y="128"><point/></object>
-  <object id="96" name="fence_post" x="128" y="160"><point/></object>
-  <object id="97" name="fence_post" x="128" y="192"><point/></object>
-  <object id="98" name="fence_post" x="128" y="224"><point/></object>
-  <object id="99" name="fence_post" x="512" y="128"><point/></object>
-  <object id="100" name="fence_post" x="512" y="160"><point/></object>
-  <object id="101" name="fence_post" x="512" y="192"><point/></object>
-  <object id="102" name="fence_post" x="512" y="224"><point/></object>
-  <object id="103" name="land_sale_sign" x="221" y="277"><properties><property name="plot" type="int" value="0"/></properties><point/></object>
-  <object id="104" name="land_sale_sign" x="349" y="277"><properties><property name="plot" type="int" value="1"/></properties><point/></object>
-  <object id="105" name="land_sale_sign" x="477" y="277"><properties><property name="plot" type="int" value="2"/></properties><point/></object>
-  <object id="106" name="weed_31" x="184" y="160"><point/></object>
-  <object id="107" name="weed_62" x="197" y="130"><point/></object>
-  <object id="108" name="weed_12" x="175" y="152"><point/></object>
-  <object id="109" name="weed_21" x="242" y="160"><point/></object>
-  <object id="110" name="weed_53" x="230" y="234"><point/></object>
-  <object id="111" name="weed_62" x="210" y="169"><point/></object>
-  <object id="112" name="weed_16" x="196" y="211"><point/></object>
-  <object id="113" name="stump_seat" x="188" y="199"><point/></object>
-  <object id="114" name="rock_small_43" x="151" y="172"><point/></object>
-  <object id="115" name="weed_49" x="295" y="188"><point/></object>
-  <object id="116" name="weed_62" x="325" y="222"><point/></object>
-  <object id="117" name="weed_40" x="280" y="165"><point/></object>
-  <object id="118" name="weed_16" x="346" y="218"><point/></object>
-  <object id="119" name="weed_12" x="337" y="132"><point/></object>
-  <object id="120" name="weed_07" x="340" y="190"><point/></object>
-  <object id="121" name="weed_26" x="300" y="237"><point/></object>
-  <object id="122" name="stump_seat" x="284" y="225"><point/></object>
-  <object id="123" name="rock_small_13" x="279" y="213"><point/></object>
-  <object id="124" name="weed_26" x="429" y="158"><point/></object>
-  <object id="125" name="weed_07" x="423" y="182"><point/></object>
-  <object id="126" name="weed_26" x="412" y="179"><point/></object>
-  <object id="127" name="weed_53" x="441" y="170"><point/></object>
-  <object id="128" name="weed_40" x="424" y="180"><point/></object>
-  <object id="129" name="weed_07" x="420" y="213"><point/></object>
-  <object id="130" name="weed_31" x="441" y="227"><point/></object>
-  <object id="131" name="stump_seat" x="401" y="201"><point/></object>
-  <object id="132" name="rock_small_13" x="475" y="212"><point/></object>
-  <object id="133" name="rock_big_10" x="832" y="589"><properties><property name="submerged" type="float" value="0.62"/></properties><point/></object>
-  <object id="134" name="rock_small_0" x="941" y="669"><point/></object>
-  <object id="135" name="rock_small_30" x="957" y="522"><point/></object>
-  <object id="136" name="rock_small_13" x="976" y="538"><point/></object>
-  <object id="137" name="rock_small_43" x="422" y="285"><point/></object>
-  <object id="138" name="rock_small_30" x="442" y="296"><point/></object>
-  <object id="139" name="decor_3" x="179" y="288"><point/></object>
-  <object id="140" name="decor_9" x="197" y="298"><point/></object>
-  <object id="141" name="decor_2" x="1011" y="301"><point/></object>
-  <object id="142" name="decor_26" x="1029" y="310"><point/></object>
-  <object id="143" name="decor_59" x="390" y="461"><point/></object>
-  <object id="144" name="decor_4" x="408" y="470"><point/></object>
-  <object id="145" name="decor_17" x="986" y="688"><point/></object>
-  <object id="146" name="decor_3" x="1003" y="698"><point/></object>
-  <object id="147" name="decor_25" x="1210" y="659"><point/></object>
-  <object id="148" name="decor_2" x="1227" y="669"><point/></object>
-  <object id="149" name="decor_9" x="1456" y="576"><point/></object>
-  <object id="150" name="decor_26" x="1474" y="586"><point/></object>
-  <object id="151" name="decor_4" x="605" y="890"><point/></object>
-  <object id="152" name="decor_17" x="622" y="899"><point/></object>
-  <object id="153" name="decor_3" x="330" y="819"><point/></object>
-  <object id="154" name="decor_59" x="347" y="829"><point/></object>
-  <object id="155" name="decor_26" x="704" y="238"><point/></object>
-  <object id="156" name="decor_25" x="722" y="224"><point/></object>
-  <object id="157" name="decor_2" x="1050" y="131"><point/></object>
-  <object id="158" name="decor_9" x="1067" y="141"><point/></object>
-  <object id="159" name="decal_0" x="275" y="486"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="160" name="decal_2" x="966" y="432"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="161" name="decal_3" x="432" y="467"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="162" name="decal_8" x="1216" y="560"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="163" name="decal_1" x="896" y="720"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="164" name="decal_16" x="1488" y="762"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="165" name="decal_2" x="237" y="813"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="166" name="decal_3" x="928" y="269"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="167" name="decal_8" x="1136" y="624"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="168" name="decal_1" x="390" y="781"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
-  <object id="169" name="decor_3" x="659" y="227"><point/></object>
-  <object id="170" name="decor_9" x="678" y="237"><point/></object>
-  <object id="171" name="decor_4" x="886" y="229"><point/></object>
-  <object id="172" name="decor_26" x="906" y="238"><point/></object>
-  <object id="173" name="decor_59" x="947" y="227"><point/></object>
-  <object id="174" name="tree_big_1" x="659" y="224"><point/></object>
-  <object id="175" name="tree_big_3" x="1024" y="208"><point/></object>
-  <object id="176" name="tree_big_2" x="403" y="237"><point/></object>
-  <object id="177" name="tree_big_1" x="1072" y="99"><point/></object>
-  <object id="178" name="tree_big_0" x="1162" y="106"><point/></object>
-  <object id="179" name="tree_big_3" x="1056" y="499"><point/></object>
-  <object id="180" name="tree_big_0" x="1440" y="704"><point/></object>
-  <object id="181" name="tree_big_2" x="256" y="797"><point/></object>
-  <object id="182" name="tree_big_0" x="384" y="861"><point/></object>
-  <object id="183" name="tree_big_0" x="1232" y="813"><point/></object>
-  <object id="184" name="tree_big_0" x="1110" y="294"><point/></object>
-  <object id="185" name="tree_big_2" x="1104" y="365"><point/></object>
-  <object id="186" name="tree_big_3" x="1126" y="435"><point/></object>
-  <object id="187" name="tree_big_0" x="14" y="43"><point/></object>
-  <object id="188" name="tree_big_0" x="51" y="9"><point/></object>
-  <object id="189" name="tree_big_3" x="107" y="50"><point/></object>
-  <object id="190" name="tree_big_2" x="141" y="12"><point/></object>
-  <object id="191" name="tree_big_3" x="193" y="49"><point/></object>
-  <object id="192" name="tree_big_0" x="225" y="7"><point/></object>
-  <object id="193" name="tree_big_3" x="269" y="52"><point/></object>
-  <object id="194" name="tree_big_3" x="321" y="4"><point/></object>
-  <object id="195" name="tree_big_1" x="361" y="53"><point/></object>
-  <object id="196" name="tree_big_3" x="406" y="13"><point/></object>
-  <object id="197" name="tree_big_3" x="449" y="54"><point/></object>
-  <object id="198" name="tree_big_0" x="491" y="4"><point/></object>
-  <object id="199" name="tree_big_3" x="542" y="52"><point/></object>
-  <object id="200" name="tree_big_1" x="572" y="4"><point/></object>
-  <object id="201" name="tree_big_2" x="1122" y="45"><point/></object>
-  <object id="202" name="tree_big_0" x="1155" y="8"><point/></object>
-  <object id="203" name="tree_big_0" x="1214" y="54"><point/></object>
-  <object id="204" name="tree_big_0" x="1255" y="3"><point/></object>
-  <object id="205" name="tree_big_1" x="1413" y="53"><point/></object>
-  <object id="206" name="tree_big_0" x="1459" y="16"><point/></object>
-  <object id="207" name="tree_big_1" x="1502" y="47"><point/></object>
-  <object id="208" name="tree_big_2" x="1544" y="7"><point/></object>
-  <object id="209" name="tree_big_0" x="1594" y="49"><point/></object>
-  <object id="210" name="tree_big_0" x="1636" y="5"><point/></object>
-  <object id="211" name="tree_big_0" x="39" y="109"><point/></object>
-  <object id="212" name="tree_big_1" x="90" y="153"><point/></object>
-  <object id="213" name="tree_big_1" x="1612" y="134"><point/></object>
-  <object id="214" name="tree_big_1" x="24" y="199"><point/></object>
-  <object id="215" name="tree_big_3" x="91" y="239"><point/></object>
-  <object id="216" name="tree_big_2" x="1601" y="217"><point/></object>
-  <object id="217" name="tree_big_3" x="39" y="280"><point/></object>
-  <object id="218" name="tree_big_1" x="78" y="325"><point/></object>
-  <object id="219" name="tree_big_3" x="1602" y="303"><point/></object>
-  <object id="220" name="tree_big_2" x="34" y="369"><point/></object>
-  <object id="221" name="tree_big_1" x="93" y="419"><point/></object>
-  <object id="222" name="tree_big_0" x="1610" y="391"><point/></object>
-  <object id="223" name="tree_big_3" x="28" y="453"><point/></object>
-  <object id="224" name="tree_big_0" x="82" y="504"><point/></object>
-  <object id="225" name="tree_big_2" x="1608" y="475"><point/></object>
-  <object id="226" name="tree_big_1" x="27" y="546"><point/></object>
-  <object id="227" name="tree_big_2" x="89" y="589"><point/></object>
-  <object id="228" name="tree_big_3" x="1608" y="568"><point/></object>
-  <object id="229" name="tree_big_3" x="1565" y="605"><point/></object>
-  <object id="230" name="tree_big_0" x="35" y="629"><point/></object>
-  <object id="231" name="tree_big_3" x="92" y="674"><point/></object>
-  <object id="232" name="tree_big_0" x="1599" y="645"><point/></object>
-  <object id="233" name="tree_big_0" x="1555" y="689"><point/></object>
-  <object id="234" name="tree_big_1" x="25" y="718"><point/></object>
-  <object id="235" name="tree_big_2" x="84" y="757"><point/></object>
-  <object id="236" name="tree_big_1" x="1614" y="741"><point/></object>
-  <object id="237" name="tree_big_2" x="1554" y="772"><point/></object>
-  <object id="238" name="tree_big_3" x="35" y="807"><point/></object>
-  <object id="239" name="tree_big_3" x="80" y="851"><point/></object>
-  <object id="240" name="tree_big_1" x="1607" y="826"><point/></object>
-  <object id="241" name="tree_big_0" x="1561" y="867"><point/></object>
-  <object id="242" name="tree_big_0" x="36" y="891"><point/></object>
-  <object id="243" name="tree_big_0" x="79" y="925"><point/></object>
-  <object id="244" name="tree_big_0" x="1606" y="905"><point/></object>
-  <object id="245" name="tree_big_2" x="1568" y="945"><point/></object>
-  <object id="246" name="tree_big_1" x="32" y="979"><point/></object>
-  <object id="247" name="tree_big_2" x="88" y="1013"><point/></object>
-  <object id="248" name="tree_big_2" x="1603" y="1000"><point/></object>
-  <object id="249" name="tree_big_0" x="1563" y="1031"><point/></object>
-  <object id="250" name="tree_big_1" x="151" y="992"><point/></object>
-  <object id="251" name="tree_big_1" x="186" y="960"><point/></object>
-  <object id="252" name="tree_big_0" x="224" y="992"><point/></object>
-  <object id="253" name="tree_big_1" x="279" y="958"><point/></object>
-  <object id="254" name="tree_big_2" x="324" y="986"><point/></object>
-  <object id="255" name="tree_big_1" x="358" y="955"><point/></object>
-  <object id="256" name="tree_big_0" x="409" y="984"><point/></object>
-  <object id="257" name="tree_big_0" x="439" y="961"><point/></object>
-  <object id="258" name="tree_big_2" x="497" y="989"><point/></object>
-  <object id="259" name="tree_big_3" x="538" y="962"><point/></object>
-  <object id="260" name="tree_big_3" x="580" y="992"><point/></object>
-  <object id="261" name="tree_big_3" x="617" y="965"><point/></object>
-  <object id="262" name="tree_big_2" x="667" y="993"><point/></object>
-  <object id="263" name="tree_big_3" x="700" y="964"><point/></object>
-  <object id="264" name="tree_big_3" x="751" y="987"><point/></object>
-  <object id="265" name="tree_big_0" x="783" y="965"><point/></object>
-  <object id="266" name="tree_big_2" x="828" y="986"><point/></object>
-  <object id="267" name="tree_big_0" x="878" y="955"><point/></object>
-  <object id="268" name="tree_big_3" x="923" y="992"><point/></object>
-  <object id="269" name="tree_big_1" x="964" y="958"><point/></object>
-  <object id="270" name="tree_big_0" x="1006" y="993"><point/></object>
-  <object id="271" name="tree_big_2" x="1049" y="960"><point/></object>
-  <object id="272" name="tree_big_3" x="1087" y="989"><point/></object>
-  <object id="273" name="tree_big_2" x="1133" y="959"><point/></object>
-  <object id="274" name="tree_big_0" x="1189" y="994"><point/></object>
-  <object id="275" name="tree_big_1" x="1218" y="963"><point/></object>
-  <object id="276" name="tree_big_1" x="1268" y="990"><point/></object>
-  <object id="277" name="tree_big_2" x="1437" y="964"><point/></object>
-  <object id="278" name="tree_big_1" x="1479" y="987"><point/></object>
-  <object id="279" name="tree_big_0" x="1529" y="955"><point/></object>
-  <object id="280" name="tree_big_2" x="1043" y="83"><point/></object>
-  <object id="281" name="tree_big_0" x="1030" y="147"><point/></object>
-  <object id="282" name="tree_big_1" x="1331" y="51"><point/></object>
-  <object id="283" name="tree_big_3" x="1382" y="13"><point/></object>
-  <object id="284" name="tree_big_0" x="1427" y="45"><point/></object>
-  <object id="285" name="tree_big_2" x="1341" y="989"><point/></object>
-  <object id="286" name="tree_big_1" x="1386" y="963"><point/></object>
-  <object id="287" name="tree_big_3" x="1437" y="989"><point/></object>
+  <object id="8" name="path_stone_0" x="733" y="371"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="9" name="path_stone_19" x="760" y="395"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="10" name="path_stone_29" x="738" y="421"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="11" name="path_stone_10" x="451" y="381"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="12" name="path_stone_38" x="408" y="395"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="13" name="path_stone_0" x="363" y="390"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="14" name="path_stone_19" x="558" y="454"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="15" name="path_stone_29" x="541" y="483"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="16" name="path_stone_10" x="560" y="515"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="17" name="path_stone_38" x="547" y="549"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="18" name="path_stone_0" x="550" y="592"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="19" name="path_stone_19" x="550" y="634"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="20" name="path_stone_29" x="573" y="672"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="21" name="path_stone_10" x="602" y="712"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="22" name="path_stone_38" x="880" y="349"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="23" name="path_stone_0" x="928" y="339"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="24" name="path_stone_19" x="979" y="354"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="25" name="path_stone_29" x="371" y="307"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="26" name="path_stone_10" x="342" y="293"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="27" name="fence_post" x="128" y="256"><point/></object>
+  <object id="28" name="fence_straight" x="144" y="256"><point/></object>
+  <object id="29" name="fence_straight" x="176" y="256"><point/></object>
+  <object id="30" name="fence_straight" x="208" y="256"><point/></object>
+  <object id="31" name="fence_straight_vines" x="240" y="256"><point/></object>
+  <object id="32" name="fence_post" x="256" y="256"><point/></object>
+  <object id="33" name="fence_post" x="256" y="256"><point/></object>
+  <object id="34" name="fence_straight" x="272" y="256"><point/></object>
+  <object id="35" name="fence_straight" x="304" y="256"><point/></object>
+  <object id="36" name="fence_straight" x="336" y="256"><point/></object>
+  <object id="37" name="fence_straight_vines" x="368" y="256"><point/></object>
+  <object id="38" name="fence_post" x="384" y="256"><point/></object>
+  <object id="39" name="fence_post" x="384" y="256"><point/></object>
+  <object id="40" name="fence_straight" x="400" y="256"><point/></object>
+  <object id="41" name="fence_straight" x="432" y="256"><point/></object>
+  <object id="42" name="fence_straight" x="464" y="256"><point/></object>
+  <object id="43" name="fence_straight_vines" x="496" y="256"><point/></object>
+  <object id="44" name="fence_post" x="512" y="256"><point/></object>
+  <object id="45" name="fence_post" x="128" y="496"><point/></object>
+  <object id="46" name="fence_straight" x="144" y="496"><point/></object>
+  <object id="47" name="fence_straight" x="176" y="496"><point/></object>
+  <object id="48" name="fence_straight" x="208" y="496"><point/></object>
+  <object id="49" name="fence_straight_vines" x="240" y="496"><point/></object>
+  <object id="50" name="fence_straight" x="272" y="496"><point/></object>
+  <object id="51" name="fence_straight" x="304" y="496"><point/></object>
+  <object id="52" name="fence_straight" x="336" y="496"><point/></object>
+  <object id="53" name="fence_straight_vines" x="368" y="496"><point/></object>
+  <object id="54" name="fence_straight" x="400" y="496"><point/></object>
+  <object id="55" name="fence_straight" x="432" y="496"><point/></object>
+  <object id="56" name="fence_straight" x="464" y="496"><point/></object>
+  <object id="57" name="fence_straight_vines" x="496" y="496"><point/></object>
+  <object id="58" name="fence_post" x="512" y="496"><point/></object>
+  <object id="59" name="fence_post" x="128" y="720"><point/></object>
+  <object id="60" name="fence_straight" x="144" y="720"><point/></object>
+  <object id="61" name="fence_straight" x="176" y="720"><point/></object>
+  <object id="62" name="fence_straight" x="208" y="720"><point/></object>
+  <object id="63" name="fence_straight_vines" x="240" y="720"><point/></object>
+  <object id="64" name="fence_straight" x="272" y="720"><point/></object>
+  <object id="65" name="fence_straight" x="304" y="720"><point/></object>
+  <object id="66" name="fence_straight" x="336" y="720"><point/></object>
+  <object id="67" name="fence_straight_vines" x="368" y="720"><point/></object>
+  <object id="68" name="fence_straight" x="400" y="720"><point/></object>
+  <object id="69" name="fence_straight" x="432" y="720"><point/></object>
+  <object id="70" name="fence_straight" x="464" y="720"><point/></object>
+  <object id="71" name="fence_straight_vines" x="496" y="720"><point/></object>
+  <object id="72" name="fence_post" x="512" y="720"><point/></object>
+  <object id="73" name="fence_post" x="128" y="528"><point/></object>
+  <object id="74" name="fence_post" x="128" y="560"><point/></object>
+  <object id="75" name="fence_post" x="128" y="592"><point/></object>
+  <object id="76" name="fence_post" x="128" y="624"><point/></object>
+  <object id="77" name="fence_post" x="128" y="656"><point/></object>
+  <object id="78" name="fence_post" x="128" y="688"><point/></object>
+  <object id="79" name="fence_post" x="512" y="528"><point/></object>
+  <object id="80" name="fence_post" x="512" y="560"><point/></object>
+  <object id="81" name="fence_post" x="512" y="592"><point/></object>
+  <object id="82" name="fence_post" x="512" y="624"><point/></object>
+  <object id="83" name="fence_post" x="512" y="656"><point/></object>
+  <object id="84" name="fence_post" x="512" y="688"><point/></object>
+  <object id="85" name="fence_post" x="128" y="128"><point/></object>
+  <object id="86" name="fence_post" x="128" y="160"><point/></object>
+  <object id="87" name="fence_post" x="128" y="192"><point/></object>
+  <object id="88" name="fence_post" x="128" y="224"><point/></object>
+  <object id="89" name="fence_post" x="512" y="128"><point/></object>
+  <object id="90" name="fence_post" x="512" y="160"><point/></object>
+  <object id="91" name="fence_post" x="512" y="192"><point/></object>
+  <object id="92" name="fence_post" x="512" y="224"><point/></object>
+  <object id="93" name="land_sale_sign" x="221" y="277"><properties><property name="plot" type="int" value="0"/></properties><point/></object>
+  <object id="94" name="land_sale_sign" x="349" y="277"><properties><property name="plot" type="int" value="1"/></properties><point/></object>
+  <object id="95" name="land_sale_sign" x="477" y="277"><properties><property name="plot" type="int" value="2"/></properties><point/></object>
+  <object id="96" name="weed_31" x="184" y="160"><point/></object>
+  <object id="97" name="weed_62" x="197" y="130"><point/></object>
+  <object id="98" name="weed_12" x="175" y="152"><point/></object>
+  <object id="99" name="weed_21" x="242" y="160"><point/></object>
+  <object id="100" name="weed_53" x="230" y="234"><point/></object>
+  <object id="101" name="weed_62" x="210" y="169"><point/></object>
+  <object id="102" name="weed_16" x="196" y="211"><point/></object>
+  <object id="103" name="stump_seat" x="188" y="199"><point/></object>
+  <object id="104" name="rock_small_43" x="151" y="172"><point/></object>
+  <object id="105" name="weed_49" x="295" y="188"><point/></object>
+  <object id="106" name="weed_62" x="325" y="222"><point/></object>
+  <object id="107" name="weed_40" x="280" y="165"><point/></object>
+  <object id="108" name="weed_16" x="346" y="218"><point/></object>
+  <object id="109" name="weed_12" x="337" y="132"><point/></object>
+  <object id="110" name="weed_07" x="340" y="190"><point/></object>
+  <object id="111" name="weed_26" x="300" y="237"><point/></object>
+  <object id="112" name="stump_seat" x="284" y="225"><point/></object>
+  <object id="113" name="rock_small_13" x="279" y="213"><point/></object>
+  <object id="114" name="weed_26" x="429" y="158"><point/></object>
+  <object id="115" name="weed_07" x="423" y="182"><point/></object>
+  <object id="116" name="weed_26" x="412" y="179"><point/></object>
+  <object id="117" name="weed_53" x="441" y="170"><point/></object>
+  <object id="118" name="weed_40" x="424" y="180"><point/></object>
+  <object id="119" name="weed_07" x="420" y="213"><point/></object>
+  <object id="120" name="weed_31" x="441" y="227"><point/></object>
+  <object id="121" name="stump_seat" x="401" y="201"><point/></object>
+  <object id="122" name="rock_small_13" x="475" y="212"><point/></object>
+  <object id="123" name="rock_big_10" x="832" y="589"><properties><property name="submerged" type="float" value="0.62"/></properties><point/></object>
+  <object id="124" name="rock_small_0" x="941" y="669"><point/></object>
+  <object id="125" name="rock_small_30" x="957" y="522"><point/></object>
+  <object id="126" name="rock_small_13" x="976" y="538"><point/></object>
+  <object id="127" name="rock_small_43" x="422" y="285"><point/></object>
+  <object id="128" name="rock_small_30" x="442" y="296"><point/></object>
+  <object id="129" name="decor_3" x="179" y="288"><point/></object>
+  <object id="130" name="decor_9" x="197" y="298"><point/></object>
+  <object id="131" name="decor_2" x="1011" y="301"><point/></object>
+  <object id="132" name="decor_26" x="1029" y="310"><point/></object>
+  <object id="133" name="decor_59" x="390" y="461"><point/></object>
+  <object id="134" name="decor_4" x="408" y="470"><point/></object>
+  <object id="135" name="decor_17" x="986" y="688"><point/></object>
+  <object id="136" name="decor_3" x="1003" y="698"><point/></object>
+  <object id="137" name="decor_25" x="1210" y="659"><point/></object>
+  <object id="138" name="decor_2" x="1227" y="669"><point/></object>
+  <object id="139" name="decor_9" x="1456" y="576"><point/></object>
+  <object id="140" name="decor_26" x="1474" y="586"><point/></object>
+  <object id="141" name="decor_4" x="605" y="1018"><point/></object>
+  <object id="142" name="decor_17" x="622" y="1027"><point/></object>
+  <object id="143" name="decor_3" x="330" y="819"><point/></object>
+  <object id="144" name="decor_59" x="347" y="829"><point/></object>
+  <object id="145" name="decor_26" x="704" y="238"><point/></object>
+  <object id="146" name="decor_25" x="722" y="224"><point/></object>
+  <object id="147" name="decor_2" x="1050" y="131"><point/></object>
+  <object id="148" name="decor_9" x="1067" y="141"><point/></object>
+  <object id="149" name="decal_0" x="275" y="486"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="150" name="decal_2" x="966" y="432"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="151" name="decal_3" x="432" y="467"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="152" name="decal_8" x="1216" y="560"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="153" name="decal_1" x="896" y="720"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="154" name="decal_16" x="1488" y="762"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="155" name="decal_2" x="237" y="813"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="156" name="decal_3" x="928" y="269"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="157" name="decal_8" x="1136" y="624"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="158" name="decal_1" x="390" y="781"><properties><property name="flat" type="bool" value="true"/></properties><point/></object>
+  <object id="159" name="decor_3" x="659" y="227"><point/></object>
+  <object id="160" name="decor_9" x="678" y="237"><point/></object>
+  <object id="161" name="decor_4" x="886" y="229"><point/></object>
+  <object id="162" name="decor_26" x="906" y="238"><point/></object>
+  <object id="163" name="decor_59" x="947" y="227"><point/></object>
+  <object id="164" name="tree_big_1" x="659" y="224"><point/></object>
+  <object id="165" name="tree_big_3" x="1024" y="208"><point/></object>
+  <object id="166" name="tree_big_2" x="403" y="237"><point/></object>
+  <object id="167" name="tree_big_1" x="1072" y="99"><point/></object>
+  <object id="168" name="tree_big_0" x="1162" y="106"><point/></object>
+  <object id="169" name="tree_big_3" x="1056" y="499"><point/></object>
+  <object id="170" name="tree_big_0" x="1440" y="704"><point/></object>
+  <object id="171" name="tree_big_2" x="256" y="797"><point/></object>
+  <object id="172" name="tree_big_0" x="384" y="989"><point/></object>
+  <object id="173" name="tree_big_0" x="1274" y="813"><point/></object>
+  <object id="174" name="tree_big_0" x="1110" y="294"><point/></object>
+  <object id="175" name="tree_big_2" x="1104" y="365"><point/></object>
+  <object id="176" name="tree_big_3" x="1126" y="435"><point/></object>
+  <object id="177" name="tree_big_0" x="14" y="43"><point/></object>
+  <object id="178" name="tree_big_0" x="51" y="9"><point/></object>
+  <object id="179" name="tree_big_3" x="107" y="50"><point/></object>
+  <object id="180" name="tree_big_2" x="141" y="12"><point/></object>
+  <object id="181" name="tree_big_3" x="193" y="49"><point/></object>
+  <object id="182" name="tree_big_0" x="225" y="7"><point/></object>
+  <object id="183" name="tree_big_3" x="269" y="52"><point/></object>
+  <object id="184" name="tree_big_3" x="321" y="4"><point/></object>
+  <object id="185" name="tree_big_1" x="361" y="53"><point/></object>
+  <object id="186" name="tree_big_3" x="406" y="13"><point/></object>
+  <object id="187" name="tree_big_3" x="449" y="54"><point/></object>
+  <object id="188" name="tree_big_0" x="491" y="4"><point/></object>
+  <object id="189" name="tree_big_3" x="542" y="52"><point/></object>
+  <object id="190" name="tree_big_1" x="572" y="4"><point/></object>
+  <object id="191" name="tree_big_2" x="1122" y="45"><point/></object>
+  <object id="192" name="tree_big_0" x="1155" y="8"><point/></object>
+  <object id="193" name="tree_big_0" x="1214" y="54"><point/></object>
+  <object id="194" name="tree_big_0" x="1255" y="3"><point/></object>
+  <object id="195" name="tree_big_1" x="1413" y="53"><point/></object>
+  <object id="196" name="tree_big_0" x="1459" y="16"><point/></object>
+  <object id="197" name="tree_big_1" x="1502" y="47"><point/></object>
+  <object id="198" name="tree_big_2" x="1544" y="7"><point/></object>
+  <object id="199" name="tree_big_0" x="1594" y="49"><point/></object>
+  <object id="200" name="tree_big_0" x="1636" y="5"><point/></object>
+  <object id="201" name="tree_big_0" x="39" y="109"><point/></object>
+  <object id="202" name="tree_big_1" x="90" y="153"><point/></object>
+  <object id="203" name="tree_big_1" x="1612" y="134"><point/></object>
+  <object id="204" name="tree_big_1" x="24" y="199"><point/></object>
+  <object id="205" name="tree_big_3" x="91" y="239"><point/></object>
+  <object id="206" name="tree_big_2" x="1601" y="217"><point/></object>
+  <object id="207" name="tree_big_3" x="39" y="280"><point/></object>
+  <object id="208" name="tree_big_1" x="78" y="325"><point/></object>
+  <object id="209" name="tree_big_3" x="1602" y="303"><point/></object>
+  <object id="210" name="tree_big_2" x="34" y="369"><point/></object>
+  <object id="211" name="tree_big_1" x="93" y="419"><point/></object>
+  <object id="212" name="tree_big_0" x="1610" y="391"><point/></object>
+  <object id="213" name="tree_big_3" x="28" y="453"><point/></object>
+  <object id="214" name="tree_big_0" x="82" y="504"><point/></object>
+  <object id="215" name="tree_big_2" x="1608" y="475"><point/></object>
+  <object id="216" name="tree_big_1" x="27" y="546"><point/></object>
+  <object id="217" name="tree_big_2" x="89" y="589"><point/></object>
+  <object id="218" name="tree_big_3" x="1608" y="568"><point/></object>
+  <object id="219" name="tree_big_3" x="1565" y="605"><point/></object>
+  <object id="220" name="tree_big_0" x="35" y="629"><point/></object>
+  <object id="221" name="tree_big_3" x="92" y="674"><point/></object>
+  <object id="222" name="tree_big_0" x="1599" y="645"><point/></object>
+  <object id="223" name="tree_big_0" x="1555" y="689"><point/></object>
+  <object id="224" name="tree_big_1" x="25" y="718"><point/></object>
+  <object id="225" name="tree_big_2" x="84" y="757"><point/></object>
+  <object id="226" name="tree_big_1" x="1614" y="741"><point/></object>
+  <object id="227" name="tree_big_2" x="1554" y="772"><point/></object>
+  <object id="228" name="tree_big_3" x="35" y="807"><point/></object>
+  <object id="229" name="tree_big_3" x="80" y="979"><point/></object>
+  <object id="230" name="tree_big_1" x="1607" y="826"><point/></object>
+  <object id="231" name="tree_big_0" x="1561" y="995"><point/></object>
+  <object id="232" name="tree_big_0" x="36" y="1019"><point/></object>
+  <object id="233" name="tree_big_0" x="79" y="1053"><point/></object>
+  <object id="234" name="tree_big_0" x="1606" y="1033"><point/></object>
+  <object id="235" name="tree_big_2" x="1568" y="1073"><point/></object>
+  <object id="236" name="tree_big_1" x="32" y="1107"><point/></object>
+  <object id="237" name="tree_big_2" x="88" y="1141"><point/></object>
+  <object id="238" name="tree_big_2" x="1603" y="1128"><point/></object>
+  <object id="239" name="tree_big_0" x="1563" y="1159"><point/></object>
+  <object id="240" name="tree_big_1" x="151" y="1120"><point/></object>
+  <object id="241" name="tree_big_1" x="186" y="1088"><point/></object>
+  <object id="242" name="tree_big_0" x="224" y="1120"><point/></object>
+  <object id="243" name="tree_big_1" x="279" y="1086"><point/></object>
+  <object id="244" name="tree_big_2" x="324" y="1114"><point/></object>
+  <object id="245" name="tree_big_1" x="358" y="1083"><point/></object>
+  <object id="246" name="tree_big_0" x="409" y="1112"><point/></object>
+  <object id="247" name="tree_big_0" x="439" y="1089"><point/></object>
+  <object id="248" name="tree_big_2" x="497" y="1117"><point/></object>
+  <object id="249" name="tree_big_3" x="538" y="1090"><point/></object>
+  <object id="250" name="tree_big_3" x="580" y="1120"><point/></object>
+  <object id="251" name="tree_big_3" x="617" y="1093"><point/></object>
+  <object id="252" name="tree_big_2" x="667" y="1121"><point/></object>
+  <object id="253" name="tree_big_3" x="700" y="1092"><point/></object>
+  <object id="254" name="tree_big_3" x="751" y="1115"><point/></object>
+  <object id="255" name="tree_big_0" x="783" y="1093"><point/></object>
+  <object id="256" name="tree_big_2" x="828" y="1114"><point/></object>
+  <object id="257" name="tree_big_0" x="878" y="1083"><point/></object>
+  <object id="258" name="tree_big_3" x="923" y="1120"><point/></object>
+  <object id="259" name="tree_big_1" x="964" y="1086"><point/></object>
+  <object id="260" name="tree_big_0" x="1006" y="1121"><point/></object>
+  <object id="261" name="tree_big_2" x="1049" y="1088"><point/></object>
+  <object id="262" name="tree_big_3" x="1087" y="1117"><point/></object>
+  <object id="263" name="tree_big_2" x="1133" y="1087"><point/></object>
+  <object id="264" name="tree_big_0" x="1189" y="1122"><point/></object>
+  <object id="265" name="tree_big_1" x="1218" y="1091"><point/></object>
+  <object id="266" name="tree_big_1" x="1268" y="1118"><point/></object>
+  <object id="267" name="tree_big_2" x="1437" y="1092"><point/></object>
+  <object id="268" name="tree_big_1" x="1479" y="1115"><point/></object>
+  <object id="269" name="tree_big_0" x="1529" y="1083"><point/></object>
+  <object id="270" name="tree_big_2" x="1043" y="83"><point/></object>
+  <object id="271" name="tree_big_0" x="1030" y="147"><point/></object>
+  <object id="272" name="tree_big_1" x="1331" y="51"><point/></object>
+  <object id="273" name="tree_big_3" x="1382" y="13"><point/></object>
+  <object id="274" name="tree_big_0" x="1427" y="45"><point/></object>
+  <object id="275" name="tree_big_2" x="1341" y="1117"><point/></object>
+  <object id="276" name="tree_big_1" x="1386" y="1091"><point/></object>
+  <object id="277" name="tree_big_3" x="1437" y="1117"><point/></object>
+  <object id="278" name="tree_big_0" x="35" y="864"><point/></object>
+  <object id="279" name="tree_big_2" x="86" y="906"><point/></object>
+  <object id="280" name="tree_big_3" x="29" y="947"><point/></object>
+  <object id="281" name="tree_big_1" x="1606" y="864"><point/></object>
+  <object id="282" name="tree_big_3" x="1562" y="909"><point/></object>
+  <object id="283" name="tree_big_0" x="1610" y="954"><point/></object>
  </objectgroup>
  <objectgroup id="4" name="flowers">
-  <object id="1" name="petal_big_3" x="975" y="453"><point/></object>
-  <object id="2" name="petal_big_3" x="459" y="916"><point/></object>
-  <object id="3" name="petal_big_1" x="147" y="833"><point/></object>
-  <object id="4" name="petal_big_2" x="1051" y="96"><point/></object>
-  <object id="5" name="petal_big_3" x="1241" y="617"><point/></object>
-  <object id="6" name="petal_big_0" x="667" y="7"><point/></object>
-  <object id="7" name="petal_big_3" x="409" y="918"><point/></object>
-  <object id="8" name="petal_big_1" x="281" y="923"><point/></object>
-  <object id="9" name="petal_big_0" x="420" y="440"><point/></object>
-  <object id="10" name="petal_big_0" x="978" y="372"><point/></object>
-  <object id="11" name="petal_big_2" x="585" y="234"><point/></object>
-  <object id="12" name="petal_big_3" x="1428" y="667"><point/></object>
-  <object id="13" name="petal_big_2" x="898" y="309"><point/></object>
-  <object id="14" name="petal_big_2" x="705" y="9"><point/></object>
-  <object id="15" name="petal_big_3" x="210" y="880"><point/></object>
-  <object id="16" name="petal_big_2" x="951" y="504"><point/></object>
-  <object id="17" name="petal_big_1" x="997" y="118"><point/></object>
-  <object id="18" name="petal_big_3" x="324" y="95"><point/></object>
-  <object id="19" name="petal_big_2" x="1505" y="587"><point/></object>
-  <object id="20" name="petal_big_0" x="857" y="415"><point/></object>
-  <object id="21" name="petal_big_3" x="1027" y="535"><point/></object>
-  <object id="22" name="petal_big_1" x="1043" y="36"><point/></object>
-  <object id="23" name="petal_big_1" x="1184" y="590"><point/></object>
-  <object id="24" name="petal_big_2" x="571" y="191"><point/></object>
-  <object id="25" name="petal_big_1" x="170" y="95"><point/></object>
-  <object id="26" name="petal_big_0" x="415" y="779"><point/></object>
-  <object id="27" name="petal_big_2" x="452" y="431"><point/></object>
-  <object id="28" name="petal_4" x="1361" y="857"><point/></object>
-  <object id="29" name="petal_0" x="1216" y="885"><point/></object>
-  <object id="30" name="petal_5" x="1108" y="879"><point/></object>
-  <object id="31" name="petal_6" x="364" y="794"><point/></object>
-  <object id="32" name="petal_6" x="482" y="456"><point/></object>
-  <object id="33" name="petal_0" x="824" y="352"><point/></object>
-  <object id="34" name="petal_5" x="1214" y="687"><point/></object>
-  <object id="35" name="petal_1" x="1300" y="588"><point/></object>
-  <object id="36" name="petal_5" x="1281" y="682"><point/></object>
-  <object id="37" name="petal_0" x="1181" y="774"><point/></object>
-  <object id="38" name="petal_0" x="355" y="867"><point/></object>
-  <object id="39" name="petal_6" x="114" y="799"><point/></object>
-  <object id="40" name="petal_4" x="1151" y="664"><point/></object>
-  <object id="41" name="petal_6" x="444" y="458"><point/></object>
-  <object id="42" name="petal_4" x="1217" y="924"><point/></object>
-  <object id="43" name="petal_4" x="115" y="809"><point/></object>
-  <object id="44" name="petal_2" x="729" y="99"><point/></object>
-  <object id="45" name="petal_1" x="383" y="926"><point/></object>
-  <object id="46" name="petal_3" x="394" y="911"><point/></object>
-  <object id="47" name="petal_2" x="204" y="904"><point/></object>
-  <object id="48" name="petal_3" x="1059" y="533"><point/></object>
-  <object id="49" name="petal_7" x="1244" y="687"><point/></object>
-  <object id="50" name="petal_3" x="1077" y="625"><point/></object>
-  <object id="51" name="petal_2" x="454" y="767"><point/></object>
-  <object id="52" name="petal_0" x="1013" y="693"><point/></object>
-  <object id="53" name="petal_0" x="114" y="373"><point/></object>
-  <object id="54" name="petal_1" x="1103" y="485"><point/></object>
-  <object id="55" name="petal_1" x="923" y="688"><point/></object>
-  <object id="56" name="petal_0" x="826" y="423"><point/></object>
-  <object id="57" name="petal_7" x="1355" y="817"><point/></object>
-  <object id="58" name="petal_5" x="421" y="356"><point/></object>
-  <object id="59" name="petal_3" x="1192" y="617"><point/></object>
-  <object id="60" name="petal_1" x="510" y="460"><point/></object>
-  <object id="61" name="petal_6" x="1086" y="266"><point/></object>
-  <object id="62" name="petal_4" x="974" y="325"><point/></object>
-  <object id="63" name="petal_7" x="1503" y="808"><point/></object>
-  <object id="64" name="petal_4" x="1260" y="817"><point/></object>
-  <object id="65" name="petal_2" x="164" y="778"><point/></object>
-  <object id="66" name="petal_7" x="640" y="468"><point/></object>
-  <object id="67" name="petal_4" x="855" y="400"><point/></object>
-  <object id="68" name="petal_6" x="435" y="888"><point/></object>
-  <object id="69" name="petal_7" x="1286" y="595"><point/></object>
-  <object id="70" name="petal_2" x="1021" y="453"><point/></object>
-  <object id="71" name="petal_3" x="1074" y="598"><point/></object>
-  <object id="72" name="petal_3" x="1003" y="231"><point/></object>
-  <object id="73" name="petal_7" x="1038" y="45"><point/></object>
-  <object id="74" name="petal_1" x="371" y="410"><point/></object>
-  <object id="75" name="petal_2" x="1005" y="247"><point/></object>
-  <object id="76" name="petal_7" x="1054" y="2"><point/></object>
-  <object id="77" name="petal_4" x="707" y="115"><point/></object>
-  <object id="78" name="petal_3" x="1384" y="610"><point/></object>
-  <object id="79" name="petal_3" x="1408" y="780"><point/></object>
-  <object id="80" name="petal_1" x="903" y="298"><point/></object>
-  <object id="81" name="petal_3" x="949" y="24"><point/></object>
-  <object id="82" name="petal_5" x="974" y="671"><point/></object>
-  <object id="83" name="petal_1" x="1490" y="835"><point/></object>
-  <object id="84" name="petal_0" x="1442" y="704"><point/></object>
-  <object id="85" name="petal_1" x="682" y="468"><point/></object>
-  <object id="86" name="petal_5" x="1090" y="594"><point/></object>
-  <object id="87" name="petal_1" x="1079" y="561"><point/></object>
-  <object id="88" name="petal_2" x="1418" y="637"><point/></object>
-  <object id="89" name="petal_2" x="567" y="631"><point/></object>
-  <object id="90" name="petal_4" x="542" y="140"><point/></object>
-  <object id="91" name="petal_1" x="927" y="904"><point/></object>
-  <object id="92" name="petal_5" x="678" y="111"><point/></object>
-  <object id="93" name="petal_2" x="1107" y="615"><point/></object>
-  <object id="94" name="petal_7" x="1063" y="675"><point/></object>
-  <object id="95" name="petal_7" x="1189" y="746"><point/></object>
-  <object id="96" name="petal_6" x="1117" y="234"><point/></object>
-  <object id="97" name="petal_6" x="1071" y="150"><point/></object>
-  <object id="98" name="petal_2" x="619" y="113"><point/></object>
-  <object id="99" name="petal_4" x="1142" y="703"><point/></object>
-  <object id="100" name="petal_3" x="261" y="64"><point/></object>
-  <object id="101" name="petal_3" x="619" y="705"><point/></object>
-  <object id="102" name="petal_7" x="308" y="834"><point/></object>
-  <object id="103" name="petal_2" x="1164" y="684"><point/></object>
-  <object id="104" name="petal_1" x="538" y="121"><point/></object>
-  <object id="105" name="petal_1" x="1129" y="589"><point/></object>
-  <object id="106" name="petal_3" x="143" y="891"><point/></object>
-  <object id="107" name="petal_7" x="211" y="822"><point/></object>
-  <object id="108" name="petal_7" x="662" y="463"><point/></object>
-  <object id="109" name="petal_6" x="1020" y="110"><point/></object>
-  <object id="110" name="petal_3" x="401" y="331"><point/></object>
-  <object id="111" name="petal_7" x="221" y="83"><point/></object>
-  <object id="112" name="petal_0" x="859" y="85"><point/></object>
-  <object id="113" name="petal_4" x="1018" y="727"><point/></object>
-  <object id="114" name="petal_6" x="102" y="826"><point/></object>
-  <object id="115" name="petal_0" x="941" y="469"><point/></object>
-  <object id="116" name="petal_5" x="992" y="310"><point/></object>
-  <object id="117" name="petal_1" x="1457" y="759"><point/></object>
-  <object id="118" name="petal_7" x="1155" y="619"><point/></object>
-  <object id="119" name="petal_6" x="194" y="894"><point/></object>
-  <object id="120" name="petal_0" x="872" y="365"><point/></object>
-  <object id="121" name="petal_1" x="288" y="891"><point/></object>
-  <object id="122" name="petal_0" x="934" y="376"><point/></object>
-  <object id="123" name="petal_3" x="905" y="910"><point/></object>
-  <object id="124" name="petal_7" x="111" y="253"><point/></object>
-  <object id="125" name="petal_0" x="1567" y="807"><point/></object>
-  <object id="126" name="petal_5" x="720" y="423"><point/></object>
-  <object id="127" name="petal_3" x="693" y="454"><point/></object>
-  <object id="128" name="petal_1" x="629" y="458"><point/></object>
-  <object id="129" name="petal_5" x="1023" y="252"><point/></object>
-  <object id="130" name="petal_1" x="939" y="228"><point/></object>
-  <object id="131" name="petal_3" x="357" y="442"><point/></object>
-  <object id="132" name="petal_7" x="886" y="320"><point/></object>
-  <object id="133" name="petal_3" x="1071" y="452"><point/></object>
-  <object id="134" name="petal_2" x="874" y="390"><point/></object>
-  <object id="135" name="petal_4" x="721" y="39"><point/></object>
-  <object id="136" name="petal_4" x="1345" y="844"><point/></object>
-  <object id="137" name="petal_6" x="776" y="367"><point/></object>
-  <object id="138" name="petal_2" x="1206" y="719"><point/></object>
-  <object id="139" name="petal_4" x="774" y="74"><point/></object>
-  <object id="140" name="petal_7" x="108" y="683"><point/></object>
-  <object id="141" name="petal_7" x="1550" y="632"><point/></object>
-  <object id="142" name="petal_7" x="546" y="708"><point/></object>
-  <object id="143" name="petal_1" x="1022" y="490"><point/></object>
-  <object id="144" name="petal_2" x="1335" y="647"><point/></object>
-  <object id="145" name="petal_1" x="1407" y="602"><point/></object>
-  <object id="146" name="petal_7" x="230" y="822"><point/></object>
-  <object id="147" name="petal_5" x="1418" y="761"><point/></object>
-  <object id="148" name="petal_2" x="245" y="78"><point/></object>
-  <object id="149" name="petal_2" x="1389" y="728"><point/></object>
-  <object id="150" name="petal_3" x="1313" y="742"><point/></object>
-  <object id="151" name="petal_2" x="1196" y="820"><point/></object>
-  <object id="152" name="petal_3" x="989" y="542"><point/></object>
-  <object id="153" name="petal_1" x="1081" y="65"><point/></object>
-  <object id="154" name="petal_6" x="1093" y="113"><point/></object>
-  <object id="155" name="petal_5" x="1039" y="310"><point/></object>
-  <object id="156" name="petal_3" x="986" y="29"><point/></object>
-  <object id="157" name="petal_3" x="613" y="76"><point/></object>
-  <object id="158" name="petal_1" x="99" y="230"><point/></object>
-  <object id="159" name="petal_5" x="909" y="922"><point/></object>
-  <object id="160" name="petal_6" x="417" y="898"><point/></object>
-  <object id="161" name="petal_5" x="1006" y="398"><point/></object>
-  <object id="162" name="petal_6" x="1183" y="79"><point/></object>
-  <object id="163" name="petal_1" x="1041" y="333"><point/></object>
-  <object id="164" name="petal_5" x="851" y="97"><point/></object>
-  <object id="165" name="petal_4" x="1246" y="743"><point/></object>
-  <object id="166" name="petal_4" x="1059" y="648"><point/></object>
-  <object id="167" name="petal_5" x="581" y="47"><point/></object>
-  <object id="168" name="petal_0" x="966" y="521"><point/></object>
-  <object id="169" name="petal_1" x="1131" y="613"><point/></object>
-  <object id="170" name="petal_5" x="1047" y="355"><point/></object>
-  <object id="171" name="petal_7" x="1008" y="558"><point/></object>
-  <object id="172" name="petal_2" x="1004" y="440"><point/></object>
-  <object id="173" name="petal_7" x="361" y="331"><point/></object>
-  <object id="174" name="petal_2" x="186" y="72"><point/></object>
-  <object id="175" name="petal_2" x="1523" y="635"><point/></object>
-  <object id="176" name="petal_0" x="607" y="666"><point/></object>
-  <object id="177" name="petal_4" x="531" y="648"><point/></object>
-  <object id="178" name="petal_5" x="1007" y="918"><point/></object>
-  <object id="179" name="petal_1" x="983" y="526"><point/></object>
-  <object id="180" name="petal_2" x="1082" y="75"><point/></object>
-  <object id="181" name="petal_4" x="1218" y="798"><point/></object>
-  <object id="182" name="petal_3" x="1095" y="899"><point/></object>
-  <object id="183" name="petal_7" x="744" y="6"><point/></object>
-  <object id="184" name="petal_6" x="907" y="287"><point/></object>
-  <object id="185" name="petal_4" x="128" y="776"><point/></object>
-  <object id="186" name="petal_6" x="1026" y="562"><point/></object>
-  <object id="187" name="petal_2" x="963" y="595"><point/></object>
-  <object id="188" name="petal_5" x="951" y="401"><point/></object>
-  <object id="189" name="petal_3" x="951" y="339"><point/></object>
-  <object id="190" name="petal_7" x="288" y="858"><point/></object>
-  <object id="191" name="petal_3" x="1257" y="763"><point/></object>
-  <object id="192" name="petal_2" x="104" y="531"><point/></object>
-  <object id="193" name="petal_1" x="411" y="424"><point/></object>
-  <object id="194" name="petal_7" x="1160" y="731"><point/></object>
-  <object id="195" name="petal_6" x="282" y="794"><point/></object>
-  <object id="196" name="petal_3" x="1267" y="808"><point/></object>
-  <object id="197" name="petal_3" x="1208" y="639"><point/></object>
-  <object id="198" name="petal_6" x="888" y="234"><point/></object>
-  <object id="199" name="petal_6" x="1117" y="617"><point/></object>
-  <object id="200" name="petal_0" x="762" y="105"><point/></object>
-  <object id="201" name="petal_4" x="100" y="270"><point/></object>
-  <object id="202" name="petal_2" x="1113" y="698"><point/></object>
-  <object id="203" name="petal_3" x="1042" y="289"><point/></object>
-  <object id="204" name="petal_4" x="901" y="467"><point/></object>
-  <object id="205" name="petal_2" x="281" y="832"><point/></object>
-  <object id="206" name="petal_5" x="1295" y="850"><point/></object>
-  <object id="207" name="petal_1" x="933" y="103"><point/></object>
-  <object id="208" name="petal_1" x="188" y="812"><point/></object>
-  <object id="209" name="petal_3" x="131" y="911"><point/></object>
-  <object id="210" name="petal_0" x="1451" y="651"><point/></object>
-  <object id="211" name="petal_7" x="1012" y="574"><point/></object>
-  <object id="212" name="petal_1" x="109" y="121"><point/></object>
-  <object id="213" name="petal_5" x="1406" y="830"><point/></object>
+  <object id="1" name="petal_big_1" x="1436" y="696"><point/></object>
+  <object id="2" name="petal_big_3" x="395" y="1044"><point/></object>
+  <object id="3" name="petal_big_1" x="275" y="929"><point/></object>
+  <object id="4" name="petal_big_0" x="1017" y="594"><point/></object>
+  <object id="5" name="petal_big_3" x="1468" y="867"><point/></object>
+  <object id="6" name="petal_big_3" x="723" y="19"><point/></object>
+  <object id="7" name="petal_big_3" x="955" y="320"><point/></object>
+  <object id="8" name="petal_big_3" x="1430" y="828"><point/></object>
+  <object id="9" name="petal_big_3" x="384" y="1022"><point/></object>
+  <object id="10" name="petal_big_0" x="1355" y="908"><point/></object>
+  <object id="11" name="petal_big_2" x="196" y="778"><point/></object>
+  <object id="12" name="petal_big_1" x="106" y="338"><point/></object>
+  <object id="13" name="petal_big_2" x="909" y="245"><point/></object>
+  <object id="14" name="petal_big_0" x="1533" y="873"><point/></object>
+  <object id="15" name="petal_big_0" x="1238" y="672"><point/></object>
+  <object id="16" name="petal_big_1" x="1108" y="311"><point/></object>
+  <object id="17" name="petal_big_2" x="1341" y="1042"><point/></object>
+  <object id="18" name="petal_big_3" x="1390" y="1015"><point/></object>
+  <object id="19" name="petal_big_2" x="579" y="165"><point/></object>
+  <object id="20" name="petal_big_3" x="980" y="379"><point/></object>
+  <object id="21" name="petal_big_1" x="925" y="311"><point/></object>
+  <object id="22" name="petal_big_2" x="1409" y="619"><point/></object>
+  <object id="23" name="petal_big_0" x="857" y="447"><point/></object>
+  <object id="24" name="petal_big_0" x="1537" y="915"><point/></object>
+  <object id="25" name="petal_big_1" x="817" y="416"><point/></object>
+  <object id="26" name="petal_big_2" x="560" y="1040"><point/></object>
+  <object id="27" name="petal_big_3" x="975" y="687"><point/></object>
+  <object id="28" name="petal_big_1" x="266" y="95"><point/></object>
+  <object id="29" name="petal_big_0" x="159" y="875"><point/></object>
+  <object id="30" name="petal_4" x="516" y="463"><point/></object>
+  <object id="31" name="petal_4" x="241" y="985"><point/></object>
+  <object id="32" name="petal_0" x="352" y="1013"><point/></object>
+  <object id="33" name="petal_5" x="244" y="1007"><point/></object>
+  <object id="34" name="petal_6" x="1548" y="858"><point/></object>
+  <object id="35" name="petal_0" x="234" y="856"><point/></object>
+  <object id="36" name="petal_1" x="816" y="80"><point/></object>
+  <object id="37" name="petal_5" x="1374" y="719"><point/></object>
+  <object id="38" name="petal_1" x="1204" y="620"><point/></object>
+  <object id="39" name="petal_5" x="1441" y="714"><point/></object>
+  <object id="40" name="petal_0" x="253" y="870"><point/></object>
+  <object id="41" name="petal_0" x="99" y="995"><point/></object>
+  <object id="42" name="petal_6" x="1266" y="863"><point/></object>
+  <object id="43" name="petal_4" x="863" y="696"><point/></object>
+  <object id="44" name="petal_7" x="1279" y="833"><point/></object>
+  <object id="45" name="petal_6" x="1262" y="671"><point/></object>
+  <object id="46" name="petal_4" x="1523" y="873"><point/></object>
+  <object id="47" name="petal_2" x="921" y="99"><point/></object>
+  <object id="48" name="petal_1" x="319" y="1054"><point/></object>
+  <object id="49" name="petal_3" x="330" y="1039"><point/></object>
+  <object id="50" name="petal_2" x="108" y="1032"><point/></object>
+  <object id="51" name="petal_5" x="1046" y="309"><point/></object>
+  <object id="52" name="petal_5" x="578" y="92"><point/></object>
+  <object id="53" name="petal_2" x="538" y="708"><point/></object>
+  <object id="54" name="petal_4" x="1333" y="611"><point/></object>
+  <object id="55" name="petal_2" x="1095" y="303"><point/></object>
+  <object id="56" name="petal_1" x="1038" y="207"><point/></object>
+  <object id="57" name="petal_4" x="342" y="1019"><point/></object>
+  <object id="58" name="petal_2" x="98" y="284"><point/></object>
+  <object id="59" name="petal_1" x="990" y="618"><point/></object>
+  <object id="60" name="petal_5" x="1211" y="584"><point/></object>
+  <object id="61" name="petal_7" x="111" y="365"><point/></object>
+  <object id="62" name="petal_2" x="1258" y="1019"><point/></object>
+  <object id="63" name="petal_7" x="159" y="936"><point/></object>
+  <object id="64" name="petal_4" x="1388" y="913"><point/></object>
+  <object id="65" name="petal_5" x="1490" y="607"><point/></object>
+  <object id="66" name="petal_3" x="106" y="138"><point/></object>
+  <object id="67" name="petal_2" x="980" y="31"><point/></object>
+  <object id="68" name="petal_5" x="1392" y="752"><point/></object>
+  <object id="69" name="petal_4" x="1048" y="665"><point/></object>
+  <object id="70" name="petal_2" x="1021" y="485"><point/></object>
+  <object id="71" name="petal_3" x="946" y="630"><point/></object>
+  <object id="72" name="petal_3" x="1146" y="646"><point/></object>
+  <object id="73" name="petal_0" x="538" y="248"><point/></object>
+  <object id="74" name="petal_0" x="1474" y="1021"><point/></object>
+  <object id="75" name="petal_4" x="563" y="112"><point/></object>
+  <object id="76" name="petal_5" x="898" y="303"><point/></object>
+  <object id="77" name="petal_6" x="112" y="425"><point/></object>
+  <object id="78" name="petal_3" x="1307" y="608"><point/></object>
+  <object id="79" name="petal_6" x="973" y="522"><point/></object>
+  <object id="80" name="petal_1" x="999" y="330"><point/></object>
+  <object id="81" name="petal_0" x="589" y="127"><point/></object>
+  <object id="82" name="petal_5" x="654" y="703"><point/></object>
+  <object id="83" name="petal_1" x="370" y="963"><point/></object>
+  <object id="84" name="petal_0" x="1378" y="768"><point/></object>
+  <object id="85" name="petal_1" x="586" y="500"><point/></object>
+  <object id="86" name="petal_4" x="1038" y="151"><point/></object>
+  <object id="87" name="petal_5" x="1515" y="979"><point/></object>
+  <object id="88" name="petal_3" x="1482" y="716"><point/></object>
+  <object id="89" name="petal_0" x="433" y="461"><point/></object>
+  <object id="90" name="petal_1" x="379" y="945"><point/></object>
+  <object id="91" name="petal_1" x="575" y="1032"><point/></object>
+  <object id="92" name="petal_5" x="870" y="111"><point/></object>
+  <object id="93" name="petal_2" x="1043" y="647"><point/></object>
+  <object id="94" name="petal_7" x="1223" y="707"><point/></object>
+  <object id="95" name="petal_6" x="1082" y="619"><point/></object>
+  <object id="96" name="petal_6" x="893" y="266"><point/></object>
+  <object id="97" name="petal_2" x="1229" y="776"><point/></object>
+  <object id="98" name="petal_2" x="811" y="113"><point/></object>
+  <object id="99" name="petal_4" x="1302" y="735"><point/></object>
+  <object id="100" name="petal_3" x="485" y="64"><point/></object>
+  <object id="101" name="petal_3" x="1451" y="737"><point/></object>
+  <object id="102" name="petal_7" x="1300" y="930"><point/></object>
+  <object id="103" name="petal_2" x="1324" y="716"><point/></object>
+  <object id="104" name="petal_1" x="730" y="121"><point/></object>
+  <object id="105" name="petal_1" x="1001" y="621"><point/></object>
+  <object id="106" name="petal_3" x="1327" y="987"><point/></object>
+  <object id="107" name="petal_7" x="147" y="918"><point/></object>
+  <object id="108" name="petal_3" x="1095" y="266"><point/></object>
+  <object id="109" name="petal_2" x="106" y="913"><point/></object>
+  <object id="110" name="petal_4" x="609" y="509"><point/></object>
+  <object id="111" name="petal_6" x="110" y="942"><point/></object>
+  <object id="112" name="petal_0" x="987" y="85"><point/></object>
+  <object id="113" name="petal_4" x="122" y="791"><point/></object>
+  <object id="114" name="petal_6" x="1510" y="890"><point/></object>
+  <object id="115" name="petal_0" x="230" y="814"><point/></object>
+  <object id="116" name="petal_3" x="1029" y="525"><point/></object>
+  <object id="117" name="petal_0" x="1505" y="681"><point/></object>
+  <object id="118" name="petal_4" x="1172" y="729"><point/></object>
+  <object id="119" name="petal_0" x="325" y="755"><point/></object>
+  <object id="120" name="petal_7" x="412" y="437"><point/></object>
+  <object id="121" name="petal_2" x="1402" y="1002"><point/></object>
+  <object id="122" name="petal_2" x="923" y="38"><point/></object>
+  <object id="123" name="petal_7" x="1447" y="975"><point/></object>
+  <object id="124" name="petal_1" x="125" y="1042"><point/></object>
+  <object id="125" name="petal_0" x="223" y="935"><point/></object>
+  <object id="126" name="petal_5" x="528" y="455"><point/></object>
+  <object id="127" name="petal_3" x="1507" y="628"><point/></object>
+  <object id="128" name="petal_5" x="1535" y="717"><point/></object>
+  <object id="129" name="petal_2" x="1482" y="677"><point/></object>
+  <object id="130" name="petal_1" x="1240" y="614"><point/></object>
+  <object id="131" name="petal_2" x="1441" y="837"><point/></object>
+  <object id="132" name="petal_1" x="1364" y="702"><point/></object>
+  <object id="133" name="petal_6" x="1388" y="741"><point/></object>
+  <object id="134" name="petal_0" x="799" y="38"><point/></object>
+  <object id="135" name="petal_7" x="989" y="1028"><point/></object>
+  <object id="136" name="petal_3" x="1071" y="484"><point/></object>
+  <object id="137" name="petal_2" x="1075" y="266"><point/></object>
+  <object id="138" name="petal_0" x="998" y="360"><point/></object>
+  <object id="139" name="petal_4" x="193" y="972"><point/></object>
+  <object id="140" name="petal_6" x="776" y="399"><point/></object>
+  <object id="141" name="petal_2" x="278" y="783"><point/></object>
+  <object id="142" name="petal_4" x="870" y="74"><point/></object>
+  <object id="143" name="petal_1" x="1499" y="878"><point/></object>
+  <object id="144" name="petal_3" x="1561" y="757"><point/></object>
+  <object id="145" name="petal_3" x="127" y="467"><point/></object>
+  <object id="146" name="petal_0" x="287" y="791"><point/></object>
+  <object id="147" name="petal_5" x="426" y="1030"><point/></object>
+  <object id="148" name="petal_1" x="1311" y="634"><point/></object>
+  <object id="149" name="petal_7" x="166" y="918"><point/></object>
+  <object id="150" name="petal_5" x="298" y="857"><point/></object>
+  <object id="151" name="petal_2" x="309" y="78"><point/></object>
+  <object id="152" name="petal_2" x="1357" y="792"><point/></object>
+  <object id="153" name="petal_6" x="817" y="397"><point/></object>
+  <object id="154" name="petal_6" x="806" y="77"><point/></object>
+  <object id="155" name="petal_3" x="1076" y="458"><point/></object>
+  <object id="156" name="petal_0" x="1075" y="532"><point/></object>
+  <object id="157" name="petal_1" x="1473" y="806"><point/></object>
+  <object id="158" name="petal_2" x="1348" y="728"><point/></object>
+  <object id="159" name="petal_0" x="1396" y="697"><point/></object>
+  <object id="160" name="petal_1" x="1565" y="847"><point/></object>
+  <object id="161" name="petal_1" x="1246" y="961"><point/></object>
+  <object id="162" name="petal_7" x="1062" y="101"><point/></object>
+  <object id="163" name="petal_3" x="593" y="113"><point/></object>
+  <object id="164" name="petal_0" x="981" y="62"><point/></object>
+  <object id="165" name="petal_6" x="1567" y="79"><point/></object>
+  <object id="166" name="petal_1" x="1073" y="365"><point/></object>
+  <object id="167" name="petal_5" x="1043" y="97"><point/></object>
+  <object id="168" name="petal_4" x="1566" y="807"><point/></object>
+  <object id="169" name="petal_3" x="608" y="37"><point/></object>
+  <object id="170" name="petal_2" x="355" y="371"><point/></object>
+  <object id="171" name="petal_4" x="355" y="757"><point/></object>
+  <object id="172" name="petal_5" x="1262" y="604"><point/></object>
+  <object id="173" name="petal_7" x="777" y="363"><point/></object>
+  <object id="174" name="petal_2" x="250" y="72"><point/></object>
+  <object id="175" name="petal_2" x="1491" y="667"><point/></object>
+  <object id="176" name="petal_2" x="852" y="83"><point/></object>
+  <object id="177" name="petal_5" x="1375" y="591"><point/></object>
+  <object id="178" name="petal_3" x="1199" y="727"><point/></object>
+  <object id="179" name="petal_6" x="1381" y="779"><point/></object>
+  <object id="180" name="petal_2" x="1210" y="75"><point/></object>
+  <object id="181" name="petal_4" x="290" y="894"><point/></object>
+  <object id="182" name="petal_3" x="1063" y="1027"><point/></object>
+  <object id="183" name="petal_1" x="1063" y="618"><point/></object>
+  <object id="184" name="petal_2" x="1368" y="880"><point/></object>
+  <object id="185" name="petal_1" x="672" y="8"><point/></object>
+  <object id="186" name="petal_7" x="1384" y="939"><point/></object>
+  <object id="187" name="petal_4" x="1441" y="819"><point/></object>
+  <object id="188" name="petal_4" x="1312" y="840"><point/></object>
+  <object id="189" name="petal_3" x="540" y="134"><point/></object>
+  <object id="190" name="petal_0" x="266" y="1040"><point/></object>
+  <object id="191" name="petal_0" x="666" y="241"><point/></object>
+  <object id="192" name="petal_5" x="1323" y="651"><point/></object>
+  <object id="193" name="petal_7" x="1077" y="633"><point/></object>
+  <object id="194" name="petal_4" x="922" y="60"><point/></object>
+  <object id="195" name="petal_7" x="1458" y="816"><point/></object>
+  <object id="196" name="petal_6" x="1465" y="1001"><point/></object>
+  <object id="197" name="petal_4" x="110" y="520"><point/></object>
+  <object id="198" name="petal_2" x="364" y="443"><point/></object>
+  <object id="199" name="petal_6" x="837" y="249"><point/></object>
+  <object id="200" name="petal_6" x="600" y="483"><point/></object>
+  <object id="201" name="petal_2" x="347" y="819"><point/></object>
+  <object id="202" name="petal_7" x="531" y="568"><point/></object>
+  <object id="203" name="petal_2" x="1000" y="568"><point/></object>
+  <object id="204" name="petal_2" x="1464" y="778"><point/></object>
+  <object id="205" name="petal_4" x="1089" y="607"><point/></object>
+  <object id="206" name="petal_0" x="329" y="1018"><point/></object>
+  <object id="207" name="petal_4" x="932" y="270"><point/></object>
+  <object id="208" name="petal_2" x="1273" y="730"><point/></object>
+  <object id="209" name="petal_6" x="1394" y="644"><point/></object>
+  <object id="210" name="petal_3" x="777" y="28"><point/></object>
+  <object id="211" name="petal_4" x="184" y="887"><point/></object>
+  <object id="212" name="petal_5" x="816" y="386"><point/></object>
+  <object id="213" name="petal_7" x="788" y="674"><point/></object>
+  <object id="214" name="petal_1" x="124" y="908"><point/></object>
+  <object id="215" name="petal_3" x="1539" y="1007"><point/></object>
+  <object id="216" name="petal_5" x="581" y="203"><point/></object>
+  <object id="217" name="petal_4" x="363" y="417"><point/></object>
+  <object id="218" name="petal_0" x="1080" y="209"><point/></object>
+  <object id="219" name="petal_3" x="1049" y="485"><point/></object>
+  <object id="220" name="petal_1" x="1374" y="1014"><point/></object>
+  <object id="221" name="petal_0" x="1465" y="991"><point/></object>
+  <object id="222" name="petal_5" x="922" y="700"><point/></object>
+  <object id="223" name="petal_3" x="695" y="468"><point/></object>
+  <object id="224" name="petal_7" x="1387" y="880"><point/></object>
+  <object id="225" name="petal_0" x="175" y="822"><point/></object>
+  <object id="226" name="petal_7" x="1503" y="859"><point/></object>
+  <object id="227" name="petal_2" x="866" y="44"><point/></object>
+  <object id="228" name="petal_4" x="1502" y="934"><point/></object>
+  <object id="229" name="petal_0" x="602" y="1039"><point/></object>
  </objectgroup>
  <objectgroup id="5" name="effects">
   <object id="1" name="waterline" x="810" y="585" width="44" height="8"/>
