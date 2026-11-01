@@ -5,6 +5,7 @@ import type { z } from 'zod';
 import {
   balanceSchema,
   displaySchema,
+  linesSchema,
   registrySchema,
   spriteMetaSchema,
   translationsSchema,
@@ -38,6 +39,7 @@ export function checkProject(): string[] {
 
   checkSchema('src/data/display.json', displaySchema, problems);
   checkSchema('src/data/balance.json', balanceSchema, problems);
+  checkSchema('src/data/lines.json', linesSchema, problems);
   checkSchema('src/data/sprite-meta.json', spriteMetaSchema, problems);
   checkSchema('src/i18n/th.json', translationsSchema, problems);
   checkSchema('assets-src/registry.json', registrySchema, problems);
