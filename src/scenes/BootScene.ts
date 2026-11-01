@@ -31,7 +31,6 @@ export class BootScene extends Phaser.Scene {
     for (const [id, entry] of Object.entries(registry)) {
       if (entry.type === 'placeholder') createPlaceholderTexture(this, id, entry);
       if (entry.type !== 'character' || !entry.frameRate) continue;
-      const hops = entry.animation === 'gio_hop';
       directionsOf(entry).forEach((direction, row) => {
         this.anims.create({
           key: animationKey(id, direction),
@@ -40,7 +39,7 @@ export class BootScene extends Phaser.Scene {
             end: row * entry.frameCount + entry.frameCount - 1,
           }),
           frameRate: entry.frameRate,
-          repeat: hops ? 0 : -1,
+          repeat: -1,
         });
       });
     }

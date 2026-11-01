@@ -263,17 +263,16 @@ test('Gio hops around near the seat without leaving play', async ({ page }) => {
       return { x: body.x, y: body.y, texture: sprite.texture.key };
     });
 
-  // ท่ากระโดดสั้นกว่าระยะการ poll จึงนับจากเหตุการณ์ของภาพแทนการเปิดดูเป็นช่วง ๆ
-  await page.evaluate(() => {
-    const scene = window.__game!.scene.getScene('Base');
-    const sprite = scene.children.getByName('gio') as import('phaser').GameObjects.Sprite;
-    sprite.on('animationstart', (animation: { key: string }) => {
-      if (animation.key.startsWith('gio_hop')) document.documentElement.dataset.gioHopped = 'yes';
-    });
-  });
-  await page.waitForFunction(() => document.documentElement.dataset.gioHopped === 'yes', undefined, {
-    timeout: 90_000,
-  });
+  await page.waitForFunction(
+    () => {
+      const scene = window.__game!.scene.getScene('Base') as unknown as { gio: { hopping: boolean } };
+      if (scene.gio.hopping) document.documentElement.dataset.gioHopped = 'yes';
+      return document.documentElement.dataset.gioHopped === 'yes';
+    },
+    undefined,
+    { timeout: 90_000, polling: 50 },
+  );
+  expect((await readGio()).texture).toBe('gio_stand');
   await expect.poll(async () => (await readGio()).texture, { timeout: 30_000 }).toBe('gio_idle');
   const gio = await readGio();
   expect(Math.hypot(gio.x - 11.2 * TILE, gio.y - 11.35 * TILE)).toBeLessThan(200);
@@ -360,4 +359,39 @@ test('the zoom choice changes the whole-number zoom and is remembered', async ({
   await page.reload();
   await page.waitForFunction(() => window.__game?.scene.isActive('Base'));
   await expect.poll(zoomNow).toBe(fitted + 2);
+});
+
+test('holding Shift runs 1.6 times faster on a keyboard', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'desktop only');
+  await openGame(page);
+  const speedWhile = async (run: boolean): Promise<number> => {
+    await teleport(page, 25 * TILE, 12 * TILE);
+    if (run) await page.keyboard.down('Shift');
+    await page.keyboard.down('d');
+    await page.waitForTimeout(150);
+    const speed = await page.evaluate(() => {
+      const body = window.__game!.scene.getScene('Base').children.getByName('player_body') as import('phaser').GameObjects.Zone;
+      return (body.body as import('phaser').Physics.Arcade.Body).velocity.x;
+    });
+    await page.keyboard.up('d');
+    if (run) await page.keyboard.up('Shift');
+    return speed;
+  };
+  const walk = await speedWhile(false);
+  const run = await speedWhile(true);
+  expect(run / walk).toBeCloseTo(1.6);
+  const fuller = await page.evaluate(() => window.__state!.world.gauges.fullness);
+  expect(fuller).toBeGreaterThan(90);
+});
+
+test('the run button toggles running on a touch screen', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'touch screens only');
+  await openGame(page);
+  const button = page.locator('#run-button');
+  const box = (await button.boundingBox())!;
+  expect(box.height).toBeGreaterThanOrEqual(44);
+  await button.click();
+  await expect(button).toHaveAttribute('aria-pressed', 'true');
+  await button.click();
+  await expect(button).toHaveAttribute('aria-pressed', 'false');
 });

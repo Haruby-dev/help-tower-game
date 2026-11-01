@@ -1,13 +1,27 @@
 import Phaser from 'phaser';
-import { animationKey, characterEntry, footY } from '../core/assets';
-import { direction4From, type Vector } from '../core/movement';
+import { animationKey, characterEntry, directionsOf, footY } from '../core/assets';
+import { direction4From, type Direction4, type Vector } from '../core/movement';
 import type { Rng } from '../core/rng';
 import balance from '../data/balance.json';
 
 const IDLE_ID = 'gio_idle';
-const HOP_ID = 'gio_hop';
+const STAND_ID = 'gio_stand';
 const BODY_WIDTH = 26;
 const BODY_HEIGHT = 10;
+/** คอลัมน์ในแผ่น gio_stand ดู buildHopSheet */
+const FRAME_NORMAL = 0;
+const FRAME_STRETCH = 1;
+const FRAME_SQUASH = 2;
+const FRAMES_PER_ROW = 3;
+
+/** ความสูงและเฟรมของการกระโดดหนึ่งครั้ง phase นับจาก 0 ถึง 1 */
+export function hopPose(phase: number): { lift: number; frame: number } {
+  const { hopArcPx, hopTakeOffShare, hopLandingShare } = balance.gio;
+  const lift = Math.round(4 * hopArcPx * phase * (1 - phase));
+  if (phase < hopTakeOffShare) return { lift, frame: FRAME_STRETCH };
+  if (phase > 1 - hopLandingShare) return { lift, frame: FRAME_SQUASH };
+  return { lift, frame: FRAME_NORMAL };
+}
 
 export class Gio {
   readonly body: Phaser.GameObjects.Zone;
@@ -16,6 +30,8 @@ export class Gio {
   private readonly homeY: number;
   private hopping = false;
   private sitRemainingMs = 0;
+  private hopElapsedMs = 0;
+  private facing: Direction4 = 'south';
 
   constructor(
     scene: Phaser.Scene,
@@ -31,9 +47,8 @@ export class Gio {
     this.physicsBody.setImmovable(true);
 
     this.sprite = scene.add.sprite(x, y, IDLE_ID).setName('gio');
-    this.sprite.on(Phaser.Animations.Events.ANIMATION_COMPLETE, () => this.sit());
     this.sit();
-    this.syncSprite();
+    this.syncSprite(0);
   }
 
   private get physicsBody(): Phaser.Physics.Arcade.Body {
@@ -41,11 +56,27 @@ export class Gio {
   }
 
   update(deltaMs: number, playerX: number, playerY: number): void {
-    if (!this.hopping) {
-      this.sitRemainingMs -= deltaMs;
-      if (this.sitRemainingMs <= 0) this.tryHop(playerX, playerY);
+    if (this.hopping) {
+      this.updateHop(deltaMs);
+      return;
     }
-    this.syncSprite();
+    this.sitRemainingMs -= deltaMs;
+    if (this.sitRemainingMs <= 0) this.tryHop(playerX, playerY);
+    this.syncSprite(0);
+  }
+
+  private updateHop(deltaMs: number): void {
+    this.hopElapsedMs += deltaMs;
+    const hopMs = 1000 / balance.gio.hopsPerSecond;
+    if (this.hopElapsedMs >= hopMs * balance.gio.hopsPerTrip) {
+      this.sit();
+      this.syncSprite(0);
+      return;
+    }
+    const { lift, frame } = hopPose((this.hopElapsedMs % hopMs) / hopMs);
+    const row = directionsOf(characterEntry(STAND_ID)).indexOf(this.facing);
+    this.sprite.setFrame(row * FRAMES_PER_ROW + frame);
+    this.syncSprite(lift);
   }
 
   private sit(): void {
@@ -58,7 +89,8 @@ export class Gio {
 
   private tryHop(playerX: number, playerY: number): void {
     const heading = this.pickHeading();
-    const hopLength = (balance.gio.hopSpeed * this.hopDurationMs()) / 1000;
+    const tripMs = (balance.gio.hopsPerTrip / balance.gio.hopsPerSecond) * 1000;
+    const hopLength = (balance.gio.hopSpeed * tripMs) / 1000;
     const landingX = this.body.x + heading.x * hopLength;
     const landingY = this.body.y + heading.y * hopLength;
     const tooClose =
@@ -70,11 +102,13 @@ export class Gio {
       return;
     }
 
-    const direction = direction4From(heading);
+    this.facing = direction4From(heading);
     this.hopping = true;
+    this.hopElapsedMs = 0;
     this.physicsBody.setVelocity(heading.x * balance.gio.hopSpeed, heading.y * balance.gio.hopSpeed);
-    this.sprite.setOrigin(0.5, footY(HOP_ID, direction) / characterEntry(HOP_ID).frameHeight);
-    this.sprite.play(animationKey(HOP_ID, direction));
+    this.sprite.stop();
+    this.sprite.setTexture(STAND_ID);
+    this.sprite.setOrigin(0.5, footY(STAND_ID, this.facing) / characterEntry(STAND_ID).frameHeight);
   }
 
   /** สุ่มทิศในรัศมีเล่น ถ้าออกไกลเกินให้หันกลับเข้าหาบ้าน */
@@ -89,14 +123,9 @@ export class Gio {
     return { x: Math.cos(angle), y: Math.sin(angle) };
   }
 
-  private hopDurationMs(): number {
-    const entry = characterEntry(HOP_ID);
-    return (entry.frameCount / (entry.frameRate ?? 1)) * 1000;
-  }
-
-  private syncSprite(): void {
+  private syncSprite(lift: number): void {
     const feetY = this.body.y + BODY_HEIGHT / 2;
-    this.sprite.setPosition(this.body.x, feetY);
+    this.sprite.setPosition(this.body.x, feetY - lift);
     this.sprite.setDepth(feetY);
   }
 }

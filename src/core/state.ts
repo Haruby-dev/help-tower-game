@@ -53,6 +53,7 @@ class GameState {
   private currentJoystick: Vector = { x: 0, y: 0 };
   private currentLightingEnabled = true;
   private currentZoomStep = 0;
+  private currentRunToggle = false;
   private currentWorld: World | null = null;
   private currentSlot: number | null = null;
   private currentAction: TextKey | null = null;
@@ -131,6 +132,15 @@ class GameState {
     if (action === this.currentAction) return;
     this.currentAction = action;
     eventBus.emit('action-changed', action);
+  }
+
+  /** ปุ่มวิ่งบนจอสัมผัสเป็นแบบกดติด กดดับ */
+  get runToggle(): boolean {
+    return this.currentRunToggle;
+  }
+
+  setRunToggle(on: boolean): void {
+    this.currentRunToggle = on;
   }
 
   get zoomStep(): number {

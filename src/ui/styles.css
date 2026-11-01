@@ -787,3 +787,21 @@ body {
 .wallet-entry--out .wallet-entry__amount {
   color: #d9504f;
 }
+
+#run-button {
+  position: absolute;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + 100px);
+  width: 92px;
+  min-height: 48px;
+  color: inherit;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+#run-button[aria-pressed='true'] {
+  background: var(--cream-pink-edge);
+}

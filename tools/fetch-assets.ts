@@ -15,6 +15,7 @@ import {
   type TilesetMeta,
 } from '../src/data/schema';
 import { projectRoot } from './checks';
+import { buildHopSheet, steadyWalkRow } from './sprite-fix';
 
 async function downloadBytes(url: string): Promise<Buffer> {
   const response = await fetch(url);
@@ -81,7 +82,15 @@ async function fetchCharacter(id: string, entry: CharacterEntry, meta: SpriteMet
     footY[direction] = median(rows);
   }
 
-  savePng(entry.file, sheet);
+  for (const [direction, fix] of Object.entries(entry.steady_rows ?? {})) {
+    steadyWalkRow(sheet, directions.findIndex(([name]) => name === direction), entry.frameWidth, entry.frameHeight, entry.frameCount, fix);
+  }
+  savePng(
+    entry.file,
+    entry.squash_stretch
+      ? buildHopSheet(sheet, entry.frameWidth, entry.frameHeight, directions.length, entry.squash_stretch)
+      : sheet,
+  );
   meta[id] = { footY };
   console.log(`${id}: saved ${directions.length} directions, ${entry.frameCount} frames each`);
 }

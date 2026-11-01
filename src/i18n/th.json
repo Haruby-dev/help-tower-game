@@ -51,5 +51,6 @@
   "wallet.empty": "ยังไม่มีรายการ",
   "wallet.test_income": "รายการทดสอบ",
   "wallet.category_test": "ทดสอบ",
-  "settings.fullscreen": "เต็มจอ"
+  "settings.fullscreen": "เต็มจอ",
+  "ui.run": "วิ่ง"
 }

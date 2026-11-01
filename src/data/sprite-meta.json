@@ -4,12 +4,12 @@
       "south": 48
     }
   },
-  "gio_hop": {
+  "gio_stand": {
     "footY": {
-      "south": 58,
-      "west": 58,
-      "east": 58,
-      "north": 58
+      "south": 48,
+      "east": 52,
+      "north": 52,
+      "west": 52
     }
   },
   "player_girl_stand": {

@@ -9,16 +9,12 @@ describe('project data', () => {
     expect(checkProject()).toEqual([]);
   });
 
-  it('uses the fixed north hop for Gio, because the first set shows eyes on the back of the head', () => {
+  it('no longer uses the Gio hop frames whose face changes shape', () => {
     const registry = registrySchema.parse(
       JSON.parse(readFileSync(join(projectRoot, 'assets-src/registry.json'), 'utf8')),
     );
-    const hop = registry.gio_hop;
-    if (hop?.type !== 'character') throw new Error('gio_hop must be a character');
-    expect(hop.directionGroups?.north).toBe('4db519c5-4b83-41c8-ad8e-b070091969b7');
-    for (const direction of ['south', 'east', 'west']) {
-      expect(hop.directionGroups?.[direction]).toBe('1712125f-3044-4b2c-b9a8-4555ea225776');
-    }
+    expect(registry.gio_hop).toBeUndefined();
+    expect(Object.keys((registry.gio_stand as { directions: object }).directions)).toEqual(['south', 'east', 'north', 'west']);
   });
 
   it('lists every file from the 1 Nov art update with the same tone and currency', () => {

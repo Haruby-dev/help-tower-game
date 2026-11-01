@@ -42,6 +42,8 @@ export const displaySchema = z.strictObject({
 export const balanceSchema = z.strictObject({
   player: z.strictObject({
     speed: z.number().positive(),
+    runSpeedMultiplier: z.number().positive(),
+    runAnimationMultiplier: z.number().positive(),
   }),
   time: z.strictObject({
     realSecondsPerGameHour: z.number().positive(),
@@ -84,6 +86,11 @@ export const balanceSchema = z.strictObject({
     sitMinMs: z.number().positive(),
     sitMaxMs: z.number().positive(),
     hopSpeed: z.number().positive(),
+    hopsPerSecond: z.number().positive(),
+    hopsPerTrip: z.number().int().positive(),
+    hopArcPx: z.number().positive(),
+    hopTakeOffShare: z.number().positive(),
+    hopLandingShare: z.number().positive(),
     wanderRadius: z.number().positive(),
     keepAwayDistance: z.number().positive(),
   }),
@@ -147,6 +154,20 @@ const characterEntrySchema = z.strictObject({
   frameWidth: z.number().int().positive(),
   frameHeight: z.number().int().positive(),
   frameRate: z.number().positive().optional(),
+  /** แก้เฟรมตอนสร้างภาพ ไม่ให้ท่าเดินขึ้นลงดูเหมือนกระโดด */
+  steady_rows: z
+    .record(
+      z.string().min(1),
+      z.strictObject({
+        waistY: z.number().int().positive(),
+        faceFrame: z.number().int().nonnegative().optional(),
+        replaceFaces: z.array(z.number().int().nonnegative()).optional(),
+        chinY: z.number().int().positive().optional(),
+      }),
+    )
+    .optional(),
+  /** สร้างเฟรมยืดและหดจากภาพนิ่ง โดยไม่แตะจุดพิกเซลของหน้า */
+  squash_stretch: z.strictObject({ rows: z.number().int().positive(), cutShare: z.number() }).optional(),
   file: z.string().min(1),
 });
 

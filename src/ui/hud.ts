@@ -158,6 +158,22 @@ function createActionControls(uiRoot: HTMLElement): void {
   });
 }
 
+/** จอสัมผัสไม่มีปุ่ม Shift จึงมีปุ่มวิ่งแบบกดติด กดดับ */
+function createRunToggle(uiRoot: HTMLElement): void {
+  if (!window.matchMedia('(pointer: coarse)').matches) return;
+  const button = document.createElement('button');
+  button.id = 'run-button';
+  button.type = 'button';
+  button.className = 'panel';
+  button.textContent = t('ui.run');
+  button.setAttribute('aria-pressed', 'false');
+  button.addEventListener('click', () => {
+    gameState.setRunToggle(!gameState.runToggle);
+    button.setAttribute('aria-pressed', String(gameState.runToggle));
+  });
+  uiRoot.append(button);
+}
+
 function createRestCurtain(uiRoot: HTMLElement): void {
   const curtain = document.createElement('div');
   curtain.id = 'rest-curtain';
@@ -182,5 +198,6 @@ export function createHud(uiRoot: HTMLElement): void {
   createCoinPill(uiRoot);
   createLowGaugeBubble(uiRoot);
   createActionControls(uiRoot);
+  createRunToggle(uiRoot);
   createRestCurtain(uiRoot);
 }

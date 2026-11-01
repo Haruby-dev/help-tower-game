@@ -13,27 +13,24 @@
     "frameRate": 8,
     "file": "characters/gio_idle.png"
   },
-  "gio_hop": {
+  "gio_stand": {
     "type": "character",
     "pixellabId": "de4a7f28-028c-4d22-95dc-c75969e124b8",
-    "animation": "gio_hop",
-    "directionGroups": {
-      "south": "1712125f-3044-4b2c-b9a8-4555ea225776",
-      "west": "1712125f-3044-4b2c-b9a8-4555ea225776",
-      "east": "1712125f-3044-4b2c-b9a8-4555ea225776",
-      "north": "4db519c5-4b83-41c8-ad8e-b070091969b7"
-    },
+    "animation": "gio_stand",
     "directions": {
-      "south": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/animations/109737bc-1d7f-4272-b7d6-702f3c138000/south/{i}.png?t=1793426430258",
-      "west": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/animations/0046b7c5-65f0-4876-997b-cf3ba33e603a/west/{i}.png?t=1793426374568",
-      "east": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/animations/f717bab7-6dcf-4f22-882b-9fb602845205/east/{i}.png?t=1793426383629",
-      "north": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/animations/5655be81-ab32-4b7d-b03b-86b2a54c2fd7/north/{i}.png?t=1793426682012"
+      "south": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/animations/23ffacae-7aea-4dbd-aee1-334c631b6cee/south/0.png?t=1793426421130",
+      "east": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/rotations/east.png?t=1793426286",
+      "north": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/rotations/north.png?t=1793426286",
+      "west": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/rotations/west.png?t=1793426286"
     },
-    "frameCount": 9,
-    "frameWidth": 68,
-    "frameHeight": 68,
-    "frameRate": 10,
-    "file": "characters/gio_hop.png"
+    "frameCount": 1,
+    "frameWidth": 56,
+    "frameHeight": 56,
+    "squash_stretch": {
+      "rows": 2,
+      "cutShare": 0.62
+    },
+    "file": "characters/gio_stand.png"
   },
   "player_girl_stand": {
     "type": "character",
@@ -73,7 +70,22 @@
     "frameWidth": 88,
     "frameHeight": 88,
     "frameRate": 10,
-    "file": "characters/player_girl_walk.png"
+    "file": "characters/player_girl_walk.png",
+    "steady_rows": {
+      "south": {
+        "waistY": 54,
+        "faceFrame": 0,
+        "replaceFaces": [
+          2,
+          6,
+          7
+        ],
+        "chinY": 42
+      },
+      "north": {
+        "waistY": 56
+      }
+    }
   },
   "ground_grass_dirt": {
     "type": "tileset",

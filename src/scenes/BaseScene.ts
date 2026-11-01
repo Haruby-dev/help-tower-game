@@ -54,6 +54,7 @@ export class BaseScene extends Phaser.Scene {
   private player!: Player;
   private gio!: Gio;
   private keys!: MoveKeys;
+  private runKey!: Phaser.Input.Keyboard.Key;
   private labels: Phaser.GameObjects.Text[] = [];
   private shadeAreas: ShadeArea[] = [];
   private pool = { x: 0, y: 0, radiusX: 1, radiusY: 1 };
@@ -120,6 +121,8 @@ export class BaseScene extends Phaser.Scene {
       d: Phaser.Input.Keyboard.KeyCodes.D,
     }) as MoveKeys;
 
+    this.runKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
+
     const camera = this.cameras.main;
     camera.setBounds(0, 0, worldWidth, worldHeight);
     camera.startFollow(this.player.sprite, true);
@@ -155,7 +158,8 @@ export class BaseScene extends Phaser.Scene {
   }
 
   override update(_time: number, deltaMs: number): void {
-    this.player.update(gameState.clockRunning ? this.readMoveInput() : STANDING_STILL);
+    const running = this.runKey.isDown || gameState.runToggle;
+    this.player.update(gameState.clockRunning ? this.readMoveInput() : STANDING_STILL, running);
     this.gio.update(deltaMs, this.player.feetX, this.player.feetY);
     gameState.trackPlayer({ x: this.player.body.x, y: this.player.body.y });
     const camera = this.cameras.main;

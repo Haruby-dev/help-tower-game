@@ -40,14 +40,16 @@ export class Player {
     return this.body.body as Phaser.Physics.Arcade.Body;
   }
 
-  update(input: Vector): void {
-    const velocity = velocityFrom(input, balance.player.speed);
+  update(input: Vector, running = false): void {
+    const speed = balance.player.speed * (running ? balance.player.runSpeedMultiplier : 1);
+    const velocity = velocityFrom(input, speed);
     this.physicsBody.setVelocity(velocity.x, velocity.y);
 
     const direction = direction8From(input);
     if (direction) {
       this.facing = direction;
       this.showWalking();
+      this.sprite.anims.timeScale = running ? balance.player.runAnimationMultiplier : 1;
     } else {
       this.showStanding();
     }
