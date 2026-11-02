@@ -14,6 +14,8 @@ describe('clock', () => {
       gauges: { fullness: 100, happiness: 100, cleanliness: 100, homesickness: 0 },
       player: null,
       wallet: { coins: 0, stars: 0, log: [], daily: [] },
+      farm: newWorld().farm,
+      bag: newWorld().bag,
       cosmetics: defaultCosmetics(),
     });
   });

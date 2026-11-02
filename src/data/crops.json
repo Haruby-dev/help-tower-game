@@ -1,0 +1,100 @@
+{
+  "scallion": {
+    "source": "start",
+    "growDays": 3,
+    "regrowDays": null,
+    "firstYield": 3,
+    "regrowYield": null
+  },
+  "chili": {
+    "source": "start",
+    "growDays": 5,
+    "regrowDays": 3,
+    "firstYield": 3,
+    "regrowYield": 2
+  },
+  "basil": {
+    "source": "start",
+    "growDays": 4,
+    "regrowDays": 3,
+    "firstYield": 3,
+    "regrowYield": 2
+  },
+  "tomato": {
+    "source": "start",
+    "growDays": 6,
+    "regrowDays": 3,
+    "firstYield": 3,
+    "regrowYield": 2
+  },
+  "garlic": {
+    "source": "start",
+    "growDays": 5,
+    "regrowDays": null,
+    "firstYield": 3,
+    "regrowYield": null
+  },
+  "rice": {
+    "source": "start",
+    "growDays": 8,
+    "regrowDays": null,
+    "firstYield": 3,
+    "regrowYield": null
+  },
+  "carrot": {
+    "source": "shop",
+    "growDays": 4,
+    "regrowDays": null,
+    "firstYield": 3,
+    "regrowYield": null
+  },
+  "cabbage": {
+    "source": "shop",
+    "growDays": 6,
+    "regrowDays": null,
+    "firstYield": 3,
+    "regrowYield": null
+  },
+  "cucumber": {
+    "source": "shop",
+    "growDays": 5,
+    "regrowDays": 2,
+    "firstYield": 3,
+    "regrowYield": 2
+  },
+  "corn": {
+    "source": "shop",
+    "growDays": 7,
+    "regrowDays": 4,
+    "firstYield": 3,
+    "regrowYield": 2
+  },
+  "potato": {
+    "source": "shop",
+    "growDays": 6,
+    "regrowDays": null,
+    "firstYield": 3,
+    "regrowYield": null
+  },
+  "pumpkin": {
+    "source": "shop",
+    "growDays": 10,
+    "regrowDays": null,
+    "firstYield": 3,
+    "regrowYield": null
+  },
+  "soybean": {
+    "source": "shop",
+    "growDays": 6,
+    "regrowDays": 3,
+    "firstYield": 3,
+    "regrowYield": 2
+  },
+  "strawberry": {
+    "source": "shop",
+    "growDays": 8,
+    "regrowDays": 3,
+    "firstYield": 3,
+    "regrowYield": 2
+  }
+}

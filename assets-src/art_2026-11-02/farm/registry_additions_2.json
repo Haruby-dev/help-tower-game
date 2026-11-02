@@ -1,0 +1,174 @@
+{
+  "seed_basil": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/seeds/seed_basil.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "เมล็ดกะเพรา",
+    "jade_tone": false
+  },
+  "seed_cabbage": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/seeds/seed_cabbage.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "เมล็ดกะหล่ำปลี",
+    "jade_tone": false
+  },
+  "seed_carrot": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/seeds/seed_carrot.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "เมล็ดแครอท",
+    "jade_tone": false
+  },
+  "seed_chili": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/seeds/seed_chili.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "เมล็ดพริกขี้หนู",
+    "jade_tone": false
+  },
+  "seed_corn": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/seeds/seed_corn.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "เมล็ดข้าวโพด",
+    "jade_tone": false
+  },
+  "seed_cucumber": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/seeds/seed_cucumber.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "เมล็ดแตงกวา",
+    "jade_tone": false
+  },
+  "seed_garlic": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/seeds/seed_garlic.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "เมล็ดกระเทียม",
+    "jade_tone": false
+  },
+  "seed_potato": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/seeds/seed_potato.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "เมล็ดมันฝรั่ง",
+    "jade_tone": false
+  },
+  "seed_pumpkin": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/seeds/seed_pumpkin.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "เมล็ดฟักทอง",
+    "jade_tone": false
+  },
+  "seed_rice": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/seeds/seed_rice.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "เมล็ดข้าว",
+    "jade_tone": false
+  },
+  "seed_scallion": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/seeds/seed_scallion.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "เมล็ดต้นหอม",
+    "jade_tone": false
+  },
+  "seed_soybean": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/seeds/seed_soybean.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "เมล็ดถั่วเหลือง",
+    "jade_tone": false
+  },
+  "seed_strawberry": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/seeds/seed_strawberry.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "เมล็ดสตรอว์เบอร์รี",
+    "jade_tone": false
+  },
+  "seed_tomato": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/seeds/seed_tomato.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "เมล็ดมะเขือเทศ",
+    "jade_tone": false
+  },
+  "player_girl_plant": {
+    "type": "spritesheet",
+    "character": "797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8",
+    "pixellab_group": "94207873-907b-4dcc-a8db-1715bdc80ec7",
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9,
+    "directions": {
+      "south": "assets-src/art_2026-11-02/farm/anims/plant_south.png",
+      "east": "assets-src/art_2026-11-02/farm/anims/plant_east.png",
+      "north": "assets-src/art_2026-11-02/farm/anims/plant_north.png"
+    },
+    "west": "flip east",
+    "jade_tone": false
+  },
+  "player_girl_water": {
+    "type": "spritesheet",
+    "character": "797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8",
+    "pixellab_group": "9043e5a3-10a7-4632-bb6f-6d11eeb680db",
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9,
+    "directions": {
+      "south": "assets-src/art_2026-11-02/farm/anims/water_south.png",
+      "east": "assets-src/art_2026-11-02/farm/anims/water_east.png",
+      "north": "assets-src/art_2026-11-02/farm/anims/water_north.png"
+    },
+    "west": "flip east",
+    "jade_tone": false
+  },
+  "player_girl_harvest": {
+    "type": "spritesheet",
+    "character": "797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8",
+    "pixellab_group": "ebe811a9-08ae-40df-a20c-f463bc97efe3",
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9,
+    "directions": {
+      "south": "assets-src/art_2026-11-02/farm/anims/harvest_south.png",
+      "east": "assets-src/art_2026-11-02/farm/anims/harvest_east.png",
+      "north": "assets-src/art_2026-11-02/farm/anims/harvest_north.png"
+    },
+    "west": "flip east",
+    "jade_tone": false
+  },
+  "player_girl_till": {
+    "type": "spritesheet",
+    "character": "797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8",
+    "pixellab_group": "4d58e140-6976-4121-afa4-63b2284d676d",
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9,
+    "directions": {
+      "south": "assets-src/art_2026-11-02/farm/anims/till_south.png",
+      "east": "assets-src/art_2026-11-02/farm/anims/till_east.png",
+      "north": "assets-src/art_2026-11-02/farm/anims/till_north.png"
+    },
+    "west": "flip east",
+    "jade_tone": false
+  }
+}

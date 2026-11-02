@@ -4,16 +4,41 @@
   "night": {
     "color": "#1b2350",
     "keys": [
-      { "hour": 6, "alpha": 0.12 },
-      { "hour": 8, "alpha": 0 },
-      { "hour": 17, "alpha": 0 },
-      { "hour": 19, "alpha": 0.2 },
-      { "hour": 21, "alpha": 0.42 },
-      { "hour": 26, "alpha": 0.5 }
+      {
+        "hour": 6,
+        "alpha": 0.12
+      },
+      {
+        "hour": 8,
+        "alpha": 0
+      },
+      {
+        "hour": 17,
+        "alpha": 0
+      },
+      {
+        "hour": 19,
+        "alpha": 0.2
+      },
+      {
+        "hour": 21,
+        "alpha": 0.42
+      },
+      {
+        "hour": 26,
+        "alpha": 0.5
+      }
     ]
   },
-  "uiDesign": { "width": 400, "height": 276 },
-  "zoomSteps": [0, 1, 2],
+  "uiDesign": {
+    "width": 400,
+    "height": 276
+  },
+  "zoomSteps": [
+    0,
+    1,
+    2
+  ],
   "touchDefaultZoomStep": 1,
   "lighting": {
     "maskDivisor": 4,
@@ -28,16 +53,47 @@
     "softEdge": 7,
     "driftPx": 3,
     "driftSpeed": 0.0004,
-    "shadeTint": [0.42, 0.52, 0.66],
+    "shadeTint": [
+      0.42,
+      0.52,
+      0.66
+    ],
     "shadeStrength": 0.85,
-    "warmGrade": [1.05, 1.0, 0.9],
-    "poolAdd": [0.1, 0.07, 0],
-    "glowFire": [1, 0.6, 0.25],
-    "glowGate": [0.45, 0.7, 1],
-    "glowBurrow": [0.7, 0.4, 1],
+    "warmGrade": [
+      1.05,
+      1,
+      0.9
+    ],
+    "poolAdd": [
+      0.1,
+      0.07,
+      0
+    ],
+    "glowFire": [
+      1,
+      0.6,
+      0.25
+    ],
+    "glowGate": [
+      0.45,
+      0.7,
+      1
+    ],
+    "glowBurrow": [
+      0.7,
+      0.4,
+      1
+    ],
     "glowStrength": 0.35,
     "flickerAmount": 0.12,
     "vignetteStrength": 0.35,
     "vignetteRadius": 0.62
+  },
+  "farm": {
+    "wetSoilTint": [
+      0.72,
+      0.7,
+      0.75
+    ]
   }
 }

@@ -1546,3 +1546,119 @@ canvas {
     0 calc(var(--px) * 4)
   );
 }
+
+/* แถบเครื่องมือกลางล่าง */
+#toolbar {
+  position: absolute;
+  bottom: max(6px, env(safe-area-inset-bottom));
+  left: 50%;
+  display: flex;
+  gap: calc(var(--px) * 2);
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+.tool-slot,
+.bag-slot,
+.seed-choice {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: calc(var(--px) * 1) solid transparent;
+  border-image: url('/assets/ui/phone/card_btn_white.png') 5 fill / calc(var(--px) * 5) stretch;
+  background: none;
+  cursor: pointer;
+}
+
+.tool-slot {
+  width: max(44px, calc(var(--px) * 42));
+  height: max(44px, calc(var(--px) * 38));
+}
+
+.tool-slot img {
+  pointer-events: none;
+}
+
+.tool-slot.is-selected,
+.bag-slot.is-selected {
+  border-image-source: url('/assets/ui/phone/card_pink.png');
+}
+
+.bag-grid {
+  display: grid;
+  gap: 2px;
+  grid-template-columns: repeat(auto-fill, minmax(max(44px, calc(var(--px) * 38)), 1fr));
+}
+
+.bag-slot {
+  aspect-ratio: 1;
+}
+
+.bag-slot:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.bag-slot b {
+  position: absolute;
+  right: calc(var(--px) * 2);
+  bottom: 0;
+  font-size: max(10px, calc(var(--px) * 7));
+  text-shadow: 1px 0 #fff, -1px 0 #fff, 0 1px #fff, 0 -1px #fff;
+}
+
+.bag-detail {
+  display: flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 12px;
+}
+
+#seed-picker,
+#dig-confirm {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(92 48 76 / 40%);
+  pointer-events: auto;
+}
+
+#seed-picker[hidden],
+#dig-confirm[hidden] {
+  display: none;
+}
+
+.seed-picker__panel,
+.dig-confirm__panel {
+  display: flex;
+  max-width: min(460px, calc(100vw - 24px));
+  max-height: calc(100% - 16px);
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  overflow-y: auto;
+  padding: calc(var(--px) * 10);
+  border: calc(var(--px) * 2) solid transparent;
+  border-image: url('/assets/ui/phone/phone_frame.png') 13 fill / calc(var(--px) * 13) stretch;
+  font-size: 13px;
+}
+
+.dig-confirm__panel p {
+  width: 100%;
+  margin: 0 0 6px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.seed-choice {
+  width: 84px;
+  padding: 4px 2px;
+}
+
+.seed-choice small {
+  font-size: 10px;
+}

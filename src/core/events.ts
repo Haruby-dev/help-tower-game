@@ -1,5 +1,5 @@
 import type { TextKey } from './i18n';
-import type { Point, World } from './state';
+import type { Point, Tool, World } from './state';
 import type { Viewport } from './viewport';
 
 export type RestCause = 'sleep' | 'passed_out' | 'faint';
@@ -16,6 +16,11 @@ export interface GameEvents {
   'action-changed': TextKey | null;
   'action-pressed': undefined;
   notice: TextKey;
+  'tool-changed': Tool;
+  'dig-requested': { plot: number; crop: string };
+  'dig-confirmed': number;
+  /** key ของบทพูดตัวเอกใน lines.json */
+  'player-says': 'bagFull';
 }
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

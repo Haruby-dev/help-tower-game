@@ -7,11 +7,14 @@ import { gameState } from '../core/state';
 import type { Vector } from '../core/movement';
 import type { Viewport } from '../core/viewport';
 import { Gio } from '../entities/Gio';
-import { Player } from '../entities/Player';
+import { Player, type GardenMove } from '../entities/Player';
+import { Plot } from '../entities/Plot';
+import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, yieldOf, type FarmAction } from '../systems/farm';
 import { advanceClock, goToSleep } from '../systems/time';
 import balance from '../data/balance.json';
 import display from '../data/display.json';
 import { LIGHTING_PIPELINE, LightingPipeline, type LightSpot } from './LightingPipeline';
+import { dirtPuff, floatText, harvestArc, sparkle, waterDrops } from './farmEffects';
 import { createCanopyMask, softEllipseTexture, type ShadeArea } from './sceneArt';
 
 type MoveKeys = Record<'up' | 'down' | 'left' | 'right' | 'w' | 'a' | 's' | 'd', Phaser.Input.Keyboard.Key>;
@@ -21,6 +24,7 @@ const DEPTH = {
   ground: -10,
   flat: -8,
   flowers: -7,
+  plotMarker: -6,
   night: 8000,
   label: 9001,
 } as const;
@@ -39,6 +43,7 @@ const STANDING_STILL: Vector = { x: 0, y: 0 };
 const PLAYER_HEAD_PX = 66;
 const DOOR_TAP_LIFT = 24;
 const DOOR_TAP_RADIUS = 34;
+const TILE_MIDDLE = 16;
 
 /** ไล่ความมืดระหว่างจุดเวลาใน display.json */
 export function nightAlpha(hour: number): number {
@@ -62,6 +67,9 @@ export class BaseScene extends Phaser.Scene {
   private lightingWorld = { width: 1, height: 1 };
   private door = { x: 0, y: 0 };
   private night!: Phaser.GameObjects.Rectangle;
+  private plots: Plot[] = [];
+  private plotMarker!: Phaser.GameObjects.Graphics;
+  private queuedPlot: number | null = null;
 
   constructor() {
     super('Base');
@@ -73,7 +81,8 @@ export class BaseScene extends Phaser.Scene {
     this.glows = {};
     const map = this.make.tilemap({ key: 'base_map' });
     const tilesets = map.tilesets.map((tileset) => map.addTilesetImage(tileset.name, tileset.name)!);
-    map.createLayer('ground', tilesets)!.setDepth(DEPTH.ground);
+    const ground = map.createLayer('ground', tilesets)!.setDepth(DEPTH.ground);
+    this.createPlots(ground);
 
     const worldWidth = map.widthInPixels;
     const worldHeight = map.heightInPixels;
@@ -135,10 +144,16 @@ export class BaseScene extends Phaser.Scene {
     this.input.keyboard!.on('keydown-E', () => this.useAction());
     this.input.keyboard!.on('keydown-SPACE', () => this.useAction());
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      const tapped = this.plots.findIndex((plot) => Phaser.Math.Distance.Between(pointer.worldX, pointer.worldY, plot.centerX, plot.centerY) < map.tileWidth / 2);
+      if (tapped >= 0 && gameState.clockRunning && this.inReach(tapped)) {
+        this.useFarm(tapped);
+        return;
+      }
       const near = Phaser.Math.Distance.Between(pointer.worldX, pointer.worldY, this.door.x, this.door.y - DOOR_TAP_LIFT);
       if (near < DOOR_TAP_RADIUS) this.useAction();
     });
     const stopAction = eventBus.on('action-pressed', () => this.useAction());
+    const stopDig = eventBus.on('dig-confirmed', (plot) => this.startMove(plot, 'dig'));
     const stopMoved = eventBus.on('player-moved', (point) => this.player.moveTo(point));
     const stopStarted = eventBus.on('game-started', (world) => {
       if (world.player) this.player.moveTo(world.player);
@@ -150,6 +165,7 @@ export class BaseScene extends Phaser.Scene {
     const stopLighting = eventBus.on('lighting-changed', (enabled) => this.applyLighting(enabled));
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       stopAction();
+      stopDig();
       stopMoved();
       stopStarted();
       stopViewport();
@@ -169,7 +185,7 @@ export class BaseScene extends Phaser.Scene {
       y: (this.player.feetY - PLAYER_HEAD_PX - camera.worldView.y) * screenScale,
     });
     advanceClock(deltaMs, this.door);
-    gameState.setAction(this.nearDoor() ? 'action.sleep' : null);
+    this.updateFarm();
     if (gameState.started) this.night.setFillStyle(this.night.fillColor, nightAlpha(gameState.world.hour));
   }
 
@@ -271,7 +287,127 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private useAction(): void {
-    if (this.nearDoor()) goToSleep(this.door);
+    const plot = this.targetPlot();
+    if (plot !== null && this.farmActionAt(plot)) this.useFarm(plot);
+    else if (this.nearDoor() && !this.player.busy) goToSleep(this.door);
+  }
+
+  private createPlots(ground: Phaser.Tilemaps.TilemapLayer): void {
+    const { plotOrigin, cols, rows } = balance.farm;
+    this.plots = Array.from({ length: cols * rows }, (_, index) => {
+      const tile = ground.getTileAt(plotOrigin.col + (index % cols), plotOrigin.row + Math.floor(index / cols));
+      if (!tile) throw new Error(`map has no soil for plot ${index}`);
+      const plot = new Plot(this, tile, DEPTH.flat);
+      this.labels.push(plot.label);
+      return plot;
+    });
+    this.plotMarker = this.add.graphics().setDepth(DEPTH.plotMarker).setVisible(false);
+    this.plotMarker.lineStyle(1, 0xffffff, 0.9).strokeRect(0.5, 0.5, ground.tilemap.tileWidth - 1, ground.tilemap.tileHeight - 1);
+  }
+
+  private distanceToPlot(index: number): number {
+    const plot = this.plots[index]!;
+    return Phaser.Math.Distance.Between(this.player.feetX, this.player.feetY, plot.centerX, plot.centerY);
+  }
+
+  private inReach(index: number): boolean {
+    return this.distanceToPlot(index) < balance.farm.reachPx;
+  }
+
+  /** แปลงใกล้เท้าที่สุดที่เอื้อมถึง */
+  private targetPlot(): number | null {
+    let best: number | null = null;
+    this.plots.forEach((_, index) => {
+      if (this.inReach(index) && (best === null || this.distanceToPlot(index) < this.distanceToPlot(best))) best = index;
+    });
+    return best;
+  }
+
+  private farmActionAt(index: number): FarmAction | null {
+    const plot = gameState.world.farm.plots[index];
+    return plot ? actionFor(plot, gameState.selectedTool, gameState.selectedSeed, gameState.world.bag) : null;
+  }
+
+  private updateFarm(): void {
+    if (!gameState.started) return;
+    const { plots } = gameState.world.farm;
+    this.plots.forEach((plot, index) => plot.sync(plots[index]!));
+    const target = gameState.clockRunning ? this.targetPlot() : null;
+    const action = target !== null ? this.farmActionAt(target) : null;
+    if (target !== null && action) {
+      const plot = this.plots[target]!;
+      this.plotMarker.setPosition(plot.centerX - TILE_MIDDLE, plot.centerY - TILE_MIDDLE).setVisible(true);
+    } else {
+      this.plotMarker.setVisible(false);
+    }
+    gameState.setAction(action ? ACTION_LABEL[action] : this.nearDoor() ? 'action.sleep' : null);
+  }
+
+  /** ตอนกำลังทำท่าอยู่ แตะใหม่จะจำไว้ทำต่อ */
+  private useFarm(index: number): void {
+    if (this.player.busy) {
+      this.queuedPlot = index;
+      return;
+    }
+    const action = this.farmActionAt(index);
+    if (!action) return;
+    if (action === 'dig') {
+      const crop = gameState.world.farm.plots[index]!.crop!.id;
+      eventBus.emit('dig-requested', { plot: index, crop });
+      return;
+    }
+    if (action === 'harvest' && !canStoreHarvest(gameState.world, index)) {
+      eventBus.emit('player-says', 'bagFull');
+      return;
+    }
+    this.startMove(index, action);
+  }
+
+  private startMove(index: number, action: FarmAction): void {
+    const plot = this.plots[index]!;
+    const seed = gameState.selectedSeed;
+    const move: GardenMove = action === 'dig' ? 'till' : action;
+    this.player.playGardenMove(
+      move,
+      { x: plot.centerX, y: plot.centerY },
+      (frame) => this.playMoveEffect(move, frame, plot),
+      () => {
+        const before = gameState.world.farm.plots[index]!;
+        const amount = yieldOf(before);
+        const crop = before.crop?.id;
+        const next = applyFarmAction(gameState.world, index, action, seed);
+        if (next) {
+          gameState.setWorld(next);
+          plot.sync(next.farm.plots[index]!);
+          if (action === 'plant') plot.pop();
+          if (action === 'water' && crop) {
+            plot.wake();
+            sparkle(this, plot.centerX, plot.centerY - TILE_MIDDLE);
+          }
+          if (action === 'harvest' && crop) this.showHarvest(plot, crop, amount);
+        }
+        const queued = this.queuedPlot;
+        this.queuedPlot = null;
+        if (queued !== null) this.useFarm(queued);
+      },
+    );
+  }
+
+  private playMoveEffect(move: GardenMove, frame: number, plot: Plot): void {
+    if ((move === 'plant' && frame >= 4 && frame <= 7) || (move === 'till' && frame >= 4 && frame <= 6)) {
+      dirtPuff(this, plot.centerX, plot.centerY);
+    }
+    if (move === 'water' && frame === 3) {
+      waterDrops(this, this.player.feetX, this.player.feetY - PLAYER_HEAD_PX / 2, plot.centerX, plot.centerY);
+    }
+  }
+
+  private showHarvest(plot: Plot, crop: string, amount: number): void {
+    const handY = this.player.feetY - PLAYER_HEAD_PX / 2;
+    harvestArc(this, `icon_${crop}`, plot.centerX, plot.centerY, this.player.feetX, handY, () => {
+      const name = t(`crop.${crop}.name` as TextKey);
+      floatText(this, this.player.feetX, this.player.feetY - PLAYER_HEAD_PX, `+${amount} ${name}`, gameState.viewport.zoom);
+    });
   }
 
   private setUpLighting(worldWidth: number, worldHeight: number): void {

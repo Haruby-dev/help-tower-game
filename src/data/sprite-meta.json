@@ -1875,5 +1875,135 @@
     "footY": {
       "default": 15
     }
+  },
+  "seed_basil": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "seed_cabbage": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "seed_carrot": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "seed_chili": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "seed_corn": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "seed_cucumber": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "seed_garlic": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "seed_potato": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "seed_pumpkin": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "seed_rice": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "seed_scallion": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "seed_soybean": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "seed_strawberry": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "seed_tomato": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "anim_plant_south": {
+    "footY": {
+      "default": 78
+    }
+  },
+  "anim_plant_east": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_plant_north": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_water_south": {
+    "footY": {
+      "default": 75
+    }
+  },
+  "anim_water_east": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_water_north": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_harvest_south": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_harvest_east": {
+    "footY": {
+      "default": 75
+    }
+  },
+  "anim_harvest_north": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_till_south": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_till_east": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_till_north": {
+    "footY": {
+      "default": 74
+    }
   }
 }

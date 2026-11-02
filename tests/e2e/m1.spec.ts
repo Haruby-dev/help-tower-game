@@ -308,7 +308,7 @@ test('shows the map art with no shadows and a price on each land sign', async ({
     expect(seen.keys).toContain(key);
   }
   expect(seen.keys).not.toContain('stairs_cliff');
-  expect(seen.texts).toEqual(['500', '1500', '4000']);
+  expect(seen.texts.filter((text) => /^d+$/.test(text))).toEqual(['500', '1500', '4000']);
   expect(seen.keys.filter((key) => key.startsWith('petal_')).length).toBeGreaterThan(20);
   expect(seen.keys.filter((key) => key.startsWith('soft_') && !key.includes('238__243__240'))).toEqual([]);
 });

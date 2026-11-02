@@ -1,7 +1,9 @@
-import { defaultCosmetics, emptyWallet, type GaugeValues, type World } from '../core/state';
+import { defaultCosmetics, emptyWallet, type BagStack, type Farm, type GaugeValues, type World } from '../core/state';
 import balance from '../data/balance.json';
 
-const { gauges, time } = balance;
+const { gauges, time, farm } = balance;
+
+const MINUTES_PER_HOUR = 60;
 
 const clamp = (value: number): number => Math.min(gauges.max, Math.max(gauges.min, value));
 
@@ -14,6 +16,12 @@ function clampAll(values: GaugeValues): GaugeValues {
   };
 }
 
+export const newFarm = (): Farm => ({
+  plots: Array.from({ length: farm.cols * farm.rows }, () => ({ tilled: false, watered: false, crop: null })),
+});
+
+export const starterBag = (): BagStack[] => Object.entries(farm.starterBag).map(([item, count]) => ({ item, count }));
+
 export function newWorld(): World {
   return {
     day: 1,
@@ -21,11 +29,29 @@ export function newWorld(): World {
     gauges: { ...gauges.start },
     player: null,
     wallet: emptyWallet(),
+    farm: newFarm(),
+    bag: starterBag(),
     cosmetics: defaultCosmetics(),
   };
 }
 
-/** เกจลดตามเวลาตอนตื่น สุขลดเฉพาะตอนทำงาน ซึ่งจะเริ่มมีใน M3 */
+/** งานสวน 1 ช่องกินเวลาตาม GDD สุขลดตอนทำงาน และเลอะกว่าเวลาปกติ */
+export function spendGardenTime(world: World): World {
+  const hours = farm.actionMinutes / MINUTES_PER_HOUR;
+  const { gauges: values } = world;
+  return {
+    ...world,
+    hour: world.hour + hours,
+    gauges: clampAll({
+      ...values,
+      fullness: values.fullness - gauges.fullness.awakePerHour * hours,
+      happiness: values.happiness - farm.gauges.happinessPerHour * hours,
+      cleanliness: values.cleanliness - farm.gauges.cleanlinessPerHour * hours,
+    }),
+  };
+}
+
+/** เกจลดตามเวลาตอนตื่น สุขลดเฉพาะตอนทำงาน */
 export function decayAwake(values: GaugeValues, hours: number): GaugeValues {
   return clampAll({
     ...values,

@@ -9,6 +9,7 @@ import { createJoystick } from './joystick';
 import { createPhone } from './phone';
 import { createSaves } from './saves';
 import { createSettings, initSettings } from './settings';
+import { createToolbar } from './toolbar';
 
 function createRotatePrompt(uiRoot: HTMLElement): void {
   const gio = characterEntry('gio_idle');
@@ -49,6 +50,7 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   createJoystick(uiRoot);
   createRotatePrompt(uiRoot);
   initSettings(appRoot);
+  createToolbar(uiRoot);
   createSettings(uiRoot);
   createPhone(uiRoot);
   createSaves(uiRoot);

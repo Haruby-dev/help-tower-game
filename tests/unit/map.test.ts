@@ -56,6 +56,19 @@ const reachable = (tileX: number, tileY: number): boolean =>
     8,
   );
 
+import balance from '../../src/data/balance.json';
+
+describe('farm plots', () => {
+  it('sit on tiles whose four corners are all soil', () => {
+    const layout = JSON.parse(readFileSync(join(projectRoot, 'assets-src/maps/base-layout.json'), 'utf8')) as MapLayout;
+    const corners = buildCorners(layout);
+    const { plotOrigin, cols, rows } = balance.farm;
+    for (let y = plotOrigin.row; y <= plotOrigin.row + rows; y += 1) {
+      for (let x = plotOrigin.col; x <= plotOrigin.col + cols; x += 1) expect(corners[y]![x]).toBe('soil');
+    }
+  });
+});
+
 describe('base map', () => {
   it('is the whole v3.1 blueprint, using only the new ground sets', () => {
     expect([tiled.width, tiled.height]).toEqual([51, 35]);

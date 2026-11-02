@@ -12,6 +12,7 @@ export const displaySchema = z.strictObject({
   }),
   /** ขนาดที่หน้าจอโทรศัพท์ต้องใส่ได้ เป็นพิกเซลเกม */
   uiDesign: z.strictObject({ width: z.number().positive(), height: z.number().positive() }),
+  farm: z.strictObject({ wetSoilTint: rgbSchema }),
   zoomSteps: z.array(z.number().int().nonnegative()).min(1),
   touchDefaultZoomStep: z.number().int().nonnegative(),
   lighting: z.strictObject({
@@ -87,6 +88,20 @@ export const balanceSchema = z.strictObject({
     totalFloors: z.number().int().positive(),
   }),
   interact: z.strictObject({ reachPx: z.number().positive() }),
+  farm: z.strictObject({
+    plotOrigin: z.strictObject({ col: z.number().int().nonnegative(), row: z.number().int().nonnegative() }),
+    cols: z.number().int().positive(),
+    rows: z.number().int().positive(),
+    stages: z.number().int().min(2),
+    actionMinutes: z.number().positive(),
+    reachPx: z.number().positive(),
+    actionFrameMs: z.number().positive(),
+    gauges: z.strictObject({ happinessPerHour: z.number(), cleanlinessPerHour: z.number() }),
+    bag: z.strictObject({ slots: z.number().int().positive(), stack: z.number().int().positive() }),
+    seedsPerProduce: z.strictObject({ min: z.number().int().positive(), max: z.number().int().positive() }),
+    /** ของเริ่มเกมชั่วคราวจนกว่าบทนำจะมาใน M9 */
+    starterBag: z.record(z.string().min(1), z.number().int().positive()),
+  }),
   land: z.strictObject({
     /** ราคาชั่วคราวของที่ดิน 3 แปลง เรียงจากซ้ายไปขวา */
     prices: z.array(z.number().int().positive()).length(3),
@@ -133,6 +148,18 @@ export const saveFileSchema = z.strictObject({
       ),
       daily: z.array(z.strictObject({ day: z.number(), coins: z.number(), stars: z.number() })),
     }),
+    farm: z.strictObject({
+      plots: z.array(
+        z.strictObject({
+          tilled: z.boolean(),
+          watered: z.boolean(),
+          crop: z
+            .strictObject({ id: z.string().min(1), daysGrown: z.number().int().nonnegative(), harvests: z.number().int().nonnegative() })
+            .nullable(),
+        }),
+      ),
+    }),
+    bag: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })),
     cosmetics: z.strictObject({
       equipped: z.strictObject({
         case: z.string().min(1),
@@ -152,6 +179,20 @@ export const saveFileSchema = z.strictObject({
 
 export type SaveFile = z.infer<typeof saveFileSchema>;
 
+/** พืชหนึ่งชนิด เพิ่มพืชได้โดยแก้แค่ crops.json กับ th.json */
+export const cropsSchema = z.record(
+  z.string().regex(/^[a-z_]+$/),
+  z.strictObject({
+    source: z.enum(['start', 'shop', 'gate']),
+    growDays: z.number().int().positive(),
+    regrowDays: z.number().int().positive().nullable(),
+    firstYield: z.number().int().positive(),
+    regrowYield: z.number().int().positive().nullable(),
+  }),
+);
+
+export type Crops = z.infer<typeof cropsSchema>;
+
 /** บทพูดฟองคำพูดของตัวเอก แก้ได้โดยไม่แตะโค้ด */
 export const linesSchema = z.strictObject({
   player: z.strictObject({
@@ -160,6 +201,7 @@ export const linesSchema = z.strictObject({
       happiness: z.string().min(1),
       cleanliness: z.string().min(1),
     }),
+    bagFull: z.string().min(1),
   }),
   encouragement: z.array(z.string().min(1)).min(1),
 });

@@ -1,6 +1,7 @@
 import { eventBus, type RestCause } from '../core/events';
 import { gameState, type Point, type World } from '../core/state';
 import balance from '../data/balance.json';
+import { growFarm } from './farm';
 import { decayAwake, recoverFromFaint, shouldFaint, sleepUntilMorning } from './gauges';
 
 const { time, gauges } = balance;
@@ -14,6 +15,7 @@ function nextMorning(world: World, restful: boolean): World {
     day: world.day + 1,
     hour: time.dayStartHour,
     gauges: sleepUntilMorning(world.gauges, Math.max(0, morning - world.hour), restful),
+    farm: growFarm(world.farm),
   };
 }
 

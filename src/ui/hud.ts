@@ -183,6 +183,8 @@ function createLowGaugeBubble(uiRoot: HTMLElement): void {
     });
   };
 
+  eventBus.on('player-says', (line) => speak(lines.player[line]));
+
   eventBus.on('world-changed', (world) => {
     for (const gauge of GAUGES) {
       if (!isAlert(world.gauges[gauge])) {

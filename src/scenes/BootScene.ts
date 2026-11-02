@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { animationKey, assetUrl, directionsOf, registry } from '../core/assets';
+import balance from '../data/balance.json';
 import { createPlaceholderTexture } from './sceneArt';
 
 const LABEL_FONT = '700 8px Mali';
@@ -16,6 +17,8 @@ export class BootScene extends Phaser.Scene {
           frameWidth: entry.frameWidth,
           frameHeight: entry.frameHeight,
         });
+      } else if (entry.type === 'local' && entry.frame_width && entry.frame_height) {
+        this.load.spritesheet(id, assetUrl(entry.file), { frameWidth: entry.frame_width, frameHeight: entry.frame_height });
       } else if (
         entry.type === 'object' ||
         entry.type === 'tileset' ||
@@ -29,6 +32,14 @@ export class BootScene extends Phaser.Scene {
 
   create(): void {
     for (const [id, entry] of Object.entries(registry)) {
+      if (entry.type === 'local' && id.startsWith('anim_')) {
+        this.anims.create({
+          key: id,
+          frames: this.anims.generateFrameNumbers(id),
+          frameRate: 1000 / balance.farm.actionFrameMs,
+          repeat: 0,
+        });
+      }
       if (entry.type === 'placeholder') createPlaceholderTexture(this, id, entry);
       if (entry.type !== 'character' || !entry.frameRate) continue;
       directionsOf(entry).forEach((direction, row) => {

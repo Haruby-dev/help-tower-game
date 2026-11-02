@@ -64,7 +64,7 @@ Dialogue lines are in `docs/dialogue_zone1_draft.json`. They are a draft written
   - Warm honey milk (moved from dessert)
   - Butter tea (butter from Mumu's milk)
   - Marshmallow milk (Mumu)
-  - Soda jelly (Bubble's fizzy water)
+  - โซดาเจลลี่ดึ๋งดึ๋ง / soda jelly boing (Bubble's fizzy water) — renamed 2026-11-02 so it does not clash with the dessert เจลลี่โซดา
   - Vanilla honey (Boom Boom)
   - 1–2 early drinks from starter crops, so drinks exist before the pets meadow unlocks. For example, strawberry juice.
 - **Affection:** a drink gives less affection than food. A monster that takes a matching food + drink "set" gets a bonus and pops "เข้ากันสุดๆ!". Use placeholder numbers and keep them in data.

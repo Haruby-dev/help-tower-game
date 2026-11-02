@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import type { z } from 'zod';
 import {
   balanceSchema,
+  cropsSchema,
   displaySchema,
   linesSchema,
   registrySchema,
@@ -40,6 +41,7 @@ export function checkProject(): string[] {
   checkSchema('src/data/display.json', displaySchema, problems);
   checkSchema('src/data/balance.json', balanceSchema, problems);
   checkSchema('src/data/lines.json', linesSchema, problems);
+  checkSchema('src/data/crops.json', cropsSchema, problems);
   checkSchema('src/data/sprite-meta.json', spriteMetaSchema, problems);
   checkSchema('src/i18n/th.json', translationsSchema, problems);
   checkSchema('assets-src/registry.json', registrySchema, problems);
@@ -60,6 +62,14 @@ export function checkProject(): string[] {
     if (entry.type !== 'tileset' && entry.type !== 'local_tileset' && !spriteMeta[id]) {
       problems.push(`src/data/sprite-meta.json: ${id} has no foot position, run npm run fetch-assets`);
     }
+  }
+
+  for (const [id, crop] of Object.entries(cropsSchema.parse(readJson('src/data/crops.json')))) {
+    if (!translations[`crop.${id}.name`]) problems.push(`src/i18n/th.json: crop ${id} has no name`);
+    for (const prefix of ['crop', 'icon', 'seed']) {
+      if (!registry[`${prefix}_${id}`]) problems.push(`assets-src/registry.json: crop ${id} has no ${prefix} image`);
+    }
+    if ((crop.regrowDays === null) !== (crop.regrowYield === null)) problems.push(`src/data/crops.json: ${id} regrow numbers do not match`);
   }
 
   for (const file of listCodeFiles(join(projectRoot, 'src'))) {

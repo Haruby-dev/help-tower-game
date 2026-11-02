@@ -8,10 +8,13 @@ const STAND_ID = 'player_girl_stand';
 const BODY_WIDTH = 16;
 const BODY_HEIGHT = 10;
 
+export type GardenMove = 'till' | 'plant' | 'water' | 'harvest';
+
 export class Player {
   readonly body: Phaser.GameObjects.Zone;
   readonly sprite: Phaser.GameObjects.Sprite;
   private facing: Direction8 = 'south';
+  private acting = false;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     this.body = scene.add.zone(x, y, BODY_WIDTH, BODY_HEIGHT).setName('player_body');
@@ -40,7 +43,39 @@ export class Player {
     return this.body.body as Phaser.Physics.Arcade.Body;
   }
 
+  get busy(): boolean {
+    return this.acting;
+  }
+
+  /** ท่าทำสวนมี 3 ทิศ ทิศตะวันตกกลับด้านจากตะวันออก ระหว่างทำจะเดินไม่ได้ */
+  playGardenMove(move: GardenMove, toward: { x: number; y: number }, onFrame: (frame: number) => void, onDone: () => void): void {
+    const dx = toward.x - this.feetX;
+    const dy = toward.y - this.feetY;
+    const sideways = Math.abs(dx) > Math.abs(dy);
+    this.facing = sideways ? (dx > 0 ? 'east' : 'west') : dy > 0 ? 'south' : 'north';
+    const sheet = this.facing === 'west' ? 'east' : this.facing;
+    const key = `anim_${move}_${sheet}`;
+    this.acting = true;
+    this.sprite.setFlipX(this.facing === 'west');
+    this.sprite.setOrigin(0.5, footY(WALK_ID, sheet) / characterEntry(WALK_ID).frameHeight);
+    this.sprite.anims.timeScale = 1;
+    const update = (_animation: unknown, frame: Phaser.Animations.AnimationFrame): void => onFrame(frame.index - 1);
+    this.sprite.on(Phaser.Animations.Events.ANIMATION_UPDATE, update);
+    this.sprite.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}${key}`, () => {
+      this.sprite.off(Phaser.Animations.Events.ANIMATION_UPDATE, update);
+      this.sprite.setFlipX(false);
+      this.acting = false;
+      onDone();
+    });
+    this.sprite.play(key);
+  }
+
   update(input: Vector, running = false): void {
+    if (this.acting) {
+      this.physicsBody.setVelocity(0, 0);
+      this.syncSprite();
+      return;
+    }
     const speed = balance.player.speed * (running ? balance.player.runSpeedMultiplier : 1);
     const velocity = velocityFrom(input, speed);
     this.physicsBody.setVelocity(velocity.x, velocity.y);

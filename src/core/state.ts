@@ -47,6 +47,30 @@ export const defaultCosmetics = (): Cosmetics => ({
   owned: { cases: ['case_pink_cat'], charms: [], wallpapers: ['wallpaper_sky_cats'], canSkins: ['can_blue'] },
 });
 
+export interface CropState {
+  id: string;
+  daysGrown: number;
+  harvests: number;
+}
+
+export interface PlotState {
+  tilled: boolean;
+  /** รดน้ำแล้ววันนี้ แห้งตอนเช้าวันถัดไป */
+  watered: boolean;
+  crop: CropState | null;
+}
+
+export interface Farm {
+  plots: PlotState[];
+}
+
+export interface BagStack {
+  item: string;
+  count: number;
+}
+
+export type Tool = 'hoe' | 'can' | 'sickle' | 'seeds';
+
 /** ความจริงของเกมที่อยู่ในเซฟ */
 export interface World {
   day: number;
@@ -56,6 +80,8 @@ export interface World {
   /** null คือยังไม่เคยวาง ให้ใช้จุดเกิดบนแผนที่ */
   player: Point | null;
   wallet: Wallet;
+  farm: Farm;
+  bag: BagStack[];
   cosmetics: Cosmetics;
 }
 
@@ -71,6 +97,8 @@ class GameState {
   private currentAction: TextKey | null = null;
   private openWindows = new Set<string>();
   private currentPlayerScreen: Point = { x: 0, y: 0 };
+  private currentTool: Tool = 'hoe';
+  private currentSeed: string | null = null;
 
   get viewport(): Viewport {
     if (!this.currentViewport) throw new Error('viewport has not been set');
@@ -146,7 +174,24 @@ class GameState {
     eventBus.emit('action-changed', action);
   }
 
-  /** ปุ่มวิ่งบนจอสัมผัสเป็นแบบกดติด กดดับ */
+  get selectedTool(): Tool {
+    return this.currentTool;
+  }
+
+  setSelectedTool(tool: Tool): void {
+    this.currentTool = tool;
+    eventBus.emit('tool-changed', tool);
+  }
+
+  get selectedSeed(): string | null {
+    return this.currentSeed;
+  }
+
+  setSelectedSeed(seed: string | null): void {
+    this.currentSeed = seed;
+  }
+
+  /** ปุ่มวิ่งบนจอสัมผัส กดค้างแล้ววิ่ง */
   get runHeld(): boolean {
     return this.currentRunHeld;
   }

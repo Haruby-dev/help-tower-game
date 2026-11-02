@@ -4,6 +4,7 @@ import { gameState, type World } from '../core/state';
 import balance from '../data/balance.json';
 import { dayOfMonth, encouragementFor, monthOf, stuckTime, weekStrip, weekdayIndex, weekdayName, weekdayShort } from '../systems/phoneCalendar';
 import { formatClock } from './hud';
+import { createInventoryPage } from './inventory';
 import { artUrl, stickerIcon } from './pixelArt';
 import { createWalletPage } from './wallet';
 
@@ -18,7 +19,7 @@ interface PhoneApp {
 }
 
 const APPS: PhoneApp[] = [
-  { id: 'inventory', name: 'app.inventory', icon: 'ui_app_bag', place: 'grid' },
+  { id: 'inventory', name: 'app.inventory', icon: 'ui_app_bag', place: 'grid', big: true, page: createInventoryPage },
   { id: 'shop', name: 'app.shop', icon: 'ui_app_shop', place: 'grid' },
   { id: 'recipes', name: 'app.recipes', icon: 'ui_app_recipe', place: 'grid', big: true },
   { id: 'album', name: 'app.album', icon: 'ui_app_album', place: 'grid' },
