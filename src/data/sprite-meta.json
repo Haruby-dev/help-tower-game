@@ -1571,6 +1571,81 @@
       "default": 44
     }
   },
+  "ui_card_btn": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_card_btn_white": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_card_coin": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_card_dark": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_card_gio": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_card_gold": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_card_pink": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_card_purple": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_card_star": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_card_white": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_phone_camera": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_phone_ear": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "ui_phone_frame": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "ui_phone_frame_cream": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_punch_hole": {
+    "footY": {
+      "default": 5
+    }
+  },
   "ui_run_button_off": {
     "footY": {
       "default": 64

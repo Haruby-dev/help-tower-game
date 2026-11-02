@@ -245,9 +245,10 @@ test('the joystick is see-through and the run button changes its picture', async
   await expect(image).toHaveAttribute('src', /run_button_off/);
   const box = (await page.locator('#run-button').boundingBox())!;
   expect(box.width).toBeGreaterThanOrEqual(64);
-  await page.locator('#run-button').click();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
   await expect(image).toHaveAttribute('src', /run_button_on/);
-  await page.locator('#run-button').click();
+  await page.mouse.up();
   await expect(image).toHaveAttribute('src', /run_button_off/);
 });
 

@@ -158,7 +158,7 @@ export class BaseScene extends Phaser.Scene {
   }
 
   override update(_time: number, deltaMs: number): void {
-    const running = this.runKey.isDown || gameState.runToggle;
+    const running = this.runKey.isDown || gameState.runHeld;
     this.player.update(gameState.clockRunning ? this.readMoveInput() : STANDING_STILL, running);
     this.gio.update(deltaMs, this.player.feetX, this.player.feetY);
     gameState.trackPlayer({ x: this.player.body.x, y: this.player.body.y });

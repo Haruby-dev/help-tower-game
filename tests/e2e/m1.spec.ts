@@ -382,14 +382,34 @@ test('holding Shift runs 1.6 times faster on a keyboard', async ({ page, isMobil
   expect(fuller).toBeGreaterThan(90);
 });
 
-test('the run button toggles running on a touch screen', async ({ page, isMobile }) => {
+test('holding the run button runs and letting go walks', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'touch screens only');
   await openGame(page);
   const button = page.locator('#run-button');
   const box = (await button.boundingBox())!;
   expect(box.height).toBeGreaterThanOrEqual(44);
-  await button.click();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
   await expect(button).toHaveAttribute('aria-pressed', 'true');
-  await button.click();
+  await page.mouse.up();
+  await expect(button).toHaveAttribute('aria-pressed', 'false');
+});
+
+test('the run button works while another finger holds the joystick', async ({ page, isMobile, browserName }) => {
+  test.skip(!isMobile || browserName !== 'chromium', 'needs real multi-touch from chromium');
+  await openGame(page);
+  const client = await page.context().newCDPSession(page);
+  const center = async (selector: string): Promise<{ x: number; y: number }> => {
+    const box = (await page.locator(selector).boundingBox())!;
+    return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  };
+  const stick = { ...(await center('#joystick')), id: 1 };
+  const run = { ...(await center('#run-button')), id: 2 };
+  await client.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [stick] });
+  await client.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ ...stick, x: stick.x + 30 }] });
+  await client.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ ...stick, x: stick.x + 30 }, run] });
+  const button = page.locator('#run-button');
+  await expect(button).toHaveAttribute('aria-pressed', 'true');
+  await client.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
   await expect(button).toHaveAttribute('aria-pressed', 'false');
 });

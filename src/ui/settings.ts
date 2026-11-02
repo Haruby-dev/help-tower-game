@@ -1,5 +1,6 @@
 import { t } from '../core/i18n';
 import { gameState } from '../core/state';
+import { isHomeScreenApp } from '../core/viewport';
 import display from '../data/display.json';
 import { stickerIcon } from './pixelArt';
 import { createSaveRow } from './saves';
@@ -81,10 +82,6 @@ function createZoomRow(): HTMLElement {
   row.append(label, choices);
   return row;
 }
-
-const isHomeScreenApp = (): boolean =>
-  window.matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches ||
-  (navigator as Navigator & { standalone?: boolean }).standalone === true;
 
 /** iPhone ไม่ให้หน้าเว็บซ่อนแถบ Safari เองได้ ทางเดียวคือเปิดเกมจากไอคอนบนหน้าจอโฮม */
 function createHomeScreenHowTo(): HTMLElement {

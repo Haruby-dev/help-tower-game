@@ -40,6 +40,20 @@ export interface UiDesign {
 }
 
 /** UI ใช้จำนวนเต็มเดียวกับโลกเกม ยกเว้นซูมแล้วโทรศัพท์จะล้นจอ จึงลดลงเท่าที่ใส่ได้ */
+/** iPhone เก็บ screen เป็นแนวตั้งเสมอ เปิดจากไอคอนแล้วความสูงที่หน้าเว็บเห็นขาดไปเท่าแถบสถานะ จึงคิดจากขนาดจอจริง */
+export function homeScreenAppSize(screenWidth: number, screenHeight: number, landscape: boolean): { width: number; height: number } {
+  const long = Math.max(screenWidth, screenHeight);
+  const short = Math.min(screenWidth, screenHeight);
+  return landscape ? { width: long, height: short } : { width: short, height: long };
+}
+
+export function isHomeScreenApp(): boolean {
+  return (
+    window.matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches ||
+    (navigator as Navigator & { standalone?: boolean }).standalone === true
+  );
+}
+
 export function uiZoomFor(viewport: Viewport, design: UiDesign): number {
   const fits = Math.floor(Math.min(viewport.canvasWidth / design.width, viewport.canvasHeight / design.height));
   return Math.max(1, Math.min(viewport.zoom, fits));

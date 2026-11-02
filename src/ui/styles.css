@@ -1279,3 +1279,270 @@ canvas {
 .wallet-entry--out .wallet-entry__amount {
   color: #c93f3e;
 }
+
+/* กรอบพิกเซลมุมมน ภาพวาดใน Krita ยืดแบบ 9 ช่องตาม --px จุดพิกเซลจึงเท่ากับโลกเกม */
+#phone,
+#settings-window {
+  border: calc(var(--px) * 2) solid transparent;
+  border-image: url('/assets/ui/phone/phone_frame.png') 13 fill / calc(var(--px) * 13) stretch;
+  background: none;
+  box-shadow: none;
+}
+
+#phone {
+  padding: calc(var(--px) * 8);
+}
+
+#settings-window {
+  padding: calc(var(--px) * 10) calc(var(--px) * 12);
+}
+
+.phone-front {
+  padding: 0;
+  background: none;
+}
+
+.phone-ear {
+  top: calc(var(--px) * -8);
+  width: calc(var(--px) * 9);
+  height: calc(var(--px) * 7);
+  background: none;
+}
+
+.phone-ear--left { left: calc(var(--px) * 18); }
+.phone-ear--right { right: calc(var(--px) * 18); }
+
+/* บานพับกลางเครื่องตอนกาง */
+#phone[data-fold='unfolded']::after {
+  position: absolute;
+  top: calc(var(--px) * -2);
+  bottom: calc(var(--px) * -2);
+  left: calc(50% - var(--px));
+  width: calc(var(--px) * 2);
+  background: linear-gradient(#e8b5cc 0 calc(var(--px) * 8), transparent 0 calc(100% - var(--px) * 8), #e8b5cc 0);
+  content: '';
+  pointer-events: none;
+}
+
+.punch-hole {
+  width: calc(var(--px) * 5);
+  height: calc(var(--px) * 5);
+  background: none;
+}
+
+.phone-bar .punch-hole {
+  flex: none;
+  margin: 0 calc(var(--px) * 2);
+}
+
+.phone-bar {
+  padding: 0 calc(var(--px) * 2);
+  min-height: 0;
+}
+
+.phone-tool,
+.settings-button,
+.wallet-tab,
+.slot-button {
+  border: calc(var(--px) * 1) solid transparent;
+  border-image: url('/assets/ui/phone/card_btn.png') 5 fill / calc(var(--px) * 5) stretch;
+  background: none;
+  box-shadow: none;
+}
+
+.phone-tool {
+  min-height: max(30px, calc(var(--px) * 18));
+}
+
+.settings-button,
+.slot-button {
+  border-image-source: url('/assets/ui/phone/card_btn_white.png');
+}
+
+.settings-button[aria-checked='true'] {
+  border-image-source: url('/assets/ui/phone/card_pink.png');
+  background: none;
+}
+
+.wallet-tab--active {
+  border-image-source: url('/assets/ui/phone/card_dark.png');
+  background: none;
+}
+
+.widget-date,
+.widget-tasks,
+.widget-calendar,
+.phone-dock,
+.phone-content,
+.wallet-entry,
+.lock__card,
+#lock-open,
+.phone-back__cameras {
+  border: calc(var(--px) * 1) solid transparent;
+  border-image: url('/assets/ui/phone/card_white.png') 5 fill / calc(var(--px) * 5) stretch;
+  background: none;
+  box-shadow: none;
+}
+
+.widget-gio {
+  border: calc(var(--px) * 1) solid transparent;
+  border-image: url('/assets/ui/phone/card_gio.png') 5 fill / calc(var(--px) * 5) stretch;
+  background: none;
+}
+
+.widget-calendar__today {
+  border: calc(var(--px) * 1) solid transparent;
+  border-image: url('/assets/ui/phone/card_pink.png') 5 fill / calc(var(--px) * 5) stretch;
+  background: none;
+}
+
+.widget-stuck {
+  border: calc(var(--px) * 1) solid transparent;
+  border-image: url('/assets/ui/phone/card_purple.png') 5 fill / calc(var(--px) * 5) stretch;
+  background: none;
+}
+
+.is-today {
+  border: calc(var(--px) * 1) solid transparent;
+  border-image: url('/assets/ui/phone/card_gold.png') 5 fill / calc(var(--px) * 3) stretch;
+  background: none;
+}
+
+.wallet-card {
+  border: calc(var(--px) * 1) solid transparent;
+  background: none;
+  box-shadow: none;
+}
+
+.wallet-card--coins {
+  border-image: url('/assets/ui/phone/card_coin.png') 5 fill / calc(var(--px) * 5) stretch;
+  background: none;
+}
+
+.wallet-card--stars {
+  border-image: url('/assets/ui/phone/card_star.png') 5 fill / calc(var(--px) * 5) stretch;
+  background: none;
+}
+
+.phone-extra {
+  border-left: 0;
+}
+
+.phone-dock {
+  padding: calc(var(--px) * 3) calc(var(--px) * 1);
+}
+
+.phone-back {
+  background-color: transparent;
+}
+
+.phone-back__camera {
+  width: calc(var(--px) * 12);
+  height: calc(var(--px) * 12);
+}
+
+/* โทรศัพท์ย่อและจอล็อก: พื้นตัดมุมอยู่ใต้กรอบครีม ภาพกรอบกลางโปร่งจึงเห็นวอลเปเปอร์ */
+#phone-button {
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+
+#phone-button::after,
+#lock-screen::after {
+  position: absolute;
+  inset: 0;
+  border: calc(var(--px) * 1) solid transparent;
+  border-image: url('/assets/ui/phone/phone_frame_cream.png') 7 / calc(var(--px) * 7) stretch;
+  content: '';
+  pointer-events: none;
+}
+
+.mini__screen,
+#lock-screen::before {
+  clip-path: polygon(
+    calc(var(--px) * 7) calc(var(--px) * 2),
+    calc(100% - var(--px) * 7) calc(var(--px) * 2),
+    calc(100% - var(--px) * 2) calc(var(--px) * 7),
+    calc(100% - var(--px) * 2) calc(100% - var(--px) * 7),
+    calc(100% - var(--px) * 7) calc(100% - var(--px) * 2),
+    calc(var(--px) * 7) calc(100% - var(--px) * 2),
+    calc(var(--px) * 2) calc(100% - var(--px) * 7),
+    calc(var(--px) * 2) calc(var(--px) * 7)
+  );
+}
+
+#lock-screen {
+  overflow: visible;
+  background: none;
+  box-shadow: none;
+}
+
+#lock-screen::before {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#b6cdf6 0 70%, #dfe2f6 70%);
+  content: '';
+}
+
+#run-button img {
+  pointer-events: none;
+  -webkit-touch-callout: none;
+}
+
+#run-button {
+  -webkit-touch-callout: none;
+  touch-action: none;
+}
+
+.phone-bar .punch-hole {
+  position: static;
+}
+
+/* เว้นของบนจอย่อและจอล็อกให้พ้นกรอบครีม */
+.mini__screen .punch-hole,
+#lock-screen > .punch-hole {
+  top: calc(var(--px) * 6);
+  right: calc(var(--px) * 6);
+}
+
+.mini__weather {
+  top: calc(var(--px) * 5);
+  left: calc(var(--px) * 5);
+}
+
+.mini__date {
+  top: calc(var(--px) * 5);
+  right: calc(var(--px) * 12);
+}
+
+.mini__cats {
+  right: calc(var(--px) * 4);
+  bottom: calc(var(--px) * 5);
+  left: calc(var(--px) * 4);
+}
+
+#settings-close {
+  top: calc(var(--px) * 8);
+  right: calc(var(--px) * 10);
+}
+
+/* เวลาบนหน้าปกเปลี่ยนทุกนาทีเกม ถ้านิ้วโดนตัวหนังสือพอดี Safari อาจทิ้งการแตะ จึงให้แตะโดนตัวปุ่มเสมอ */
+#phone-button * {
+  pointer-events: none;
+}
+
+/* หลังเคสสีชมพู ตัดมุมให้เข้ากับกรอบ */
+.phone-back {
+  background-color: #ffd0e0;
+  clip-path: polygon(
+    calc(var(--px) * 4) 0,
+    calc(100% - var(--px) * 4) 0,
+    100% calc(var(--px) * 4),
+    100% calc(100% - var(--px) * 4),
+    calc(100% - var(--px) * 4) 100%,
+    calc(var(--px) * 4) 100%,
+    0 calc(100% - var(--px) * 4),
+    0 calc(var(--px) * 4)
+  );
+}

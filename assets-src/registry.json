@@ -3742,6 +3742,142 @@
     "jade_tone": false,
     "lazy": true
   },
+
+  "ui_card_btn": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "assets-src/art_2026-11-02/ui/phone/card_btn.png",
+    "file": "ui/phone/card_btn.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_card_btn_white": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "assets-src/art_2026-11-02/ui/phone/card_btn_white.png",
+    "file": "ui/phone/card_btn_white.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_card_coin": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "assets-src/art_2026-11-02/ui/phone/card_coin.png",
+    "file": "ui/phone/card_coin.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_card_dark": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "assets-src/art_2026-11-02/ui/phone/card_dark.png",
+    "file": "ui/phone/card_dark.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_card_gio": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "assets-src/art_2026-11-02/ui/phone/card_gio.png",
+    "file": "ui/phone/card_gio.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_card_gold": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "assets-src/art_2026-11-02/ui/phone/card_gold.png",
+    "file": "ui/phone/card_gold.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_card_pink": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "assets-src/art_2026-11-02/ui/phone/card_pink.png",
+    "file": "ui/phone/card_pink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_card_purple": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "assets-src/art_2026-11-02/ui/phone/card_purple.png",
+    "file": "ui/phone/card_purple.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_card_star": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "assets-src/art_2026-11-02/ui/phone/card_star.png",
+    "file": "ui/phone/card_star.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_card_white": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "assets-src/art_2026-11-02/ui/phone/card_white.png",
+    "file": "ui/phone/card_white.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_phone_camera": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "assets-src/art_2026-11-02/ui/phone/phone_camera.png",
+    "file": "ui/phone/phone_camera.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_phone_ear": {
+    "type": "local",
+    "width": 9,
+    "height": 7,
+    "source": "assets-src/art_2026-11-02/ui/phone/phone_ear.png",
+    "file": "ui/phone/phone_ear.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_phone_frame": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "assets-src/art_2026-11-02/ui/phone/phone_frame.png",
+    "file": "ui/phone/phone_frame.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_phone_frame_cream": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "assets-src/art_2026-11-02/ui/phone/phone_frame_cream.png",
+    "file": "ui/phone/phone_frame_cream.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_punch_hole": {
+    "type": "local",
+    "width": 5,
+    "height": 5,
+    "source": "assets-src/art_2026-11-02/ui/phone/punch_hole.png",
+    "file": "ui/phone/punch_hole.png",
+    "jade_tone": false,
+    "lazy": true
+  },
   "ui_run_button_off": {
     "type": "local",
     "width": 64,

@@ -211,7 +211,7 @@ function createActionControls(uiRoot: HTMLElement): void {
   });
 }
 
-/** จอสัมผัสไม่มีปุ่ม Shift จึงมีปุ่มวิ่งแบบกดติด กดดับ */
+/** กดค้างแล้ววิ่ง ปล่อยแล้วเดิน ใช้ pointerdown เพราะ iPhone ไม่ส่ง click ตอนอีกนิ้วลากจอยอยู่ */
 function createRunToggle(uiRoot: HTMLElement): void {
   if (!window.matchMedia('(pointer: coarse)').matches) return;
   const button = document.createElement('button');
@@ -224,10 +224,23 @@ function createRunToggle(uiRoot: HTMLElement): void {
   image.src = artUrl('ui_run_button_off');
   new Image().src = artUrl('ui_run_button_on');
   button.append(image);
-  button.addEventListener('click', () => {
-    gameState.setRunToggle(!gameState.runToggle);
-    button.setAttribute('aria-pressed', String(gameState.runToggle));
-    image.src = artUrl(gameState.runToggle ? 'ui_run_button_on' : 'ui_run_button_off');
+  const setHeld = (held: boolean): void => {
+    gameState.setRunHeld(held);
+    button.setAttribute('aria-pressed', String(held));
+    image.src = artUrl(held ? 'ui_run_button_on' : 'ui_run_button_off');
+  };
+  button.addEventListener('pointerdown', (event) => {
+    event.preventDefault();
+    button.setPointerCapture(event.pointerId);
+    setHeld(true);
+  });
+  for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) {
+    button.addEventListener(type, () => setHeld(false));
+  }
+  // กดค้างบน iPhone จะเด้งเมนูของระบบถ้าไม่กันไว้
+  button.addEventListener('contextmenu', (event) => event.preventDefault());
+  eventBus.on('rotation-required-changed', (required) => {
+    if (required) setHeld(false);
   });
   uiRoot.append(button);
 }

@@ -51,6 +51,8 @@ const art = (id: string, className: string): HTMLImageElement => {
   return image;
 };
 
+const punchHole = (): HTMLImageElement => art('ui_punch_hole', 'punch-hole');
+
 function placeholderPage(app: PhoneApp): HTMLElement {
   const page = element('div', 'phone-page');
   page.append(element('h2', undefined, t(app.name)));
@@ -70,7 +72,7 @@ function createMini(): { root: HTMLButtonElement; time: HTMLElement; date: HTMLE
   time.id = 'phone-cover-time';
   const cats = element('span', 'mini__cats');
   cats.append(...MINI_CATS.map((id) => art(id, 'mini__cat')));
-  screen.append(art(WEATHER_ICON, 'mini__weather'), date, element('i', 'punch-hole'), time, cats);
+  screen.append(art(WEATHER_ICON, 'mini__weather'), date, punchHole(), time, cats);
   root.append(screen);
   return { root, time, date };
 }
@@ -78,7 +80,7 @@ function createMini(): { root: HTMLButtonElement; time: HTMLElement; date: HTMLE
 function createLock(): { root: HTMLElement; time: HTMLElement; date: HTMLElement; weather: HTMLElement; line: HTMLElement; open: HTMLButtonElement } {
   const root = element('div');
   root.id = 'lock-screen';
-  root.append(element('i', 'punch-hole'));
+  root.append(punchHole());
   const date = element('p', 'lock__date');
   const time = element('p', 'lock__time');
   const weather = element('p', 'lock__weather');
@@ -187,7 +189,7 @@ function createBack(): { root: HTMLElement; flip: HTMLButtonElement } {
   const root = element('div', 'phone-back');
   root.id = 'phone-back-side';
   const cameras = element('div', 'phone-back__cameras');
-  cameras.append(element('i'), element('i'));
+  cameras.append(art('ui_phone_camera', 'phone-back__camera'), art('ui_phone_camera', 'phone-back__camera'));
   const face = element('p', 'phone-back__face', 'ˈwˈ');
   const name = element('small', 'phone-back__name', t('phone.case_default'));
   const flip = element('button', 'phone-tool', t('phone.flip_back'));
@@ -211,7 +213,7 @@ export function createPhone(uiRoot: HTMLElement): void {
   phone.setAttribute('role', 'dialog');
   phone.setAttribute('aria-label', t('phone.open'));
   phone.hidden = true;
-  phone.append(element('i', 'phone-ear phone-ear--left'), element('i', 'phone-ear phone-ear--right'));
+  phone.append(art('ui_phone_ear', 'phone-ear phone-ear--left'), art('ui_phone_ear', 'phone-ear phone-ear--right'));
 
   const front = element('div', 'phone-front');
   const bar = element('div', 'phone-bar');
@@ -229,7 +231,7 @@ export function createPhone(uiRoot: HTMLElement): void {
   close.id = 'phone-close';
   close.type = 'button';
   close.setAttribute('aria-label', t('ui.close'));
-  bar.append(clock, status, unfold, flip, close);
+  bar.append(clock, status, unfold, flip, close, punchHole());
 
   const main = element('div', 'phone-main');
   const date = createDateWidget();

@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { t } from './core/i18n';
 import { eventBus } from './core/events';
 import { gameState } from './core/state';
-import { computeViewport, type Viewport } from './core/viewport';
+import { computeViewport, homeScreenAppSize, isHomeScreenApp, type Viewport } from './core/viewport';
 import display from './data/display.json';
 import { BaseScene } from './scenes/BaseScene';
 import { BootScene } from './scenes/BootScene';
@@ -15,6 +15,13 @@ import './ui/styles.css';
 const appRoot = document.getElementById('app')!;
 const gameRoot = document.getElementById('game')!;
 const uiRoot = document.getElementById('ui')!;
+
+function fitHomeScreenApp(): void {
+  if (!isHomeScreenApp()) return;
+  const size = homeScreenAppSize(window.screen.width, window.screen.height, window.innerWidth >= window.innerHeight);
+  appRoot.style.width = `${size.width}px`;
+  appRoot.style.height = `${size.height}px`;
+}
 
 function readViewport(): Viewport {
   return computeViewport({
@@ -35,6 +42,7 @@ function applyCanvasSize(game: Phaser.Game, viewport: Viewport): void {
 }
 
 document.title = t('game.title');
+fitHomeScreenApp();
 createOverlay(uiRoot, appRoot);
 
 const initialViewport = readViewport();
@@ -59,6 +67,7 @@ eventBus.on('rotation-required-changed', (required) => {
 });
 
 function onScreenChanged(): void {
+  fitHomeScreenApp();
   const viewport = readViewport();
   applyCanvasSize(game, viewport);
   gameState.setViewport(viewport);
