@@ -4680,7 +4680,8 @@
     "jade_tone": false,
     "frame_width": 88,
     "frame_height": 88,
-    "frames": 9
+    "frames": 9,
+    "play_from": 3
   },
   "anim_till_east": {
     "type": "local",
@@ -4691,7 +4692,8 @@
     "jade_tone": false,
     "frame_width": 88,
     "frame_height": 88,
-    "frames": 9
+    "frames": 9,
+    "play_from": 1
   },
   "anim_till_north": {
     "type": "local",

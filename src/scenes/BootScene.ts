@@ -56,7 +56,7 @@ export class BootScene extends Phaser.Scene {
       if (entry.type === 'local' && id.startsWith('anim_')) {
         this.anims.create({
           key: id,
-          frames: this.anims.generateFrameNumbers(id),
+          frames: this.anims.generateFrameNumbers(id, { start: entry.play_from ?? 0 }),
           frameRate: 1000 / balance.farm.actionFrameMs,
           repeat: 0,
         });

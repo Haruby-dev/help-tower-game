@@ -278,6 +278,8 @@ const localEntrySchema = z.strictObject({
   frame_width: z.number().int().positive().optional(),
   frame_height: z.number().int().positive().optional(),
   frames: z.number().int().positive().optional(),
+  /** เริ่มเล่นท่าจากเฟรมนี้ เฟรมก่อนหน้าใช้ไม่ได้ เช่น ยังไม่มีจอบในมือ */
+  play_from: z.number().int().nonnegative().optional(),
   frames_meaning: z.array(z.string().min(1)).optional(),
   name_th: z.string().min(1).optional(),
   nine_slice: z

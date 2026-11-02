@@ -13,8 +13,8 @@ const rng = createRng(Date.now());
 const between = (min: number, max: number): number => Math.floor(rng.between(min, max + 1));
 
 /** เศษดินกระเด็นตอนตบดินและตอนพรวน */
-export function dirtPuff(scene: Phaser.Scene, x: number, y: number): void {
-  for (let index = 0; index < 5; index += 1) {
+export function dirtPuff(scene: Phaser.Scene, x: number, y: number, pieces = 5): void {
+  for (let index = 0; index < pieces; index += 1) {
     const clod = scene.add.image(x, y, 'fx_dirt', between(0, 3)).setDepth(FX_DEPTH);
     scene.tweens.add({
       targets: clod,

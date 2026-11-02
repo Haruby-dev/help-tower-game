@@ -59,7 +59,7 @@ export class Player {
     this.sprite.setFlipX(this.facing === 'west');
     this.sprite.setOrigin(0.5, footY(WALK_ID, sheet) / characterEntry(WALK_ID).frameHeight);
     this.sprite.anims.timeScale = 1;
-    const update = (_animation: unknown, frame: Phaser.Animations.AnimationFrame): void => onFrame(frame.index - 1);
+    const update = (_animation: unknown, frame: Phaser.Animations.AnimationFrame): void => onFrame(Number(frame.textureFrame));
     this.sprite.on(Phaser.Animations.Events.ANIMATION_UPDATE, update);
     this.sprite.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}${key}`, () => {
       this.sprite.off(Phaser.Animations.Events.ANIMATION_UPDATE, update);

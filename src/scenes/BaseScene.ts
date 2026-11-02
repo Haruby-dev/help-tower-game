@@ -44,6 +44,8 @@ const PLAYER_HEAD_PX = 66;
 const DOOR_TAP_LIFT = 24;
 const DOOR_TAP_RADIUS = 34;
 const TILE_MIDDLE = 16;
+const TILL_HIT_FRAME = 6;
+const TILL_DIRT_PIECES = 2;
 
 /** ไล่ความมืดระหว่างจุดเวลาใน display.json */
 export function nightAlpha(hour: number): number {
@@ -392,9 +394,9 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private playMoveEffect(move: GardenMove, frame: number, plot: Plot): void {
-    if ((move === 'plant' && frame >= 4 && frame <= 7) || (move === 'till' && frame >= 4 && frame <= 6)) {
-      dirtPuff(this, plot.centerX, plot.centerY);
-    }
+    if (move === 'plant' && frame >= 4 && frame <= 7) dirtPuff(this, plot.centerX, plot.centerY);
+    // ภาพท่าพรวนมีเศษดินในเฟรมแล้ว จึงเติมแค่นิดเดียวตอนจอบกระทบดิน
+    if (move === 'till' && frame === TILL_HIT_FRAME) dirtPuff(this, plot.centerX, plot.centerY, TILL_DIRT_PIECES);
     if (move === 'water' && frame === 3) {
       waterDrops(this, this.player.feetX, this.player.feetY - PLAYER_HEAD_PX / 2, plot.centerX, plot.centerY);
     }

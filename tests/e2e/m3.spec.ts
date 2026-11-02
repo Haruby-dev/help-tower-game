@@ -173,3 +173,14 @@ test('the seed slot shows the chosen bag and its count', async ({ page }) => {
   await expect(page.locator('.tool-slot__count')).toHaveText('12');
   await expect(page.locator('.tool-slot__key')).toHaveCount(4);
 });
+
+test('the till move skips the frames with no hoe', async ({ page }) => {
+  await open(page);
+  const frames = await page.evaluate(() => {
+    const anims = (window as unknown as { __game: { anims: { get(k: string): { frames: { textureFrame: number }[] } } } }).__game.anims;
+    return Object.fromEntries(['south', 'east', 'north'].map((dir) => [dir, anims.get(`anim_till_${dir}`).frames.map((frame) => frame.textureFrame)]));
+  });
+  expect(frames.south).toEqual([3, 4, 5, 6, 7, 8]);
+  expect(frames.east).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+  expect(frames.north).toHaveLength(9);
+});
