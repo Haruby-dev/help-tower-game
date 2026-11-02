@@ -1,0 +1,385 @@
+{
+  "grilled_fish": {
+    "category": "savory",
+    "rank": "F",
+    "ingredients": {
+      "ing_fish_F": 1,
+      "ing_salt": 1
+    },
+    "price": 30,
+    "source": "start"
+  },
+  "boiled_egg": {
+    "category": "savory",
+    "rank": "F",
+    "ingredients": {
+      "ing_egg": 1
+    },
+    "price": 30,
+    "source": "start"
+  },
+  "baked_potato": {
+    "category": "savory",
+    "rank": "F",
+    "ingredients": {
+      "produce_potato": 1,
+      "ing_salt": 1
+    },
+    "price": 50,
+    "source": "quest"
+  },
+  "grilled_corn": {
+    "category": "sweet",
+    "rank": "F",
+    "ingredients": {
+      "produce_corn": 1,
+      "ing_sugar": 1
+    },
+    "price": 40,
+    "source": "shop"
+  },
+  "strawberry_skewer": {
+    "category": "sweet",
+    "rank": "F",
+    "ingredients": {
+      "produce_strawberry": 2,
+      "ing_sugar": 1
+    },
+    "price": 75,
+    "source": "shop"
+  },
+  "home_kaprao": {
+    "category": "savory",
+    "rank": "E",
+    "ingredients": {
+      "produce_basil": 1,
+      "produce_chili": 1,
+      "produce_garlic": 1,
+      "produce_rice": 1,
+      "ing_egg": 1,
+      "ing_pork": 1
+    },
+    "price": 120,
+    "source": "start"
+  },
+  "scallion_omelet": {
+    "category": "savory",
+    "rank": "E",
+    "ingredients": {
+      "ing_egg": 2,
+      "produce_scallion": 1,
+      "ing_fish_sauce": 1
+    },
+    "price": 60,
+    "source": "shop"
+  },
+  "tomato_soup": {
+    "category": "savory",
+    "rank": "E",
+    "ingredients": {
+      "produce_tomato": 2,
+      "produce_garlic": 1,
+      "ing_salt": 1
+    },
+    "price": 60,
+    "source": "shop"
+  },
+  "honey_apple_grill": {
+    "category": "sweet",
+    "rank": "E",
+    "ingredients": {
+      "ing_honey_apple": 1,
+      "ing_honey": 1
+    },
+    "price": 65,
+    "source": "shop"
+  },
+  "warm_honey_milk": {
+    "category": "drink",
+    "rank": "E",
+    "ingredients": {
+      "ing_milk": 1,
+      "ing_honey": 1
+    },
+    "price": 60,
+    "source": "start"
+  },
+  "fish_congee": {
+    "category": "savory",
+    "rank": "D",
+    "ingredients": {
+      "produce_rice": 1,
+      "ing_fish_F": 1,
+      "produce_scallion": 1,
+      "produce_garlic": 1
+    },
+    "price": 120,
+    "source": "shop"
+  },
+  "corn_egg_fried_rice": {
+    "category": "savory",
+    "rank": "D",
+    "ingredients": {
+      "produce_rice": 1,
+      "ing_egg": 1,
+      "produce_corn": 1,
+      "produce_carrot": 1,
+      "produce_scallion": 1
+    },
+    "price": 120,
+    "source": "shop"
+  },
+  "potato_carrot_stew": {
+    "category": "savory",
+    "rank": "D",
+    "ingredients": {
+      "produce_potato": 2,
+      "produce_carrot": 2,
+      "produce_tomato": 1,
+      "ing_salt": 1
+    },
+    "price": 180,
+    "source": "shop"
+  },
+  "honey_pancake": {
+    "category": "sweet",
+    "rank": "D",
+    "ingredients": {
+      "ing_golden_wheat": 2,
+      "ing_egg": 1,
+      "ing_honey": 1
+    },
+    "price": 120,
+    "source": "gate"
+  },
+  "strawberry_milk_pudding": {
+    "category": "sweet",
+    "rank": "D",
+    "ingredients": {
+      "ing_milk": 1,
+      "ing_egg": 1,
+      "produce_strawberry": 2,
+      "ing_sugar": 1
+    },
+    "price": 120,
+    "source": "gate"
+  },
+  "tomato_juice": {
+    "category": "drink",
+    "rank": "F",
+    "ingredients": {
+      "produce_tomato": 2
+    },
+    "price": 40,
+    "source": "start"
+  },
+  "basil_tea": {
+    "category": "drink",
+    "rank": "F",
+    "ingredients": {
+      "produce_basil": 1
+    },
+    "price": 30,
+    "source": "start"
+  },
+  "strawberry_juice": {
+    "category": "drink",
+    "rank": "F",
+    "ingredients": {
+      "produce_strawberry": 3
+    },
+    "price": 108,
+    "source": "shop"
+  },
+  "whip_cream_mumu": {
+    "category": "sweet",
+    "rank": "F",
+    "ingredients": {
+      "ing_cream": 1,
+      "ing_sugar": 1
+    },
+    "price": 40,
+    "source": "shop",
+    "icon": "food_slime24"
+  },
+  "strawberry_jelly": {
+    "category": "sweet",
+    "rank": "F",
+    "ingredients": {
+      "produce_strawberry": 1,
+      "ing_sugar": 1,
+      "ing_slime_jelly_scrap": 1
+    },
+    "price": 50,
+    "source": "shop",
+    "icon": "food_slime2"
+  },
+  "caramel_pudding": {
+    "category": "sweet",
+    "rank": "F",
+    "ingredients": {
+      "ing_egg": 1,
+      "ing_milk": 1,
+      "ing_sugar": 2
+    },
+    "price": 50,
+    "source": "shop",
+    "icon": "food_slime9"
+  },
+  "berry_pudding": {
+    "category": "sweet",
+    "rank": "E",
+    "ingredients": {
+      "ing_egg": 1,
+      "ing_milk": 1,
+      "produce_blueberry": 2,
+      "ing_sugar": 1
+    },
+    "price": 105,
+    "source": "shop",
+    "icon": "food_slime8"
+  },
+  "soda_jelly_dessert": {
+    "category": "sweet",
+    "rank": "E",
+    "ingredients": {
+      "ing_fizzy_water": 1,
+      "ing_cherry": 1,
+      "ing_slime_jelly_scrap": 1
+    },
+    "price": 60,
+    "source": "shop",
+    "icon": "food_slime1"
+  },
+  "soda_ice_cream": {
+    "category": "sweet",
+    "rank": "E",
+    "ingredients": {
+      "ing_milk": 1,
+      "ing_cream": 1,
+      "ing_fizzy_water": 1,
+      "ing_sugar": 1
+    },
+    "price": 80,
+    "source": "shop",
+    "icon": "food_slime12"
+  },
+  "honey_macaron": {
+    "category": "sweet",
+    "rank": "E",
+    "ingredients": {
+      "ing_golden_wheat": 1,
+      "ing_egg": 1,
+      "ing_honey": 1
+    },
+    "price": 80,
+    "source": "shop",
+    "icon": "food_bee22"
+  },
+  "cherry_cream_macaron": {
+    "category": "sweet",
+    "rank": "D",
+    "ingredients": {
+      "ing_golden_wheat": 1,
+      "ing_egg": 1,
+      "ing_cream": 1,
+      "ing_cherry": 1
+    },
+    "price": 120,
+    "source": "shop",
+    "icon": "food_bee7"
+  },
+  "blueberry_macaron": {
+    "category": "sweet",
+    "rank": "D",
+    "ingredients": {
+      "ing_golden_wheat": 1,
+      "ing_egg": 1,
+      "produce_blueberry": 2,
+      "ing_sugar": 1
+    },
+    "price": 120,
+    "source": "shop",
+    "icon": "food_bee12"
+  },
+  "cream_puff": {
+    "category": "sweet",
+    "rank": "D",
+    "ingredients": {
+      "ing_golden_wheat": 1,
+      "ing_egg": 2,
+      "ing_cream": 1,
+      "ing_butter": 1
+    },
+    "price": 150,
+    "source": "shop",
+    "icon": "food_bee6"
+  },
+  "choco_donut": {
+    "category": "sweet",
+    "rank": "D",
+    "ingredients": {
+      "ing_golden_wheat": 2,
+      "ing_egg": 1,
+      "ing_cocoa": 1,
+      "ing_sugar": 1
+    },
+    "price": 125,
+    "source": "shop",
+    "icon": "food_bee13"
+  },
+  "choco_macaron": {
+    "category": "sweet",
+    "rank": "C",
+    "ingredients": {
+      "ing_golden_wheat": 1,
+      "ing_egg": 1,
+      "ing_cocoa": 2,
+      "ing_cream": 1
+    },
+    "price": 200,
+    "source": "shop",
+    "icon": "food_bee17"
+  },
+  "swiss_roll": {
+    "category": "sweet",
+    "rank": "C",
+    "ingredients": {
+      "ing_golden_wheat": 2,
+      "ing_egg": 2,
+      "ing_cream": 2,
+      "produce_strawberry": 1
+    },
+    "price": 220,
+    "source": "shop",
+    "icon": "food_bee14"
+  },
+  "strawberry_parfait": {
+    "category": "sweet",
+    "rank": "B",
+    "ingredients": {
+      "produce_strawberry": 3,
+      "ing_cream": 2,
+      "ing_milk": 1,
+      "ing_cherry": 1,
+      "ing_golden_wheat": 1
+    },
+    "price": 350,
+    "source": "shop",
+    "icon": "food_slime23"
+  },
+  "choco_parfait": {
+    "category": "sweet",
+    "rank": "B",
+    "ingredients": {
+      "ing_cocoa": 2,
+      "ing_cream": 2,
+      "ing_milk": 1,
+      "ing_cherry": 1,
+      "ing_honey": 1
+    },
+    "price": 350,
+    "source": "shop",
+    "icon": "food_slime22"
+  }
+}

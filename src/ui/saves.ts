@@ -22,9 +22,13 @@ export async function showSlotPicker(uiRoot: HTMLElement): Promise<void> {
   const panel = document.createElement('div');
   panel.id = 'slot-picker';
   panel.className = 'panel';
+  const name = document.createElement('h1');
+  name.textContent = t('game.title');
+  const subtitle = document.createElement('p');
+  subtitle.textContent = t('game.subtitle');
   const title = document.createElement('h2');
   title.textContent = t('save.choose_slot');
-  panel.append(title);
+  panel.append(name, subtitle, title);
   gameState.setWindowOpen('slots', true);
 
   for (const slot of slots) {

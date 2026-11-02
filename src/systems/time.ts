@@ -1,6 +1,7 @@
 import { eventBus, type RestCause } from '../core/events';
 import { gameState, type Point, type World } from '../core/state';
 import balance from '../data/balance.json';
+import { finishOvernight, tickCooking } from './cooking';
 import { growFarm } from './farm';
 import { decayAwake, recoverFromFaint, shouldFaint, sleepUntilMorning } from './gauges';
 
@@ -16,6 +17,7 @@ function nextMorning(world: World, restful: boolean): World {
     hour: time.dayStartHour,
     gauges: sleepUntilMorning(world.gauges, Math.max(0, morning - world.hour), restful),
     farm: growFarm(world.farm),
+    cooking: finishOvernight(world.cooking),
   };
 }
 
@@ -24,7 +26,12 @@ export type StepResult = { world: World; cause: RestCause | null };
 /** คำนวณอย่างเดียว ไม่แตะ GameState จึงทดสอบตัวเลขแยกได้ */
 export function stepClock(world: World, deltaMs: number): StepResult {
   const hours = deltaMs / MS_PER_HOUR;
-  const next: World = { ...world, hour: world.hour + hours, gauges: decayAwake(world.gauges, hours) };
+  const next: World = {
+    ...world,
+    hour: world.hour + hours,
+    gauges: decayAwake(world.gauges, hours),
+    cooking: tickCooking(world.cooking, hours),
+  };
 
   if (shouldFaint(next.gauges)) return { world: faint(next), cause: 'faint' };
   if (next.hour >= time.lateLimitHour) return { world: nextMorning(next, false), cause: 'passed_out' };

@@ -1,9 +1,9 @@
 import { get, set } from 'idb-keyval';
 import { defaultCosmetics, emptyWallet, type World } from '../core/state';
 import { saveFileSchema, type SaveFile } from '../data/schema';
-import { newFarm, starterBag } from './gauges';
+import { cookingStarterBag, newFarm, newRecipeBook, starterBag } from './gauges';
 
-export const SAVE_VERSION = 4;
+export const SAVE_VERSION = 5;
 export const SLOT_COUNT = 3;
 
 const slotKey = (slot: number): string => `save-slot-${slot}`;
@@ -16,6 +16,11 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
   2: (save) => ({ ...save, world: { ...(save.world as object), cosmetics: defaultCosmetics() } }),
   // เวอร์ชัน 4 เพิ่มแปลงผักกับกระเป๋า เซฟเก่าได้ของเริ่มเกมเหมือนเกมใหม่
   3: (save) => ({ ...save, world: { ...(save.world as object), farm: newFarm(), bag: starterBag() } }),
+  // เวอร์ชัน 5 เพิ่มการทำอาหาร เซฟเก่าได้วัตถุดิบเริ่มเกมเพิ่มต่อท้าย ของเดิมอยู่ครบ
+  4: (save) => {
+    const world = save.world as { bag: unknown[] };
+    return { ...save, world: { ...world, bag: [...world.bag, ...cookingStarterBag()], cooking: { slot: null }, recipes: newRecipeBook() } };
+  },
 };
 
 export function toSaveFile(world: World): SaveFile {

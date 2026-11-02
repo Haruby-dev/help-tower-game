@@ -7,9 +7,11 @@ import { gameState } from '../core/state';
 import type { Vector } from '../core/movement';
 import type { Viewport } from '../core/viewport';
 import { Gio } from '../entities/Gio';
+import { Campfire } from '../entities/Campfire';
 import { Player, type GardenMove } from '../entities/Player';
 import { Plot } from '../entities/Plot';
 import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, isWithered, yieldOf, type FarmAction } from '../systems/farm';
+import { MYSTERY, collectDish, isCooked } from '../systems/cooking';
 import { advanceClock, goToSleep } from '../systems/time';
 import balance from '../data/balance.json';
 import display from '../data/display.json';
@@ -72,6 +74,7 @@ export class BaseScene extends Phaser.Scene {
   private plots: Plot[] = [];
   private plotMarker!: Phaser.GameObjects.Sprite;
   private queuedPlot: number | null = null;
+  private campfire: Campfire | null = null;
 
   constructor() {
     super('Base');
@@ -151,6 +154,10 @@ export class BaseScene extends Phaser.Scene {
         this.useFarm(tapped);
         return;
       }
+      if (this.campfireInReach() && this.campfire && Phaser.Math.Distance.Between(pointer.worldX, pointer.worldY, this.campfire.x, this.campfire.y) < DOOR_TAP_RADIUS) {
+        this.useAction();
+        return;
+      }
       const near = Phaser.Math.Distance.Between(pointer.worldX, pointer.worldY, this.door.x, this.door.y - DOOR_TAP_LIFT);
       if (near < DOOR_TAP_RADIUS) this.useAction();
     });
@@ -199,6 +206,9 @@ export class BaseScene extends Phaser.Scene {
     }
     const x = object.x ?? 0;
     const y = object.y ?? 0;
+    if (id === 'campfire') {
+      this.campfire = new Campfire(this, x, y, createRng(Date.now()), () => gameState.viewport.zoom);
+    }
     const flat = this.property<boolean>(object, 'flat') ?? false;
     const originY = entry.type === 'placeholder' ? 1 : footY(id) / entry.height;
     const image = this.add.image(x, y, id).setOrigin(0.5, originY).setDepth(flat ? DEPTH.flat : y);
@@ -291,7 +301,36 @@ export class BaseScene extends Phaser.Scene {
   private useAction(): void {
     const plot = this.targetPlot();
     if (plot !== null && this.farmActionAt(plot)) this.useFarm(plot);
+    else if (this.campfireAction()) this.useCampfire();
     else if (this.nearDoor() && !this.player.busy) goToSleep(this.door);
+  }
+
+  private campfireInReach(): boolean {
+    if (!this.campfire || !gameState.clockRunning) return false;
+    return Phaser.Math.Distance.Between(this.player.feetX, this.player.feetY, this.campfire.x, this.campfire.y) < balance.cooking.reachPx;
+  }
+
+  private campfireAction(): TextKey | null {
+    if (!this.campfireInReach()) return null;
+    const { slot } = gameState.world.cooking;
+    if (!slot) return 'action.cook';
+    return isCooked(slot) ? 'action.collect' : null;
+  }
+
+  /** เก็บได้เมื่อสุกแล้ว กระเป๋าเต็มอาหารยังรออยู่ที่กองไฟ */
+  private useCampfire(): void {
+    const { slot } = gameState.world.cooking;
+    if (!slot) {
+      eventBus.emit('cook-open', undefined);
+      return;
+    }
+    const next = collectDish(gameState.world);
+    if (!next) {
+      eventBus.emit('player-says', 'bagFull');
+      return;
+    }
+    gameState.setWorld(next);
+    if (slot.recipe === MYSTERY) eventBus.emit('player-says', 'mysteryFood');
   }
 
   private createPlots(ground: Phaser.Tilemaps.TilemapLayer): void {
@@ -340,7 +379,8 @@ export class BaseScene extends Phaser.Scene {
     } else {
       this.plotMarker.setVisible(false);
     }
-    gameState.setAction(action ? ACTION_LABEL[action] : this.nearDoor() ? 'action.sleep' : null);
+    this.campfire?.sync(gameState.world.cooking.slot, this.time.now);
+    gameState.setAction(action ? ACTION_LABEL[action] : this.campfireAction() ?? (this.nearDoor() ? 'action.sleep' : null));
   }
 
   /** ตอนกำลังทำท่าอยู่ แตะใหม่จะจำไว้ทำต่อ */

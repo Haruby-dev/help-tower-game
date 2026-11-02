@@ -87,6 +87,16 @@ export const balanceSchema = z.strictObject({
     totalFloors: z.number().int().positive(),
   }),
   interact: z.strictObject({ reachPx: z.number().positive() }),
+  cooking: z.strictObject({
+    reachPx: z.number().positive(),
+    twoStarHappiness: z.number(),
+    rawFullness: z.number(),
+    ranks: z.record(z.string().min(1), z.strictObject({ minutes: z.number().positive(), fullness: z.number(), equipment: z.string().min(1) })),
+    drink: z.strictObject({ minutes: z.number().positive(), fullness: z.number() }),
+    mystery: z.strictObject({ minutes: z.number().positive(), fullness: z.number(), happinessPenalty: z.number() }),
+    /** ของเริ่มเกมชั่วคราวจนกว่าบทนำจะมาใน M9 */
+    starterBag: z.record(z.string().min(1), z.number().int().positive()),
+  }),
   farm: z.strictObject({
     plotOrigin: z.strictObject({ col: z.number().int().nonnegative(), row: z.number().int().nonnegative() }),
     cols: z.number().int().positive(),
@@ -159,6 +169,10 @@ export const saveFileSchema = z.strictObject({
       ),
     }),
     bag: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })),
+    cooking: z.strictObject({
+      slot: z.strictObject({ recipe: z.string().min(1), stars: z.number().int().positive(), minutesLeft: z.number().nonnegative() }).nullable(),
+    }),
+    recipes: z.strictObject({ known: z.array(z.string().min(1)), bestStars: z.record(z.string(), z.number().int().positive()) }),
     cosmetics: z.strictObject({
       equipped: z.strictObject({
         case: z.string().min(1),
@@ -197,6 +211,23 @@ export const cropsSchema = z.record(
 
 export type Crops = z.infer<typeof cropsSchema>;
 
+const recipeSchema = z.strictObject({
+  category: z.enum(['savory', 'sweet', 'drink']),
+  rank: z.string().min(1),
+  ingredients: z.record(z.string().regex(/^(produce|ing)_[a-zA-Z_]+$/), z.number().int().positive()),
+  price: z.number().int().positive(),
+  /** วิธีได้สูตร start คือรู้ตั้งแต่วันแรก */
+  source: z.enum(['start', 'shop', 'gate', 'quest']),
+  /** รหัสภาพในทะเบียน ไม่มีคือใช้กล่องสีแทน */
+  icon: z.string().min(1).optional(),
+});
+
+export const recipesSchema = z.record(z.string().regex(/^[a-z_]+$/), recipeSchema);
+export const ingredientsSchema = z.record(z.string().regex(/^[a-zA-Z_]+$/), z.strictObject({ value: z.number().positive() }));
+
+export type Recipe = z.infer<typeof recipeSchema>;
+export type Recipes = z.infer<typeof recipesSchema>;
+
 /** บทพูดฟองคำพูดของตัวเอก แก้ได้โดยไม่แตะโค้ด */
 export const linesSchema = z.strictObject({
   player: z.strictObject({
@@ -206,6 +237,7 @@ export const linesSchema = z.strictObject({
       cleanliness: z.string().min(1),
     }),
     bagFull: z.string().min(1),
+    mysteryFood: z.string().min(1),
   }),
   encouragement: z.array(z.string().min(1)).min(1),
 });

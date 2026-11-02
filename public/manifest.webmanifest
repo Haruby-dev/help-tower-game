@@ -1,6 +1,6 @@
 {
-  "name": "Help Tower",
-  "short_name": "Help Tower",
+  "name": "Floor & Flavor",
+  "short_name": "Floor & Flavor",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",

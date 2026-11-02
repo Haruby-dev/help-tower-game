@@ -2280,5 +2280,80 @@
     "footY": {
       "default": 12
     }
+  },
+  "food_slime24": {
+    "footY": {
+      "default": 39
+    }
+  },
+  "food_slime2": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "food_slime9": {
+    "footY": {
+      "default": 39
+    }
+  },
+  "food_slime8": {
+    "footY": {
+      "default": 39
+    }
+  },
+  "food_slime1": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "food_slime12": {
+    "footY": {
+      "default": 41
+    }
+  },
+  "food_bee22": {
+    "footY": {
+      "default": 37
+    }
+  },
+  "food_bee7": {
+    "footY": {
+      "default": 39
+    }
+  },
+  "food_bee12": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "food_bee6": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "food_bee13": {
+    "footY": {
+      "default": 37
+    }
+  },
+  "food_bee17": {
+    "footY": {
+      "default": 37
+    }
+  },
+  "food_bee14": {
+    "footY": {
+      "default": 37
+    }
+  },
+  "food_slime23": {
+    "footY": {
+      "default": 41
+    }
+  },
+  "food_slime22": {
+    "footY": {
+      "default": 41
+    }
   }
 }

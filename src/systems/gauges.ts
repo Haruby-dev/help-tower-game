@@ -1,7 +1,8 @@
-import { defaultCosmetics, emptyWallet, type BagStack, type Farm, type GaugeValues, type World } from '../core/state';
+import { defaultCosmetics, emptyWallet, type BagStack, type Farm, type GaugeValues, type RecipeBook, type World } from '../core/state';
 import balance from '../data/balance.json';
+import recipesJson from '../data/recipes.json';
 
-const { gauges, time, farm } = balance;
+const { gauges, time, farm, cooking } = balance;
 
 const MINUTES_PER_HOUR = 60;
 
@@ -22,6 +23,15 @@ export const newFarm = (): Farm => ({
 
 export const starterBag = (): BagStack[] => Object.entries(farm.starterBag).map(([item, count]) => ({ item, count }));
 
+export const cookingStarterBag = (): BagStack[] => Object.entries(cooking.starterBag).map(([item, count]) => ({ item, count }));
+
+export const newRecipeBook = (): RecipeBook => ({
+  known: Object.entries(recipesJson)
+    .filter(([, recipe]) => recipe.source === 'start')
+    .map(([id]) => id),
+  bestStars: {},
+});
+
 export function newWorld(): World {
   return {
     day: 1,
@@ -30,7 +40,9 @@ export function newWorld(): World {
     player: null,
     wallet: emptyWallet(),
     farm: newFarm(),
-    bag: starterBag(),
+    bag: [...starterBag(), ...cookingStarterBag()],
+    cooking: { slot: null },
+    recipes: newRecipeBook(),
     cosmetics: defaultCosmetics(),
   };
 }

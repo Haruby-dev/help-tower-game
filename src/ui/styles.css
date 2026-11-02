@@ -1988,3 +1988,173 @@ canvas {
   height: calc(var(--px) * 24);
   background: #c9b8d8;
 }
+
+#slot-picker h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+#slot-picker p {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+
+/* หน้าต่างทำอาหาร */
+#cook-window {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(92 48 76 / 40%);
+  pointer-events: auto;
+}
+
+#cook-window[hidden] {
+  display: none;
+}
+
+.cook-panel {
+  position: relative;
+  display: flex;
+  width: min(560px, calc(100vw - 24px));
+  height: min(calc(var(--px) * 230), calc(100% - 12px));
+  flex-direction: column;
+  gap: 4px;
+  padding: calc(var(--px) * 9);
+  border: calc(var(--px) * 2) solid transparent;
+  border-image: url('/assets/ui/phone/phone_frame.png') 13 fill / calc(var(--px) * 13) stretch;
+}
+
+.cook-panel > .bag-tabs {
+  flex: none;
+  padding-right: 52px;
+}
+
+#cook-close {
+  position: absolute;
+  top: calc(var(--px) * 8);
+  right: calc(var(--px) * 9);
+}
+
+.cook-body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  overflow-y: auto;
+  touch-action: pan-y;
+}
+
+.cook-row {
+  display: flex;
+  min-height: 44px;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 3px 8px;
+  border: calc(var(--px) * 1) solid transparent;
+  border-image: url('/assets/ui/phone_v3/note_card_9slice.png') 6 fill / calc(var(--px) * 6) stretch;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cook-row:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.cook-row__text {
+  display: grid;
+  font-size: 13px;
+}
+
+.cook-row__text small,
+.cook-row__time {
+  font-size: 11px;
+}
+
+.cook-row__time {
+  flex: none;
+}
+
+.cook-empty,
+.cook-mix__tray {
+  margin: 4px 0;
+  font-size: 13px;
+}
+
+.cook-mix__tray {
+  font-weight: 700;
+}
+
+.cook-mix__actions {
+  display: flex;
+  flex: none;
+  gap: 4px;
+}
+
+.cook-mix__items {
+  display: grid;
+  flex: none;
+  grid-template-columns: repeat(auto-fill, max(44px, calc(var(--px) * 36)));
+}
+
+.bag-slot {
+  overflow: hidden;
+}
+
+.item-missing {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid #5c304c;
+  color: #5c304c;
+  font-size: 9px;
+  font-style: normal;
+  line-height: 1.05;
+  text-align: center;
+}
+
+/* สมุดสูตรเก่า กระดาษครีม */
+#recipe-book {
+  min-height: 100%;
+  padding: 6px;
+  background: #fbf1dc;
+}
+
+.book-list {
+  display: grid;
+  gap: 4px;
+}
+
+.book-entry {
+  position: relative;
+  display: grid;
+  padding: 4px 6px;
+  border-bottom: 1px dashed #c9a97a;
+  font-size: 13px;
+}
+
+.book-entry small,
+.book-note {
+  font-size: 11px;
+}
+
+.book-entry.is-locked {
+  color: #8d7a66;
+}
+
+.book-stamp {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  color: #d9608a;
+  font-weight: 700;
+}
+
+.book-note {
+  color: #6b8f4e;
+}

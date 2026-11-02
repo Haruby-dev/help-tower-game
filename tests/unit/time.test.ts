@@ -16,6 +16,8 @@ describe('clock', () => {
       wallet: { coins: 0, stars: 0, log: [], daily: [] },
       farm: newWorld().farm,
       bag: newWorld().bag,
+      cooking: { slot: null },
+      recipes: newWorld().recipes,
       cosmetics: defaultCosmetics(),
     });
   });

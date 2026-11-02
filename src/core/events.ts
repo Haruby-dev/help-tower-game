@@ -20,7 +20,8 @@ export interface GameEvents {
   'dig-requested': { plot: number; crop: string };
   'dig-confirmed': number;
   /** key ของบทพูดตัวเอกใน lines.json */
-  'player-says': 'bagFull';
+  'player-says': 'bagFull' | 'mysteryFood';
+  'cook-open': undefined;
 }
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

@@ -111,5 +111,75 @@
       "produce_garlic": 2,
       "produce_rice": 2
     }
+  },
+  "cooking": {
+    "reachPx": 60,
+    "twoStarHappiness": 70,
+    "rawFullness": 5,
+    "ranks": {
+      "F": {
+        "minutes": 20,
+        "fullness": 15,
+        "equipment": "campfire"
+      },
+      "E": {
+        "minutes": 25,
+        "fullness": 20,
+        "equipment": "campfire"
+      },
+      "D": {
+        "minutes": 30,
+        "fullness": 25,
+        "equipment": "pot_pan"
+      },
+      "C": {
+        "minutes": 35,
+        "fullness": 30,
+        "equipment": "pot_pan"
+      },
+      "B": {
+        "minutes": 40,
+        "fullness": 35,
+        "equipment": "oven_mortar"
+      },
+      "A": {
+        "minutes": 45,
+        "fullness": 40,
+        "equipment": "oven_mortar"
+      },
+      "S": {
+        "minutes": 50,
+        "fullness": 50,
+        "equipment": "magic_kitchen"
+      },
+      "SS": {
+        "minutes": 55,
+        "fullness": 60,
+        "equipment": "magic_kitchen"
+      },
+      "SSS": {
+        "minutes": 60,
+        "fullness": 80,
+        "equipment": "star_stove"
+      }
+    },
+    "drink": {
+      "minutes": 10,
+      "fullness": 10
+    },
+    "mystery": {
+      "minutes": 20,
+      "fullness": 5,
+      "happinessPenalty": 5
+    },
+    "starterBag": {
+      "ing_egg": 2,
+      "ing_pork": 1,
+      "ing_salt": 2,
+      "ing_sugar": 2,
+      "ing_fish_sauce": 2,
+      "ing_milk": 1,
+      "ing_honey": 1
+    }
   }
 }

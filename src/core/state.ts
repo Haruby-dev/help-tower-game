@@ -69,6 +69,21 @@ export interface BagStack {
   count: number;
 }
 
+export interface CookingSlot {
+  recipe: string;
+  stars: number;
+  minutesLeft: number;
+}
+
+export interface Cooking {
+  slot: CookingSlot | null;
+}
+
+export interface RecipeBook {
+  known: string[];
+  bestStars: Record<string, number>;
+}
+
 export type Tool = 'hoe' | 'can' | 'sickle' | 'seeds';
 
 /** ความจริงของเกมที่อยู่ในเซฟ */
@@ -82,6 +97,8 @@ export interface World {
   wallet: Wallet;
   farm: Farm;
   bag: BagStack[];
+  cooking: Cooking;
+  recipes: RecipeBook;
   cosmetics: Cosmetics;
 }
 

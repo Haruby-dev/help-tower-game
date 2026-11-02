@@ -4,6 +4,7 @@ import { t, type TextKey } from '../core/i18n';
 import { createRng } from '../core/rng';
 import { gameState, type BagStack } from '../core/state';
 import balance from '../data/balance.json';
+import { eatItem, fullnessOf, isDish, isIngredient, parseDish, recipes } from '../systems/cooking';
 import { convertToSeeds, crops, cropOfItem, isSeed } from '../systems/farm';
 import { artUrl } from './pixelArt';
 
@@ -21,6 +22,13 @@ const TABS: { id: BagTab; label: TextKey }[] = [
 const isProduce = (item: string): boolean => item.startsWith('produce_');
 const isKnownCrop = (item: string): boolean => crops[cropOfItem(item)] !== undefined;
 
+const STAR = '★';
+const flavourKey = (item: string): TextKey => {
+  if (isSeed(item)) return 'bag.flavour_seed';
+  if (isDish(item)) return 'bag.flavour_dish';
+  return isIngredient(item) ? 'bag.flavour_ingredient' : 'bag.flavour_produce';
+};
+
 const inTab = (item: string, tab: BagTab): boolean => {
   if (tab === 'seeds') return isSeed(item);
   if (tab === 'produce') return isProduce(item);
@@ -30,6 +38,11 @@ const inTab = (item: string, tab: BagTab): boolean => {
 
 /** ของที่ยังไม่รู้จักแสดงเป็นรหัสแทน กระเป๋าจะได้เปิดได้เสมอ */
 export const itemName = (item: string): string => {
+  if (isDish(item)) {
+    const key = `dish.${parseDish(item).recipe}.name` as TextKey;
+    return t(key) ?? item;
+  }
+  if (isIngredient(item)) return t(`ingredient.${item.slice('ing_'.length)}.name` as TextKey) ?? item;
   if (!isKnownCrop(item)) return item;
   const crop = t(`crop.${cropOfItem(item)}.name` as TextKey);
   return isSeed(item) ? `${t('bag.seed_prefix')}${crop}` : crop;
@@ -37,6 +50,7 @@ export const itemName = (item: string): string => {
 
 /** รูปในช่องกระเป๋าไม่มีประกาย รูปในการ์ดรายละเอียดมีประกาย */
 function artFor(item: string, sparkly: boolean): string | null {
+  if (isDish(item)) return recipes[parseDish(item).recipe]?.icon ?? null;
   if (!isKnownCrop(item)) return null;
   const crop = cropOfItem(item);
   if (isSeed(item)) return `seed_${crop}`;
@@ -50,6 +64,7 @@ export function itemImage(item: string, sparkly: boolean, scale = 1): HTMLElemen
   if (!id || entry?.type !== 'local') {
     const box = document.createElement('i');
     box.className = 'item-missing';
+    box.textContent = itemName(item);
     return box;
   }
   const image = document.createElement('img');
@@ -112,12 +127,27 @@ export function createInventoryPage(): HTMLElement {
     }
     const item = picked;
     const count = bag.filter((stack) => stack.item === item).reduce((sum, stack) => sum + stack.count, 0);
-    const name = Object.assign(document.createElement('b'), { textContent: itemName(item) });
+    const stars = isDish(item) ? ` ${STAR.repeat(parseDish(item).stars)}` : '';
+    const name = Object.assign(document.createElement('b'), { textContent: `${itemName(item)}${stars}` });
     const amount = Object.assign(document.createElement('span'), { className: 'bag-detail__count', textContent: `×${count}` });
     const flavour = Object.assign(document.createElement('small'), {
-      textContent: t(isSeed(item) ? 'bag.flavour_seed' : 'bag.flavour_produce'),
+      textContent: t(flavourKey(item)),
     });
-    detail.append(itemImage(item, true, 2), name, amount, flavour);
+    // ภาพอาหารผืน 48px ใหญ่พออยู่แล้ว จึงไม่ขยาย 2 เท่า
+    detail.append(itemImage(item, true, isDish(item) ? 1 : 2), name, amount, flavour);
+    if (fullnessOf(item) !== null) {
+      const eat = document.createElement('button');
+      eat.id = 'bag-eat';
+      eat.type = 'button';
+      eat.className = 'phone-tool';
+      eat.textContent = t('bag.eat');
+      eat.addEventListener('click', () => {
+        const next = eatItem(gameState.world, item);
+        if (next) gameState.setWorld(next);
+        render();
+      });
+      detail.append(eat);
+    }
     if (!isProduce(item)) return;
     const convert = document.createElement('button');
     convert.id = 'bag-convert';

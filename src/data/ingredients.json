@@ -1,0 +1,53 @@
+{
+  "egg": {
+    "value": 10
+  },
+  "pork": {
+    "value": 15
+  },
+  "fish_F": {
+    "value": 8
+  },
+  "milk": {
+    "value": 12
+  },
+  "honey": {
+    "value": 12
+  },
+  "salt": {
+    "value": 1
+  },
+  "sugar": {
+    "value": 1
+  },
+  "fish_sauce": {
+    "value": 1
+  },
+  "honey_apple": {
+    "value": 20
+  },
+  "golden_wheat": {
+    "value": 18
+  },
+  "cream": {
+    "value": 18
+  },
+  "butter": {
+    "value": 20
+  },
+  "cocoa": {
+    "value": 15
+  },
+  "cherry": {
+    "value": 10
+  },
+  "slime_jelly_scrap": {
+    "value": 5
+  },
+  "fizzy_water": {
+    "value": 10
+  },
+  "vanilla": {
+    "value": 15
+  }
+}

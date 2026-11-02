@@ -5,6 +5,8 @@ import type { z } from 'zod';
 import {
   balanceSchema,
   cropsSchema,
+  ingredientsSchema,
+  recipesSchema,
   displaySchema,
   linesSchema,
   registrySchema,
@@ -42,6 +44,8 @@ export function checkProject(): string[] {
   checkSchema('src/data/balance.json', balanceSchema, problems);
   checkSchema('src/data/lines.json', linesSchema, problems);
   checkSchema('src/data/crops.json', cropsSchema, problems);
+  checkSchema('src/data/recipes.json', recipesSchema, problems);
+  checkSchema('src/data/ingredients.json', ingredientsSchema, problems);
   checkSchema('src/data/sprite-meta.json', spriteMetaSchema, problems);
   checkSchema('src/i18n/th.json', translationsSchema, problems);
   checkSchema('assets-src/registry.json', registrySchema, problems);
@@ -71,6 +75,20 @@ export function checkProject(): string[] {
     }
     if ((crop.regrowDays === null) !== (crop.regrowYield === null)) problems.push(`src/data/crops.json: ${id} regrow numbers do not match`);
     if (crop.regrowDays !== null && !registry[`withered_${id}`]) problems.push(`assets-src/registry.json: crop ${id} has no withered image`);
+  }
+
+  const cropIds = cropsSchema.parse(readJson('src/data/crops.json'));
+  const ingredientIds = ingredientsSchema.parse(readJson('src/data/ingredients.json'));
+  for (const id of Object.keys(ingredientIds)) {
+    if (!translations[`ingredient.${id}.name`]) problems.push(`src/i18n/th.json: ingredient ${id} has no name`);
+  }
+  for (const [id, recipe] of Object.entries(recipesSchema.parse(readJson('src/data/recipes.json')))) {
+    if (!translations[`dish.${id}.name`]) problems.push(`src/i18n/th.json: dish ${id} has no name`);
+    if (recipe.icon && !registry[recipe.icon]) problems.push(`src/data/recipes.json: ${id} icon ${recipe.icon} is not registered`);
+    for (const item of Object.keys(recipe.ingredients)) {
+      const known = item.startsWith('produce_') ? cropIds[item.slice('produce_'.length)] : ingredientIds[item.slice('ing_'.length)];
+      if (!known) problems.push(`src/data/recipes.json: ${id} uses unknown ${item}`);
+    }
   }
 
   for (const file of listCodeFiles(join(projectRoot, 'src'))) {

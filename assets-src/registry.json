@@ -5243,5 +5243,125 @@
     "file": "ui/bag/tab_active.png",
     "jade_tone": false,
     "lazy": true
+  },
+  "food_slime24": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_slime24.png",
+    "file": "food/desserts/food_slime24.png",
+    "jade_tone": false
+  },
+  "food_slime2": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_slime2.png",
+    "file": "food/desserts/food_slime2.png",
+    "jade_tone": false
+  },
+  "food_slime9": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_slime9.png",
+    "file": "food/desserts/food_slime9.png",
+    "jade_tone": false
+  },
+  "food_slime8": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_slime8.png",
+    "file": "food/desserts/food_slime8.png",
+    "jade_tone": false
+  },
+  "food_slime1": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_slime1.png",
+    "file": "food/desserts/food_slime1.png",
+    "jade_tone": false
+  },
+  "food_slime12": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_slime12.png",
+    "file": "food/desserts/food_slime12.png",
+    "jade_tone": false
+  },
+  "food_bee22": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_bee22.png",
+    "file": "food/desserts/food_bee22.png",
+    "jade_tone": false
+  },
+  "food_bee7": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_bee7.png",
+    "file": "food/desserts/food_bee7.png",
+    "jade_tone": false
+  },
+  "food_bee12": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_bee12.png",
+    "file": "food/desserts/food_bee12.png",
+    "jade_tone": false
+  },
+  "food_bee6": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_bee6.png",
+    "file": "food/desserts/food_bee6.png",
+    "jade_tone": false
+  },
+  "food_bee13": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_bee13.png",
+    "file": "food/desserts/food_bee13.png",
+    "jade_tone": false
+  },
+  "food_bee17": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_bee17.png",
+    "file": "food/desserts/food_bee17.png",
+    "jade_tone": false
+  },
+  "food_bee14": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_bee14.png",
+    "file": "food/desserts/food_bee14.png",
+    "jade_tone": false
+  },
+  "food_slime23": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_slime23.png",
+    "file": "food/desserts/food_slime23.png",
+    "jade_tone": false
+  },
+  "food_slime22": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/desserts/food_slime22.png",
+    "file": "food/desserts/food_slime22.png",
+    "jade_tone": false
   }
 }
