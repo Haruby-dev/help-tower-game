@@ -40,7 +40,8 @@ function growUntilReady(start: World): World {
 
 describe('crop numbers', () => {
   it('match the GDD growth table', () => {
-    expect(Object.keys(crops)).toHaveLength(14);
+    expect(Object.keys(crops)).toHaveLength(15);
+    expect(crops.blueberry).toMatchObject({ growDays: 7, regrowDays: 3, regrowTimes: 3, sellPrice: 15, seedPrice: 50 });
     expect(crops.scallion).toMatchObject({ growDays: 3, regrowDays: null });
     expect(crops.chili).toMatchObject({ growDays: 5, regrowDays: 3 });
     expect(crops.pumpkin).toMatchObject({ growDays: 10, regrowDays: null });

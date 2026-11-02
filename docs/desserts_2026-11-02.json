@@ -1,0 +1,230 @@
+{
+ "new_ingredient_values": {
+  "cream": 18,
+  "butter": 20,
+  "cocoa": 15,
+  "cherry": 10,
+  "fizzy_water": 10,
+  "vanilla": 15,
+  "blueberry": 15,
+  "slime_jelly_scrap": 5
+ },
+ "rank_base_placeholder": {
+  "C": 200,
+  "B": 350
+ },
+ "desserts": [
+  {
+   "id": "whip_cream_mumu",
+   "th": "วิปครีมมูมู่",
+   "icon": "food_slime24.png",
+   "rank": "F",
+   "ingredients": {
+    "cream": 1,
+    "sugar": 1
+   },
+   "ingredient_value": 19,
+   "price": 40
+  },
+  {
+   "id": "strawberry_jelly",
+   "th": "เจลลี่สตรอว์เบอร์รี",
+   "icon": "food_slime2.png",
+   "rank": "F",
+   "ingredients": {
+    "strawberry": 1,
+    "sugar": 1,
+    "slime_jelly_scrap": 1
+   },
+   "ingredient_value": 24,
+   "price": 50
+  },
+  {
+   "id": "caramel_pudding",
+   "th": "พุดดิ้งคาราเมล",
+   "icon": "food_slime9.png",
+   "rank": "F",
+   "ingredients": {
+    "egg": 1,
+    "milk": 1,
+    "sugar": 2
+   },
+   "ingredient_value": 24,
+   "price": 50
+  },
+  {
+   "id": "berry_pudding",
+   "th": "พุดดิ้งเบอร์รี",
+   "icon": "food_slime8.png",
+   "rank": "E",
+   "ingredients": {
+    "egg": 1,
+    "milk": 1,
+    "blueberry": 2,
+    "sugar": 1
+   },
+   "ingredient_value": 53,
+   "price": 105
+  },
+  {
+   "id": "soda_jelly_dessert",
+   "th": "เจลลี่โซดา",
+   "icon": "food_slime1.png",
+   "rank": "E",
+   "ingredients": {
+    "fizzy_water": 1,
+    "cherry": 1,
+    "slime_jelly_scrap": 1
+   },
+   "ingredient_value": 25,
+   "price": 60
+  },
+  {
+   "id": "soda_ice_cream",
+   "th": "ไอศกรีมโซดา",
+   "icon": "food_slime12.png",
+   "rank": "E",
+   "ingredients": {
+    "milk": 1,
+    "cream": 1,
+    "fizzy_water": 1,
+    "sugar": 1
+   },
+   "ingredient_value": 41,
+   "price": 80
+  },
+  {
+   "id": "honey_macaron",
+   "th": "มาการองน้ำผึ้ง",
+   "icon": "food_bee22.png",
+   "rank": "E",
+   "ingredients": {
+    "golden_wheat": 1,
+    "egg": 1,
+    "honey": 1
+   },
+   "ingredient_value": 40,
+   "price": 80
+  },
+  {
+   "id": "cherry_cream_macaron",
+   "th": "มาการองครีมเชอร์รี",
+   "icon": "food_bee7.png",
+   "rank": "D",
+   "ingredients": {
+    "golden_wheat": 1,
+    "egg": 1,
+    "cream": 1,
+    "cherry": 1
+   },
+   "ingredient_value": 56,
+   "price": 120
+  },
+  {
+   "id": "blueberry_macaron",
+   "th": "มาการองบลูเบอร์รี",
+   "icon": "food_bee12.png",
+   "rank": "D",
+   "ingredients": {
+    "golden_wheat": 1,
+    "egg": 1,
+    "blueberry": 2,
+    "sugar": 1
+   },
+   "ingredient_value": 59,
+   "price": 120
+  },
+  {
+   "id": "cream_puff",
+   "th": "ครีมพัฟ",
+   "icon": "food_bee6.png",
+   "rank": "D",
+   "ingredients": {
+    "golden_wheat": 1,
+    "egg": 2,
+    "cream": 1,
+    "butter": 1
+   },
+   "ingredient_value": 76,
+   "price": 150
+  },
+  {
+   "id": "choco_donut",
+   "th": "โดนัทช็อกโกแลต",
+   "icon": "food_bee13.png",
+   "rank": "D",
+   "ingredients": {
+    "golden_wheat": 2,
+    "egg": 1,
+    "cocoa": 1,
+    "sugar": 1
+   },
+   "ingredient_value": 62,
+   "price": 125
+  },
+  {
+   "id": "choco_macaron",
+   "th": "มาการองช็อกโกแลต",
+   "icon": "food_bee17.png",
+   "rank": "C",
+   "ingredients": {
+    "golden_wheat": 1,
+    "egg": 1,
+    "cocoa": 2,
+    "cream": 1
+   },
+   "ingredient_value": 76,
+   "price": 200
+  },
+  {
+   "id": "swiss_roll",
+   "th": "สวิสโรล",
+   "icon": "food_bee14.png",
+   "rank": "C",
+   "ingredients": {
+    "golden_wheat": 2,
+    "egg": 2,
+    "cream": 2,
+    "strawberry": 1
+   },
+   "ingredient_value": 110,
+   "price": 220
+  },
+  {
+   "id": "strawberry_parfait",
+   "th": "พาร์เฟต์สตรอว์เบอร์รี",
+   "icon": "food_slime23.png",
+   "rank": "B",
+   "ingredients": {
+    "strawberry": 3,
+    "cream": 2,
+    "milk": 1,
+    "cherry": 1,
+    "golden_wheat": 1
+   },
+   "ingredient_value": 130,
+   "price": 350
+  },
+  {
+   "id": "choco_parfait",
+   "th": "พาร์เฟต์ช็อกโกแลต",
+   "icon": "food_slime22.png",
+   "rank": "B",
+   "ingredients": {
+    "cocoa": 2,
+    "cream": 2,
+    "milk": 1,
+    "cherry": 1,
+    "honey": 1
+   },
+   "ingredient_value": 100,
+   "price": 350
+  }
+ ],
+ "sources": {
+  "cocoa": "shop (for now)",
+  "cherry": "shop (for now)",
+  "slime_jelly_scrap": "gate drop (slime floors), not sold in the shop",
+  "blueberry": "farm crop (shop seed bag 50), see economy_balance"
+ }
+}

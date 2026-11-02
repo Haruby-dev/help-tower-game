@@ -189,6 +189,7 @@ class GameState {
 
   setSelectedSeed(seed: string | null): void {
     this.currentSeed = seed;
+    eventBus.emit('tool-changed', this.currentTool);
   }
 
   /** ปุ่มวิ่งบนจอสัมผัส กดค้างแล้ววิ่ง */

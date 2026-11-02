@@ -2090,5 +2090,195 @@
     "footY": {
       "default": 40
     }
+  },
+  "crop_blueberry": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_blueberry": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "seed_blueberry": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "withered_blueberry": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_bag_scallion": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "icon_bag_chili": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "icon_bag_basil": {
+    "footY": {
+      "default": 33
+    }
+  },
+  "icon_bag_tomato": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "icon_bag_garlic": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "icon_bag_rice": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "icon_bag_carrot": {
+    "footY": {
+      "default": 34
+    }
+  },
+  "icon_bag_cabbage": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "icon_bag_cucumber": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "icon_bag_corn": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "icon_bag_potato": {
+    "footY": {
+      "default": 20
+    }
+  },
+  "icon_bag_pumpkin": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "icon_bag_soybean": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "icon_bag_strawberry": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "icon_bag_blueberry": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "soil_tilled": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "soil_tilled_wet": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "soil_damp": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "plot_cursor": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "fx_dirt": {
+    "footY": {
+      "default": 4
+    }
+  },
+  "fx_sparkle": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "fx_zzz": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "fx_water": {
+    "footY": {
+      "default": 5
+    }
+  },
+  "fx_pop_pill": {
+    "footY": {
+      "default": 11
+    }
+  },
+  "ui_tool_tray": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_tool_slot": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_tool_slot_selected": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_key_badge": {
+    "footY": {
+      "default": 9
+    }
+  },
+  "ui_count_pill": {
+    "footY": {
+      "default": 10
+    }
+  },
+  "ui_bag_slot": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_bag_slot_selected": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_bag_slot_empty": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_tab": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_tab_active": {
+    "footY": {
+      "default": 12
+    }
   }
 }

@@ -1,88 +1,65 @@
 import Phaser from 'phaser';
 import type { PlotState } from '../core/state';
-import display from '../data/display.json';
 import { isAsleep, isReady, isWithered, stageOf } from '../systems/farm';
 
-const TILLED_KEY = 'plot_tilled';
-const FURROW_COLOR = 'rgba(70, 40, 28, 0.35)';
-const FURROW_ROWS = [6, 14, 22];
-const FURROW_HEIGHT = 3;
-const FURROW_MARGIN = 3;
-const SLEEP_FONT_PX = 8;
-const SLEEP_LIFT = 26;
-const SLEEP_DRIFT = 3;
-const SLEEP_MS = 1100;
+const SLEEP_LIFT = 34;
 const READY_BOUNCE_MS = 420;
 const READY_BOUNCE_PX = 1;
+const READY_SPARKLE_LIFT = 26;
 const POP_MS = 260;
 const POP_LIFT_PX = 6;
 const WAKE_STRETCH = 1.3;
 const WAKE_MS = 320;
 
-function ensureTilledTexture(scene: Phaser.Scene, size: number): void {
-  if (scene.textures.exists(TILLED_KEY)) return;
-  const canvas = scene.textures.createCanvas(TILLED_KEY, size, size)!;
-  const context = canvas.getContext();
-  context.fillStyle = FURROW_COLOR;
-  for (const y of FURROW_ROWS) context.fillRect(FURROW_MARGIN, y, size - FURROW_MARGIN * 2, FURROW_HEIGHT);
-  canvas.refresh();
+/** แปลงว่างเห็นแปลงพรวน ต้นที่รดน้ำแล้วมีรอยดินชื้นใต้ต้น ต้นอื่นเห็นแค่กองดินของตัวเอง */
+function bedTexture(state: PlotState): string | null {
+  if (state.crop) return state.watered ? 'soil_damp' : null;
+  if (!state.tilled) return null;
+  return state.watered ? 'soil_tilled_wet' : 'soil_tilled';
 }
-
-const wetTint = Phaser.Display.Color.GetColor(
-  Math.round(display.farm.wetSoilTint[0]! * 255),
-  Math.round(display.farm.wetSoilTint[1]! * 255),
-  Math.round(display.farm.wetSoilTint[2]! * 255),
-);
-const DRY_TINT = 0xffffff;
 
 /** ภาพของแปลงหนึ่งช่อง อ่านจากความจริงใน GameState อย่างเดียว */
 export class Plot {
   readonly centerX: number;
   readonly centerY: number;
   private readonly bottom: number;
-  private readonly furrows: Phaser.GameObjects.Image;
+  private readonly bed: Phaser.GameObjects.Image;
   private readonly plant: Phaser.GameObjects.Sprite;
-  private readonly sleepMark: Phaser.GameObjects.Text;
+  private readonly sleepMark: Phaser.GameObjects.Sprite;
+  private readonly readyMark: Phaser.GameObjects.Sprite;
   private bounce: Phaser.Tweens.Tween | null = null;
   private shown: PlotState | null = null;
 
   constructor(
     private readonly scene: Phaser.Scene,
-    private readonly tile: Phaser.Tilemaps.Tile,
+    tile: Phaser.Tilemaps.Tile,
     depth: number,
   ) {
-    const size = tile.width;
     this.centerX = tile.getCenterX();
     this.centerY = tile.getCenterY();
     this.bottom = tile.getBottom();
-    ensureTilledTexture(scene, size);
-    this.furrows = scene.add.image(this.centerX, this.centerY, TILLED_KEY).setDepth(depth).setVisible(false);
+    this.bed = scene.add.image(this.centerX, this.centerY, 'soil_tilled').setDepth(depth).setVisible(false);
     this.plant = scene.add.sprite(this.centerX, this.bottom, '__DEFAULT').setOrigin(0.5, 1).setDepth(this.bottom).setVisible(false);
     this.sleepMark = scene.add
-      .text(this.centerX, this.bottom - SLEEP_LIFT, 'Zzz', {
-        fontFamily: 'Mali',
-        fontSize: `${SLEEP_FONT_PX}px`,
-        fontStyle: 'bold',
-        color: '#ffffff',
-        stroke: '#5c304c',
-        strokeThickness: 2,
-      })
-      .setOrigin(0.5)
+      .sprite(this.centerX, this.bottom - SLEEP_LIFT, 'fx_zzz')
       .setDepth(this.bottom + 1)
-      .setVisible(false);
-    scene.tweens.add({ targets: this.sleepMark, y: this.sleepMark.y - SLEEP_DRIFT, duration: SLEEP_MS, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
-  }
-
-  get label(): Phaser.GameObjects.Text {
-    return this.sleepMark;
+      .setVisible(false)
+      .play('fx_zzz_loop');
+    this.readyMark = scene.add
+      .sprite(this.centerX, this.bottom - READY_SPARKLE_LIFT, 'fx_sparkle')
+      .setDepth(this.bottom + 1)
+      .setVisible(false)
+      .play('fx_sparkle_idle');
   }
 
   sync(state: PlotState): void {
     if (state === this.shown) return;
     this.shown = state;
-    this.furrows.setVisible(state.tilled);
-    this.tile.tint = state.watered ? wetTint : DRY_TINT;
+    const bed = bedTexture(state);
+    this.bed.setVisible(bed !== null);
+    if (bed) this.bed.setTexture(bed);
     this.sleepMark.setVisible(isAsleep(state));
+    this.readyMark.setVisible(isReady(state));
     if (state.crop && isWithered(state)) {
       this.plant.setTexture(`withered_${state.crop.id}`).setVisible(true);
     } else if (state.crop) {

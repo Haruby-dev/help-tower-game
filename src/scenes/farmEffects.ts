@@ -1,61 +1,71 @@
 import Phaser from 'phaser';
+import { createRng } from '../core/rng';
 
 const FX_DEPTH = 8500;
-const DIRT_COLORS = [0x7a4a2c, 0x9a6438, 0x5e3822];
-const DROP_COLOR = 0x8fd0f5;
-const SPARKLE_COLOR = 0xfff1a8;
+const POP_FONT_PX = 8;
+const POP_SLICE = 5;
+const POP_PADDING = 6;
+const POP_GAP = 2;
+const POP_MIN_HEIGHT = 16;
 
-/** เศษดินกระเด็นตอนตบดินและตอนพรวน เป็นจุดพิกเซลล้วน */
+/** การสุ่มผ่าน core/rng ตามกฎโปรเจกต์ */
+const rng = createRng(Date.now());
+const between = (min: number, max: number): number => Math.floor(rng.between(min, max + 1));
+
+/** เศษดินกระเด็นตอนตบดินและตอนพรวน */
 export function dirtPuff(scene: Phaser.Scene, x: number, y: number): void {
   for (let index = 0; index < 5; index += 1) {
-    const color = DIRT_COLORS[index % DIRT_COLORS.length]!;
-    const piece = scene.add.rectangle(x, y, 2, 2, color).setDepth(FX_DEPTH);
+    const clod = scene.add.image(x, y, 'fx_dirt', between(0, 3)).setDepth(FX_DEPTH);
     scene.tweens.add({
-      targets: piece,
-      x: x + Phaser.Math.Between(-10, 10),
-      y: y - Phaser.Math.Between(3, 11),
+      targets: clod,
+      x: x + between(-10, 10),
+      y: y - between(3, 11),
       alpha: 0,
       duration: 260,
       ease: 'Quad.easeOut',
-      onComplete: () => piece.destroy(),
+      onComplete: () => clod.destroy(),
     });
   }
 }
 
-/** หยดน้ำโค้งลงจากบัวไปที่แปลง */
+function splash(scene: Phaser.Scene, x: number, y: number): void {
+  const mark = scene.add.image(x, y, 'fx_water', 'splash_0').setDepth(FX_DEPTH);
+  scene.time.delayedCall(90, () => mark.setFrame('splash_1'));
+  scene.time.delayedCall(180, () => mark.destroy());
+}
+
+/** หยดน้ำโค้งลงจากบัวแล้วกระเซ็นบนดิน */
 export function waterDrops(scene: Phaser.Scene, fromX: number, fromY: number, toX: number, toY: number): void {
   for (let index = 0; index < 8; index += 1) {
-    const drop = scene.add.rectangle(fromX, fromY, 2, 2, DROP_COLOR).setDepth(FX_DEPTH);
+    const drop = scene.add.image(fromX, fromY, 'fx_water', 'drop').setDepth(FX_DEPTH);
+    const landX = toX + between(-9, 9);
+    const landY = toY + between(-5, 7);
     scene.tweens.add({
       targets: drop,
-      x: toX + Phaser.Math.Between(-9, 9),
-      y: toY + Phaser.Math.Between(-5, 7),
+      x: landX,
+      y: landY,
       delay: index * 55,
       duration: 300,
       ease: 'Quad.easeIn',
-      onComplete: () => drop.destroy(),
+      onComplete: () => {
+        drop.destroy();
+        splash(scene, landX, landY);
+      },
     });
   }
 }
 
 export function sparkle(scene: Phaser.Scene, x: number, y: number): void {
-  for (let index = 0; index < 4; index += 1) {
-    const dot = scene.add.rectangle(x, y, 2, 2, SPARKLE_COLOR).setDepth(FX_DEPTH);
-    scene.tweens.add({
-      targets: dot,
-      x: x + Phaser.Math.Between(-8, 8),
-      y: y + Phaser.Math.Between(-9, 4),
-      alpha: 0,
-      duration: 380,
-      onComplete: () => dot.destroy(),
-    });
-  }
+  const star = scene.add.sprite(x + between(-6, 6), y + between(-7, 3), 'fx_sparkle').setDepth(FX_DEPTH);
+  star.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => star.destroy());
+  star.play('fx_sparkle_once');
 }
 
 /** ผลผลิตลอยเป็นโค้งจากดินเข้ามือ พร้อมประกายตามทาง */
 export function harvestArc(scene: Phaser.Scene, icon: string, fromX: number, fromY: number, toX: number, toY: number, onDone: () => void): void {
   const image = scene.add.image(fromX, fromY, icon).setDepth(FX_DEPTH);
   const path = { progress: 0 };
+  let nextSparkle = 0;
   scene.tweens.add({
     targets: path,
     progress: 1,
@@ -64,7 +74,10 @@ export function harvestArc(scene: Phaser.Scene, icon: string, fromX: number, fro
     onUpdate: () => {
       const lift = Math.sin(path.progress * Math.PI) * 24;
       image.setPosition(Phaser.Math.Linear(fromX, toX, path.progress), Phaser.Math.Linear(fromY, toY, path.progress) - lift);
-      if (Math.random() < 0.3) sparkle(scene, image.x, image.y);
+      if (path.progress >= nextSparkle) {
+        sparkle(scene, image.x, image.y);
+        nextSparkle += 0.25;
+      }
     },
     onComplete: () => {
       image.destroy();
@@ -73,12 +86,19 @@ export function harvestArc(scene: Phaser.Scene, icon: string, fromX: number, fro
   });
 }
 
-/** ข้อความ +1 ลอยขึ้นแล้วจาง วาดที่ความละเอียดจริงของจอ */
-export function floatText(scene: Phaser.Scene, x: number, y: number, text: string, resolution: number): void {
+/** ป้าย "+1 ชื่อ" รูปอยู่ซ้าย ตัวหนังสืออยู่ในป้าย ลอยขึ้นแล้วจาง */
+export function popPill(scene: Phaser.Scene, x: number, y: number, icon: string, text: string, resolution: number): void {
   const label = scene.add
-    .text(x, y, text, { fontFamily: 'Mali', fontSize: '9px', fontStyle: 'bold', color: '#ffffff', stroke: '#5c304c', strokeThickness: 2 })
-    .setOrigin(0.5, 1)
-    .setDepth(FX_DEPTH + 1)
+    .text(0, 0, text, { fontFamily: 'Mali', fontSize: `${POP_FONT_PX}px`, fontStyle: 'bold', color: '#5c304c' })
+    .setOrigin(0, 0.5)
     .setResolution(resolution);
-  scene.tweens.add({ targets: label, y: y - 14, alpha: 0, delay: 350, duration: 650, onComplete: () => label.destroy() });
+  const picture = scene.add.image(0, 0, icon).setOrigin(0, 0.5);
+  const width = Math.ceil(picture.width + POP_GAP + label.width + POP_PADDING * 2);
+  const height = Math.max(POP_MIN_HEIGHT, Math.ceil(picture.height + 2));
+  const left = -Math.floor(width / 2);
+  picture.setX(left + POP_PADDING);
+  label.setX(left + POP_PADDING + picture.width + POP_GAP);
+  const pill = scene.add.nineslice(0, 0, 'fx_pop_pill', undefined, width, height, POP_SLICE, POP_SLICE, POP_SLICE, POP_SLICE);
+  const group = scene.add.container(x, y, [pill, picture, label]).setDepth(FX_DEPTH + 1);
+  scene.tweens.add({ targets: group, y: y - 14, alpha: 0, delay: 350, duration: 650, onComplete: () => group.destroy() });
 }

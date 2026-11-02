@@ -124,5 +124,13 @@
   "dig.question": "ขุด",
   "dig.question_end": "ทิ้งเลยไหม?",
   "dig.yes": "ขุดเลย",
-  "dig.no": "ไม่ขุด"
+  "dig.no": "ไม่ขุด",
+  "crop.blueberry.name": "บลูเบอร์รี",
+  "bag.tab_all": "ทั้งหมด",
+  "bag.tab_seeds": "เมล็ด",
+  "bag.tab_produce": "ผัก",
+  "bag.tab_goods": "ของ",
+  "bag.sell_tray": "ใส่ถาดขาย",
+  "bag.flavour_produce": "ผักจากหอคอย ฉ่ำวิ้ง ๆ",
+  "bag.flavour_seed": "ปลูกได้ 1 ช่อง"
 }

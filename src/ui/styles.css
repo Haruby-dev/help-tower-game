@@ -1800,3 +1800,191 @@ canvas {
 #phone[data-fold='unfolded'] .phone-extra {
   border-left: 1px solid #e6cfe6;
 }
+
+/* แถบเครื่องมือชุดจริง */
+#toolbar {
+  gap: calc(var(--px) * 3);
+  padding: calc(var(--px) * 5) calc(var(--px) * 6);
+  border: calc(var(--px) * 1) solid transparent;
+  border-image: url('/assets/ui/toolbar/tool_tray.png') 6 fill / calc(var(--px) * 6) stretch;
+}
+
+.tool-slot {
+  border-image: url('/assets/ui/toolbar/tool_slot.png') 5 fill / calc(var(--px) * 5) stretch;
+}
+
+.tool-slot.is-selected {
+  border-image-source: url('/assets/ui/toolbar/tool_slot_selected.png');
+  transform: translateY(calc(var(--px) * -3));
+}
+
+.tool-slot__key {
+  position: absolute;
+  top: calc(var(--px) * -3);
+  left: calc(var(--px) * -3);
+  display: grid;
+  place-items: center;
+  width: calc(var(--px) * 9);
+  height: calc(var(--px) * 9);
+  background: url('/assets/ui/toolbar/key_badge.png') 0 0 / 100% 100%;
+  image-rendering: pixelated;
+  font-size: calc(var(--px) * 6);
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.tool-slot__count {
+  position: absolute;
+  right: calc(var(--px) * -2);
+  bottom: calc(var(--px) * -2);
+  min-width: calc(var(--px) * 14);
+  padding: 0 calc(var(--px) * 2);
+  border: calc(var(--px) * 1) solid transparent;
+  border-image: url('/assets/ui/toolbar/count_pill.png') 4 fill / calc(var(--px) * 4) stretch;
+  font-size: max(10px, calc(var(--px) * 6));
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  pointer-events: none;
+}
+
+.tool-slot__count[hidden] {
+  display: none;
+}
+
+/* กระเป๋าใช้ทั้งสองหน้าของเครื่องที่กาง */
+#phone[data-fold='unfolded'][data-app='inventory'] .phone-main {
+  visibility: hidden;
+}
+
+#phone[data-fold='unfolded'][data-app='inventory'] .phone-content {
+  position: relative;
+  grid-column: 1 / 3;
+  padding: 0;
+  border: 0;
+  border-image: none;
+  background: none;
+}
+
+#phone[data-app='inventory'] #phone-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.bag-page {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--px) * 2);
+}
+
+.bag-header {
+  display: flex;
+  min-height: max(30px, calc(var(--px) * 18));
+  align-items: center;
+  gap: calc(var(--px) * 4);
+  padding-left: max(50px, calc(var(--px) * 34));
+}
+
+.bag-header h2 {
+  margin: 0;
+  font-size: max(13px, calc(var(--px) * 9));
+}
+
+.bag-tabs {
+  display: flex;
+  flex: 1;
+  gap: calc(var(--px) * 2);
+}
+
+.bag-tab {
+  min-width: 44px;
+  min-height: max(30px, calc(var(--px) * 16));
+  padding: 0 calc(var(--px) * 3);
+  border: calc(var(--px) * 1) solid transparent;
+  border-image: url('/assets/ui/bag/tab.png') 5 fill / calc(var(--px) * 5) stretch;
+  background: none;
+  font-size: max(11px, calc(var(--px) * 7));
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bag-tab.is-active {
+  border-image-source: url('/assets/ui/bag/tab_active.png');
+}
+
+#bag-used {
+  padding: 0 calc(var(--px) * 3);
+  font-size: max(11px, calc(var(--px) * 7));
+}
+
+.bag-body {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--px) * 3);
+}
+
+.bag-grid {
+  display: grid;
+  flex: none;
+  gap: 0;
+  grid-template-columns: repeat(6, max(44px, calc(var(--px) * 36)));
+}
+
+.bag-slot {
+  width: max(44px, calc(var(--px) * 36));
+  height: max(44px, calc(var(--px) * 36));
+  aspect-ratio: auto;
+  border-image: url('/assets/ui/bag/bag_slot.png') 4 fill / calc(var(--px) * 4) stretch;
+}
+
+.bag-slot.is-selected {
+  border-image-source: url('/assets/ui/bag/bag_slot_selected.png');
+}
+
+.bag-slot:disabled {
+  border-image-source: url('/assets/ui/bag/bag_slot_empty.png');
+  opacity: 1;
+}
+
+.bag-slot b {
+  right: calc(var(--px) * 1);
+  bottom: 0;
+  text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff, 1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+}
+
+.bag-detail {
+  display: flex;
+  min-width: 0;
+  min-height: calc(var(--px) * 120);
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: calc(var(--px) * 2);
+  padding: calc(var(--px) * 6) calc(var(--px) * 3);
+  border: calc(var(--px) * 1) solid transparent;
+  border-image: url('/assets/ui/phone_v3/note_card_9slice.png') 6 fill / calc(var(--px) * 6) stretch;
+  text-align: center;
+}
+
+.bag-detail .phone-tool {
+  width: 100%;
+}
+
+.bag-detail .phone-tool:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.bag-detail__count {
+  color: #d9608a;
+}
+
+.item-missing {
+  display: block;
+  width: calc(var(--px) * 24);
+  height: calc(var(--px) * 24);
+  background: #c9b8d8;
+}

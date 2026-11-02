@@ -4894,5 +4894,353 @@
     "source": "public/assets/farm/crops/withered/withered_strawberry.png",
     "file": "farm/crops/withered/withered_strawberry.png",
     "jade_tone": false
+  },
+  "crop_blueberry": {
+    "type": "local",
+    "width": 160,
+    "height": 40,
+    "source": "public/assets/farm/crops/blueberry_stages.png",
+    "file": "farm/crops/blueberry_stages.png",
+    "jade_tone": false,
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 5,
+    "note": "cells 0-3 are the stages, cell 4 is the harvest icon"
+  },
+  "icon_blueberry": {
+    "type": "local",
+    "width": 23,
+    "height": 29,
+    "source": "public/assets/farm/icons/blueberry.png",
+    "file": "farm/icons/blueberry.png",
+    "jade_tone": false,
+    "name_th": "บลูเบอร์รี"
+  },
+  "seed_blueberry": {
+    "type": "local",
+    "width": 23,
+    "height": 27,
+    "source": "public/assets/farm/seeds/seed_blueberry.png",
+    "file": "farm/seeds/seed_blueberry.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "เมล็ดบลูเบอร์รี"
+  },
+  "withered_blueberry": {
+    "type": "local",
+    "width": 32,
+    "height": 40,
+    "source": "public/assets/farm/crops/withered/withered_blueberry.png",
+    "file": "farm/crops/withered/withered_blueberry.png",
+    "jade_tone": false
+  },
+  "icon_bag_scallion": {
+    "type": "local",
+    "width": 28,
+    "height": 30,
+    "source": "public/assets/farm/icons_bag/scallion.png",
+    "file": "farm/icons_bag/scallion.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "icon_bag_chili": {
+    "type": "local",
+    "width": 25,
+    "height": 22,
+    "source": "public/assets/farm/icons_bag/chili.png",
+    "file": "farm/icons_bag/chili.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "icon_bag_basil": {
+    "type": "local",
+    "width": 28,
+    "height": 33,
+    "source": "public/assets/farm/icons_bag/basil.png",
+    "file": "farm/icons_bag/basil.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "icon_bag_tomato": {
+    "type": "local",
+    "width": 27,
+    "height": 24,
+    "source": "public/assets/farm/icons_bag/tomato.png",
+    "file": "farm/icons_bag/tomato.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "icon_bag_garlic": {
+    "type": "local",
+    "width": 28,
+    "height": 32,
+    "source": "public/assets/farm/icons_bag/garlic.png",
+    "file": "farm/icons_bag/garlic.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "icon_bag_rice": {
+    "type": "local",
+    "width": 30,
+    "height": 31,
+    "source": "public/assets/farm/icons_bag/rice.png",
+    "file": "farm/icons_bag/rice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "icon_bag_carrot": {
+    "type": "local",
+    "width": 29,
+    "height": 34,
+    "source": "public/assets/farm/icons_bag/carrot.png",
+    "file": "farm/icons_bag/carrot.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "icon_bag_cabbage": {
+    "type": "local",
+    "width": 28,
+    "height": 27,
+    "source": "public/assets/farm/icons_bag/cabbage.png",
+    "file": "farm/icons_bag/cabbage.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "icon_bag_cucumber": {
+    "type": "local",
+    "width": 27,
+    "height": 26,
+    "source": "public/assets/farm/icons_bag/cucumber.png",
+    "file": "farm/icons_bag/cucumber.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "icon_bag_corn": {
+    "type": "local",
+    "width": 24,
+    "height": 28,
+    "source": "public/assets/farm/icons_bag/corn.png",
+    "file": "farm/icons_bag/corn.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "icon_bag_potato": {
+    "type": "local",
+    "width": 25,
+    "height": 20,
+    "source": "public/assets/farm/icons_bag/potato.png",
+    "file": "farm/icons_bag/potato.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "icon_bag_pumpkin": {
+    "type": "local",
+    "width": 27,
+    "height": 28,
+    "source": "public/assets/farm/icons_bag/pumpkin.png",
+    "file": "farm/icons_bag/pumpkin.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "icon_bag_soybean": {
+    "type": "local",
+    "width": 25,
+    "height": 27,
+    "source": "public/assets/farm/icons_bag/soybean.png",
+    "file": "farm/icons_bag/soybean.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "icon_bag_strawberry": {
+    "type": "local",
+    "width": 30,
+    "height": 31,
+    "source": "public/assets/farm/icons_bag/strawberry.png",
+    "file": "farm/icons_bag/strawberry.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "icon_bag_blueberry": {
+    "type": "local",
+    "width": 17,
+    "height": 23,
+    "source": "public/assets/farm/icons_bag/blueberry.png",
+    "file": "farm/icons_bag/blueberry.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "soil_tilled": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/farm/ui/soil_tilled.png",
+    "file": "farm/ui/soil_tilled.png",
+    "jade_tone": false
+  },
+  "soil_tilled_wet": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/farm/ui/soil_tilled_wet.png",
+    "file": "farm/ui/soil_tilled_wet.png",
+    "jade_tone": false
+  },
+  "soil_damp": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/farm/ui/soil_damp.png",
+    "file": "farm/ui/soil_damp.png",
+    "jade_tone": false
+  },
+  "plot_cursor": {
+    "type": "local",
+    "width": 64,
+    "height": 32,
+    "source": "public/assets/farm/ui/plot_cursor.png",
+    "file": "farm/ui/plot_cursor.png",
+    "jade_tone": false,
+    "frame_width": 32,
+    "frame_height": 32,
+    "frames": 2
+  },
+  "fx_dirt": {
+    "type": "local",
+    "width": 16,
+    "height": 4,
+    "source": "public/assets/farm/fx/fx_dirt.png",
+    "file": "farm/fx/fx_dirt.png",
+    "jade_tone": false,
+    "frame_width": 4,
+    "frame_height": 4,
+    "frames": 4
+  },
+  "fx_sparkle": {
+    "type": "local",
+    "width": 28,
+    "height": 7,
+    "source": "public/assets/farm/fx/fx_sparkle.png",
+    "file": "farm/fx/fx_sparkle.png",
+    "jade_tone": false,
+    "frame_width": 7,
+    "frame_height": 7,
+    "frames": 4
+  },
+  "fx_zzz": {
+    "type": "local",
+    "width": 44,
+    "height": 18,
+    "source": "public/assets/farm/fx/fx_zzz.png",
+    "file": "farm/fx/fx_zzz.png",
+    "jade_tone": false,
+    "frame_width": 22,
+    "frame_height": 18,
+    "frames": 2
+  },
+  "fx_water": {
+    "type": "local",
+    "width": 19,
+    "height": 5,
+    "source": "public/assets/farm/fx/fx_water.png",
+    "file": "farm/fx/fx_water.png",
+    "jade_tone": false
+  },
+  "fx_pop_pill": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "public/assets/farm/fx/fx_pop_pill.png",
+    "file": "farm/fx/fx_pop_pill.png",
+    "jade_tone": false
+  },
+  "ui_tool_tray": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/toolbar/tool_tray.png",
+    "file": "ui/toolbar/tool_tray.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_tool_slot": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/toolbar/tool_slot.png",
+    "file": "ui/toolbar/tool_slot.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_tool_slot_selected": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/toolbar/tool_slot_selected.png",
+    "file": "ui/toolbar/tool_slot_selected.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_key_badge": {
+    "type": "local",
+    "width": 9,
+    "height": 9,
+    "source": "public/assets/ui/toolbar/key_badge.png",
+    "file": "ui/toolbar/key_badge.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_count_pill": {
+    "type": "local",
+    "width": 10,
+    "height": 10,
+    "source": "public/assets/ui/toolbar/count_pill.png",
+    "file": "ui/toolbar/count_pill.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_bag_slot": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "public/assets/ui/bag/bag_slot.png",
+    "file": "ui/bag/bag_slot.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_bag_slot_selected": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "public/assets/ui/bag/bag_slot_selected.png",
+    "file": "ui/bag/bag_slot_selected.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_bag_slot_empty": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "public/assets/ui/bag/bag_slot_empty.png",
+    "file": "ui/bag/bag_slot_empty.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_tab": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "public/assets/ui/bag/tab.png",
+    "file": "ui/bag/tab.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_tab_active": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "public/assets/ui/bag/tab_active.png",
+    "file": "ui/bag/tab_active.png",
+    "jade_tone": false,
+    "lazy": true
   }
 }

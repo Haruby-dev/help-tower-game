@@ -88,12 +88,5 @@
     "flickerAmount": 0.12,
     "vignetteStrength": 0.35,
     "vignetteRadius": 0.62
-  },
-  "farm": {
-    "wetSoilTint": [
-      0.72,
-      0.7,
-      0.75
-    ]
   }
 }

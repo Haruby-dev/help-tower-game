@@ -14,7 +14,7 @@ import { advanceClock, goToSleep } from '../systems/time';
 import balance from '../data/balance.json';
 import display from '../data/display.json';
 import { LIGHTING_PIPELINE, LightingPipeline, type LightSpot } from './LightingPipeline';
-import { dirtPuff, floatText, harvestArc, sparkle, waterDrops } from './farmEffects';
+import { dirtPuff, harvestArc, popPill, sparkle, waterDrops } from './farmEffects';
 import { createCanopyMask, softEllipseTexture, type ShadeArea } from './sceneArt';
 
 type MoveKeys = Record<'up' | 'down' | 'left' | 'right' | 'w' | 'a' | 's' | 'd', Phaser.Input.Keyboard.Key>;
@@ -68,7 +68,7 @@ export class BaseScene extends Phaser.Scene {
   private door = { x: 0, y: 0 };
   private night!: Phaser.GameObjects.Rectangle;
   private plots: Plot[] = [];
-  private plotMarker!: Phaser.GameObjects.Graphics;
+  private plotMarker!: Phaser.GameObjects.Sprite;
   private queuedPlot: number | null = null;
 
   constructor() {
@@ -298,11 +298,9 @@ export class BaseScene extends Phaser.Scene {
       const tile = ground.getTileAt(plotOrigin.col + (index % cols), plotOrigin.row + Math.floor(index / cols));
       if (!tile) throw new Error(`map has no soil for plot ${index}`);
       const plot = new Plot(this, tile, DEPTH.flat);
-      this.labels.push(plot.label);
       return plot;
     });
-    this.plotMarker = this.add.graphics().setDepth(DEPTH.plotMarker).setVisible(false);
-    this.plotMarker.lineStyle(1, 0xffffff, 0.9).strokeRect(0.5, 0.5, ground.tilemap.tileWidth - 1, ground.tilemap.tileHeight - 1);
+    this.plotMarker = this.add.sprite(0, 0, 'plot_cursor').setDepth(DEPTH.plotMarker).setVisible(false).play('plot_cursor_loop');
   }
 
   private distanceToPlot(index: number): number {
@@ -336,7 +334,7 @@ export class BaseScene extends Phaser.Scene {
     const action = target !== null ? this.farmActionAt(target) : null;
     if (target !== null && action) {
       const plot = this.plots[target]!;
-      this.plotMarker.setPosition(plot.centerX - TILE_MIDDLE, plot.centerY - TILE_MIDDLE).setVisible(true);
+      this.plotMarker.setPosition(plot.centerX, plot.centerY).setVisible(true);
     } else {
       this.plotMarker.setVisible(false);
     }
@@ -406,7 +404,7 @@ export class BaseScene extends Phaser.Scene {
     const handY = this.player.feetY - PLAYER_HEAD_PX / 2;
     harvestArc(this, `icon_${crop}`, plot.centerX, plot.centerY, this.player.feetX, handY, () => {
       const name = t(`crop.${crop}.name` as TextKey);
-      floatText(this, this.player.feetX, this.player.feetY - PLAYER_HEAD_PX, `+${amount} ${name}`, gameState.viewport.zoom);
+      popPill(this, this.player.feetX, this.player.feetY - PLAYER_HEAD_PX, `icon_${crop}`, `+${amount} ${name}`, gameState.viewport.zoom);
     });
   }
 

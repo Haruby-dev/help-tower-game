@@ -12,7 +12,6 @@ export const displaySchema = z.strictObject({
   }),
   /** ขนาดที่หน้าจอโทรศัพท์ต้องใส่ได้ เป็นพิกเซลเกม */
   uiDesign: z.strictObject({ width: z.number().positive(), height: z.number().positive() }),
-  farm: z.strictObject({ wetSoilTint: rgbSchema }),
   zoomSteps: z.array(z.number().int().nonnegative()).min(1),
   touchDefaultZoomStep: z.number().int().nonnegative(),
   lighting: z.strictObject({

@@ -138,3 +138,38 @@ test('a withered plant clears with the hoe without asking', async ({ page }) => 
   await expect(page.locator('#dig-confirm')).toBeHidden();
   await expect.poll(async () => (await plot0(page)).crop, { timeout: 30000 }).toBeNull();
 });
+
+test('the bag opens unfolded with 30 slots and survives an item with no art', async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const s = (window as unknown as { __state: { world: FarmWorld; setWorld(w: unknown): void } }).__state;
+    s.setWorld({ ...s.world, bag: [...s.world.bag, { item: 'produce_not_made_yet', count: 1 }] });
+  });
+  await page.locator('#phone-button').click();
+  await page.locator('#lock-open').click();
+  await page.locator('[data-app="inventory"]').click();
+  await expect(page.locator('#phone')).toHaveAttribute('data-app', 'inventory');
+  await expect(page.locator('#phone')).toHaveAttribute('data-fold', 'unfolded');
+  await expect(page.locator('.bag-grid .bag-slot')).toHaveCount(30);
+  await expect(page.locator('#bag-used')).toHaveText('7/30');
+  await expect(page.locator('.item-missing')).toHaveCount(1);
+  await page.locator('[data-bag-tab="seeds"]').click();
+  await expect(page.locator('.bag-slot[data-item]')).toHaveCount(0);
+  await page.locator('[data-bag-tab="produce"]').click();
+  await page.locator('[data-item="produce_tomato"]').click();
+  await expect(page.locator('#bag-sell')).toBeDisabled();
+  await expect(page.locator('#bag-convert')).toBeEnabled();
+});
+
+test('the seed slot shows the chosen bag and its count', async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const s = (window as unknown as { __state: { world: FarmWorld; setWorld(w: unknown): void } }).__state;
+    s.setWorld({ ...s.world, bag: [{ item: 'seed_blueberry', count: 12 }] });
+  });
+  await page.locator('[data-tool="seeds"]').click();
+  await page.locator('[data-seed="blueberry"]').click();
+  await expect(page.locator('[data-tool="seeds"] img').first()).toHaveAttribute('src', /seed_blueberry/);
+  await expect(page.locator('.tool-slot__count')).toHaveText('12');
+  await expect(page.locator('.tool-slot__key')).toHaveCount(4);
+});

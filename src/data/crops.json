@@ -138,5 +138,15 @@
     "regrowYield": 2,
     "sellPrice": 18,
     "seedPrice": 65
+  },
+  "blueberry": {
+    "source": "shop",
+    "growDays": 7,
+    "regrowDays": 3,
+    "regrowTimes": 3,
+    "firstYield": 3,
+    "regrowYield": 2,
+    "sellPrice": 15,
+    "seedPrice": 50
   }
 }

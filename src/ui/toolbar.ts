@@ -1,8 +1,8 @@
 import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
 import { gameState, type Tool } from '../core/state';
-import { cropOfItem, isSeed } from '../systems/farm';
-import { itemIcon, itemName } from './inventory';
+import { countOf, cropOfItem, isSeed, seedItem } from '../systems/farm';
+import { itemImage, itemName } from './inventory';
 import { artUrl } from './pixelArt';
 
 const TOOLS: { id: Tool; icon: string; name: TextKey }[] = [
@@ -42,11 +42,7 @@ function createSeedPicker(uiRoot: HTMLElement): () => void {
       button.type = 'button';
       button.className = 'seed-choice';
       button.dataset.seed = cropOfItem(stack.item);
-      const icon = document.createElement('img');
-      icon.className = 'pixel-img';
-      icon.alt = '';
-      icon.src = itemIcon(stack.item);
-      button.append(icon, Object.assign(document.createElement('small'), { textContent: `${itemName(stack.item)} ×${stack.count}` }));
+      button.append(itemImage(stack.item, false), Object.assign(document.createElement('small'), { textContent: `${itemName(stack.item)} ×${stack.count}` }));
       button.addEventListener('click', () => {
         gameState.setSelectedSeed(cropOfItem(stack.item));
         close();
@@ -104,7 +100,12 @@ export function createToolbar(uiRoot: HTMLElement): void {
   const openPicker = createSeedPicker(uiRoot);
   createDigConfirm(uiRoot);
 
-  const buttons = TOOLS.map((tool) => {
+  let seedIcon: HTMLImageElement | null = null;
+  const pill = document.createElement('span');
+  pill.className = 'tool-slot__count';
+  pill.hidden = true;
+
+  const buttons = TOOLS.map((tool, index) => {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'tool-slot';
@@ -114,7 +115,14 @@ export function createToolbar(uiRoot: HTMLElement): void {
     icon.className = 'pixel-img';
     icon.alt = '';
     icon.src = artUrl(tool.icon);
-    button.append(icon);
+    const badge = document.createElement('span');
+    badge.className = 'tool-slot__key';
+    badge.textContent = String(index + 1);
+    button.append(icon, badge);
+    if (tool.id === 'seeds') {
+      seedIcon = icon;
+      button.append(pill);
+    }
     button.addEventListener('click', () => choose(tool.id));
     bar.append(button);
     return button;
@@ -127,10 +135,24 @@ export function createToolbar(uiRoot: HTMLElement): void {
     if (tool === 'seeds' && (again || gameState.selectedSeed === null)) openPicker();
   }
 
+  /** ช่องเมล็ดแสดงถุงของเมล็ดที่เลือกพร้อมจำนวน */
+  const showSeed = (): void => {
+    const seed = gameState.selectedSeed;
+    if (seedIcon) seedIcon.src = artUrl(seed ? `seed_${seed}` : 'tool_seed_bag');
+    pill.hidden = seed === null || !gameState.started;
+    if (seed && gameState.started) pill.textContent = String(countOf(gameState.world.bag, seedItem(seed)));
+  };
   const show = (): void => {
     buttons.forEach((button, index) => button.classList.toggle('is-selected', TOOLS[index]!.id === gameState.selectedTool));
+    showSeed();
   };
   eventBus.on('tool-changed', show);
+  let shownBag: unknown = null;
+  eventBus.on('world-changed', ({ bag }) => {
+    if (bag === shownBag) return;
+    shownBag = bag;
+    showSeed();
+  });
   show();
 
   document.addEventListener('keydown', (event) => {
