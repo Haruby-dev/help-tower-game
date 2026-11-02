@@ -4279,5 +4279,85 @@
     "pixellab_job": "0c7b93d6",
     "index": 3,
     "name_th": "ถุงเมล็ด"
+  },
+  "ui_weather_sun": {
+    "type": "local",
+    "width": 25,
+    "height": 24,
+    "source": "assets-src/art_2026-11-02/ui_placeholder/weather_sun.png",
+    "file": "ui/placeholder/weather_sun.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+  },
+  "ui_weather_cloud": {
+    "type": "local",
+    "width": 25,
+    "height": 18,
+    "source": "assets-src/art_2026-11-02/ui_placeholder/weather_cloud.png",
+    "file": "ui/placeholder/weather_cloud.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+  },
+  "ui_weather_rain": {
+    "type": "local",
+    "width": 25,
+    "height": 22,
+    "source": "assets-src/art_2026-11-02/ui_placeholder/weather_rain.png",
+    "file": "ui/placeholder/weather_rain.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+  },
+  "ui_weather_storm": {
+    "type": "local",
+    "width": 25,
+    "height": 22,
+    "source": "assets-src/art_2026-11-02/ui_placeholder/weather_storm.png",
+    "file": "ui/placeholder/weather_storm.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+  },
+  "ui_cat_orange": {
+    "type": "local",
+    "width": 19,
+    "height": 15,
+    "source": "assets-src/art_2026-11-02/ui_placeholder/cat_orange.png",
+    "file": "ui/placeholder/cat_orange.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+  },
+  "ui_cat_calico": {
+    "type": "local",
+    "width": 19,
+    "height": 15,
+    "source": "assets-src/art_2026-11-02/ui_placeholder/cat_calico.png",
+    "file": "ui/placeholder/cat_calico.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+  },
+  "ui_cat_gio": {
+    "type": "local",
+    "width": 19,
+    "height": 15,
+    "source": "assets-src/art_2026-11-02/ui_placeholder/cat_gio.png",
+    "file": "ui/placeholder/cat_gio.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+  },
+  "ui_cat_grey": {
+    "type": "local",
+    "width": 19,
+    "height": 15,
+    "source": "assets-src/art_2026-11-02/ui_placeholder/cat_grey.png",
+    "file": "ui/placeholder/cat_grey.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
   }
 }

@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { emptyWallet } from '../../src/core/state';
+import { defaultCosmetics, emptyWallet } from '../../src/core/state';
 import { applyTransaction, entriesFor, netFor } from '../../src/systems/economy';
 import { newWorld } from '../../src/systems/gauges';
 import { beadFills, isAlert, isDirty, isPulsing, moodOf } from '../../src/systems/mood';
+import { dayOfMonth, encouragementFor, monthOf, stuckTime, weekStrip, weekdayIndex } from '../../src/systems/phoneCalendar';
 import { SAVE_VERSION, parseSaveFile } from '../../src/systems/save';
+import { uiZoomFor } from '../../src/core/viewport';
+import display from '../../src/data/display.json';
+import lines from '../../src/data/lines.json';
 
 const gauges = (fullness: number, happiness: number, cleanliness = 100) => ({
   fullness,
@@ -95,9 +99,66 @@ describe('save migration', () => {
       world: { day: 3, hour: 6, gauges: gauges(50, 60, 70), player: { x: 1, y: 2 } },
     };
     const parsed = parseSaveFile(old);
-    expect(SAVE_VERSION).toBe(2);
+    expect(SAVE_VERSION).toBe(3);
     expect(parsed?.version).toBe(SAVE_VERSION);
     expect(parsed?.world.day).toBe(3);
     expect(parsed?.world.wallet).toEqual(emptyWallet());
+    expect(parsed?.world.cosmetics).toEqual(defaultCosmetics());
+  });
+
+  it('turns a version 2 save into the current version and keeps the money', () => {
+    const wallet = { ...emptyWallet(), coins: 50 };
+    const parsed = parseSaveFile({
+      version: 2,
+      savedAt: '2026-11-02T00:00:00.000Z',
+      world: { day: 2, hour: 6, gauges: gauges(50, 60, 70), player: null, wallet },
+    });
+    expect(parsed?.version).toBe(SAVE_VERSION);
+    expect(parsed?.world.wallet.coins).toBe(50);
+    expect(parsed?.world.cosmetics.equipped.case).toBe('case_pink_cat');
+  });
+});
+
+describe('phone calendar', () => {
+  it('makes day 1 a Saturday and day 5 a Wednesday', () => {
+    expect(weekdayIndex(1)).toBe(5);
+    expect(weekdayIndex(5)).toBe(2);
+    expect(weekStrip(5)).toEqual([3, 4, 5, 6, 7, 8, 9]);
+  });
+
+  it('uses 28-day months', () => {
+    expect(monthOf(28)).toBe(1);
+    expect(monthOf(29)).toBe(2);
+    expect(dayOfMonth(29)).toBe(1);
+  });
+
+  it('counts the time stuck in the tower since the first morning', () => {
+    expect(stuckTime(1, 6)).toEqual({ months: 0, days: 0, hours: 0 });
+    expect(stuckTime(6, 12)).toEqual({ months: 0, days: 5, hours: 6 });
+    expect(stuckTime(29, 6)).toEqual({ months: 1, days: 0, hours: 0 });
+  });
+
+  it('picks the same line all day, from the list in lines.json', () => {
+    expect(encouragementFor(7)).toBe(encouragementFor(7));
+    expect(lines.encouragement).toContain(encouragementFor(7));
+    expect(lines.encouragement).toHaveLength(10);
+    const seen = new Set(Array.from({ length: 60 }, (_, index) => encouragementFor(index + 1)));
+    expect(seen.size).toBeGreaterThan(3);
+  });
+});
+
+describe('UI zoom', () => {
+  const viewport = (zoom: number, canvasWidth: number, canvasHeight: number) => ({
+    zoom,
+    canvasWidth,
+    canvasHeight,
+    styleWidth: 0,
+    styleHeight: 0,
+  });
+
+  it('follows the world zoom until the phone would not fit', () => {
+    expect(uiZoomFor(viewport(4, 2442, 1140), display.uiDesign)).toBe(4);
+    expect(uiZoomFor(viewport(5, 2442, 1140), display.uiDesign)).toBe(4);
+    expect(uiZoomFor(viewport(1, 640, 360), display.uiDesign)).toBe(1);
   });
 });

@@ -2,7 +2,8 @@ import { assetUrl, characterEntry } from '../core/assets';
 import { eventBus } from '../core/events';
 import { t } from '../core/i18n';
 import { gameState } from '../core/state';
-import { needsRotation } from '../core/viewport';
+import { needsRotation, uiZoomFor } from '../core/viewport';
+import display from '../data/display.json';
 import { createHud } from './hud';
 import { createJoystick } from './joystick';
 import { createPhone } from './phone';
@@ -39,6 +40,11 @@ function createRotatePrompt(uiRoot: HTMLElement): void {
 }
 
 export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
+  // ทุกขนาดใน CSS นับเป็นพิกเซลเกมคูณ --px ภาพจึงตรงตารางพิกเซลเดียวกัน
+  eventBus.on('viewport-changed', (viewport) => {
+    const pixel = uiZoomFor(viewport, display.uiDesign) / window.devicePixelRatio;
+    uiRoot.style.setProperty('--px', `${pixel}px`);
+  });
   createHud(uiRoot);
   createJoystick(uiRoot);
   createRotatePrompt(uiRoot);

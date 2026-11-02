@@ -31,6 +31,12 @@
     "bubbleMs": 1800
   },
   "wallet": { "logLimit": 200 },
+  "calendar": {
+    "firstDayWeekdayIndex": 5,
+    "daysPerMonth": 28,
+    "currentFloorPlaceholder": 1,
+    "totalFloors": 100
+  },
   "interact": { "reachPx": 44 },
   "land": {
     "prices": [500, 1500, 4000]

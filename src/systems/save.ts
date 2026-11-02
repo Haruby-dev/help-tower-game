@@ -1,8 +1,8 @@
 import { get, set } from 'idb-keyval';
-import { emptyWallet, type World } from '../core/state';
+import { defaultCosmetics, emptyWallet, type World } from '../core/state';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 
-export const SAVE_VERSION = 2;
+export const SAVE_VERSION = 3;
 export const SLOT_COUNT = 3;
 
 const slotKey = (slot: number): string => `save-slot-${slot}`;
@@ -11,6 +11,8 @@ const slotKey = (slot: number): string => `save-slot-${slot}`;
 const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<string, unknown>> = {
   // เวอร์ชัน 2 เพิ่มกระเป๋าเงิน เซฟเก่ายังไม่มีเงินจึงเริ่มจากศูนย์
   1: (save) => ({ ...save, world: { ...(save.world as object), wallet: emptyWallet() } }),
+  // เวอร์ชัน 3 เพิ่มของแต่งโทรศัพท์และสีบัวรดน้ำ
+  2: (save) => ({ ...save, world: { ...(save.world as object), cosmetics: defaultCosmetics() } }),
 };
 
 export function toSaveFile(world: World): SaveFile {

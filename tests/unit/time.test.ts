@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { World } from '../../src/core/state';
+import { defaultCosmetics, type World } from '../../src/core/state';
 import { newWorld } from '../../src/systems/gauges';
 import { faint, sleep, stepClock } from '../../src/systems/time';
 
@@ -14,6 +14,7 @@ describe('clock', () => {
       gauges: { fullness: 100, happiness: 100, cleanliness: 100, homesickness: 0 },
       player: null,
       wallet: { coins: 0, stars: 0, log: [], daily: [] },
+      cosmetics: defaultCosmetics(),
     });
   });
 

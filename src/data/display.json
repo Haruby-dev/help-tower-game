@@ -12,6 +12,7 @@
       { "hour": 26, "alpha": 0.5 }
     ]
   },
+  "uiDesign": { "width": 400, "height": 276 },
   "zoomSteps": [0, 1, 2],
   "touchDefaultZoomStep": 1,
   "lighting": {

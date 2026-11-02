@@ -10,6 +10,8 @@ export const displaySchema = z.strictObject({
     color: z.string().regex(/^#[0-9a-f]{6}$/),
     keys: z.array(z.strictObject({ hour: z.number(), alpha: z.number().min(0).max(1) })).min(2),
   }),
+  /** ขนาดที่หน้าจอโทรศัพท์ต้องใส่ได้ เป็นพิกเซลเกม */
+  uiDesign: z.strictObject({ width: z.number().positive(), height: z.number().positive() }),
   zoomSteps: z.array(z.number().int().nonnegative()).min(1),
   touchDefaultZoomStep: z.number().int().nonnegative(),
   lighting: z.strictObject({
@@ -77,6 +79,13 @@ export const balanceSchema = z.strictObject({
     bubbleMs: z.number().positive(),
   }),
   wallet: z.strictObject({ logLimit: z.number().int().positive() }),
+  calendar: z.strictObject({
+    /** 0 คือวันจันทร์ วันที่ 1 ของเกมเป็นวันเสาร์ */
+    firstDayWeekdayIndex: z.number().int().min(0).max(6),
+    daysPerMonth: z.number().int().positive(),
+    currentFloorPlaceholder: z.number().int().positive(),
+    totalFloors: z.number().int().positive(),
+  }),
   interact: z.strictObject({ reachPx: z.number().positive() }),
   land: z.strictObject({
     /** ราคาชั่วคราวของที่ดิน 3 แปลง เรียงจากซ้ายไปขวา */
@@ -124,6 +133,20 @@ export const saveFileSchema = z.strictObject({
       ),
       daily: z.array(z.strictObject({ day: z.number(), coins: z.number(), stars: z.number() })),
     }),
+    cosmetics: z.strictObject({
+      equipped: z.strictObject({
+        case: z.string().min(1),
+        charm: z.string().min(1).nullable(),
+        wallpaper: z.string().min(1),
+        canSkin: z.string().min(1),
+      }),
+      owned: z.strictObject({
+        cases: z.array(z.string()),
+        charms: z.array(z.string()),
+        wallpapers: z.array(z.string()),
+        canSkins: z.array(z.string()),
+      }),
+    }),
   }),
 });
 
@@ -138,6 +161,7 @@ export const linesSchema = z.strictObject({
       cleanliness: z.string().min(1),
     }),
   }),
+  encouragement: z.array(z.string().min(1)).min(1),
 });
 
 export const translationsSchema = z.record(z.string().min(1), z.string().min(1));

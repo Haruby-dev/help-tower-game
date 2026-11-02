@@ -320,6 +320,7 @@ test('the settings switch turns the lighting layer off and on', async ({ page })
   expect(await lightingLayers()).toBe(1);
 
   await page.locator('#phone-button').click();
+  await page.locator('#lock-open').click();
   await page.locator('[data-app="settings"]').click();
   const toggle = page.locator('#lighting-toggle');
   await expect(toggle).toBeVisible();
@@ -350,6 +351,7 @@ test('the zoom choice changes the whole-number zoom and is remembered', async ({
   const fitted = start - (isMobile ? 1 : 0);
 
   await page.locator('#phone-button').click();
+  await page.locator('#lock-open').click();
   await page.locator('[data-app="settings"]').click();
   await page.locator('[data-zoom-step="2"]').click();
   await expect.poll(zoomNow).toBe(fitted + 2);

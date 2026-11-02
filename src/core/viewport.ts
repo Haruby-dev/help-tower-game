@@ -34,6 +34,17 @@ export function computeViewport(input: ViewportInput): Viewport {
   };
 }
 
+export interface UiDesign {
+  width: number;
+  height: number;
+}
+
+/** UI ใช้จำนวนเต็มเดียวกับโลกเกม ยกเว้นซูมแล้วโทรศัพท์จะล้นจอ จึงลดลงเท่าที่ใส่ได้ */
+export function uiZoomFor(viewport: Viewport, design: UiDesign): number {
+  const fits = Math.floor(Math.min(viewport.canvasWidth / design.width, viewport.canvasHeight / design.height));
+  return Math.max(1, Math.min(viewport.zoom, fits));
+}
+
 /** บังคับแนวนอนเฉพาะจอสัมผัส บนคอมย่อหน้าต่างแคบได้โดยเกมไม่หยุด */
 export function needsRotation(width: number, height: number, isTouchScreen: boolean): boolean {
   return isTouchScreen && height > width;

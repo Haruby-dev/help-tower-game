@@ -38,7 +38,7 @@ test('shows the portrait with 15 beads, the coin pill and the phone clock', asyn
   await open(page);
   await expect(page.locator('#phone-cover-time')).toContainText('06:');
   await expect(page.locator('.bead')).toHaveCount(15);
-  await expect(page.locator('#coin-pill')).toContainText('0');
+  await expect(page.locator('#coin-pill')).toHaveCount(0);
   await expect(page.locator('#portrait')).toHaveAttribute('data-mood', 'happy');
   const before = await world(page);
   await expect.poll(async () => (await world(page)).hour).toBeGreaterThan(before.hour);
@@ -48,6 +48,7 @@ test('shows the portrait with 15 beads, the coin pill and the phone clock', asyn
 test('the clock stops while the phone is open', async ({ page }) => {
   await open(page);
   await page.locator('#phone-button').click();
+  await page.locator('#lock-open').click();
   await page.waitForTimeout(100);
   const paused = await world(page);
   await page.waitForTimeout(400);
@@ -105,40 +106,78 @@ test('fainting wakes the player at home and skips time', async ({ page }) => {
 test('exports a save file', async ({ page }) => {
   await open(page);
   await page.locator('#phone-button').click();
+  await page.locator('#lock-open').click();
   await page.locator('[data-app="settings"]').click();
   const download = page.waitForEvent('download');
   await page.locator('#save-export').click();
   expect((await download).suggestedFilename()).toContain('help-tower-save-1-day-1');
 });
 
-test('opens the phone with 11 apps and placeholders for later systems', async ({ page }) => {
+test('opens from the mini lock screen, to the lock screen, to home with 11 apps', async ({ page }) => {
   await open(page);
+  await expect(page.locator('#phone-cover-day')).toHaveText('เสาร์ 1');
   await page.locator('#phone-button').click();
+  await expect(page.locator('#lock-screen')).toBeVisible();
+  await expect(page.locator('.lock__line')).not.toBeEmpty();
+  await expect(page.locator('.lock__cat')).toHaveCount(4);
+  await page.locator('#lock-open').click();
+  await expect(page.locator('#phone')).toBeVisible();
   await expect(page.locator('.phone-app')).toHaveCount(11);
-  for (const box of await page.locator('.phone-app').evaluateAll((apps) => apps.map((app) => ({ width: (app as HTMLElement).offsetWidth, height: (app as HTMLElement).offsetHeight })))) {
-    expect(box.width).toBeGreaterThanOrEqual(44);
-    expect(box.height).toBeGreaterThanOrEqual(44);
+  await expect(page.locator('.phone-app__name')).toHaveCount(8);
+  await expect(page.locator('[data-app="support"]')).toBeInViewport();
+  const sizes = await page.locator('.phone-app').evaluateAll((apps) =>
+    apps.map((app) => ({ width: (app as HTMLElement).offsetWidth, height: (app as HTMLElement).offsetHeight })),
+  );
+  for (const size of sizes) {
+    expect(size.width).toBeGreaterThanOrEqual(44);
+    expect(size.height).toBeGreaterThanOrEqual(44);
   }
   await page.locator('[data-app="shop"]').click();
   await expect(page.locator('.phone-page__empty')).toBeVisible();
+  await page.locator('#phone-back').click();
   await page.locator('[data-app="support"]').click();
-  await expect(page.locator('.phone-content')).not.toContainText('฿');
+  await expect(page.locator('.phone-page__empty')).toBeVisible();
+  await page.locator('#phone-back').click();
   await page.locator('#phone-close').click();
   await expect(page.locator('#phone')).toBeHidden();
 });
 
-test('every money change shows in the wallet log and the coin pill', async ({ page }) => {
+test('unfolds with the calendar and stuck counter, and flips to the case', async ({ page }) => {
+  await open(page);
+  await page.locator('#phone-button').click();
+  await page.locator('#lock-open').click();
+  await expect(page.locator('#stuck-counter')).toBeHidden();
+  await page.locator('#phone-unfold').click();
+  await expect(page.locator('#phone')).toHaveAttribute('data-fold', 'unfolded');
+  await expect(page.locator('#stuck-counter')).toBeVisible();
+  await expect(page.locator('#tower-calendar')).toContainText('เดือนที่ 1');
+  await expect(page.locator('#phone')).not.toContainText('ฤดู');
+  await page.locator('#phone-flip').click();
+  await expect(page.locator('#phone')).toHaveAttribute('data-side', 'back');
+  await expect(page.locator('#phone-back-side')).toBeVisible();
+});
+
+test('money shows a floating number and the wallet log, with no pill on screen', async ({ page }) => {
   await open(page);
   await page.evaluate(() => {
     const change = (window as unknown as { __changeMoney: (c: string, a: number, l: string, k: string) => void }).__changeMoney;
     change('coins', 1250, 'wallet.test_income', 'wallet.category_test');
     change('stars', 38, 'wallet.test_income', 'wallet.category_test');
   });
-  await expect(page.locator('#coin-pill')).toContainText('1,250');
+  await expect(page.locator('#money-pop p').first()).toContainText('+1,250');
+  await expect(page.locator('#coin-pill')).toHaveCount(0);
   await page.locator('#phone-button').click();
+  await page.locator('#lock-open').click();
+  await page.locator('[data-app="wallet"]').click();
   await expect(page.locator('[data-balance="coins"]')).toHaveText('1,250');
   await expect(page.locator('[data-balance="stars"]')).toHaveText('38');
   await expect(page.locator('.wallet-entry')).toHaveCount(2);
+  // จอเล็กรายการเลื่อนได้ ต้องเลื่อนไปถึงรายการสุดท้ายจนเห็นเต็มใบ
+  await page.locator('.wallet-entry').last().scrollIntoViewIfNeeded();
+  await expect(page.locator('.wallet-entry').last()).toBeInViewport({ ratio: 1 });
+  await expect(page.locator('#phone-back')).toBeInViewport();
+  const contentHeight = await page.locator('.phone-content').evaluate((node) => (node as HTMLElement).offsetHeight);
+  expect(contentHeight).toBeGreaterThan(120);
   await expect(page.locator('#wallet-net')).toHaveText('+1,250');
 });
 
@@ -169,7 +208,7 @@ test('Tab and Esc open and close the phone on a keyboard', async ({ page, isMobi
   test.skip(isMobile, 'desktop only');
   await open(page);
   await page.keyboard.press('Tab');
-  await expect(page.locator('#phone')).toBeVisible();
+  await expect(page.locator('#lock-screen')).toBeVisible();
   await page.keyboard.press('Escape');
-  await expect(page.locator('#phone')).toBeHidden();
+  await expect(page.locator('#lock-screen')).toBeHidden();
 });
