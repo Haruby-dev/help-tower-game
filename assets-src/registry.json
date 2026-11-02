@@ -3742,6 +3742,24 @@
     "jade_tone": false,
     "lazy": true
   },
+  "ui_run_button_off": {
+    "type": "local",
+    "width": 64,
+    "height": 64,
+    "source": "assets-src/art_2026-11-02/ui/run_button_off.png",
+    "file": "ui/run_button_off.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_run_button_on": {
+    "type": "local",
+    "width": 64,
+    "height": 64,
+    "source": "assets-src/art_2026-11-02/ui/run_button_on.png",
+    "file": "ui/run_button_on.png",
+    "jade_tone": false,
+    "lazy": true
+  },
   "ui_joystick_knob_paw": {
     "type": "local",
     "width": 28,

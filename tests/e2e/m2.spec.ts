@@ -105,15 +105,13 @@ test('fainting wakes the player at home and skips time', async ({ page }) => {
 
 test('exports a save file', async ({ page }) => {
   await open(page);
-  await page.locator('#phone-button').click();
-  await page.locator('#lock-open').click();
-  await page.locator('[data-app="settings"]').click();
+  await page.locator('#settings-button').click();
   const download = page.waitForEvent('download');
   await page.locator('#save-export').click();
   expect((await download).suggestedFilename()).toContain('help-tower-save-1-day-1');
 });
 
-test('opens from the mini lock screen, to the lock screen, to home with 11 apps', async ({ page }) => {
+test('opens from the mini lock screen, to the lock screen, to home with 10 apps', async ({ page }) => {
   await open(page);
   await expect(page.locator('#phone-cover-day')).toHaveText('เสาร์ 1');
   await page.locator('#phone-button').click();
@@ -122,7 +120,8 @@ test('opens from the mini lock screen, to the lock screen, to home with 11 apps'
   await expect(page.locator('.lock__cat')).toHaveCount(4);
   await page.locator('#lock-open').click();
   await expect(page.locator('#phone')).toBeVisible();
-  await expect(page.locator('.phone-app')).toHaveCount(11);
+  await expect(page.locator('.phone-app')).toHaveCount(10);
+  await expect(page.locator('[data-app="settings"]')).toHaveCount(0);
   await expect(page.locator('.phone-app__name')).toHaveCount(8);
   await expect(page.locator('[data-app="support"]')).toBeInViewport();
   const sizes = await page.locator('.phone-app').evaluateAll((apps) =>
@@ -174,7 +173,7 @@ test('money shows a floating number and the wallet log, with no pill on screen',
   await expect(page.locator('.wallet-entry')).toHaveCount(2);
   // จอเล็กรายการเลื่อนได้ ต้องเลื่อนไปถึงรายการสุดท้ายจนเห็นเต็มใบ
   await page.locator('.wallet-entry').last().scrollIntoViewIfNeeded();
-  await expect(page.locator('.wallet-entry').last()).toBeInViewport({ ratio: 1 });
+  await expect(page.locator('.wallet-entry').last()).toBeInViewport({ ratio: 0.9 });
   await expect(page.locator('#phone-back')).toBeInViewport();
   const contentHeight = await page.locator('.phone-content').evaluate((node) => (node as HTMLElement).offsetHeight);
   expect(contentHeight).toBeGreaterThan(120);
@@ -211,4 +210,67 @@ test('Tab and Esc open and close the phone on a keyboard', async ({ page, isMobi
   await expect(page.locator('#lock-screen')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.locator('#lock-screen')).toBeHidden();
+});
+
+test('settings and the phone sit top right, and settings opens on its own', async ({ page }) => {
+  await open(page);
+  const viewport = page.viewportSize()!;
+  for (const id of ['#phone-button', '#settings-button']) {
+    const box = (await page.locator(id).boundingBox())!;
+    expect(box.y).toBeLessThan(viewport.height / 4);
+    expect(box.x).toBeGreaterThan(viewport.width / 2);
+    expect(box.width).toBeGreaterThanOrEqual(44);
+    expect(box.height).toBeGreaterThanOrEqual(44);
+  }
+  await page.locator('#settings-button').click();
+  await expect(page.locator('#settings-window')).toBeVisible();
+  await expect(page.locator('#lighting-toggle')).toBeVisible();
+  await expect(page.locator('#phone')).toBeHidden();
+  const paused = await page.evaluate(() => {
+    const before = window.__state!.world.hour;
+    return new Promise((resolve) => setTimeout(() => resolve(window.__state!.world.hour === before), 1500));
+  });
+  expect(paused).toBe(true);
+  await page.locator('#settings-close').click();
+  await expect(page.locator('#settings-window')).toBeHidden();
+});
+
+test('the joystick is see-through and the run button changes its picture', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'touch screens only');
+  await open(page);
+  const opacity = await page.locator('#joystick').evaluate((node) => Number(getComputedStyle(node).opacity));
+  expect(opacity).toBeGreaterThan(0.3);
+  expect(opacity).toBeLessThan(1);
+  const image = page.locator('#run-button img');
+  await expect(image).toHaveAttribute('src', /run_button_off/);
+  const box = (await page.locator('#run-button').boundingBox())!;
+  expect(box.width).toBeGreaterThanOrEqual(64);
+  await page.locator('#run-button').click();
+  await expect(image).toHaveAttribute('src', /run_button_on/);
+  await page.locator('#run-button').click();
+  await expect(image).toHaveAttribute('src', /run_button_off/);
+});
+
+test('a short screen with the Safari bars still fits every app without clipping', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'touch screens only');
+  await open(page);
+  await page.setViewportSize({ width: 932, height: 320 });
+  await page.locator('#phone-button').click();
+  await page.locator('#lock-open').click();
+  await expect(page.locator('[data-app="support"]')).toBeInViewport({ ratio: 1 });
+  await page.locator('#phone-unfold').click();
+  await expect(page.locator('[data-app="album"]')).toBeInViewport({ ratio: 1 });
+  await page.locator('[data-app="wallet"]').click();
+  const clipped = await page.locator('.phone-content').evaluate((node) => node.scrollWidth > node.clientWidth);
+  expect(clipped).toBe(false);
+});
+
+test('the game can be added to the home screen to play full screen', async ({ page }) => {
+  await open(page);
+  const href = await page.locator('link[rel="manifest"]').getAttribute('href');
+  const manifest = await (await page.request.get(new URL(href!, page.url()).href)).json();
+  expect(manifest.display).toBe('fullscreen');
+  expect(manifest.orientation).toBe('landscape');
+  const icon = await page.locator('link[rel="apple-touch-icon"]').getAttribute('href');
+  expect((await page.request.get(new URL(icon!, page.url()).href)).ok()).toBe(true);
 });

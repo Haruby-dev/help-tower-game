@@ -5,7 +5,6 @@ import balance from '../data/balance.json';
 import { dayOfMonth, encouragementFor, monthOf, stuckTime, weekStrip, weekdayIndex, weekdayName, weekdayShort } from '../systems/phoneCalendar';
 import { formatClock } from './hud';
 import { artUrl, stickerIcon } from './pixelArt';
-import { createSettingsPage } from './settings';
 import { createWalletPage } from './wallet';
 
 interface PhoneApp {
@@ -29,7 +28,6 @@ const APPS: PhoneApp[] = [
   { id: 'support', name: 'app.support', icon: 'ui_app_support', place: 'grid' },
   { id: 'wallet', name: 'app.wallet', icon: 'ui_app_wallet', place: 'dock', big: true, page: createWalletPage },
   { id: 'mail', name: 'app.mail', icon: 'ui_app_mail', place: 'dock' },
-  { id: 'settings', name: 'app.settings', icon: 'ui_app_settings', place: 'dock', big: true, page: createSettingsPage },
 ];
 
 const PHONE_WINDOW = 'phone';

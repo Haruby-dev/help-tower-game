@@ -8,7 +8,7 @@ import { createHud } from './hud';
 import { createJoystick } from './joystick';
 import { createPhone } from './phone';
 import { createSaves } from './saves';
-import { initSettings } from './settings';
+import { createSettings, initSettings } from './settings';
 
 function createRotatePrompt(uiRoot: HTMLElement): void {
   const gio = characterEntry('gio_idle');
@@ -49,6 +49,7 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   createJoystick(uiRoot);
   createRotatePrompt(uiRoot);
   initSettings(appRoot);
+  createSettings(uiRoot);
   createPhone(uiRoot);
   createSaves(uiRoot);
 }

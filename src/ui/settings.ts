@@ -1,6 +1,7 @@
 import { t } from '../core/i18n';
 import { gameState } from '../core/state';
 import display from '../data/display.json';
+import { stickerIcon } from './pixelArt';
 import { createSaveRow } from './saves';
 
 const STORAGE_KEY = 'lighting-enabled';
@@ -81,9 +82,30 @@ function createZoomRow(): HTMLElement {
   return row;
 }
 
+const isHomeScreenApp = (): boolean =>
+  window.matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches ||
+  (navigator as Navigator & { standalone?: boolean }).standalone === true;
+
+/** iPhone ไม่ให้หน้าเว็บซ่อนแถบ Safari เองได้ ทางเดียวคือเปิดเกมจากไอคอนบนหน้าจอโฮม */
+function createHomeScreenHowTo(): HTMLElement {
+  const box = document.createElement('div');
+  box.id = 'fullscreen-howto';
+  const label = document.createElement('b');
+  label.textContent = t('settings.fullscreen');
+  const steps = document.createElement('ol');
+  steps.className = 'settings-howto';
+  for (const key of ['settings.fullscreen_step1', 'settings.fullscreen_step2', 'settings.fullscreen_step3'] as const) {
+    const step = document.createElement('li');
+    step.textContent = t(key);
+    steps.append(step);
+  }
+  box.append(label, steps);
+  return box;
+}
+
 function createFullscreenRow(appRoot: HTMLElement): HTMLElement | null {
-  // iPhone ไม่รองรับการเต็มจอจากหน้าเว็บ จึงไม่แสดงปุ่มที่กดแล้วไม่เกิดอะไร
-  if (!document.fullscreenEnabled) return null;
+  if (isHomeScreenApp()) return null;
+  if (!document.fullscreenEnabled) return createHomeScreenHowTo();
   const row = document.createElement('div');
   row.className = 'settings-row';
   const label = document.createElement('span');
@@ -117,14 +139,14 @@ async function toggleFullscreen(appRoot: HTMLElement): Promise<void> {
 
 let appRootForPage: HTMLElement | null = null;
 
-/** อ่านค่าที่จำไว้ตั้งแต่เปิดเกม ไม่ต้องรอเปิดโทรศัพท์ */
+/** อ่านค่าที่จำไว้ตั้งแต่เปิดเกม ไม่ต้องรอเปิดหน้าตั้งค่า */
 export function initSettings(appRoot: HTMLElement): void {
   appRootForPage = appRoot;
   gameState.setLightingEnabled(readStoredLighting());
   gameState.setZoomStep(readStoredZoomStep());
 }
 
-export function createSettingsPage(): HTMLElement {
+function createSettingsPage(): HTMLElement {
   const page = document.createElement('div');
   page.className = 'phone-page';
   const title = document.createElement('h2');
@@ -156,4 +178,50 @@ export function createSettingsPage(): HTMLElement {
   const fullscreen = appRootForPage ? createFullscreenRow(appRootForPage) : null;
   if (fullscreen) page.append(fullscreen);
   return page;
+}
+
+const SETTINGS_WINDOW = 'settings';
+
+/** ปุ่มตั้งค่าอยู่มุมขวาบนข้างโทรศัพท์ แยกจากแอปในโทรศัพท์ */
+export function createSettings(uiRoot: HTMLElement): void {
+  const button = document.createElement('button');
+  button.id = 'settings-button';
+  button.type = 'button';
+  button.setAttribute('aria-label', t('ui.settings'));
+  button.append(stickerIcon('ui_app_settings'));
+
+  const backdrop = document.createElement('div');
+  backdrop.id = 'settings-backdrop';
+  backdrop.hidden = true;
+  const panel = document.createElement('div');
+  panel.id = 'settings-window';
+  panel.setAttribute('role', 'dialog');
+  panel.setAttribute('aria-label', t('ui.settings'));
+  const close = document.createElement('button');
+  close.id = 'settings-close';
+  close.type = 'button';
+  close.className = 'phone-tool';
+  close.textContent = '×';
+  close.setAttribute('aria-label', t('ui.close'));
+  backdrop.append(panel);
+  uiRoot.append(button, backdrop);
+
+  const hide = (): void => {
+    if (backdrop.hidden) return;
+    backdrop.hidden = true;
+    gameState.setWindowOpen(SETTINGS_WINDOW, false);
+  };
+  button.addEventListener('click', () => {
+    // สร้างใหม่ทุกครั้งที่เปิด ค่าที่แสดงจึงตรงกับปัจจุบันเสมอ
+    panel.replaceChildren(close, createSettingsPage());
+    backdrop.hidden = false;
+    gameState.setWindowOpen(SETTINGS_WINDOW, true);
+  });
+  close.addEventListener('click', hide);
+  backdrop.addEventListener('click', (event) => {
+    if (event.target === backdrop) hide();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') hide();
+  });
 }

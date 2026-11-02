@@ -1571,6 +1571,16 @@
       "default": 44
     }
   },
+  "ui_run_button_off": {
+    "footY": {
+      "default": 64
+    }
+  },
+  "ui_run_button_on": {
+    "footY": {
+      "default": 64
+    }
+  },
   "ui_joystick_knob_paw": {
     "footY": {
       "default": 22

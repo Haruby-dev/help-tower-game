@@ -94,6 +94,7 @@ canvas {
   place-items: center;
   width: 124px;
   height: 124px;
+  opacity: 0.6;
   pointer-events: auto;
   touch-action: none;
   -webkit-touch-callout: none;
@@ -402,7 +403,7 @@ canvas {
 
 #action-button {
   position: absolute;
-  right: calc(max(12px, env(safe-area-inset-right)) + var(--px) * 58);
+  right: calc(max(16px, env(safe-area-inset-right)) + max(84px, var(--px) * 68) + 8px);
   bottom: max(16px, env(safe-area-inset-bottom));
   min-width: 88px;
   min-height: 48px;
@@ -418,22 +419,31 @@ canvas {
   display: none;
 }
 
+/* พื้นที่กดใหญ่กว่าภาพเล็กน้อย นิ้วโป้งจะได้ไม่พลาด */
 #run-button {
   position: absolute;
-  right: max(12px, env(safe-area-inset-right));
-  bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--px) * 70);
-  width: calc(var(--px) * 50);
-  min-width: 56px;
-  min-height: 44px;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  display: grid;
+  place-items: center;
+  width: max(84px, calc(var(--px) * 68));
+  height: max(84px, calc(var(--px) * 68));
+  padding: 0;
   border: 0;
-  font-size: 14px;
-  font-weight: 700;
+  background: none;
   cursor: pointer;
   pointer-events: auto;
+  touch-action: manipulation;
 }
 
-#run-button[aria-pressed='true'] {
-  background: var(--pink);
+#run-button img {
+  width: calc(var(--px) * 64);
+  height: calc(var(--px) * 64);
+  image-rendering: pixelated;
+}
+
+#run-button:active img {
+  transform: scale(1.06, 0.92);
 }
 
 #rest-curtain {
@@ -483,10 +493,72 @@ canvas {
 }
 
 /* จอล็อกย่อที่มุมจอ */
+#settings-button {
+  position: absolute;
+  top: max(4px, env(safe-area-inset-top));
+  right: calc(max(4px, env(safe-area-inset-right)) + max(56px, var(--px) * 50) + 6px);
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+#settings-backdrop {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(92 48 76 / 40%);
+  pointer-events: auto;
+}
+
+#settings-backdrop[hidden] {
+  display: none;
+}
+
+#settings-window {
+  position: relative;
+  width: min(420px, calc(100vw - 24px));
+  max-height: calc(100% - 12px);
+  overflow-y: auto;
+  padding: 10px 12px;
+  background: #fffafc;
+  touch-action: pan-y;
+  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--outline), 0 calc(var(--px) * 1) 0 0 var(--outline), calc(var(--px) * -1) 0 0 0 var(--outline), calc(var(--px) * 1) 0 0 0 var(--outline);
+}
+
+#settings-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+}
+
+#settings-window h2 {
+  line-height: 44px;
+}
+
+/* จอเตี้ยตอนมีแถบ Safari เอาที่ของวิดเจ็ตจีโอให้แอปครบทุกอันโดยไม่ต้องเลื่อน */
+@media (max-height: 360px) {
+  #phone .widget-gio {
+    display: none;
+  }
+}
+
+.settings-howto {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+}
+
 #phone-button {
   position: absolute;
-  right: max(12px, env(safe-area-inset-right));
-  bottom: max(12px, env(safe-area-inset-bottom));
+  top: max(4px, env(safe-area-inset-top));
+  right: max(4px, env(safe-area-inset-right));
   width: calc(var(--px) * 50);
   height: calc(var(--px) * 66);
   min-width: 56px;
@@ -713,8 +785,9 @@ canvas {
   transition: transform 0.16s steps(4);
 }
 
+/* ปุ่ม 44px กับตัวหนังสือขั้นต่ำไม่ลดตามซูม จอเตี้ยจึงต้องกางกว้างกว่าสัดส่วนซูม */
 #phone[data-fold='unfolded'] {
-  width: min(calc(var(--px) * 396), calc(100vw - 12px));
+  width: min(max(calc(var(--px) * 396), 640px), calc(100vw - 12px));
 }
 
 #phone.is-flipping {

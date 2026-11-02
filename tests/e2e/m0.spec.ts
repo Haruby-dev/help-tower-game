@@ -69,9 +69,7 @@ test('Thai text uses the bundled Mali font', async ({ page }) => {
 
 test('Fullscreen button is at least 44px, or absent where fullscreen is unsupported', async ({ page }) => {
   await openGame(page);
-  await page.locator('#phone-button').click();
-  await page.locator('#lock-open').click();
-  await page.locator('[data-app="settings"]').click();
+  await page.locator('#settings-button').click();
   const button = page.locator('#fullscreen-button');
   if (!(await page.evaluate(() => document.fullscreenEnabled))) {
     await expect(button).toHaveCount(0);

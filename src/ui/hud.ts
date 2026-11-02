@@ -217,12 +217,17 @@ function createRunToggle(uiRoot: HTMLElement): void {
   const button = document.createElement('button');
   button.id = 'run-button';
   button.type = 'button';
-  button.className = 'panel';
-  button.textContent = t('ui.run');
+  button.setAttribute('aria-label', t('ui.run'));
   button.setAttribute('aria-pressed', 'false');
+  const image = document.createElement('img');
+  image.alt = '';
+  image.src = artUrl('ui_run_button_off');
+  new Image().src = artUrl('ui_run_button_on');
+  button.append(image);
   button.addEventListener('click', () => {
     gameState.setRunToggle(!gameState.runToggle);
     button.setAttribute('aria-pressed', String(gameState.runToggle));
+    image.src = artUrl(gameState.runToggle ? 'ui_run_button_on' : 'ui_run_button_off');
   });
   uiRoot.append(button);
 }
