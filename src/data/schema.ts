@@ -204,6 +204,25 @@ const localEntrySchema = z.strictObject({
   /** ภาพต้นไม้ที่ใช้เทียบสีเขียวของบ้าน */
   jade_tone_house_ref: z.string().min(1).optional(),
   currency: z.enum(['coins', 'stars']).optional(),
+  /** แผ่นภาพหลายเฟรม เช่น พืช 4 ระยะ */
+  frame_width: z.number().int().positive().optional(),
+  frame_height: z.number().int().positive().optional(),
+  frames: z.number().int().positive().optional(),
+  frames_meaning: z.array(z.string().min(1)).optional(),
+  name_th: z.string().min(1).optional(),
+  nine_slice: z
+    .strictObject({
+      left: z.number().int().nonnegative(),
+      right: z.number().int().nonnegative(),
+      top: z.number().int().nonnegative(),
+      bottom: z.number().int().nonnegative(),
+      tail: z.string().optional(),
+    })
+    .optional(),
+  skins: z.record(z.string().min(1), z.string().min(1)).optional(),
+  skin_reference: z.string().min(1).optional(),
+  /** ภาพที่มีในชุดส่งมอบแต่ถูกแทนที่แล้ว ห้ามนำมาทำ */
+  not_built: z.string().min(1).optional(),
   /** ยังไม่โหลดตอนเปิดเกม */
   lazy: z.boolean().optional(),
   note: z.string().min(1).optional(),

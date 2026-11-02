@@ -1,0 +1,138 @@
+{
+  "ui_app_album": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/apps/app_album.png",
+    "width": 29,
+    "height": 36,
+    "jade_tone": false,
+    "layer": "ui"
+  },
+  "ui_app_bag": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/apps/app_bag.png",
+    "width": 33,
+    "height": 31,
+    "jade_tone": false,
+    "layer": "ui"
+  },
+  "ui_app_gate": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/apps/app_gate.png",
+    "width": 34,
+    "height": 38,
+    "jade_tone": false,
+    "layer": "ui"
+  },
+  "ui_app_mail": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/apps/app_mail.png",
+    "width": 35,
+    "height": 36,
+    "jade_tone": false,
+    "layer": "ui"
+  },
+  "ui_app_outfit": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/apps/app_outfit.png",
+    "width": 22,
+    "height": 35,
+    "jade_tone": false,
+    "layer": "ui"
+  },
+  "ui_app_pets": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/apps/app_pets.png",
+    "width": 41,
+    "height": 41,
+    "jade_tone": false,
+    "layer": "ui"
+  },
+  "ui_app_recipe": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/apps/app_recipe.png",
+    "width": 26,
+    "height": 32,
+    "jade_tone": false,
+    "layer": "ui"
+  },
+  "ui_app_settings": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/apps/app_settings.png",
+    "width": 36,
+    "height": 36,
+    "jade_tone": false,
+    "layer": "ui"
+  },
+  "ui_app_shop": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/apps/app_shop.png",
+    "width": 41,
+    "height": 38,
+    "jade_tone": false,
+    "layer": "ui"
+  },
+  "ui_app_support": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/apps/app_support.png",
+    "width": 34,
+    "height": 29,
+    "jade_tone": false,
+    "layer": "ui"
+  },
+  "ui_app_wallet": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/apps/app_wallet.png",
+    "width": 37,
+    "height": 27,
+    "jade_tone": false,
+    "layer": "ui"
+  },
+  "ui_joystick_base_cushion": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/joystick_base_cushion.png",
+    "width": 44,
+    "height": 44,
+    "jade_tone": false,
+    "layer": "ui"
+  },
+  "ui_joystick_knob_paw": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/joystick_knob_paw.png",
+    "width": 28,
+    "height": 22,
+    "jade_tone": false,
+    "layer": "ui"
+  },
+  "ui_phone_closed": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/phone_closed.png",
+    "width": 46,
+    "height": 60,
+    "jade_tone": false,
+    "layer": "ui"
+  },
+  "ui_phone_open_frame": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/phone_open_frame.png",
+    "width": 460,
+    "height": 262,
+    "jade_tone": false,
+    "layer": "ui",
+    "note": "drawn at game pixels (fits 640x360); left page = app grid, right page = selected app"
+  },
+  "ui_speech_bubble": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/ui/speech_bubble.png",
+    "width": 24,
+    "height": 17,
+    "jade_tone": false,
+    "layer": "ui",
+    "nine_slice": {
+      "left": 5,
+      "right": 5,
+      "top": 5,
+      "bottom": 5,
+      "tail": "bottom-centre, 3px below body; keep tail unstretched"
+    }
+  }
+}

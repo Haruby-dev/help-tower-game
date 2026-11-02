@@ -34,6 +34,27 @@ describe('project data', () => {
     }
   });
 
+  it('lists every file from the 2 Nov UI and farm packages, without jade tone', () => {
+    const registry = registrySchema.parse(
+      JSON.parse(readFileSync(join(projectRoot, 'assets-src/registry.json'), 'utf8')),
+    );
+    for (const pack of ['ui', 'farm']) {
+      const additions = JSON.parse(
+        readFileSync(join(projectRoot, `assets-src/art_2026-11-02/${pack}/registry_additions.json`), 'utf8'),
+      ) as Record<string, { source: string }>;
+      for (const [name, addition] of Object.entries(additions)) {
+        const entry = registry[name];
+        if (entry?.type !== 'local') throw new Error(`${name} is missing`);
+        expect(entry.source).toBe(addition.source);
+        expect(entry.jade_tone).toBe(false);
+      }
+    }
+    const crop = registry.crop_scallion;
+    expect(crop?.type === 'local' && [crop.width, crop.height, crop.frames]).toEqual([128, 40, 4]);
+    const old = registry.ui_phone_open_frame;
+    expect(old?.type === 'local' && old.not_built).toBeTruthy();
+  });
+
   it('marks the stairs and the rustic decor as not used', () => {
     const registry = registrySchema.parse(
       JSON.parse(readFileSync(join(projectRoot, 'assets-src/registry.json'), 'utf8')),

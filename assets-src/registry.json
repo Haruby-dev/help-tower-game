@@ -3633,5 +3633,651 @@
     "jade_tone": false,
     "lazy": true,
     "note": "หน้าตัวเอกในหน้าจอ ใช้ใน HTML ขยายตามซูมจำนวนเต็มเท่านั้น"
+  },
+  "ui_app_album": {
+    "type": "local",
+    "width": 29,
+    "height": 36,
+    "source": "assets-src/art_2026-11-02/ui/apps/app_album.png",
+    "file": "ui/apps/app_album.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_app_bag": {
+    "type": "local",
+    "width": 33,
+    "height": 31,
+    "source": "assets-src/art_2026-11-02/ui/apps/app_bag.png",
+    "file": "ui/apps/app_bag.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_app_gate": {
+    "type": "local",
+    "width": 34,
+    "height": 38,
+    "source": "assets-src/art_2026-11-02/ui/apps/app_gate.png",
+    "file": "ui/apps/app_gate.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_app_mail": {
+    "type": "local",
+    "width": 35,
+    "height": 36,
+    "source": "assets-src/art_2026-11-02/ui/apps/app_mail.png",
+    "file": "ui/apps/app_mail.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_app_outfit": {
+    "type": "local",
+    "width": 22,
+    "height": 35,
+    "source": "assets-src/art_2026-11-02/ui/apps/app_outfit.png",
+    "file": "ui/apps/app_outfit.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_app_pets": {
+    "type": "local",
+    "width": 41,
+    "height": 41,
+    "source": "assets-src/art_2026-11-02/ui/apps/app_pets.png",
+    "file": "ui/apps/app_pets.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_app_recipe": {
+    "type": "local",
+    "width": 26,
+    "height": 32,
+    "source": "assets-src/art_2026-11-02/ui/apps/app_recipe.png",
+    "file": "ui/apps/app_recipe.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_app_settings": {
+    "type": "local",
+    "width": 36,
+    "height": 36,
+    "source": "assets-src/art_2026-11-02/ui/apps/app_settings.png",
+    "file": "ui/apps/app_settings.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_app_shop": {
+    "type": "local",
+    "width": 41,
+    "height": 38,
+    "source": "assets-src/art_2026-11-02/ui/apps/app_shop.png",
+    "file": "ui/apps/app_shop.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_app_support": {
+    "type": "local",
+    "width": 34,
+    "height": 29,
+    "source": "assets-src/art_2026-11-02/ui/apps/app_support.png",
+    "file": "ui/apps/app_support.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_app_wallet": {
+    "type": "local",
+    "width": 37,
+    "height": 27,
+    "source": "assets-src/art_2026-11-02/ui/apps/app_wallet.png",
+    "file": "ui/apps/app_wallet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_joystick_base_cushion": {
+    "type": "local",
+    "width": 44,
+    "height": 44,
+    "source": "assets-src/art_2026-11-02/ui/joystick_base_cushion.png",
+    "file": "ui/joystick_base_cushion.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_joystick_knob_paw": {
+    "type": "local",
+    "width": 28,
+    "height": 22,
+    "source": "assets-src/art_2026-11-02/ui/joystick_knob_paw.png",
+    "file": "ui/joystick_knob_paw.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_phone_closed": {
+    "type": "local",
+    "width": 46,
+    "height": 60,
+    "source": "assets-src/art_2026-11-02/ui/phone_closed.png",
+    "file": "ui/phone_closed.png",
+    "jade_tone": false,
+    "lazy": true,
+    "not_built": "แทนที่ด้วยโทรศัพท์พับ docs/ui_phone_v3_2026-11-02.md ห้ามนำมาทำ"
+  },
+  "ui_phone_open_frame": {
+    "type": "local",
+    "width": 460,
+    "height": 262,
+    "source": "assets-src/art_2026-11-02/ui/phone_open_frame.png",
+    "file": "ui/phone_open_frame.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "drawn at game pixels (fits 640x360); left page = app grid, right page = selected app",
+    "not_built": "แทนที่ด้วยโทรศัพท์พับ docs/ui_phone_v3_2026-11-02.md ห้ามนำมาทำ"
+  },
+  "ui_speech_bubble": {
+    "type": "local",
+    "width": 24,
+    "height": 17,
+    "source": "assets-src/art_2026-11-02/ui/speech_bubble.png",
+    "file": "ui/speech_bubble.png",
+    "jade_tone": false,
+    "lazy": true,
+    "nine_slice": {
+      "left": 5,
+      "right": 5,
+      "top": 5,
+      "bottom": 5,
+      "tail": "bottom-centre, 3px below body; keep tail unstretched"
+    }
+  },
+  "crop_scallion": {
+    "type": "local",
+    "width": 128,
+    "height": 40,
+    "source": "assets-src/art_2026-11-02/farm/crops/scallion_stages.png",
+    "file": "farm/crops/scallion_stages.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "d5960926",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "ต้นหอม"
+  },
+  "icon_scallion": {
+    "type": "local",
+    "width": 29,
+    "height": 32,
+    "source": "assets-src/art_2026-11-02/farm/icons/scallion.png",
+    "file": "farm/icons/scallion.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "ต้นหอม",
+    "note": "sparkly tower-grown produce icon"
+  },
+  "crop_chili": {
+    "type": "local",
+    "width": 128,
+    "height": 40,
+    "source": "assets-src/art_2026-11-02/farm/crops/chili_stages.png",
+    "file": "farm/crops/chili_stages.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "e7e0e666",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "พริกขี้หนู"
+  },
+  "icon_chili": {
+    "type": "local",
+    "width": 26,
+    "height": 24,
+    "source": "assets-src/art_2026-11-02/farm/icons/chili.png",
+    "file": "farm/icons/chili.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "พริกขี้หนู",
+    "note": "sparkly tower-grown produce icon"
+  },
+  "crop_basil": {
+    "type": "local",
+    "width": 128,
+    "height": 40,
+    "source": "assets-src/art_2026-11-02/farm/crops/basil_stages.png",
+    "file": "farm/crops/basil_stages.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "f052fdf1",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "กะเพรา"
+  },
+  "icon_basil": {
+    "type": "local",
+    "width": 29,
+    "height": 35,
+    "source": "assets-src/art_2026-11-02/farm/icons/basil.png",
+    "file": "farm/icons/basil.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "กะเพรา",
+    "note": "sparkly tower-grown produce icon"
+  },
+  "crop_tomato": {
+    "type": "local",
+    "width": 128,
+    "height": 40,
+    "source": "assets-src/art_2026-11-02/farm/crops/tomato_stages.png",
+    "file": "farm/crops/tomato_stages.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "e75ff47a",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "มะเขือเทศ"
+  },
+  "icon_tomato": {
+    "type": "local",
+    "width": 28,
+    "height": 26,
+    "source": "assets-src/art_2026-11-02/farm/icons/tomato.png",
+    "file": "farm/icons/tomato.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "มะเขือเทศ",
+    "note": "sparkly tower-grown produce icon"
+  },
+  "crop_garlic": {
+    "type": "local",
+    "width": 128,
+    "height": 40,
+    "source": "assets-src/art_2026-11-02/farm/crops/garlic_stages.png",
+    "file": "farm/crops/garlic_stages.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "d8a0cb3c",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "กระเทียม"
+  },
+  "icon_garlic": {
+    "type": "local",
+    "width": 29,
+    "height": 34,
+    "source": "assets-src/art_2026-11-02/farm/icons/garlic.png",
+    "file": "farm/icons/garlic.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "กระเทียม",
+    "note": "sparkly tower-grown produce icon"
+  },
+  "crop_rice": {
+    "type": "local",
+    "width": 128,
+    "height": 40,
+    "source": "assets-src/art_2026-11-02/farm/crops/rice_stages.png",
+    "file": "farm/crops/rice_stages.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "767fe4c4",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "ข้าว"
+  },
+  "icon_rice": {
+    "type": "local",
+    "width": 31,
+    "height": 33,
+    "source": "assets-src/art_2026-11-02/farm/icons/rice.png",
+    "file": "farm/icons/rice.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "ข้าว",
+    "note": "sparkly tower-grown produce icon"
+  },
+  "crop_carrot": {
+    "type": "local",
+    "width": 128,
+    "height": 40,
+    "source": "assets-src/art_2026-11-02/farm/crops/carrot_stages.png",
+    "file": "farm/crops/carrot_stages.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "61964498",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "แครอท"
+  },
+  "icon_carrot": {
+    "type": "local",
+    "width": 30,
+    "height": 36,
+    "source": "assets-src/art_2026-11-02/farm/icons/carrot.png",
+    "file": "farm/icons/carrot.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "แครอท",
+    "note": "sparkly tower-grown produce icon"
+  },
+  "crop_cabbage": {
+    "type": "local",
+    "width": 128,
+    "height": 40,
+    "source": "assets-src/art_2026-11-02/farm/crops/cabbage_stages.png",
+    "file": "farm/crops/cabbage_stages.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "225c9882",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "กะหล่ำปลี"
+  },
+  "icon_cabbage": {
+    "type": "local",
+    "width": 29,
+    "height": 29,
+    "source": "assets-src/art_2026-11-02/farm/icons/cabbage.png",
+    "file": "farm/icons/cabbage.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "กะหล่ำปลี",
+    "note": "sparkly tower-grown produce icon"
+  },
+  "crop_cucumber": {
+    "type": "local",
+    "width": 128,
+    "height": 40,
+    "source": "assets-src/art_2026-11-02/farm/crops/cucumber_stages.png",
+    "file": "farm/crops/cucumber_stages.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "2c3a2302",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "แตงกวา"
+  },
+  "icon_cucumber": {
+    "type": "local",
+    "width": 28,
+    "height": 28,
+    "source": "assets-src/art_2026-11-02/farm/icons/cucumber.png",
+    "file": "farm/icons/cucumber.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "แตงกวา",
+    "note": "sparkly tower-grown produce icon"
+  },
+  "crop_corn": {
+    "type": "local",
+    "width": 128,
+    "height": 40,
+    "source": "assets-src/art_2026-11-02/farm/crops/corn_stages.png",
+    "file": "farm/crops/corn_stages.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "80cb67ee",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "ข้าวโพด"
+  },
+  "icon_corn": {
+    "type": "local",
+    "width": 25,
+    "height": 30,
+    "source": "assets-src/art_2026-11-02/farm/icons/corn.png",
+    "file": "farm/icons/corn.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "ข้าวโพด",
+    "note": "sparkly tower-grown produce icon"
+  },
+  "crop_potato": {
+    "type": "local",
+    "width": 128,
+    "height": 40,
+    "source": "assets-src/art_2026-11-02/farm/crops/potato_stages.png",
+    "file": "farm/crops/potato_stages.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "bf16e4c1",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "มันฝรั่ง"
+  },
+  "icon_potato": {
+    "type": "local",
+    "width": 26,
+    "height": 22,
+    "source": "assets-src/art_2026-11-02/farm/icons/potato.png",
+    "file": "farm/icons/potato.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "มันฝรั่ง",
+    "note": "sparkly tower-grown produce icon"
+  },
+  "crop_pumpkin": {
+    "type": "local",
+    "width": 128,
+    "height": 40,
+    "source": "assets-src/art_2026-11-02/farm/crops/pumpkin_stages.png",
+    "file": "farm/crops/pumpkin_stages.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "7a64ce25",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "ฟักทอง"
+  },
+  "icon_pumpkin": {
+    "type": "local",
+    "width": 28,
+    "height": 30,
+    "source": "assets-src/art_2026-11-02/farm/icons/pumpkin.png",
+    "file": "farm/icons/pumpkin.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "ฟักทอง",
+    "note": "sparkly tower-grown produce icon"
+  },
+  "crop_soybean": {
+    "type": "local",
+    "width": 128,
+    "height": 40,
+    "source": "assets-src/art_2026-11-02/farm/crops/soybean_stages.png",
+    "file": "farm/crops/soybean_stages.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "73845932",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "ถั่วเหลือง"
+  },
+  "icon_soybean": {
+    "type": "local",
+    "width": 28,
+    "height": 29,
+    "source": "assets-src/art_2026-11-02/farm/icons/soybean.png",
+    "file": "farm/icons/soybean.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "ถั่วเหลือง",
+    "note": "sparkly tower-grown produce icon"
+  },
+  "crop_strawberry": {
+    "type": "local",
+    "width": 128,
+    "height": 40,
+    "source": "assets-src/art_2026-11-02/farm/crops/strawberry_stages.png",
+    "file": "farm/crops/strawberry_stages.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "5c3d2f47",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "สตรอว์เบอร์รี"
+  },
+  "icon_strawberry": {
+    "type": "local",
+    "width": 32,
+    "height": 33,
+    "source": "assets-src/art_2026-11-02/farm/icons/strawberry.png",
+    "file": "farm/icons/strawberry.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "สตรอว์เบอร์รี",
+    "note": "sparkly tower-grown produce icon"
+  },
+  "tool_hoe": {
+    "type": "local",
+    "width": 27,
+    "height": 32,
+    "source": "assets-src/art_2026-11-02/farm/tools/hoe.png",
+    "file": "farm/tools/hoe.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "0c7b93d6",
+    "index": 4,
+    "name_th": "จอบ"
+  },
+  "tool_watering_can": {
+    "type": "local",
+    "width": 38,
+    "height": 29,
+    "source": "assets-src/art_2026-11-02/farm/tools/watering_can.png",
+    "file": "farm/tools/watering_can.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "0c7b93d6",
+    "index": 1,
+    "name_th": "บัวรดน้ำ",
+    "skins": {
+      "pink": "shop (Sugar Stars)",
+      "mint": "treasure chest",
+      "lavender": "treasure chest",
+      "yellow": "treasure chest",
+      "peach": "treasure chest",
+      "copper": "reserved for upgrade tier",
+      "gold": "reserved for upgrade tier"
+    },
+    "skin_reference": "docs/level/2026-11-02/can_colors.png"
+  },
+  "tool_sickle": {
+    "type": "local",
+    "width": 22,
+    "height": 30,
+    "source": "assets-src/art_2026-11-02/farm/tools/sickle.png",
+    "file": "farm/tools/sickle.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "0c7b93d6",
+    "index": 4,
+    "name_th": "เคียว"
+  },
+  "tool_seed_bag": {
+    "type": "local",
+    "width": 23,
+    "height": 27,
+    "source": "assets-src/art_2026-11-02/farm/tools/seed_bag.png",
+    "file": "farm/tools/seed_bag.png",
+    "jade_tone": false,
+    "lazy": true,
+    "pixellab_job": "0c7b93d6",
+    "index": 3,
+    "name_th": "ถุงเมล็ด"
   }
 }

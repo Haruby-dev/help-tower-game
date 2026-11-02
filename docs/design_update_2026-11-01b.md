@@ -137,7 +137,9 @@ Dialogue lines are in `docs/dialogue_zone1_draft.json`. They are a draft written
 - Plain outfits are recoloured in code.
 - **Build the character creator** so that adding a hairstyle is just a new registry entry. Use placeholders until the art arrives.
 
-## B11. Phone UI (direction approved, final art not made yet)
+## B11. Phone UI
+> **Update 2026-11-02:** the look of B11 is replaced by `docs/ui_update_2026-11-02.md`. In particular, there is NO coin pill in the top bar; coins are shown in the wallet app only.
+ (direction approved, final art not made yet)
 
 Mockups: `docs/level/2026-11-01/ui12_wallet.png` and `ui10_flip_closed.png`, `ui11_flip_skins.png`.
 

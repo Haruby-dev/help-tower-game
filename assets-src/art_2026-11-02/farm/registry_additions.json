@@ -1,0 +1,402 @@
+{
+  "crop_scallion": {
+    "type": "spritesheet",
+    "source": "assets-src/art_2026-11-02/farm/crops/scallion_stages.png",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "ต้นหอม",
+    "pixellab_job": "d5960926",
+    "jade_tone": false
+  },
+  "icon_scallion": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/icons/scallion.png",
+    "width": 29,
+    "height": 32,
+    "name_th": "ต้นหอม",
+    "note": "sparkly tower-grown produce icon",
+    "jade_tone": false
+  },
+  "crop_chili": {
+    "type": "spritesheet",
+    "source": "assets-src/art_2026-11-02/farm/crops/chili_stages.png",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "พริกขี้หนู",
+    "pixellab_job": "e7e0e666",
+    "jade_tone": false
+  },
+  "icon_chili": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/icons/chili.png",
+    "width": 26,
+    "height": 24,
+    "name_th": "พริกขี้หนู",
+    "note": "sparkly tower-grown produce icon",
+    "jade_tone": false
+  },
+  "crop_basil": {
+    "type": "spritesheet",
+    "source": "assets-src/art_2026-11-02/farm/crops/basil_stages.png",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "กะเพรา",
+    "pixellab_job": "f052fdf1",
+    "jade_tone": false
+  },
+  "icon_basil": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/icons/basil.png",
+    "width": 29,
+    "height": 35,
+    "name_th": "กะเพรา",
+    "note": "sparkly tower-grown produce icon",
+    "jade_tone": false
+  },
+  "crop_tomato": {
+    "type": "spritesheet",
+    "source": "assets-src/art_2026-11-02/farm/crops/tomato_stages.png",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "มะเขือเทศ",
+    "pixellab_job": "e75ff47a",
+    "jade_tone": false
+  },
+  "icon_tomato": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/icons/tomato.png",
+    "width": 28,
+    "height": 26,
+    "name_th": "มะเขือเทศ",
+    "note": "sparkly tower-grown produce icon",
+    "jade_tone": false
+  },
+  "crop_garlic": {
+    "type": "spritesheet",
+    "source": "assets-src/art_2026-11-02/farm/crops/garlic_stages.png",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "กระเทียม",
+    "pixellab_job": "d8a0cb3c",
+    "jade_tone": false
+  },
+  "icon_garlic": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/icons/garlic.png",
+    "width": 29,
+    "height": 34,
+    "name_th": "กระเทียม",
+    "note": "sparkly tower-grown produce icon",
+    "jade_tone": false
+  },
+  "crop_rice": {
+    "type": "spritesheet",
+    "source": "assets-src/art_2026-11-02/farm/crops/rice_stages.png",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "ข้าว",
+    "pixellab_job": "767fe4c4",
+    "jade_tone": false
+  },
+  "icon_rice": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/icons/rice.png",
+    "width": 31,
+    "height": 33,
+    "name_th": "ข้าว",
+    "note": "sparkly tower-grown produce icon",
+    "jade_tone": false
+  },
+  "crop_carrot": {
+    "type": "spritesheet",
+    "source": "assets-src/art_2026-11-02/farm/crops/carrot_stages.png",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "แครอท",
+    "pixellab_job": "61964498",
+    "jade_tone": false
+  },
+  "icon_carrot": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/icons/carrot.png",
+    "width": 30,
+    "height": 36,
+    "name_th": "แครอท",
+    "note": "sparkly tower-grown produce icon",
+    "jade_tone": false
+  },
+  "crop_cabbage": {
+    "type": "spritesheet",
+    "source": "assets-src/art_2026-11-02/farm/crops/cabbage_stages.png",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "กะหล่ำปลี",
+    "pixellab_job": "225c9882",
+    "jade_tone": false
+  },
+  "icon_cabbage": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/icons/cabbage.png",
+    "width": 29,
+    "height": 29,
+    "name_th": "กะหล่ำปลี",
+    "note": "sparkly tower-grown produce icon",
+    "jade_tone": false
+  },
+  "crop_cucumber": {
+    "type": "spritesheet",
+    "source": "assets-src/art_2026-11-02/farm/crops/cucumber_stages.png",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "แตงกวา",
+    "pixellab_job": "2c3a2302",
+    "jade_tone": false
+  },
+  "icon_cucumber": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/icons/cucumber.png",
+    "width": 28,
+    "height": 28,
+    "name_th": "แตงกวา",
+    "note": "sparkly tower-grown produce icon",
+    "jade_tone": false
+  },
+  "crop_corn": {
+    "type": "spritesheet",
+    "source": "assets-src/art_2026-11-02/farm/crops/corn_stages.png",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "ข้าวโพด",
+    "pixellab_job": "80cb67ee",
+    "jade_tone": false
+  },
+  "icon_corn": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/icons/corn.png",
+    "width": 25,
+    "height": 30,
+    "name_th": "ข้าวโพด",
+    "note": "sparkly tower-grown produce icon",
+    "jade_tone": false
+  },
+  "crop_potato": {
+    "type": "spritesheet",
+    "source": "assets-src/art_2026-11-02/farm/crops/potato_stages.png",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "มันฝรั่ง",
+    "pixellab_job": "bf16e4c1",
+    "jade_tone": false
+  },
+  "icon_potato": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/icons/potato.png",
+    "width": 26,
+    "height": 22,
+    "name_th": "มันฝรั่ง",
+    "note": "sparkly tower-grown produce icon",
+    "jade_tone": false
+  },
+  "crop_pumpkin": {
+    "type": "spritesheet",
+    "source": "assets-src/art_2026-11-02/farm/crops/pumpkin_stages.png",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "ฟักทอง",
+    "pixellab_job": "7a64ce25",
+    "jade_tone": false
+  },
+  "icon_pumpkin": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/icons/pumpkin.png",
+    "width": 28,
+    "height": 30,
+    "name_th": "ฟักทอง",
+    "note": "sparkly tower-grown produce icon",
+    "jade_tone": false
+  },
+  "crop_soybean": {
+    "type": "spritesheet",
+    "source": "assets-src/art_2026-11-02/farm/crops/soybean_stages.png",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "ถั่วเหลือง",
+    "pixellab_job": "73845932",
+    "jade_tone": false
+  },
+  "icon_soybean": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/icons/soybean.png",
+    "width": 28,
+    "height": 29,
+    "name_th": "ถั่วเหลือง",
+    "note": "sparkly tower-grown produce icon",
+    "jade_tone": false
+  },
+  "crop_strawberry": {
+    "type": "spritesheet",
+    "source": "assets-src/art_2026-11-02/farm/crops/strawberry_stages.png",
+    "frame_width": 32,
+    "frame_height": 40,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ],
+    "name_th": "สตรอว์เบอร์รี",
+    "pixellab_job": "5c3d2f47",
+    "jade_tone": false
+  },
+  "icon_strawberry": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/icons/strawberry.png",
+    "width": 32,
+    "height": 33,
+    "name_th": "สตรอว์เบอร์รี",
+    "note": "sparkly tower-grown produce icon",
+    "jade_tone": false
+  },
+  "tool_hoe": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/tools/hoe.png",
+    "width": 27,
+    "height": 32,
+    "name_th": "จอบ",
+    "pixellab_job": "0c7b93d6",
+    "candidate": 4,
+    "jade_tone": false
+  },
+  "tool_watering_can": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/tools/watering_can.png",
+    "width": 38,
+    "height": 29,
+    "name_th": "บัวรดน้ำ",
+    "pixellab_job": "0c7b93d6",
+    "candidate": 1,
+    "jade_tone": false,
+    "skins": {
+      "pink": "shop (Sugar Stars)",
+      "mint": "treasure chest",
+      "lavender": "treasure chest",
+      "yellow": "treasure chest",
+      "peach": "treasure chest",
+      "copper": "reserved for upgrade tier",
+      "gold": "reserved for upgrade tier"
+    },
+    "skin_reference": "docs/level/2026-11-02/can_colors.png"
+  },
+  "tool_sickle": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/tools/sickle.png",
+    "width": 22,
+    "height": 30,
+    "name_th": "เคียว",
+    "pixellab_job": "0c7b93d6",
+    "candidate": 4,
+    "jade_tone": false
+  },
+  "tool_seed_bag": {
+    "type": "image",
+    "source": "assets-src/art_2026-11-02/farm/tools/seed_bag.png",
+    "width": 23,
+    "height": 27,
+    "name_th": "ถุงเมล็ด",
+    "pixellab_job": "0c7b93d6",
+    "candidate": 3,
+    "jade_tone": false
+  }
+}

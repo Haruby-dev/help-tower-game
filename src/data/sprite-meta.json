@@ -1510,5 +1510,245 @@
     "footY": {
       "default": 30
     }
+  },
+  "ui_app_album": {
+    "footY": {
+      "default": 36
+    }
+  },
+  "ui_app_bag": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "ui_app_gate": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "ui_app_mail": {
+    "footY": {
+      "default": 36
+    }
+  },
+  "ui_app_outfit": {
+    "footY": {
+      "default": 35
+    }
+  },
+  "ui_app_pets": {
+    "footY": {
+      "default": 41
+    }
+  },
+  "ui_app_recipe": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "ui_app_settings": {
+    "footY": {
+      "default": 36
+    }
+  },
+  "ui_app_shop": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "ui_app_support": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "ui_app_wallet": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "ui_joystick_base_cushion": {
+    "footY": {
+      "default": 44
+    }
+  },
+  "ui_joystick_knob_paw": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "ui_phone_closed": {
+    "footY": {
+      "default": 59
+    }
+  },
+  "ui_phone_open_frame": {
+    "footY": {
+      "default": 260
+    }
+  },
+  "ui_speech_bubble": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "crop_scallion": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_scallion": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "crop_chili": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_chili": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "crop_basil": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_basil": {
+    "footY": {
+      "default": 35
+    }
+  },
+  "crop_tomato": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_tomato": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "crop_garlic": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_garlic": {
+    "footY": {
+      "default": 34
+    }
+  },
+  "crop_rice": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_rice": {
+    "footY": {
+      "default": 33
+    }
+  },
+  "crop_carrot": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_carrot": {
+    "footY": {
+      "default": 36
+    }
+  },
+  "crop_cabbage": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_cabbage": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "crop_cucumber": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_cucumber": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "crop_corn": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_corn": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "crop_potato": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_potato": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "crop_pumpkin": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_pumpkin": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "crop_soybean": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_soybean": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "crop_strawberry": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "icon_strawberry": {
+    "footY": {
+      "default": 33
+    }
+  },
+  "tool_hoe": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "tool_watering_can": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "tool_sickle": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "tool_seed_bag": {
+    "footY": {
+      "default": 27
+    }
   }
 }
