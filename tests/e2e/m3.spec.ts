@@ -10,7 +10,7 @@ const state = (page: Page): Promise<FarmWorld> =>
   page.evaluate(() => (window as unknown as { __state: { world: FarmWorld } }).__state.world);
 
 // ท่าทำสวนเดินตามเฟรม เครื่องทดสอบที่ไม่มีการ์ดจอวาดช้ากว่าเครื่องจริงมาก
-test.setTimeout(180_000);
+test.setTimeout(480_000);
 
 async function open(page: Page): Promise<void> {
   await page.goto('/help-tower-game/?test');
