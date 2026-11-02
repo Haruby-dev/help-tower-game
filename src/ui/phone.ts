@@ -35,6 +35,7 @@ const PHONE_WINDOW = 'phone';
 const FLIP_MS = 160;
 const SWIPE_UP_PX = 30;
 const WEATHER_ICON = 'ui_weather_sun';
+const CASE_ART = 'ui_v3_case_back_pink';
 const LOCK_CATS = ['ui_cat_orange', 'ui_cat_calico', 'ui_cat_gio', 'ui_cat_grey'];
 const MINI_CATS = ['ui_cat_orange', 'ui_cat_gio'];
 
@@ -52,7 +53,7 @@ const art = (id: string, className: string): HTMLImageElement => {
   return image;
 };
 
-const punchHole = (): HTMLImageElement => art('ui_punch_hole', 'punch-hole');
+const punchHole = (): HTMLImageElement => art('ui_v3_punch_hole', 'punch-hole');
 
 function placeholderPage(app: PhoneApp): HTMLElement {
   const page = element('div', 'phone-page');
@@ -93,7 +94,7 @@ function createLock(): { root: HTMLElement; time: HTMLElement; date: HTMLElement
   open.id = 'lock-open';
   open.type = 'button';
   open.setAttribute('aria-label', t('phone.unlock'));
-  open.append(art('ui_joystick_knob_paw', 'lock__paw'));
+  open.append(art('ui_v3_paw_button', 'lock__paw'));
   const top = element('div', 'lock__top');
   top.append(date, art(WEATHER_ICON, 'lock__sun'));
   root.append(top, time, weather, card, open);
@@ -189,13 +190,10 @@ function createStuckWidget(): { root: HTMLElement; update: (world: World) => voi
 function createBack(): { root: HTMLElement; flip: HTMLButtonElement } {
   const root = element('div', 'phone-back');
   root.id = 'phone-back-side';
-  const cameras = element('div', 'phone-back__cameras');
-  cameras.append(art('ui_phone_camera', 'phone-back__camera'), art('ui_phone_camera', 'phone-back__camera'));
-  const face = element('p', 'phone-back__face', 'ˈwˈ');
   const name = element('small', 'phone-back__name', t('phone.case_default'));
   const flip = element('button', 'phone-tool', t('phone.flip_back'));
   flip.type = 'button';
-  root.append(cameras, face, name, flip);
+  root.append(art(CASE_ART, 'phone-back__case'), name, flip);
   return { root, flip };
 }
 
@@ -214,7 +212,7 @@ export function createPhone(uiRoot: HTMLElement): void {
   phone.setAttribute('role', 'dialog');
   phone.setAttribute('aria-label', t('phone.open'));
   phone.hidden = true;
-  phone.append(art('ui_phone_ear', 'phone-ear phone-ear--left'), art('ui_phone_ear', 'phone-ear phone-ear--right'));
+  phone.append(art('ui_v3_phone_ear', 'phone-ear phone-ear--left'), art('ui_v3_phone_ear', 'phone-ear phone-ear--right'));
 
   const front = element('div', 'phone-front');
   const bar = element('div', 'phone-bar');

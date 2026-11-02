@@ -13,6 +13,7 @@ import {
   growFarm,
   isAsleep,
   isReady,
+  isWithered,
   stageOf,
   type FarmAction,
 } from '../../src/systems/farm';
@@ -188,5 +189,31 @@ describe('save', () => {
     expect(parsed?.world.day).toBe(9);
     expect(parsed?.world.farm.plots).toHaveLength(16);
     expect(parsed?.world.bag).toEqual(newWorld().bag);
+  });
+});
+
+describe('regrow lifetime', () => {
+  function pick(world: World, days: number): World {
+    let next = world;
+    for (let day = 0; day < days; day += 1) next = sleep(act(next, 'water'));
+    return act(next, 'harvest');
+  }
+
+  it('gives 3 then 2, 2, 2 and then withers, for 9 in all', () => {
+    let world = act(growUntilReady(planted('chili')), 'harvest');
+    for (let round = 0; round < 3; round += 1) world = pick(world, 3);
+    expect(countOf(world.bag, 'produce_chili')).toBe(9);
+    expect(isWithered(plot0(world))).toBe(true);
+    expect(isReady(plot0(world))).toBe(false);
+    expect(isAsleep(plot0(world))).toBe(false);
+    expect(actionFor(plot0(world), 'can', null, world.bag)).toBeNull();
+    expect(actionFor(plot0(world), 'sickle', null, world.bag)).toBeNull();
+    expect(actionFor(plot0(world), 'hoe', null, world.bag)).toBe('dig');
+    expect(plot0(act(world, 'dig')).crop).toBeNull();
+  });
+
+  it('uses the new economy prices', () => {
+    expect(crops.scallion).toMatchObject({ sellPrice: 8, seedPrice: null, regrowTimes: 0 });
+    expect(crops.corn).toMatchObject({ sellPrice: 18, seedPrice: 65, regrowTimes: 3 });
   });
 });

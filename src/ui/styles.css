@@ -1662,3 +1662,141 @@ canvas {
 .seed-choice small {
   font-size: 10px;
 }
+
+/* ภาพโทรศัพท์จริง v3 จากฝั่งวางแผน เขียนทับกรอบชั่วคราว */
+#phone {
+  border: 0;
+  border-image: none;
+  background: none;
+  padding: calc(var(--px) * 10);
+}
+
+/* พื้นจอตัดมุมอยู่ใต้กรอบ กรอบกลางโปร่งจึงวาดทับเนื้อหาเป็นชั้นบนสุด */
+#phone::before {
+  position: absolute;
+  inset: calc(var(--px) * 4);
+  background: #f3dff2;
+  content: '';
+}
+
+#phone::after,
+#phone[data-fold='unfolded']::after {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: auto;
+  border: calc(var(--px) * 1) solid transparent;
+  border-image: url('/assets/ui/phone_v3/phone_case_9slice.png') 12 / calc(var(--px) * 12) stretch;
+  background: none;
+  content: '';
+  pointer-events: none;
+}
+
+.phone-front {
+  position: relative;
+  z-index: 1;
+}
+
+#phone[data-fold='unfolded'] .phone-front::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: calc(var(--px) * 1);
+  background: #e6cfe6;
+  content: '';
+  pointer-events: none;
+}
+
+.phone-ear {
+  top: calc(var(--px) * -9);
+  width: calc(var(--px) * 17);
+  height: calc(var(--px) * 11);
+}
+
+.phone-ear--left { left: calc(var(--px) * 22); }
+.phone-ear--right { right: calc(var(--px) * 22); }
+
+.widget-date,
+.widget-tasks,
+.widget-calendar,
+.phone-dock,
+.phone-content,
+.wallet-entry,
+.lock__card {
+  border-image: url('/assets/ui/phone_v3/note_card_9slice.png') 6 fill / calc(var(--px) * 6) stretch;
+}
+
+/* หลังเครื่องเป็นภาพเดียวทั้งใบ รวมหู กล้อง และสายห้อย */
+#phone[data-side='back']::before,
+#phone[data-side='back']::after,
+#phone[data-side='back'] .phone-ear {
+  display: none;
+}
+
+#phone[data-side='back'] .phone-back {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: none;
+  clip-path: none;
+}
+
+.phone-back__case {
+  width: calc(var(--px) * 111);
+  height: calc(var(--px) * 140);
+}
+
+.phone-back__name {
+  position: static;
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 1px 0 #5c304c, -1px 0 #5c304c, 0 1px #5c304c, 0 -1px #5c304c;
+}
+
+.phone-back .phone-tool {
+  position: static;
+}
+
+/* จอย่อและจอล็อกใช้วอลเปเปอร์ขนาดจริงกับขอบครีม */
+#phone-button::after,
+#lock-screen::after {
+  border-image: url('/assets/ui/phone_v3/lock_rim_9slice.png') 6 / calc(var(--px) * 6) stretch;
+}
+
+.mini__screen,
+#lock-screen::before {
+  background: url('/assets/ui/phone_v3/wallpaper_sky.png') center top / calc(var(--px) * 108) calc(var(--px) * 138) no-repeat #dfe2f6;
+  image-rendering: pixelated;
+}
+
+#lock-screen {
+  width: calc(var(--px) * 116);
+  height: calc(var(--px) * 146);
+}
+
+.lock__cat--1 { top: calc(var(--px) * 66); right: calc(var(--px) * 8); transform: scaleX(-1); }
+.lock__cat--2 { top: calc(var(--px) * 78); left: calc(var(--px) * 8); }
+.lock__cat--3 { top: calc(var(--px) * 80); left: calc(var(--px) * 60); transform: scaleX(-1); }
+
+#lock-open {
+  border: 0;
+  border-image: none;
+  background: none;
+}
+
+#lock-open .pixel-img {
+  width: calc(var(--px) * 16);
+  height: calc(var(--px) * 16);
+}
+
+/* รอยพับอยู่ระหว่างหน้าซ้ายกับขวา ไม่พาดทับตัวหนังสือ */
+#phone[data-fold='unfolded'] .phone-front::after {
+  display: none;
+}
+
+#phone[data-fold='unfolded'] .phone-extra {
+  border-left: 1px solid #e6cfe6;
+}

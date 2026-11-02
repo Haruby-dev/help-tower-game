@@ -187,7 +187,12 @@ export const cropsSchema = z.record(
     growDays: z.number().int().positive(),
     regrowDays: z.number().int().positive().nullable(),
     firstYield: z.number().int().positive(),
+    /** เก็บซ้ำได้กี่ครั้งหลังเก็บครั้งแรก ครบแล้วต้นเหี่ยว */
+    regrowTimes: z.number().int().nonnegative(),
     regrowYield: z.number().int().positive().nullable(),
+    sellPrice: z.number().int().positive(),
+    /** null คือไม่ขายในร้าน ได้เมล็ดจากการแปลงผลผลิตเท่านั้น */
+    seedPrice: z.number().int().positive().nullable(),
   }),
 );
 

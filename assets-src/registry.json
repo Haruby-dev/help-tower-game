@@ -3823,57 +3823,12 @@
     "jade_tone": false,
     "lazy": true
   },
-  "ui_card_white": {
-    "type": "local",
-    "width": 12,
-    "height": 12,
-    "source": "assets-src/art_2026-11-02/ui/phone/card_white.png",
-    "file": "ui/phone/card_white.png",
-    "jade_tone": false,
-    "lazy": true
-  },
-  "ui_phone_camera": {
-    "type": "local",
-    "width": 12,
-    "height": 12,
-    "source": "assets-src/art_2026-11-02/ui/phone/phone_camera.png",
-    "file": "ui/phone/phone_camera.png",
-    "jade_tone": false,
-    "lazy": true
-  },
-  "ui_phone_ear": {
-    "type": "local",
-    "width": 9,
-    "height": 7,
-    "source": "assets-src/art_2026-11-02/ui/phone/phone_ear.png",
-    "file": "ui/phone/phone_ear.png",
-    "jade_tone": false,
-    "lazy": true
-  },
   "ui_phone_frame": {
     "type": "local",
     "width": 32,
     "height": 32,
     "source": "assets-src/art_2026-11-02/ui/phone/phone_frame.png",
     "file": "ui/phone/phone_frame.png",
-    "jade_tone": false,
-    "lazy": true
-  },
-  "ui_phone_frame_cream": {
-    "type": "local",
-    "width": 16,
-    "height": 16,
-    "source": "assets-src/art_2026-11-02/ui/phone/phone_frame_cream.png",
-    "file": "ui/phone/phone_frame_cream.png",
-    "jade_tone": false,
-    "lazy": true
-  },
-  "ui_punch_hole": {
-    "type": "local",
-    "width": 5,
-    "height": 5,
-    "source": "assets-src/art_2026-11-02/ui/phone/punch_hole.png",
-    "file": "ui/phone/punch_hole.png",
     "jade_tone": false,
     "lazy": true
   },
@@ -4409,81 +4364,73 @@
     "type": "local",
     "width": 25,
     "height": 24,
-    "source": "assets-src/art_2026-11-02/ui_placeholder/weather_sun.png",
-    "file": "ui/placeholder/weather_sun.png",
+    "source": "public/assets/ui/phone_v3/weather_sun.png",
+    "file": "ui/phone_v3/weather_sun.png",
     "jade_tone": false,
-    "lazy": true,
-    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+    "lazy": true
   },
   "ui_weather_cloud": {
     "type": "local",
     "width": 25,
     "height": 18,
-    "source": "assets-src/art_2026-11-02/ui_placeholder/weather_cloud.png",
-    "file": "ui/placeholder/weather_cloud.png",
+    "source": "public/assets/ui/phone_v3/weather_cloud.png",
+    "file": "ui/phone_v3/weather_cloud.png",
     "jade_tone": false,
-    "lazy": true,
-    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+    "lazy": true
   },
   "ui_weather_rain": {
     "type": "local",
     "width": 25,
     "height": 22,
-    "source": "assets-src/art_2026-11-02/ui_placeholder/weather_rain.png",
-    "file": "ui/placeholder/weather_rain.png",
+    "source": "public/assets/ui/phone_v3/weather_rain.png",
+    "file": "ui/phone_v3/weather_rain.png",
     "jade_tone": false,
-    "lazy": true,
-    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+    "lazy": true
   },
   "ui_weather_storm": {
     "type": "local",
     "width": 25,
     "height": 22,
-    "source": "assets-src/art_2026-11-02/ui_placeholder/weather_storm.png",
-    "file": "ui/placeholder/weather_storm.png",
+    "source": "public/assets/ui/phone_v3/weather_storm.png",
+    "file": "ui/phone_v3/weather_storm.png",
     "jade_tone": false,
-    "lazy": true,
-    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+    "lazy": true
   },
   "ui_cat_orange": {
     "type": "local",
     "width": 19,
     "height": 15,
-    "source": "assets-src/art_2026-11-02/ui_placeholder/cat_orange.png",
-    "file": "ui/placeholder/cat_orange.png",
+    "source": "public/assets/ui/phone_v3/cat_orange.png",
+    "file": "ui/phone_v3/cat_orange.png",
     "jade_tone": false,
-    "lazy": true,
-    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+    "lazy": true
   },
   "ui_cat_calico": {
     "type": "local",
     "width": 19,
     "height": 15,
-    "source": "assets-src/art_2026-11-02/ui_placeholder/cat_calico.png",
-    "file": "ui/placeholder/cat_calico.png",
+    "source": "public/assets/ui/phone_v3/cat_calico.png",
+    "file": "ui/phone_v3/cat_calico.png",
     "jade_tone": false,
-    "lazy": true,
-    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+    "lazy": true
   },
   "ui_cat_gio": {
     "type": "local",
     "width": 19,
     "height": 15,
-    "source": "assets-src/art_2026-11-02/ui_placeholder/cat_gio.png",
-    "file": "ui/placeholder/cat_gio.png",
+    "source": "public/assets/ui/phone_v3/cat_gio.png",
+    "file": "ui/phone_v3/cat_gio.png",
     "jade_tone": false,
-    "lazy": true,
-    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+    "lazy": true
   },
   "ui_cat_grey": {
     "type": "local",
     "width": 19,
     "height": 15,
-    "source": "assets-src/art_2026-11-02/ui_placeholder/cat_grey.png",
-    "file": "ui/placeholder/cat_grey.png",
+    "source": "public/assets/ui/phone_v3/cat_grey.png",
+    "file": "ui/phone_v3/cat_grey.png",
     "jade_tone": false,
-    "lazy": true,
-    "note": "ของแทนชั่วคราว ตัดจาก docs/level/2026-11-02/ui33_lock_v2.png เปลี่ยนเป็นภาพจริงด้วยการแก้ source"
+    "lazy": true
   },
   "seed_basil": {
     "type": "local",
@@ -4756,5 +4703,196 @@
     "frame_width": 88,
     "frame_height": 88,
     "frames": 9
+  },
+  "ui_v3_case_back_pink": {
+    "type": "local",
+    "width": 111,
+    "height": 140,
+    "source": "public/assets/ui/phone_v3/case_back_pink.png",
+    "file": "ui/phone_v3/case_back_pink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_v3_case_back_gio": {
+    "type": "local",
+    "width": 111,
+    "height": 140,
+    "source": "public/assets/ui/phone_v3/case_back_gio.png",
+    "file": "ui/phone_v3/case_back_gio.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_v3_case_back_straw": {
+    "type": "local",
+    "width": 111,
+    "height": 140,
+    "source": "public/assets/ui/phone_v3/case_back_straw.png",
+    "file": "ui/phone_v3/case_back_straw.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_v3_case_back_mint": {
+    "type": "local",
+    "width": 111,
+    "height": 140,
+    "source": "public/assets/ui/phone_v3/case_back_mint.png",
+    "file": "ui/phone_v3/case_back_mint.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_v3_wallpaper_sky": {
+    "type": "local",
+    "width": 108,
+    "height": 138,
+    "source": "public/assets/ui/phone_v3/wallpaper_sky.png",
+    "file": "ui/phone_v3/wallpaper_sky.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_v3_wallpaper_gio": {
+    "type": "local",
+    "width": 108,
+    "height": 138,
+    "source": "public/assets/ui/phone_v3/wallpaper_gio.png",
+    "file": "ui/phone_v3/wallpaper_gio.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_v3_wallpaper_sky_wide": {
+    "type": "local",
+    "width": 216,
+    "height": 138,
+    "source": "public/assets/ui/phone_v3/wallpaper_sky_wide.png",
+    "file": "ui/phone_v3/wallpaper_sky_wide.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_v3_wallpaper_gio_wide": {
+    "type": "local",
+    "width": 216,
+    "height": 138,
+    "source": "public/assets/ui/phone_v3/wallpaper_gio_wide.png",
+    "file": "ui/phone_v3/wallpaper_gio_wide.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_v3_phone_case_9slice": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/phone_v3/phone_case_9slice.png",
+    "file": "ui/phone_v3/phone_case_9slice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_v3_lock_rim_9slice": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/phone_v3/lock_rim_9slice.png",
+    "file": "ui/phone_v3/lock_rim_9slice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_v3_note_card_9slice": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/phone_v3/note_card_9slice.png",
+    "file": "ui/phone_v3/note_card_9slice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_v3_phone_ear": {
+    "type": "local",
+    "width": 17,
+    "height": 11,
+    "source": "public/assets/ui/phone_v3/phone_ear.png",
+    "file": "ui/phone_v3/phone_ear.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_v3_phone_camera": {
+    "type": "local",
+    "width": 11,
+    "height": 11,
+    "source": "public/assets/ui/phone_v3/phone_camera.png",
+    "file": "ui/phone_v3/phone_camera.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_v3_punch_hole": {
+    "type": "local",
+    "width": 5,
+    "height": 5,
+    "source": "public/assets/ui/phone_v3/punch_hole.png",
+    "file": "ui/phone_v3/punch_hole.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_v3_paw_button": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/phone_v3/paw_button.png",
+    "file": "ui/phone_v3/paw_button.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "withered_chili": {
+    "type": "local",
+    "width": 32,
+    "height": 40,
+    "source": "public/assets/farm/crops/withered/withered_chili.png",
+    "file": "farm/crops/withered/withered_chili.png",
+    "jade_tone": false
+  },
+  "withered_basil": {
+    "type": "local",
+    "width": 32,
+    "height": 40,
+    "source": "public/assets/farm/crops/withered/withered_basil.png",
+    "file": "farm/crops/withered/withered_basil.png",
+    "jade_tone": false
+  },
+  "withered_tomato": {
+    "type": "local",
+    "width": 32,
+    "height": 40,
+    "source": "public/assets/farm/crops/withered/withered_tomato.png",
+    "file": "farm/crops/withered/withered_tomato.png",
+    "jade_tone": false
+  },
+  "withered_cucumber": {
+    "type": "local",
+    "width": 32,
+    "height": 40,
+    "source": "public/assets/farm/crops/withered/withered_cucumber.png",
+    "file": "farm/crops/withered/withered_cucumber.png",
+    "jade_tone": false
+  },
+  "withered_corn": {
+    "type": "local",
+    "width": 32,
+    "height": 40,
+    "source": "public/assets/farm/crops/withered/withered_corn.png",
+    "file": "farm/crops/withered/withered_corn.png",
+    "jade_tone": false
+  },
+  "withered_soybean": {
+    "type": "local",
+    "width": 32,
+    "height": 40,
+    "source": "public/assets/farm/crops/withered/withered_soybean.png",
+    "file": "farm/crops/withered/withered_soybean.png",
+    "jade_tone": false
+  },
+  "withered_strawberry": {
+    "type": "local",
+    "width": 32,
+    "height": 40,
+    "source": "public/assets/farm/crops/withered/withered_strawberry.png",
+    "file": "farm/crops/withered/withered_strawberry.png",
+    "jade_tone": false
   }
 }

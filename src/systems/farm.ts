@@ -22,10 +22,18 @@ function cropInfo(id: string): Crops[string] {
   return info;
 }
 
-export const isReady = (plot: PlotState): boolean => plot.crop !== null && plot.crop.daysGrown >= cropInfo(plot.crop.id).growDays;
+/** เก็บครบรอบแล้วต้นเหี่ยว ต้องใช้จอบเคลียร์ */
+export const isWithered = (plot: PlotState): boolean => {
+  if (!plot.crop) return false;
+  const { regrowDays, regrowTimes } = cropInfo(plot.crop.id);
+  return regrowDays !== null && plot.crop.harvests > regrowTimes;
+};
+
+export const isReady = (plot: PlotState): boolean =>
+  plot.crop !== null && !isWithered(plot) && plot.crop.daysGrown >= cropInfo(plot.crop.id).growDays;
 
 /** พืชที่ยังไม่ได้น้ำวันนี้หลับอยู่ ผู้เล่นจะได้เห็นว่าแปลงไหนยังไม่ได้รด */
-export const isAsleep = (plot: PlotState): boolean => plot.crop !== null && !plot.watered && !isReady(plot);
+export const isAsleep = (plot: PlotState): boolean => plot.crop !== null && !plot.watered && !isReady(plot) && !isWithered(plot);
 
 /** เวลาโตแบ่งเท่ากัน 4 ระยะ เฟรมสุดท้ายคือพร้อมเก็บ */
 export function stageOf(plot: PlotState): number {
@@ -40,7 +48,7 @@ export function growFarm(farm: Farm): Farm {
     plots: farm.plots.map((plot) => ({
       ...plot,
       watered: false,
-      crop: plot.crop && plot.watered && !isReady(plot) ? { ...plot.crop, daysGrown: plot.crop.daysGrown + 1 } : plot.crop,
+      crop: plot.crop && plot.watered && !isReady(plot) && !isWithered(plot) ? { ...plot.crop, daysGrown: plot.crop.daysGrown + 1 } : plot.crop,
     })),
   };
 }
@@ -99,7 +107,7 @@ export function actionFor(plot: PlotState, tool: Tool, seed: string | null, bag:
     return plot.tilled ? null : 'till';
   }
   if (tool === 'can') {
-    if (!plot.tilled || plot.watered || isReady(plot)) return null;
+    if (!plot.tilled || plot.watered || isReady(plot) || isWithered(plot)) return null;
     return 'water';
   }
   if (tool === 'sickle') return isReady(plot) ? 'harvest' : null;

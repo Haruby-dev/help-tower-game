@@ -122,3 +122,19 @@ test('a full bag leaves the produce on the plot and the player says so', async (
   await expect(page.locator('#player-bubble')).toContainText('กระเป๋าเต็ม');
   expect((await plot0(page)).crop?.id).toBe('scallion');
 });
+
+test('a withered plant clears with the hoe without asking', async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const s = (window as unknown as { __state: { world: FarmWorld; setWorld(w: unknown): void } }).__state;
+    const plots = s.world.farm.plots.map((plot, index) =>
+      index === 0 ? { tilled: true, watered: false, crop: { id: 'chili', daysGrown: 2, harvests: 4 } } : plot,
+    );
+    s.setWorld({ ...s.world, farm: { plots } });
+  });
+  await standOnFirstPlot(page);
+  await page.locator('[data-tool="hoe"]').click();
+  await page.locator('#action-button').click();
+  await expect(page.locator('#dig-confirm')).toBeHidden();
+  await expect.poll(async () => (await plot0(page)).crop, { timeout: 30000 }).toBeNull();
+});

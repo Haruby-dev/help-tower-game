@@ -3,98 +3,140 @@
     "source": "start",
     "growDays": 3,
     "regrowDays": null,
+    "regrowTimes": 0,
     "firstYield": 3,
-    "regrowYield": null
+    "regrowYield": null,
+    "sellPrice": 8,
+    "seedPrice": null
   },
   "chili": {
     "source": "start",
     "growDays": 5,
     "regrowDays": 3,
+    "regrowTimes": 3,
     "firstYield": 3,
-    "regrowYield": 2
+    "regrowYield": 2,
+    "sellPrice": 8,
+    "seedPrice": null
   },
   "basil": {
     "source": "start",
     "growDays": 4,
     "regrowDays": 3,
+    "regrowTimes": 3,
     "firstYield": 3,
-    "regrowYield": 2
+    "regrowYield": 2,
+    "sellPrice": 8,
+    "seedPrice": null
   },
   "tomato": {
     "source": "start",
     "growDays": 6,
     "regrowDays": 3,
+    "regrowTimes": 3,
     "firstYield": 3,
-    "regrowYield": 2
+    "regrowYield": 2,
+    "sellPrice": 10,
+    "seedPrice": null
   },
   "garlic": {
     "source": "start",
     "growDays": 5,
     "regrowDays": null,
+    "regrowTimes": 0,
     "firstYield": 3,
-    "regrowYield": null
+    "regrowYield": null,
+    "sellPrice": 8,
+    "seedPrice": null
   },
   "rice": {
     "source": "start",
     "growDays": 8,
     "regrowDays": null,
+    "regrowTimes": 0,
     "firstYield": 3,
-    "regrowYield": null
+    "regrowYield": null,
+    "sellPrice": 10,
+    "seedPrice": null
   },
   "carrot": {
     "source": "shop",
     "growDays": 4,
     "regrowDays": null,
+    "regrowTimes": 0,
     "firstYield": 3,
-    "regrowYield": null
+    "regrowYield": null,
+    "sellPrice": 15,
+    "seedPrice": 15
   },
   "cabbage": {
     "source": "shop",
     "growDays": 6,
     "regrowDays": null,
+    "regrowTimes": 0,
     "firstYield": 3,
-    "regrowYield": null
+    "regrowYield": null,
+    "sellPrice": 25,
+    "seedPrice": 25
   },
   "cucumber": {
     "source": "shop",
     "growDays": 5,
     "regrowDays": 2,
+    "regrowTimes": 3,
     "firstYield": 3,
-    "regrowYield": 2
+    "regrowYield": 2,
+    "sellPrice": 10,
+    "seedPrice": 35
   },
   "corn": {
     "source": "shop",
     "growDays": 7,
     "regrowDays": 4,
+    "regrowTimes": 3,
     "firstYield": 3,
-    "regrowYield": 2
+    "regrowYield": 2,
+    "sellPrice": 18,
+    "seedPrice": 65
   },
   "potato": {
     "source": "shop",
     "growDays": 6,
     "regrowDays": null,
+    "regrowTimes": 0,
     "firstYield": 3,
-    "regrowYield": null
+    "regrowYield": null,
+    "sellPrice": 25,
+    "seedPrice": 25
   },
   "pumpkin": {
     "source": "shop",
     "growDays": 10,
     "regrowDays": null,
+    "regrowTimes": 0,
     "firstYield": 3,
-    "regrowYield": null
+    "regrowYield": null,
+    "sellPrice": 45,
+    "seedPrice": 45
   },
   "soybean": {
     "source": "shop",
     "growDays": 6,
     "regrowDays": 3,
+    "regrowTimes": 3,
     "firstYield": 3,
-    "regrowYield": 2
+    "regrowYield": 2,
+    "sellPrice": 12,
+    "seedPrice": 40
   },
   "strawberry": {
     "source": "shop",
     "growDays": 8,
     "regrowDays": 3,
+    "regrowTimes": 3,
     "firstYield": 3,
-    "regrowYield": 2
+    "regrowYield": 2,
+    "sellPrice": 18,
+    "seedPrice": 65
   }
 }

@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import type { PlotState } from '../core/state';
 import display from '../data/display.json';
-import { isAsleep, isReady, stageOf } from '../systems/farm';
+import { isAsleep, isReady, isWithered, stageOf } from '../systems/farm';
 
 const TILLED_KEY = 'plot_tilled';
 const FURROW_COLOR = 'rgba(70, 40, 28, 0.35)';
@@ -83,7 +83,9 @@ export class Plot {
     this.furrows.setVisible(state.tilled);
     this.tile.tint = state.watered ? wetTint : DRY_TINT;
     this.sleepMark.setVisible(isAsleep(state));
-    if (state.crop) {
+    if (state.crop && isWithered(state)) {
+      this.plant.setTexture(`withered_${state.crop.id}`).setVisible(true);
+    } else if (state.crop) {
       this.plant.setTexture(`crop_${state.crop.id}`, stageOf(state)).setVisible(true);
     } else {
       this.plant.setVisible(false);

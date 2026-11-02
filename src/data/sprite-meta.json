@@ -1616,34 +1616,9 @@
       "default": 12
     }
   },
-  "ui_card_white": {
-    "footY": {
-      "default": 12
-    }
-  },
-  "ui_phone_camera": {
-    "footY": {
-      "default": 12
-    }
-  },
-  "ui_phone_ear": {
-    "footY": {
-      "default": 7
-    }
-  },
   "ui_phone_frame": {
     "footY": {
       "default": 32
-    }
-  },
-  "ui_phone_frame_cream": {
-    "footY": {
-      "default": 16
-    }
-  },
-  "ui_punch_hole": {
-    "footY": {
-      "default": 5
     }
   },
   "ui_run_button_off": {
@@ -2004,6 +1979,116 @@
   "anim_till_north": {
     "footY": {
       "default": 74
+    }
+  },
+  "ui_v3_case_back_pink": {
+    "footY": {
+      "default": 131
+    }
+  },
+  "ui_v3_case_back_gio": {
+    "footY": {
+      "default": 133
+    }
+  },
+  "ui_v3_case_back_straw": {
+    "footY": {
+      "default": 131
+    }
+  },
+  "ui_v3_case_back_mint": {
+    "footY": {
+      "default": 133
+    }
+  },
+  "ui_v3_wallpaper_sky": {
+    "footY": {
+      "default": 138
+    }
+  },
+  "ui_v3_wallpaper_gio": {
+    "footY": {
+      "default": 138
+    }
+  },
+  "ui_v3_wallpaper_sky_wide": {
+    "footY": {
+      "default": 138
+    }
+  },
+  "ui_v3_wallpaper_gio_wide": {
+    "footY": {
+      "default": 138
+    }
+  },
+  "ui_v3_phone_case_9slice": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "ui_v3_lock_rim_9slice": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_v3_note_card_9slice": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_v3_phone_ear": {
+    "footY": {
+      "default": 11
+    }
+  },
+  "ui_v3_phone_camera": {
+    "footY": {
+      "default": 11
+    }
+  },
+  "ui_v3_punch_hole": {
+    "footY": {
+      "default": 5
+    }
+  },
+  "ui_v3_paw_button": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "withered_chili": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "withered_basil": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "withered_tomato": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "withered_cucumber": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "withered_corn": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "withered_soybean": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "withered_strawberry": {
+    "footY": {
+      "default": 40
     }
   }
 }

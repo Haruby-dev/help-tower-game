@@ -9,7 +9,7 @@ import type { Viewport } from '../core/viewport';
 import { Gio } from '../entities/Gio';
 import { Player, type GardenMove } from '../entities/Player';
 import { Plot } from '../entities/Plot';
-import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, yieldOf, type FarmAction } from '../systems/farm';
+import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, isWithered, yieldOf, type FarmAction } from '../systems/farm';
 import { advanceClock, goToSleep } from '../systems/time';
 import balance from '../data/balance.json';
 import display from '../data/display.json';
@@ -351,9 +351,9 @@ export class BaseScene extends Phaser.Scene {
     }
     const action = this.farmActionAt(index);
     if (!action) return;
-    if (action === 'dig') {
-      const crop = gameState.world.farm.plots[index]!.crop!.id;
-      eventBus.emit('dig-requested', { plot: index, crop });
+    const state = gameState.world.farm.plots[index]!;
+    if (action === 'dig' && !isWithered(state)) {
+      eventBus.emit('dig-requested', { plot: index, crop: state.crop!.id });
       return;
     }
     if (action === 'harvest' && !canStoreHarvest(gameState.world, index)) {
