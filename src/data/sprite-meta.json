@@ -1653,7 +1653,7 @@
   },
   "crop_scallion": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_scallion": {
@@ -1663,7 +1663,7 @@
   },
   "crop_chili": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_chili": {
@@ -1673,7 +1673,7 @@
   },
   "crop_basil": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_basil": {
@@ -1683,7 +1683,7 @@
   },
   "crop_tomato": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_tomato": {
@@ -1693,7 +1693,7 @@
   },
   "crop_garlic": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_garlic": {
@@ -1703,7 +1703,7 @@
   },
   "crop_rice": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_rice": {
@@ -1713,7 +1713,7 @@
   },
   "crop_carrot": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_carrot": {
@@ -1723,7 +1723,7 @@
   },
   "crop_cabbage": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_cabbage": {
@@ -1733,7 +1733,7 @@
   },
   "crop_cucumber": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_cucumber": {
@@ -1743,7 +1743,7 @@
   },
   "crop_corn": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_corn": {
@@ -1753,7 +1753,7 @@
   },
   "crop_potato": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_potato": {
@@ -1763,7 +1763,7 @@
   },
   "crop_pumpkin": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_pumpkin": {
@@ -1773,7 +1773,7 @@
   },
   "crop_soybean": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_soybean": {
@@ -1783,7 +1783,7 @@
   },
   "crop_strawberry": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_strawberry": {
@@ -2058,42 +2058,42 @@
   },
   "withered_chili": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "withered_basil": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "withered_tomato": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "withered_cucumber": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "withered_corn": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "withered_soybean": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "withered_strawberry": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "crop_blueberry": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_blueberry": {
@@ -2108,7 +2108,7 @@
   },
   "withered_blueberry": {
     "footY": {
-      "default": 40
+      "default": 64
     }
   },
   "icon_bag_scallion": {

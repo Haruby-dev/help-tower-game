@@ -45,12 +45,13 @@ describe('project data', () => {
       for (const [name, addition] of Object.entries(additions)) {
         const entry = registry[name];
         if (entry?.type !== 'local') throw new Error(`${name} is missing`);
-        expect(entry.source).toBe(addition.source);
+        // ภาพพืชย้ายไปชุด 48×64 ใน crops48 แล้ว
+        if (!name.startsWith('crop_')) expect(entry.source).toBe(addition.source);
         expect(entry.jade_tone).toBe(false);
       }
     }
     const crop = registry.crop_scallion;
-    expect(crop?.type === 'local' && [crop.width, crop.height, crop.frames]).toEqual([128, 40, 4]);
+    expect(crop?.type === 'local' && [crop.width, crop.height, crop.frames]).toEqual([192, 64, 4]);
     const old = registry.ui_phone_open_frame;
     expect(old?.type === 'local' && old.not_built).toBeTruthy();
   });
