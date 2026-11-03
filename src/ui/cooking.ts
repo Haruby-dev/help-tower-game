@@ -241,6 +241,9 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     panel.dataset.theme = theme;
     panel.dataset.tab = tab;
     panel.style.setProperty('--cloth', bookArt(`book_cloth_${theme}`));
+    // ปุ่มในหน้าต่างใช้แท็บสีเดียวกับธีม ไม่ปนชมพูของโทรศัพท์
+    panel.style.setProperty('--theme-button', bookArt(`book_tab_active_${theme}`));
+    panel.style.setProperty('--theme-soft', bookArt(`book_tab_${theme}`));
     frame.style.borderImageSource = bookArt(`book_frame_${theme}_9slice`);
     tabs.replaceChildren(
       ...TABS.map(({ id, label }) => {

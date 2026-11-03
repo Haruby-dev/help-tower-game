@@ -2873,3 +2873,76 @@ canvas {
 .cook-actions {
   align-self: center;
 }
+
+/* ทุกชิ้นในหน้าต่างทำอาหารใช้สีธีมเดียวกัน */
+.cook-panel {
+  --card-edge: #e6b58a;
+  --card-pick: #fde7d2;
+}
+
+.cook-panel[data-theme='sweet'] {
+  --card-edge: #f0a8c2;
+  --card-pick: #fde3ec;
+}
+
+.cook-panel[data-theme='drink'] {
+  --card-edge: #9fd0ac;
+  --card-pick: #e2f5e6;
+}
+
+.cook-card,
+.cook-panel .cook-detail {
+  margin: calc(var(--px) * 1);
+  border: 0;
+  border-image: none;
+  background: #fffdf8;
+  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--card-edge), 0 calc(var(--px) * 1) 0 0 var(--card-edge), calc(var(--px) * -1) 0 0 0 var(--card-edge), calc(var(--px) * 1) 0 0 0 var(--card-edge);
+}
+
+.cook-card.is-selected {
+  border: 0;
+  border-image: none;
+  background: var(--card-pick);
+  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--book-ad), 0 calc(var(--px) * 1) 0 0 var(--book-ad), calc(var(--px) * -1) 0 0 0 var(--book-ad), calc(var(--px) * 1) 0 0 0 var(--book-ad);
+}
+
+.cook-panel .phone-tool {
+  border-image-source: var(--theme-soft);
+  border-image-slice: 5 fill;
+  color: var(--book-text);
+}
+
+.cook-panel .cook-go,
+.cook-panel #mix-go {
+  border-image-source: var(--theme-button);
+  color: #fffaf4;
+}
+
+.cook-panel .phone-tool:disabled {
+  opacity: 0.5;
+}
+
+/* การ์ดขวาจัดกลางทั้งหมด อ่านจากบนลงล่าง */
+.cook-panel .cook-detail {
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.cook-label {
+  align-self: center;
+}
+
+.cook-facts {
+  justify-content: center;
+}
+
+.cook-dish {
+  width: calc(var(--px) * 60);
+  height: calc(var(--px) * 60);
+}
+
+.cook-dish__icon {
+  top: calc(var(--px) * 6);
+  left: calc(var(--px) * 6);
+}
