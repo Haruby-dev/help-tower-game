@@ -42,6 +42,8 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
   await act.click();
   await expect(page.locator('#cook-window')).toBeVisible();
   await page.locator('[data-recipe="home_kaprao"]').click();
+  await expect(page.locator('[data-plate="ing_pork"]')).toContainText('1/1');
+  await page.locator('#cook-go').click();
   await expect(page.locator('#cook-window')).toBeHidden();
   expect((await state(page)).cooking.slot?.recipe).toBe('home_kaprao');
   expect(await count(page, 'ing_pork')).toBe(0);
@@ -147,7 +149,32 @@ test('cooking at the campfire plays the cooking move until walking away', async 
   await standAtFire(page);
   await page.locator('#action-button').click();
   await page.locator('[data-recipe="boiled_egg"]').click();
+  await page.locator('#cook-go').click();
   await expect
     .poll(() => page.evaluate(() => (window as unknown as { __game: { scene: { getScene(k: string): { children: { getByName(n: string): { anims: { currentAnim?: { key: string } } } } } } } }).__game.scene.getScene('Base').children.getByName('player').anims.currentAnim?.key ?? ''))
     .toContain('anim_cook_');
+});
+
+test('the campfire window shows what is missing and lets the pot be emptied', async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const s = (window as unknown as { __state: TestState }).__state;
+    s.setWorld({ ...s.world, bag: s.world.bag.filter((stack) => stack.item !== 'ing_pork') });
+  });
+  await standAtFire(page);
+  await page.locator('#action-button').click();
+  await page.locator('[data-recipe="home_kaprao"]').click();
+  await expect(page.locator('[data-plate="ing_pork"]')).toHaveClass(/is-short/);
+  await expect(page.locator('#cook-go')).toBeDisabled();
+  await page.locator('[data-cook-tab="mix"]').click();
+  await page.locator('[data-mix-item="produce_tomato"]').click();
+  await page.locator('[data-mix-item="produce_tomato"]').click();
+  await expect(page.locator('[data-plate="produce_tomato"]')).toContainText('×2');
+  await page.locator('[data-mix-remove="produce_tomato"]').click();
+  await expect(page.locator('[data-plate="produce_tomato"]')).toContainText('×1');
+  await page.locator('[data-mix-remove="produce_tomato"]').click();
+  await expect(page.locator('#mix-go')).toBeDisabled();
+  await expect(page.locator('.cook-panel')).toHaveAttribute('data-theme', 'savory');
+  await page.locator('[data-cook-tab="drink"]').click();
+  await expect(page.locator('.cook-panel')).toHaveAttribute('data-theme', 'drink');
 });

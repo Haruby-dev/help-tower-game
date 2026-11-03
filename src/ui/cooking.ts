@@ -1,17 +1,26 @@
+import { registry } from '../core/assets';
 import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
 import { gameState, type BagStack } from '../core/state';
-import { canCook, canUseCampfire, isIngredient, isRawProduce, minutesFor, recipes, startCooking, startExperiment } from '../systems/cooking';
+import balance from '../data/balance.json';
+import type { Recipe } from '../data/schema';
+import { canCook, canUseCampfire, isIngredient, isRawProduce, minutesFor, recipes, starsFor, startCooking, startExperiment } from '../systems/cooking';
+import { countOf } from '../systems/farm';
 import { itemImage, itemName } from './inventory';
+import { artUrl } from './pixelArt';
 
 const WINDOW = 'cooking';
-type Tab = 'savory' | 'sweet' | 'drink' | 'mix';
+type Theme = Recipe['category'];
+type Tab = Theme | 'mix';
 const TABS: { id: Tab; label: TextKey }[] = [
   { id: 'savory', label: 'recipe.tab_savory' },
   { id: 'sweet', label: 'recipe.tab_sweet' },
   { id: 'drink', label: 'recipe.tab_drink' },
   { id: 'mix', label: 'cook.tab_mix' },
 ];
+/** แท็บทดลองผสมใช้ธีมครีมส้มเหมือนหมวดคาว */
+const MIX_THEME: Theme = 'savory';
+const STAR = '★';
 
 const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className: string, text?: string): HTMLElementTagNameMap[K] => {
   const node = document.createElement(tag);
@@ -20,28 +29,66 @@ const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className: strin
   return node;
 };
 
+const bookArt = (name: string): string => `url("${artUrl(`ui_book_${name}`)}")`;
+
 export const ingredientText = (items: Record<string, number>): string =>
   Object.entries(items)
     .map(([item, count]) => (count > 1 ? `${itemName(item)} ×${count}` : itemName(item)))
     .join(' · ');
 
-/** หน้าต่างเลือกเมนูที่กองไฟ และแท็บทดลองผสมเอง นาฬิกาเกมหยุดระหว่างเปิด */
+/** จานรองวัตถุดิบแบบสมุดสูตร มีไอคอนเล็กตรงกลาง ถ้ายังไม่มีภาพใช้ชื่อแทน */
+function ingredientPlate(item: string, theme: Theme, label: string, short: boolean): HTMLElement {
+  const plate = element('span', `cook-plate${short ? ' is-short' : ''}`);
+  plate.dataset.plate = item;
+  plate.style.backgroundImage = bookArt(`book_ing_slot_${theme}`);
+  const mini = registry[`ing_mini_${item.toLowerCase()}`];
+  if (mini?.type === 'local') {
+    const icon = element('i', 'cook-plate__icon');
+    icon.style.backgroundImage = `url("${artUrl(`ing_mini_${item.toLowerCase()}`)}")`;
+    icon.style.width = `calc(var(--px) * ${mini.width})`;
+    icon.style.height = `calc(var(--px) * ${mini.height})`;
+    plate.append(icon);
+  } else {
+    plate.append(element('small', 'cook-plate__name', itemName(item)));
+  }
+  plate.append(element('b', 'cook-plate__count', label));
+  plate.setAttribute('aria-label', `${itemName(item)} ${label}`);
+  return plate;
+}
+
+function dishPicture(recipe: Recipe | null, id: string | null, theme: Theme): HTMLElement {
+  const holder = element('div', 'cook-dish');
+  holder.style.backgroundImage = bookArt(`book_dish_halo_${theme}`);
+  const icon = recipe?.icon ? registry[recipe.icon] : undefined;
+  if (recipe?.icon && icon?.type === 'local') {
+    const picture = element('i', 'cook-dish__icon');
+    picture.style.backgroundImage = `url("${artUrl(recipe.icon)}")`;
+    holder.append(picture);
+  } else {
+    holder.append(element('b', 'cook-dish__unknown', id ? t(`dish.${id}.name` as TextKey) : '?'));
+  }
+  return holder;
+}
+
+/** หน้าต่างที่กองไฟ เลือกเมนูทางซ้าย ดูวัตถุดิบและเริ่มทำทางขวา หรือทดลองผสมเอง นาฬิกาเกมหยุดระหว่างเปิด */
 export function createCookingWindow(uiRoot: HTMLElement): void {
   const backdrop = document.createElement('div');
   backdrop.id = 'cook-window';
   backdrop.hidden = true;
   const panel = element('div', 'cook-panel');
+  const frame = element('i', 'cook-frame');
   const close = element('button', 'phone-tool', '×');
   close.id = 'cook-close';
   close.type = 'button';
   close.setAttribute('aria-label', t('ui.close'));
-  const tabs = element('div', 'bag-tabs');
+  const tabs = element('div', 'cook-tabs');
   const body = element('div', 'cook-body');
-  panel.append(close, tabs, body);
+  panel.append(tabs, body, frame, close);
   backdrop.append(panel);
   uiRoot.append(backdrop);
 
   let tab: Tab = 'savory';
+  let selected: string | null = null;
   let mix: Record<string, number> = {};
 
   const hide = (): void => {
@@ -55,32 +102,78 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     hide();
   };
 
-  const recipeRow = (id: string): HTMLElement => {
+  const knownIn = (category: Theme): string[] =>
+    gameState.world.recipes.known.filter((id) => recipes[id]?.category === category && canUseCampfire(recipes[id]!));
+
+  const recipeCard = (id: string): HTMLElement => {
+    const card = element('button', `cook-card${id === selected ? ' is-selected' : ''}`);
+    card.type = 'button';
+    card.dataset.recipe = id;
+    const ready = canCook(gameState.world, id);
+    card.classList.toggle('is-missing', !ready);
     const recipe = recipes[id]!;
-    const row = element('button', 'cook-row');
-    row.type = 'button';
-    row.dataset.recipe = id;
-    row.disabled = !canCook(gameState.world, id);
-    const text = element('span', 'cook-row__text');
-    text.append(element('b', '', t(`dish.${id}.name` as TextKey)), element('small', '', ingredientText(recipe.ingredients)));
-    row.append(text, element('small', 'cook-row__time', `${minutesFor(recipe)} ${t('cook.minutes')}`));
-    row.addEventListener('click', () => apply(startCooking(gameState.world, id)));
-    return row;
+    const art = recipe.bagIcon ? registry[recipe.bagIcon] : undefined;
+    const icon = element('i', 'cook-card__icon');
+    if (recipe.bagIcon && art?.type === 'local') {
+      icon.style.backgroundImage = `url("${artUrl(recipe.bagIcon)}")`;
+      icon.style.width = `calc(var(--px) * ${art.width})`;
+      icon.style.height = `calc(var(--px) * ${art.height})`;
+    }
+    const text = element('span', 'cook-card__text');
+    text.append(element('b', '', t(`dish.${id}.name` as TextKey)), element('small', '', t(ready ? 'cook.ready' : 'cook.missing')));
+    card.append(icon, text);
+    card.addEventListener('click', () => {
+      selected = id;
+      render();
+    });
+    return card;
   };
 
-  const renderRecipes = (category: Tab): void => {
-    const { known } = gameState.world.recipes;
-    const ids = known.filter((id) => recipes[id]?.category === category && canUseCampfire(recipes[id]!));
-    body.replaceChildren(...ids.map(recipeRow));
-    if (ids.length === 0) body.append(element('p', 'cook-empty', t('cook.none')));
+  const recipeDetail = (id: string, theme: Theme): HTMLElement => {
+    const recipe = recipes[id]!;
+    const { bag, gauges } = gameState.world;
+    const detail = element('div', 'cook-detail');
+    const plates = element('div', 'cook-plates');
+    for (const [item, need] of Object.entries(recipe.ingredients)) {
+      const have = countOf(bag, item);
+      plates.append(ingredientPlate(item, theme, `${have}/${need}`, have < need));
+    }
+    const facts = element('p', 'cook-facts');
+    facts.append(
+      element('span', '', `${minutesFor(recipe)} ${t('cook.minutes')}`),
+      element('span', 'cook-facts__stars', STAR.repeat(starsFor(gauges.happiness))),
+    );
+    const go = element('button', 'phone-tool cook-go', t('cook.start'));
+    go.id = 'cook-go';
+    go.type = 'button';
+    go.disabled = !canCook(gameState.world, id);
+    go.addEventListener('click', () => apply(startCooking(gameState.world, id)));
+    detail.append(
+      dishPicture(recipe, id, theme),
+      element('h3', 'cook-detail__name', t(`dish.${id}.name` as TextKey)),
+      facts,
+      element('b', 'cook-label', t('book.ingredients')),
+      plates,
+      go,
+    );
+    if (gauges.happiness < balance.cooking.twoStarHappiness) detail.append(element('small', 'cook-tip', t('cook.star_tip')));
+    return detail;
+  };
+
+  const renderRecipes = (category: Theme): void => {
+    const ids = knownIn(category);
+    if (!selected || !ids.includes(selected)) selected = ids.find((id) => canCook(gameState.world, id)) ?? ids[0] ?? null;
+    const list = element('div', 'cook-list');
+    list.append(...ids.map(recipeCard));
+    if (ids.length === 0) list.append(element('p', 'cook-empty', t('cook.none')));
+    body.replaceChildren(list, selected ? recipeDetail(selected, category) : element('div', 'cook-detail'));
   };
 
   const mixChoices = (bag: BagStack[]): BagStack[] => bag.filter((stack) => isIngredient(stack.item) || isRawProduce(stack.item));
 
   const renderMix = (): void => {
     const { bag } = gameState.world;
-    const tray = element('p', 'cook-mix__tray', Object.keys(mix).length > 0 ? ingredientText(mix) : t('cook.mix_hint'));
-    const grid = element('div', 'cook-mix__items');
+    const pantry = element('div', 'cook-pantry');
     for (const stack of mixChoices(bag)) {
       const button = element('button', 'bag-slot');
       button.type = 'button';
@@ -93,15 +186,36 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
         mix = { ...mix, [stack.item]: (mix[stack.item] ?? 0) + 1 };
         render();
       });
-      grid.append(button);
+      pantry.append(button);
+    }
+
+    const pot = element('div', 'cook-detail');
+    const plates = element('div', 'cook-plates');
+    for (const [item, count] of Object.entries(mix)) {
+      const plate = ingredientPlate(item, MIX_THEME, `×${count}`, false);
+      // แตะของในหม้อเพื่อเอาออกทีละชิ้น
+      const remove = element('button', 'cook-plate__remove');
+      remove.type = 'button';
+      remove.dataset.mixRemove = item;
+      remove.setAttribute('aria-label', `${t('cook.mix_remove')} ${itemName(item)}`);
+      remove.append(plate);
+      remove.addEventListener('click', () => {
+        const next = { ...mix };
+        if ((next[item] ?? 0) > 1) next[item] = next[item]! - 1;
+        else delete next[item];
+        mix = next;
+        render();
+      });
+      plates.append(remove);
     }
     const clear = element('button', 'phone-tool', t('cook.mix_clear'));
     clear.type = 'button';
+    clear.disabled = Object.keys(mix).length === 0;
     clear.addEventListener('click', () => {
       mix = {};
       render();
     });
-    const go = element('button', 'phone-tool', t('cook.mix_go'));
+    const go = element('button', 'phone-tool cook-go', t('cook.mix_go'));
     go.id = 'mix-go';
     go.type = 'button';
     go.disabled = Object.keys(mix).length === 0;
@@ -110,17 +224,30 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
       mix = {};
       apply(startExperiment(gameState.world, chosen));
     });
-    const actions = element('div', 'cook-mix__actions');
+    const actions = element('div', 'cook-actions');
     actions.append(clear, go);
-    body.replaceChildren(tray, actions, grid);
+    pot.append(
+      dishPicture(null, null, MIX_THEME),
+      element('h3', 'cook-detail__name', t('cook.mix_title')),
+      element('small', 'cook-tip', t(Object.keys(mix).length > 0 ? 'cook.mix_warning' : 'cook.mix_hint')),
+      plates,
+      actions,
+    );
+    body.replaceChildren(pantry, pot);
   };
 
   function render(): void {
+    const theme: Theme = tab === 'mix' ? MIX_THEME : tab;
+    panel.dataset.theme = theme;
+    panel.dataset.tab = tab;
+    panel.style.setProperty('--cloth', bookArt(`book_cloth_${theme}`));
+    frame.style.borderImageSource = bookArt(`book_frame_${theme}_9slice`);
     tabs.replaceChildren(
       ...TABS.map(({ id, label }) => {
-        const button = element('button', `bag-tab${id === tab ? ' is-active' : ''}`, t(label));
+        const button = element('button', `cook-tab${id === tab ? ' is-active' : ''}`, t(label));
         button.type = 'button';
         button.dataset.cookTab = id;
+        button.style.borderImageSource = bookArt(id === tab ? `book_tab_active_${theme}` : `book_tab_${theme}`);
         button.addEventListener('click', () => {
           tab = id;
           render();
