@@ -4,7 +4,9 @@ import { t } from '../core/i18n';
 import { gameState } from '../core/state';
 import { needsRotation, uiZoomFor } from '../core/viewport';
 import display from '../data/display.json';
+import { createChestWindow } from './chest';
 import { createCookingWindow } from './cooking';
+import { createPondMenu } from './pond';
 import { createHud } from './hud';
 import { createJoystick } from './joystick';
 import { createPhone } from './phone';
@@ -57,6 +59,8 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   initSettings(appRoot);
   createToolbar(uiRoot);
   createCookingWindow(uiRoot);
+  createPondMenu(uiRoot);
+  createChestWindow(uiRoot);
   createSettings(uiRoot);
   createPhone(uiRoot);
   createSaves(uiRoot);

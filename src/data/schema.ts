@@ -126,6 +126,42 @@ export const balanceSchema = z.strictObject({
     /** ราคาชั่วคราวของที่ดิน 3 แปลง เรียงจากซ้ายไปขวา */
     prices: z.array(z.number().int().positive()).length(3),
   }),
+  fishing: z.strictObject({
+    minutes: z.number().positive(),
+    happinessGain: z.number(),
+    cleanlinessPerHour: z.number(),
+    /** ระยะจากเท้าถึงจุดลงทุ่น */
+    castMinPx: z.number().positive(),
+    castMaxPx: z.number().positive(),
+    /** ทุ่นต้องลงในน้ำที่ห่างตลิ่งอย่างน้อยเท่านี้ */
+    minDepthPx: z.number().nonnegative(),
+    /** จุดลงทุ่นจากเท้า x y ตามทิศที่หัน ทิศตะวันตกกลับด้านจากตะวันออก */
+    castThrow: z.strictObject({ north: z.tuple([z.number(), z.number()]), south: z.tuple([z.number(), z.number()]), east: z.tuple([z.number(), z.number()]) }),
+    waitMinMs: z.number().positive(),
+    waitMaxMs: z.number().positive(),
+    biteWindowMs: z.number().positive(),
+    autoTapMs: z.number().positive(),
+    nibbleRepeatsMin: z.number().int().positive(),
+    nibbleRepeatsMax: z.number().int().positive(),
+    castFps: z.number().positive(),
+    waitFps: z.number().positive(),
+    bobberIdleFps: z.number().positive(),
+    bobberNibbleFps: z.number().positive(),
+    bobberBiteFps: z.number().positive(),
+    reelMs: z.number().positive(),
+    /** ตั้งแต่ชั่วโมงนี้ถึงตีสองนับเป็นกลางคืน หีบออกง่ายขึ้น */
+    nightFromHour: z.number(),
+    chestBonus: z.number().nonnegative(),
+    startRod: z.string().min(1),
+    rods: z.record(z.string().min(1), z.strictObject({ maxRank: z.string().min(1), chestChance: z.number().min(0).max(1) })),
+    /** ของเริ่มเกมชั่วคราว เปลี่ยนเป็นรางวัลเกตใน M8 */
+    starterBag: z.record(z.string().min(1), z.number().int().positive()),
+  }),
+  bath: z.strictObject({ minutes: z.number().positive(), cleanlinessGain: z.number(), fps: z.number().positive() }),
+  weather: z.strictObject({
+    chances: z.strictObject({ sunny: z.number().min(0), rain: z.number().min(0), cloudy: z.number().min(0) }),
+    firstDay: z.enum(['sunny', 'rain', 'cloudy']),
+  }),
   gio: z.strictObject({
     sitMinMs: z.number().positive(),
     sitMaxMs: z.number().positive(),
@@ -139,6 +175,8 @@ export const balanceSchema = z.strictObject({
     keepAwayDistance: z.number().positive(),
   }),
 });
+
+export const weatherSchema = z.enum(['sunny', 'rain', 'cloudy']);
 
 export const saveFileSchema = z.strictObject({
   version: z.number().int().positive(),
@@ -196,8 +234,18 @@ export const saveFileSchema = z.strictObject({
         charms: z.array(z.string()),
         wallpapers: z.array(z.string()),
         canSkins: z.array(z.string()),
+        clips: z.array(z.string()),
       }),
     }),
+    /** สุ่มสภาพอากาศทุกเช้าจากเลขนี้ เซฟเดียวกันจึงได้อากาศเดิมเสมอ */
+    seed: z.number().int(),
+    weather: weatherSchema,
+    fishing: z.strictObject({ rods: z.array(z.string().min(1)).min(1), caught: z.record(z.string(), z.number().int().positive()) }),
+    chests: z.strictObject({ sinceCosmetic: z.number().int().nonnegative() }),
+    /** ของเล่นจีโอ ระบบใช้ของเล่นมาใน M6 */
+    toys: z.array(z.string().min(1)),
+    /** ของจากหีบที่ยังไม่มีระบบ เก็บจำนวนไว้ก่อน */
+    stash: z.record(z.string(), z.number().int().positive()),
   }),
 });
 
@@ -244,6 +292,82 @@ export const ingredientsSchema = z.record(z.string().regex(/^[a-zA-Z_]+$/), z.st
 export type Recipe = z.infer<typeof recipeSchema>;
 export type Recipes = z.infer<typeof recipesSchema>;
 
+const rankSchema = z.enum(['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS']);
+
+/** ปลาหนึ่งชนิด เพิ่มปลาได้โดยแก้แค่ fish.json กับ th.json · hours นับต่อเนื่องจากเที่ยงคืน 26 คือตีสอง null คือทั้งวัน */
+export const fishSchema = z.record(
+  z.string().regex(/^[a-z_]+$/),
+  z.strictObject({
+    rank: rankSchema,
+    hours: z.tuple([z.number(), z.number()]).nullable(),
+    weather: z.enum(['any', 'sunny', 'rain', 'cloudy']),
+    /** normal กินเหยื่อทุกแบบ เหยื่ออื่นต้องใช้เหยื่อนั้นเท่านั้น */
+    bait: z.string().min(1),
+    price: z.number().int().positive(),
+    /** โอกาสเทียบกับปลาตัวอื่นที่ออกในเวลาเดียวกัน */
+    weight: z.number().positive(),
+    rod: z.string().min(1),
+  }),
+);
+export type FishTable = z.infer<typeof fishSchema>;
+
+export const baitsSchema = z.record(
+  z.string().regex(/^[a-z_]+$/),
+  z.strictObject({
+    item: z.string().regex(/^bait_[a-z_]+$/),
+    /** null คือผักอะไรก็ได้ */
+    produce: z.string().min(1).nullable(),
+    yield: z.number().int().positive(),
+    source: z.enum(['start', 'shop', 'gate']),
+  }),
+);
+export type Baits = z.infer<typeof baitsSchema>;
+
+const chestTierSchema = z.enum(['wooden', 'silver', 'golden']);
+const raritySchema = z.enum(['common', 'uncommon', 'rare']);
+const chestCategorySchema = z.enum(['seasoning', 'items', 'toys', 'cosmetics']);
+const tierWeights = z.strictObject({ wooden: z.number().min(0), silver: z.number().min(0), golden: z.number().min(0) });
+
+/** หีบสมบัติจากการตกปลา ตัวเลขชั่วคราวตามเอกสารหีบ */
+export const chestsSchema = z.strictObject({
+  tiers: z.record(
+    chestTierSchema,
+    z.strictObject({
+      item: z.string().regex(/^chest_[a-z]+$/),
+      chance: z.number().min(0).max(1),
+      rolls: z.number().int().positive(),
+      coins: z.tuple([z.number().int().nonnegative(), z.number().int().nonnegative()]),
+      duplicateStars: z.number().int().nonnegative(),
+      /** uncommon คือ 1 ครั้งได้ของหายากขึ้นไป cosmetic คือ 1 ครั้งได้ของแต่ง */
+      guarantee: z.enum(['uncommon', 'cosmetic']).nullable(),
+    }),
+  ),
+  categories: z.record(chestCategorySchema, tierWeights),
+  rarity: z.strictObject({ common: z.number().min(0), uncommon: z.number().min(0), rare: z.number().min(0) }),
+  pityAfter: z.number().int().positive(),
+  pool: z.array(
+    z.strictObject({
+      category: chestCategorySchema,
+      rarity: raritySchema,
+      /** bag เข้ากระเป๋า · seed_bag สุ่มเมล็ดจากร้าน · toy ของเล่น · cosmetic ของแต่ง · stash ยังไม่มีระบบ */
+      kind: z.enum(['bag', 'seed_bag', 'toy', 'cosmetic', 'stash']),
+      item: z.string().min(1),
+      min: z.number().int().positive(),
+      max: z.number().int().positive(),
+      minTier: chestTierSchema.optional(),
+    }),
+  ),
+});
+export type Chests = z.infer<typeof chestsSchema>;
+export type ChestTier = z.infer<typeof chestTierSchema>;
+export type Rarity = z.infer<typeof raritySchema>;
+
+export const cosmeticsSchema = z.record(
+  z.string().regex(/^[a-z_]+$/),
+  z.strictObject({ slot: z.enum(['canSkins', 'charms', 'clips', 'cases', 'wallpapers']), art: z.string().min(1) }),
+);
+export type CosmeticTable = z.infer<typeof cosmeticsSchema>;
+
 /** บทพูดฟองคำพูดของตัวเอก แก้ได้โดยไม่แตะโค้ด */
 export const linesSchema = z.strictObject({
   player: z.strictObject({
@@ -254,6 +378,8 @@ export const linesSchema = z.strictObject({
     }),
     bagFull: z.string().min(1),
     mysteryFood: z.string().min(1),
+    fishEscaped: z.string().min(1),
+    noBait: z.string().min(1),
   }),
   encouragement: z.array(z.string().min(1)).min(1),
 });
@@ -329,6 +455,10 @@ const localEntrySchema = z.strictObject({
   /** เริ่มเล่นท่าจากเฟรมนี้ เฟรมก่อนหน้าใช้ไม่ได้ เช่น ยังไม่มีจอบในมือ */
   play_from: z.number().int().nonnegative().optional(),
   frames_meaning: z.array(z.string().min(1)).optional(),
+  /** จุดในแต่ละเฟรมนับจากมุมซ้ายบน เช่น ปลายคันเบ็ด หรือปลายเสาทุ่น คีย์คือเลขเฟรม */
+  anchors: z.record(z.string().regex(/^[0-9]+$/), z.tuple([z.number().int(), z.number().int()])).optional(),
+  /** จุดที่วางลงบนโลก เช่น ระดับน้ำของทุ่น */
+  pivot: z.tuple([z.number().int(), z.number().int()]).optional(),
   name_th: z.string().min(1).optional(),
   nine_slice: z
     .strictObject({

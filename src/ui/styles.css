@@ -3041,3 +3041,116 @@ canvas {
 #slot-picker {
   z-index: 5;
 }
+
+/* M5 ริมบ่อกับหีบสมบัติ ใช้กรอบเดียวกับหน้าเลือกเมล็ด */
+#pond-menu,
+#chest-window {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(92 48 76 / 40%);
+  pointer-events: auto;
+}
+
+#chest-window {
+  z-index: 5;
+}
+
+#pond-menu[hidden],
+#chest-window[hidden] {
+  display: none;
+}
+
+.pond-menu__panel h3,
+.pond-menu__panel p {
+  width: 100%;
+  margin: 0;
+  text-align: center;
+}
+
+.pond-menu__panel p {
+  margin-bottom: 4px;
+  font-size: 11px;
+}
+
+#pond-bath {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.chest-panel {
+  width: min(320px, calc(100vw - 24px));
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ประกายวางกลางหีบ ผืนประกาย 44 กว้างกว่าหีบ 32 ข้างละ 6 พิกเซล */
+.chest-stage {
+  position: relative;
+  display: grid;
+  width: calc(var(--px) * 44);
+  height: calc(var(--px) * 44);
+  place-items: center;
+}
+
+.chest-box.is-shaking {
+  animation: chest-shake 0.4s steps(1) 1;
+}
+
+@keyframes chest-shake {
+  0%, 50% { transform: translateX(calc(var(--px) * -1)); }
+  25%, 75% { transform: translateX(calc(var(--px) * 1)); }
+  100% { transform: none; }
+}
+
+.chest-burst {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  background-repeat: no-repeat;
+  background-size: calc(var(--px) * var(--burst-sheet)) 100%;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.chest-burst.is-playing {
+  animation: chest-burst var(--burst-ms) steps(6) 1 forwards;
+}
+
+@keyframes chest-burst {
+  0% { visibility: visible; background-position-x: 0; }
+  99.9% { visibility: visible; }
+  100% { visibility: hidden; background-position-x: calc(var(--px) * var(--burst-sheet) * -1); }
+}
+
+.chest-rewards {
+  display: grid;
+  width: 100%;
+  min-height: 44px;
+  gap: 2px;
+  margin: 4px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chest-reward {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: chest-pop 0.2s steps(3) 1;
+}
+
+.chest-reward small {
+  margin-left: auto;
+  font-size: 10px;
+}
+
+@keyframes chest-pop {
+  from { opacity: 0; transform: translateY(calc(var(--px) * 3)); }
+  to { opacity: 1; transform: none; }
+}
+
+#chest-take {
+  width: 100%;
+}

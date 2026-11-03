@@ -21,7 +21,9 @@ import { newWorld } from '../../src/systems/gauges';
 import { SAVE_VERSION, parseSaveFile, toSaveFile } from '../../src/systems/save';
 import { sleep } from '../../src/systems/time';
 
-const seeded = (seed: string, count = 1): World => ({ ...newWorld(), bag: [{ item: `seed_${seed}`, count }] });
+/** เลข seed นี้ไม่มีฝนใน 12 วันแรก ฝนจะได้ไม่รดน้ำให้ระหว่างทดสอบ */
+const DRY_SEED = 101;
+const seeded = (seed: string, count = 1): World => ({ ...newWorld(), seed: DRY_SEED, bag: [{ item: `seed_${seed}`, count }] });
 
 function act(world: World, action: FarmAction, seed: string | null = null, index = 0): World {
   const next = applyFarmAction(world, index, action, seed);

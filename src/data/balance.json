@@ -184,5 +184,65 @@
       "ing_honey": 1
     },
     "animationFps": 8
+  },
+  "fishing": {
+    "minutes": 30,
+    "happinessGain": 8,
+    "cleanlinessPerHour": 3,
+    "castMinPx": 12,
+    "castMaxPx": 44,
+    "minDepthPx": 3,
+    "castThrow": {
+      "north": [
+        22,
+        -100
+      ],
+      "south": [
+        12,
+        34
+      ],
+      "east": [
+        66,
+        -6
+      ]
+    },
+    "waitMinMs": 2000,
+    "waitMaxMs": 5000,
+    "biteWindowMs": 1000,
+    "autoTapMs": 350,
+    "nibbleRepeatsMin": 1,
+    "nibbleRepeatsMax": 2,
+    "castFps": 8,
+    "waitFps": 3,
+    "bobberIdleFps": 4,
+    "bobberNibbleFps": 6,
+    "bobberBiteFps": 8,
+    "reelMs": 250,
+    "nightFromHour": 18,
+    "chestBonus": 0.02,
+    "startRod": "bamboo",
+    "rods": {
+      "bamboo": {
+        "maxRank": "D",
+        "chestChance": 0.03
+      }
+    },
+    "starterBag": {
+      "bait_corn": 5,
+      "bait_cloud_lettuce": 5
+    }
+  },
+  "bath": {
+    "minutes": 30,
+    "cleanlinessGain": 60,
+    "fps": 8
+  },
+  "weather": {
+    "chances": {
+      "sunny": 0.6,
+      "rain": 0.3,
+      "cloudy": 0.1
+    },
+    "firstDay": "sunny"
   }
 }

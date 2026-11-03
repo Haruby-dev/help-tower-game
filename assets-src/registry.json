@@ -6972,5 +6972,626 @@
     "file": "ui/title/v4/btn_load_3state.png",
     "jade_tone": false,
     "lazy": true
+  },
+  "fish_silver_minnow": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/fish/fish_silver_minnow.png",
+    "file": "fish/fish_silver_minnow.png",
+    "jade_tone": false
+  },
+  "ing_mini_fish_silver_minnow": {
+    "type": "local",
+    "width": 14,
+    "height": 9,
+    "source": "public/assets/food/ingredients_mini/ing_fish_silver_minnow.png",
+    "file": "food/ingredients_mini/ing_fish_silver_minnow.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "fish_pond_tilapia": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/fish/fish_pond_tilapia.png",
+    "file": "fish/fish_pond_tilapia.png",
+    "jade_tone": false
+  },
+  "ing_mini_fish_pond_tilapia": {
+    "type": "local",
+    "width": 14,
+    "height": 11,
+    "source": "public/assets/food/ingredients_mini/ing_fish_pond_tilapia.png",
+    "file": "food/ingredients_mini/ing_fish_pond_tilapia.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "fish_mud_catfish": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/fish/fish_mud_catfish.png",
+    "file": "fish/fish_mud_catfish.png",
+    "jade_tone": false
+  },
+  "ing_mini_fish_mud_catfish": {
+    "type": "local",
+    "width": 16,
+    "height": 12,
+    "source": "public/assets/food/ingredients_mini/ing_fish_mud_catfish.png",
+    "file": "food/ingredients_mini/ing_fish_mud_catfish.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "fish_golden_carp": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/fish/fish_golden_carp.png",
+    "file": "fish/fish_golden_carp.png",
+    "jade_tone": false
+  },
+  "ing_mini_fish_golden_carp": {
+    "type": "local",
+    "width": 14,
+    "height": 12,
+    "source": "public/assets/food/ingredients_mini/ing_fish_golden_carp.png",
+    "file": "food/ingredients_mini/ing_fish_golden_carp.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "fish_lost_mackerel": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/fish/fish_lost_mackerel.png",
+    "file": "fish/fish_lost_mackerel.png",
+    "jade_tone": false
+  },
+  "ing_mini_fish_lost_mackerel": {
+    "type": "local",
+    "width": 14,
+    "height": 10,
+    "source": "public/assets/food/ingredients_mini/ing_fish_lost_mackerel.png",
+    "file": "food/ingredients_mini/ing_fish_lost_mackerel.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "fish_glow_squid": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/fish/fish_glow_squid.png",
+    "file": "fish/fish_glow_squid.png",
+    "jade_tone": false
+  },
+  "ing_mini_fish_glow_squid": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "public/assets/food/ingredients_mini/ing_fish_glow_squid.png",
+    "file": "food/ingredients_mini/ing_fish_glow_squid.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "fish_meow_salmon": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/fish/fish_meow_salmon.png",
+    "file": "fish/fish_meow_salmon.png",
+    "jade_tone": false
+  },
+  "ing_mini_fish_meow_salmon": {
+    "type": "local",
+    "width": 14,
+    "height": 11,
+    "source": "public/assets/food/ingredients_mini/ing_fish_meow_salmon.png",
+    "file": "food/ingredients_mini/ing_fish_meow_salmon.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "fish_cloud_bass": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/fish/fish_cloud_bass.png",
+    "file": "fish/fish_cloud_bass.png",
+    "jade_tone": false
+  },
+  "ing_mini_fish_cloud_bass": {
+    "type": "local",
+    "width": 14,
+    "height": 12,
+    "source": "public/assets/food/ingredients_mini/ing_fish_cloud_bass.png",
+    "file": "food/ingredients_mini/ing_fish_cloud_bass.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "bait_normal": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/bait_normal.png",
+    "file": "items/bait_normal.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "bait_corn": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/bait_corn.png",
+    "file": "items/bait_corn.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "bait_cloud_lettuce": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/bait_cloud_lettuce.png",
+    "file": "items/bait_cloud_lettuce.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "chest_wooden": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/chest_wooden.png",
+    "file": "items/chest_wooden.png",
+    "jade_tone": false
+  },
+  "chest_silver": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/chest_silver.png",
+    "file": "items/chest_silver.png",
+    "jade_tone": false
+  },
+  "chest_golden": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/chest_golden.png",
+    "file": "items/chest_golden.png",
+    "jade_tone": false
+  },
+  "toy_feather_wand": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/toy_feather_wand.png",
+    "file": "items/toy_feather_wand.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "toy_yarn_ball": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/toy_yarn_ball.png",
+    "file": "items/toy_yarn_ball.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "toy_mouse": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/toy_mouse.png",
+    "file": "items/toy_mouse.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "toy_cardboard_box": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/toy_cardboard_box.png",
+    "file": "items/toy_cardboard_box.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "toy_fish_plush": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/toy_fish_plush.png",
+    "file": "items/toy_fish_plush.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_salt_tower_pink": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/salt_tower_pink.png",
+    "file": "items/salt_tower_pink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "charm_pink_bow": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/cosmetics/charm_pink_bow.png",
+    "file": "cosmetics/charm_pink_bow.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "charm_gold_bell": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/cosmetics/charm_gold_bell.png",
+    "file": "cosmetics/charm_gold_bell.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "charm_little_fish": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/cosmetics/charm_little_fish.png",
+    "file": "cosmetics/charm_little_fish.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "charm_strawberry": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/cosmetics/charm_strawberry.png",
+    "file": "cosmetics/charm_strawberry.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "charm_basil_leaf": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/cosmetics/charm_basil_leaf.png",
+    "file": "cosmetics/charm_basil_leaf.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "charm_star": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/cosmetics/charm_star.png",
+    "file": "cosmetics/charm_star.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "clip_cherry": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/cosmetics/clip_cherry.png",
+    "file": "cosmetics/clip_cherry.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "clip_star": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/cosmetics/clip_star.png",
+    "file": "cosmetics/clip_star.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "clip_cat": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/cosmetics/clip_cat.png",
+    "file": "cosmetics/clip_cat.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "clip_bow": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/cosmetics/clip_bow.png",
+    "file": "cosmetics/clip_bow.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "can_mint": {
+    "type": "local",
+    "width": 38,
+    "height": 29,
+    "source": "public/assets/cosmetics/watering_can_mint.png",
+    "file": "cosmetics/watering_can_mint.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "can_lavender": {
+    "type": "local",
+    "width": 38,
+    "height": 29,
+    "source": "public/assets/cosmetics/watering_can_lavender.png",
+    "file": "cosmetics/watering_can_lavender.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "can_yellow": {
+    "type": "local",
+    "width": 38,
+    "height": 29,
+    "source": "public/assets/cosmetics/watering_can_yellow.png",
+    "file": "cosmetics/watering_can_yellow.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "can_peach": {
+    "type": "local",
+    "width": 38,
+    "height": 29,
+    "source": "public/assets/cosmetics/watering_can_peach.png",
+    "file": "cosmetics/watering_can_peach.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "can_pink": {
+    "type": "local",
+    "width": 38,
+    "height": 29,
+    "source": "public/assets/cosmetics/watering_can_pink.png",
+    "file": "cosmetics/watering_can_pink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "fx_bobber_idle": {
+    "type": "local",
+    "width": 64,
+    "height": 16,
+    "source": "public/assets/fx/bobber_idle_4f.png",
+    "file": "fx/bobber_idle_4f.png",
+    "jade_tone": false,
+    "frame_width": 16,
+    "frame_height": 16,
+    "frames": 4,
+    "anchors": {
+      "0": [
+        8,
+        3
+      ],
+      "1": [
+        8,
+        3
+      ],
+      "2": [
+        8,
+        4
+      ],
+      "3": [
+        8,
+        4
+      ]
+    },
+    "pivot": [
+      8,
+      11
+    ]
+  },
+  "fx_bobber_nibble": {
+    "type": "local",
+    "width": 64,
+    "height": 16,
+    "source": "public/assets/fx/bobber_nibble_4f.png",
+    "file": "fx/bobber_nibble_4f.png",
+    "jade_tone": false,
+    "frame_width": 16,
+    "frame_height": 16,
+    "frames": 4,
+    "anchors": {
+      "0": [
+        8,
+        4
+      ],
+      "1": [
+        8,
+        5
+      ],
+      "2": [
+        8,
+        4
+      ],
+      "3": [
+        8,
+        3
+      ]
+    },
+    "pivot": [
+      8,
+      11
+    ]
+  },
+  "fx_bobber_bite": {
+    "type": "local",
+    "width": 64,
+    "height": 16,
+    "source": "public/assets/fx/bobber_bite_4f.png",
+    "file": "fx/bobber_bite_4f.png",
+    "jade_tone": false,
+    "frame_width": 16,
+    "frame_height": 16,
+    "frames": 4,
+    "anchors": {
+      "0": [
+        8,
+        6
+      ],
+      "1": [
+        8,
+        8
+      ],
+      "2": [
+        8,
+        9
+      ],
+      "3": [
+        8,
+        9
+      ]
+    },
+    "pivot": [
+      8,
+      11
+    ]
+  },
+  "fx_chest_burst": {
+    "type": "local",
+    "width": 264,
+    "height": 44,
+    "source": "public/assets/fx/chest_open_burst_6f.png",
+    "file": "fx/chest_open_burst_6f.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "6 frames of 44x44, played in the chest window with CSS steps"
+  },
+  "anim_fish_east": {
+    "type": "local",
+    "width": 792,
+    "height": 88,
+    "source": "public/assets/farm/anims/fish_east.png",
+    "file": "farm/anims/fish_east.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9,
+    "play_from": 1,
+    "anchors": {
+      "1": [
+        48,
+        10
+      ],
+      "2": [
+        37,
+        10
+      ],
+      "3": [
+        26,
+        16
+      ],
+      "4": [
+        19,
+        23
+      ],
+      "5": [
+        14,
+        29
+      ],
+      "6": [
+        68,
+        10
+      ],
+      "7": [
+        75,
+        13
+      ],
+      "8": [
+        77,
+        13
+      ]
+    },
+    "note": "rod tip per frame in anchors (docs/m5_art_2026-11-04.md); west = mirror, tip x -> 87 - x"
+  },
+  "anim_fish_south": {
+    "type": "local",
+    "width": 792,
+    "height": 88,
+    "source": "public/assets/farm/anims/fish_south.png",
+    "file": "farm/anims/fish_south.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9,
+    "play_from": 4,
+    "anchors": {
+      "3": [
+        72,
+        43
+      ],
+      "4": [
+        72,
+        43
+      ],
+      "5": [
+        78,
+        38
+      ],
+      "6": [
+        82,
+        34
+      ],
+      "7": [
+        83,
+        33
+      ],
+      "8": [
+        83,
+        31
+      ]
+    },
+    "note": "rod tip per frame in anchors (docs/m5_art_2026-11-04.md); west = mirror, tip x -> 87 - x"
+  },
+  "anim_fish_north": {
+    "type": "local",
+    "width": 792,
+    "height": 88,
+    "source": "public/assets/farm/anims/fish_north.png",
+    "file": "farm/anims/fish_north.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9,
+    "play_from": 3,
+    "anchors": {
+      "3": [
+        69,
+        16
+      ],
+      "4": [
+        69,
+        9
+      ],
+      "5": [
+        69,
+        5
+      ],
+      "6": [
+        69,
+        5
+      ],
+      "7": [
+        69,
+        5
+      ],
+      "8": [
+        71,
+        6
+      ]
+    },
+    "note": "rod tip per frame in anchors (docs/m5_art_2026-11-04.md); west = mirror, tip x -> 87 - x"
+  },
+  "anim_wash_south": {
+    "type": "local",
+    "width": 792,
+    "height": 88,
+    "source": "public/assets/farm/anims/wash_south.png",
+    "file": "farm/anims/wash_south.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9
   }
 }

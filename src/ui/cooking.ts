@@ -4,8 +4,8 @@ import { t, type TextKey } from '../core/i18n';
 import { gameState, type BagStack } from '../core/state';
 import balance from '../data/balance.json';
 import type { Recipe } from '../data/schema';
-import { canCook, canUseCampfire, isIngredient, isRawProduce, minutesFor, recipes, starsFor, startCooking, startExperiment } from '../systems/cooking';
-import { countOf } from '../systems/farm';
+import { canCook, canUseCampfire, haveFor, isIngredient, isRawProduce, minutesFor, recipes, starsFor, startCooking, startExperiment } from '../systems/cooking';
+import { fishGroupOf, isFish } from '../systems/fishing';
 import { itemImage, itemName } from './inventory';
 import { artUrl } from './pixelArt';
 
@@ -21,6 +21,8 @@ const TABS: { id: Tab; label: TextKey }[] = [
 /** แท็บทดลองผสมใช้ธีมครีมส้มเหมือนหมวดคาว */
 const MIX_THEME: Theme = 'savory';
 const STAR = '★';
+/** กลางจานรองวัตถุดิบขนาด 22×22 */
+const PLATE_CENTER = { x: 11, y: 10 };
 
 const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className: string, text?: string): HTMLElementTagNameMap[K] => {
   const node = document.createElement(tag);
@@ -41,12 +43,19 @@ function ingredientPlate(item: string, theme: Theme, label: string, short: boole
   const plate = element('span', `cook-plate${short ? ' is-short' : ''}`);
   plate.dataset.plate = item;
   plate.style.backgroundImage = bookArt(`book_ing_slot_${theme}`);
-  const mini = registry[`ing_mini_${item.toLowerCase()}`];
+  // สูตรที่ใช้ปลาแรงก์ F แสดงปลาที่มีในกระเป๋า ถ้ายังไม่มีใช้ภาพปลารวม
+  const owned = gameState.started ? gameState.world.bag.find((stack) => fishGroupOf(stack.item) === item)?.item : undefined;
+  const miniId = `ing_mini_${(owned ?? item).toLowerCase()}`;
+  const mini = registry[miniId];
   if (mini?.type === 'local') {
     const icon = element('i', 'cook-plate__icon');
-    icon.style.backgroundImage = `url("${artUrl(`ing_mini_${item.toLowerCase()}`)}")`;
+    icon.style.backgroundImage = `url("${artUrl(miniId)}")`;
     icon.style.width = `calc(var(--px) * ${mini.width})`;
     icon.style.height = `calc(var(--px) * ${mini.height})`;
+    // ภาพเล็กถูกตัดขอบมาแล้ว จึงวางกลางช่องด้วยจำนวนเต็ม ไม่ให้ตกครึ่งพิกเซล
+    icon.style.left = `calc(var(--px) * ${PLATE_CENTER.x - Math.floor(mini.width / 2)})`;
+    icon.style.top = `calc(var(--px) * ${PLATE_CENTER.y - Math.floor(mini.height / 2)})`;
+    icon.style.transform = 'none';
     plate.append(icon);
   } else {
     plate.append(element('small', 'cook-plate__name', itemName(item)));
@@ -135,7 +144,7 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     const detail = element('div', 'cook-detail');
     const plates = element('div', 'cook-plates');
     for (const [item, need] of Object.entries(recipe.ingredients)) {
-      const have = countOf(bag, item);
+      const have = haveFor(bag, item);
       plates.append(ingredientPlate(item, theme, `${have}/${need}`, have < need));
     }
     const facts = element('p', 'cook-facts');
@@ -169,7 +178,7 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     body.replaceChildren(list, selected ? recipeDetail(selected, category) : element('div', 'cook-detail'));
   };
 
-  const mixChoices = (bag: BagStack[]): BagStack[] => bag.filter((stack) => isIngredient(stack.item) || isRawProduce(stack.item));
+  const mixChoices = (bag: BagStack[]): BagStack[] => bag.filter((stack) => isIngredient(stack.item) || isRawProduce(stack.item) || isFish(stack.item));
 
   const renderMix = (): void => {
     const { bag } = gameState.world;

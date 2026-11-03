@@ -20,9 +20,16 @@ export interface GameEvents {
   'dig-requested': { plot: number; crop: string };
   'dig-confirmed': number;
   /** key ของบทพูดตัวเอกใน lines.json */
-  'player-says': 'bagFull' | 'mysteryFood';
+  'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait';
   'cook-open': undefined;
   'book-open': undefined;
+  /** ยืนริมบ่อแล้วกด เปิดหน้าเลือกเหยื่อหรืออาบน้ำ */
+  'pond-open': undefined;
+  /** id ของเหยื่อใน baits.json */
+  'fish-cast': string;
+  'bath-start': undefined;
+  /** ไอเท็มหีบในกระเป๋าที่จะเปิด */
+  'chest-open': string;
 }
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

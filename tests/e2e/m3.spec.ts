@@ -31,6 +31,11 @@ const plot0 = async (page: Page): Promise<FarmWorld['farm']['plots'][number]> =>
 
 test('grows a scallion from seed to harvest in 3 game days and saves it', async ({ page }) => {
   await open(page);
+  // เลข seed นี้ไม่มีฝนใน 12 วันแรก ฝนจะได้ไม่รดน้ำให้ก่อนที่เทสต์จะรดเอง
+  await page.evaluate(() => {
+    const s = (window as unknown as { __state: { world: FarmWorld; setWorld(w: unknown): void } }).__state;
+    s.setWorld({ ...s.world, seed: 101 });
+  });
   await expect(page.locator('#toolbar .tool-slot')).toHaveCount(4);
   for (const box of await page.locator('#toolbar .tool-slot').all()) {
     expect((await box.boundingBox())!.width).toBeGreaterThanOrEqual(44);
@@ -151,7 +156,7 @@ test('the bag opens unfolded with 30 slots and survives an item with no art', as
   await expect(page.locator('#phone')).toHaveAttribute('data-app', 'inventory');
   await expect(page.locator('#phone')).toHaveAttribute('data-fold', 'unfolded');
   await expect(page.locator('.bag-grid .bag-slot')).toHaveCount(30);
-  await expect(page.locator('#bag-used')).toHaveText('14/30');
+  await expect(page.locator('#bag-used')).toHaveText('16/30');
   await expect(page.locator('[data-item="produce_not_made_yet"] .item-missing')).toHaveCount(1);
   await page.locator('[data-bag-tab="seeds"]').click();
   await expect(page.locator('.bag-slot[data-item]')).toHaveCount(0);

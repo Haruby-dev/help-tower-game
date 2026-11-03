@@ -1,6 +1,23 @@
 import Phaser from 'phaser';
+import type { Direction4 } from '../core/movement';
 import { createRng, type Rng } from '../core/rng';
 import { BAYER4, NearestPoints, chamferDistance, ellipseOutline, holeRadius, linePoints } from './pondMath';
+
+export interface CastSpot {
+  x: number;
+  y: number;
+  facing: Direction4;
+}
+
+const CAST_DIRECTIONS: [Direction4, number, number][] = [
+  ['east', 1, 0],
+  ['west', -1, 0],
+  ['south', 0, 1],
+  ['north', 0, -1],
+];
+/** ทิศที่หันอยู่ได้เปรียบเท่านี้ ตัวละครจึงไม่หันกลับไปมาเมื่อน้ำอยู่ใกล้พอ ๆ กันสองทาง */
+const FACING_BONUS_PX = 6;
+const THROW_STEPS = 16;
 
 /** ของที่อยู่ในบ่อ ใช้ทำเงาและกันไม่ให้หลุมอยู่ใต้ท่าน้ำ */
 export interface PondObject {
@@ -478,6 +495,39 @@ export class Pond {
     canvas.getContext().putImageData(data, 0, 0);
     canvas.refresh();
     this.causticFrames.push(key);
+  }
+
+  /** จุดลงทุ่นที่ใกล้เท้าที่สุดใน 4 ทิศ ต้องเป็นน้ำเปิดที่ห่างตลิ่งพอ ตอบ null เมื่ออยู่ไกลน้ำ */
+  castSpot(
+    feetX: number,
+    feetY: number,
+    reach: { minPx: number; maxPx: number; minDepth: number },
+    prefer: Direction4,
+    throws: Record<'north' | 'south' | 'east', readonly number[]>,
+  ): CastSpot | null {
+    const deep = (x: number, y: number): boolean => this.open(x, y) && this.depth[this.index(x, y)]! >= reach.minDepth;
+    let best: (CastSpot & { score: number }) | null = null;
+    for (const [facing, dx, dy] of CAST_DIRECTIONS) {
+      for (let distance = reach.minPx; distance <= reach.maxPx; distance += 1) {
+        const x = Math.round(feetX + dx * distance) - this.left;
+        const y = Math.round(feetY + dy * distance) - this.top;
+        if (!deep(x, y)) continue;
+        const score = distance - (facing === prefer ? FACING_BONUS_PX : 0);
+        if (!best || score < best.score) best = { x, y, facing, score };
+        break;
+      }
+    }
+    if (!best) return null;
+    // เหวี่ยงทุ่นออกไปทางปลายคัน ไม่ให้ตัวละครบังทุ่น ถ้าตรงนั้นไม่ใช่น้ำลึกพอ ถอยกลับมาหาน้ำจุดแรก
+    const [throwX = 0, throwY = 0] = throws[best.facing === 'west' ? 'east' : best.facing];
+    const targetX = Math.round(feetX + (best.facing === 'west' ? -throwX : throwX)) - this.left;
+    const targetY = Math.round(feetY + throwY) - this.top;
+    for (let step = THROW_STEPS; step >= 0; step -= 1) {
+      const x = Math.round(best.x + ((targetX - best.x) * step) / THROW_STEPS);
+      const y = Math.round(best.y + ((targetY - best.y) * step) / THROW_STEPS);
+      if (deep(x, y)) return { x: x + this.left, y: y + this.top, facing: best.facing };
+    }
+    return { x: best.x + this.left, y: best.y + this.top, facing: best.facing };
   }
 
   setEffects(on: boolean): void {

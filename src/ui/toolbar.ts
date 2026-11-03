@@ -1,6 +1,7 @@
 import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
 import { gameState, type Tool } from '../core/state';
+import { cosmeticTable } from '../systems/chests';
 import { countOf, cropOfItem, isSeed, seedItem } from '../systems/farm';
 import { itemImage, itemName } from './inventory';
 import { artUrl } from './pixelArt';
@@ -101,6 +102,7 @@ export function createToolbar(uiRoot: HTMLElement): void {
   createDigConfirm(uiRoot);
 
   let seedIcon: HTMLImageElement | null = null;
+  let canIcon: HTMLImageElement | null = null;
   const pill = document.createElement('span');
   pill.className = 'tool-slot__count';
   pill.hidden = true;
@@ -119,6 +121,7 @@ export function createToolbar(uiRoot: HTMLElement): void {
     badge.className = 'tool-slot__key';
     badge.textContent = String(index + 1);
     button.append(icon, badge);
+    if (tool.id === 'can') canIcon = icon;
     if (tool.id === 'seeds') {
       seedIcon = icon;
       button.append(pill);
@@ -148,7 +151,13 @@ export function createToolbar(uiRoot: HTMLElement): void {
   };
   eventBus.on('tool-changed', show);
   let shownBag: unknown = null;
-  eventBus.on('world-changed', ({ bag }) => {
+  let shownSkin = '';
+  eventBus.on('world-changed', ({ bag, cosmetics }) => {
+    const skin = cosmetics.equipped.canSkin;
+    if (skin !== shownSkin && canIcon) {
+      shownSkin = skin;
+      canIcon.src = artUrl(cosmeticTable[skin]?.art ?? 'tool_watering_can');
+    }
     if (bag === shownBag) return;
     shownBag = bag;
     showSeed();

@@ -5,19 +5,33 @@ import { createRng } from '../core/rng';
 import { gameState, type BagStack } from '../core/state';
 import balance from '../data/balance.json';
 import { MYSTERY, eatItem, fullnessOf, isDish, isIngredient, parseDish, recipes } from '../systems/cooking';
+import { cosmeticTable, isChest } from '../systems/chests';
 import { convertToSeeds, crops, cropOfItem, isSeed } from '../systems/farm';
+import { fishOfItem, isBait, isFish, makeBait } from '../systems/fishing';
 import { artUrl } from './pixelArt';
 
 const rng = createRng(Date.now());
 
-type BagTab = 'all' | 'seeds' | 'produce' | 'goods';
+type BagTab = 'all' | 'seeds' | 'produce' | 'goods' | 'collection';
 
 const TABS: { id: BagTab; label: TextKey }[] = [
   { id: 'all', label: 'bag.tab_all' },
   { id: 'seeds', label: 'bag.tab_seeds' },
   { id: 'produce', label: 'bag.tab_produce' },
   { id: 'goods', label: 'bag.tab_goods' },
+  { id: 'collection', label: 'bag.tab_collection' },
 ];
+/** ภาพเคสและวอลเปเปอร์ใหญ่กว่าช่อง จึงแสดงเป็นชื่อแทน ห้ามย่อ */
+const MAX_SLOT_ART_PX = 40;
+/** ของแต่งที่ใช้แล้วเห็นผลในเกม ช่องอื่นเก็บธงไว้จนกว่าระบบจะมา */
+const EQUIPPABLE = { canSkins: 'canSkin', cases: 'case' } as const;
+
+type CollectionKind = 'cosmetic' | 'toy' | 'stash';
+interface CollectionItem {
+  id: string;
+  kind: CollectionKind;
+  count: number;
+}
 
 const isProduce = (item: string): boolean => item.startsWith('produce_');
 const isKnownCrop = (item: string): boolean => crops[cropOfItem(item)] !== undefined;
@@ -25,6 +39,9 @@ const isKnownCrop = (item: string): boolean => crops[cropOfItem(item)] !== undef
 const STAR = '★';
 const flavourKey = (item: string): TextKey => {
   if (isSeed(item)) return 'bag.flavour_seed';
+  if (isFish(item)) return 'bag.flavour_fish';
+  if (isBait(item)) return 'bag.flavour_bait';
+  if (isChest(item)) return 'bag.flavour_chest';
   if (isDish(item)) return 'bag.flavour_dish';
   return isIngredient(item) ? 'bag.flavour_ingredient' : 'bag.flavour_produce';
 };
@@ -43,7 +60,9 @@ export const itemName = (item: string): string => {
     return t(key) ?? item;
   }
   if (isIngredient(item)) return t(`ingredient.${item.slice('ing_'.length)}.name` as TextKey) ?? item;
-  if (!isKnownCrop(item)) return item;
+  if (isFish(item)) return t(`fish.${fishOfItem(item)}.name` as TextKey) ?? item;
+  if (cosmeticTable[item]) return t(`cosmetic.${item}.name` as TextKey) ?? item;
+  if (!isKnownCrop(item)) return t(`item.${item}.name` as TextKey) ?? item;
   const crop = t(`crop.${cropOfItem(item)}.name` as TextKey);
   return isSeed(item) ? `${t('bag.seed_prefix')}${crop}` : crop;
 };
@@ -57,7 +76,13 @@ function artFor(item: string, sparkly: boolean): string | null {
     return (sparkly ? info?.icon : info?.bagIcon) ?? null;
   }
   if (isIngredient(item)) return `ing_icon_${item.slice('ing_'.length).toLowerCase()}`;
-  if (!isKnownCrop(item)) return null;
+  const cosmetic = cosmeticTable[item];
+  if (cosmetic) {
+    const art = registry[cosmetic.art];
+    return art?.type === 'local' && art.width <= MAX_SLOT_ART_PX ? cosmetic.art : null;
+  }
+  // ปลา เหยื่อ หีบ ของเล่น ใช้รหัสของเป็นรหัสภาพ
+  if (!isKnownCrop(item)) return registry[item] ? item : null;
   const crop = cropOfItem(item);
   if (isSeed(item)) return `seed_${crop}`;
   return sparkly ? `icon_${crop}` : `icon_bag_${crop}`;
@@ -141,6 +166,15 @@ export function createInventoryPage(): HTMLElement {
     });
     // ภาพอาหารผืน 48px ใหญ่พออยู่แล้ว จึงไม่ขยาย 2 เท่า
     detail.append(itemImage(item, true, isDish(item) ? 1 : 2), name, amount, flavour);
+    if (isChest(item)) {
+      const open = document.createElement('button');
+      open.id = 'bag-open-chest';
+      open.type = 'button';
+      open.className = 'phone-tool';
+      open.textContent = t('bag.open_chest');
+      open.addEventListener('click', () => eventBus.emit('chest-open', item));
+      detail.append(open);
+    }
     if (fullnessOf(item) !== null) {
       const eat = document.createElement('button');
       eat.id = 'bag-eat';
@@ -166,6 +200,17 @@ export function createInventoryPage(): HTMLElement {
       else eventBus.emit('player-says', 'bagFull');
       render();
     });
+    const bait = document.createElement('button');
+    bait.id = 'bag-make-bait';
+    bait.type = 'button';
+    bait.className = 'phone-tool';
+    bait.textContent = t('bag.make_bait');
+    bait.addEventListener('click', () => {
+      const next = makeBait(gameState.world, item);
+      if (next) gameState.setWorld(next);
+      else eventBus.emit('player-says', 'bagFull');
+      render();
+    });
     // เปิดใช้เมื่อมีการฝากขายใน M6
     const sell = document.createElement('button');
     sell.id = 'bag-sell';
@@ -173,13 +218,72 @@ export function createInventoryPage(): HTMLElement {
     sell.className = 'phone-tool';
     sell.disabled = true;
     sell.textContent = t('bag.sell_tray');
-    detail.append(convert, sell);
+    detail.append(convert, bait, sell);
+  };
+
+  /** ของแต่ง ของเล่น และของที่ยังไม่มีระบบ ไม่กินช่องกระเป๋า */
+  const collectionOf = (): CollectionItem[] => {
+    const { cosmetics, toys, stash } = gameState.world;
+    const order = ['canSkins', 'cases', 'wallpapers', 'charms', 'clips'] as const;
+    return [
+      ...order.flatMap((slot) => cosmetics.owned[slot].map((id): CollectionItem => ({ id, kind: 'cosmetic', count: 1 }))),
+      ...toys.map((id): CollectionItem => ({ id, kind: 'toy', count: 1 })),
+      ...Object.entries(stash).map(([id, count]): CollectionItem => ({ id, kind: 'stash', count })),
+    ];
+  };
+
+  const renderCollectionDetail = (entry: CollectionItem | undefined): void => {
+    detail.replaceChildren();
+    if (!entry) {
+      detail.append(Object.assign(document.createElement('small'), { textContent: t('bag.collection_empty') }));
+      return;
+    }
+    const flavour = entry.kind === 'cosmetic' ? 'bag.flavour_cosmetic' : entry.kind === 'toy' ? 'bag.flavour_toy' : 'bag.flavour_stash';
+    detail.append(
+      itemImage(entry.id, true),
+      Object.assign(document.createElement('b'), { textContent: itemName(entry.id) }),
+      Object.assign(document.createElement('small'), { textContent: t(flavour) }),
+    );
+    const slot = cosmeticTable[entry.id]?.slot;
+    if (entry.kind !== 'cosmetic' || (slot !== 'canSkins' && slot !== 'cases')) return;
+    const key = EQUIPPABLE[slot];
+    const { cosmetics } = gameState.world;
+    const wearing = cosmetics.equipped[key] === entry.id;
+    const equip = document.createElement('button');
+    equip.id = 'bag-equip';
+    equip.type = 'button';
+    equip.className = 'phone-tool';
+    equip.disabled = wearing;
+    equip.textContent = t(wearing ? 'bag.equipped' : 'bag.equip');
+    equip.addEventListener('click', () => {
+      gameState.setWorld({ ...gameState.world, cosmetics: { ...cosmetics, equipped: { ...cosmetics.equipped, [key]: entry.id } } });
+      render();
+    });
+    detail.append(equip);
+  };
+
+  const renderCollection = (): void => {
+    const items = collectionOf();
+    if (picked && !items.some((entry) => entry.id === picked)) picked = null;
+    grid.replaceChildren(
+      ...items.map((entry) => {
+        const slot = slotButton({ item: entry.id, count: entry.count }, entry.id === picked, () => {
+          picked = entry.id;
+          render();
+        });
+        slot.dataset.collection = entry.kind;
+        // ของแต่งกับของเล่นมีชิ้นเดียวเสมอ ไม่ต้องบอกจำนวน
+        if (entry.kind !== 'stash') slot.querySelector('b')?.remove();
+        return slot;
+      }),
+    );
+    renderCollectionDetail(items.find((entry) => entry.id === picked) ?? items[0]);
   };
 
   function render(): void {
     const { bag } = gameState.world;
     shownBag = bag;
-    if (picked && !bag.some((stack) => stack.item === picked)) picked = null;
+    if (tab !== 'collection' && picked && !bag.some((stack) => stack.item === picked)) picked = null;
     tabs.replaceChildren(
       ...TABS.map(({ id, label }) => {
         const button = document.createElement('button');
@@ -195,6 +299,10 @@ export function createInventoryPage(): HTMLElement {
       }),
     );
     used.textContent = `${bag.length}/${balance.farm.bag.slots}`;
+    if (tab === 'collection') {
+      renderCollection();
+      return;
+    }
     const shown = bag.filter((stack) => inTab(stack.item, tab));
     grid.replaceChildren(
       ...Array.from({ length: balance.farm.bag.slots }, (_, index) => {
@@ -209,8 +317,12 @@ export function createInventoryPage(): HTMLElement {
   }
 
   // หน้าเดียวกันเปิดซ้ำได้ จึงวาดใหม่เมื่อของในกระเป๋าเปลี่ยน
-  eventBus.on('world-changed', ({ bag }) => {
-    if (bag !== shownBag) render();
+  let shownCollection: unknown = null;
+  eventBus.on('world-changed', ({ bag, cosmetics, toys, stash }) => {
+    const collection = [cosmetics, toys, stash];
+    const changed = shownCollection === null || collection.some((part, index) => part !== (shownCollection as unknown[])[index]);
+    shownCollection = collection;
+    if (bag !== shownBag || (tab === 'collection' && changed)) render();
   });
   render();
   return page;

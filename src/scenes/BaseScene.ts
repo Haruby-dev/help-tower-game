@@ -10,14 +10,19 @@ import { Gio } from '../entities/Gio';
 import { Campfire } from '../entities/Campfire';
 import { Player, type GardenMove } from '../entities/Player';
 import { Plot } from '../entities/Plot';
+import { FishingRig } from '../entities/FishingRig';
+import { finishBath } from '../systems/bath';
+import { baits, catchItem, finishCast, rollCatch, type Catch } from '../systems/fishing';
+import { countOf } from '../systems/farm';
 import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, isWithered, yieldOf, type FarmAction } from '../systems/farm';
 import { MYSTERY, collectDish, isCooked } from '../systems/cooking';
 import { advanceClock, goToSleep } from '../systems/time';
 import balance from '../data/balance.json';
 import display from '../data/display.json';
 import { LIGHTING_PIPELINE, LightingPipeline, type LightSpot } from './LightingPipeline';
-import { dirtPuff, harvestArc, popPill, sparkle, waterDrops } from './farmEffects';
-import { Pond, type PondObject } from './Pond';
+import { bathBubble, dirtPuff, harvestArc, popPill, sparkle, splash, waterDrops } from './farmEffects';
+import { Pond, type CastSpot, type PondObject } from './Pond';
+import { WeatherEffects } from './weatherEffects';
 import { TreeSway } from './treeSway';
 import { createCanopyMask, softEllipseTexture, type ShadeArea } from './sceneArt';
 
@@ -30,6 +35,7 @@ const DEPTH = {
   flowers: -7,
   pond: -9.5,
   plotMarker: -6,
+  weather: 7990,
   night: 8000,
   label: 9001,
 } as const;
@@ -51,6 +57,27 @@ const DOOR_TAP_RADIUS = 34;
 const TILE_MIDDLE = 16;
 const TILL_HIT_FRAME = 6;
 const TILL_DIRT_PIECES = 2;
+const MINUTES_PER_HOUR = 60;
+const BATH_BUBBLE_MS = 280;
+const BATH_SPARKLE_SHARE = 0.25;
+const BATH_SPREAD_PX = 12;
+/** ปลายคันในภาพทิศตะวันออก กลับด้านเป็นทิศตะวันตกด้วย 87 − x */
+const FRAME_LAST_PX = 87;
+
+type FishingPhase = 'cast' | 'wait' | 'nibble' | 'bite' | 'reel';
+
+interface FishingTrip {
+  phase: FishingPhase;
+  bait: string;
+  spot: CastSpot;
+  castHour: number;
+  timer: Phaser.Time.TimerEvent | null;
+}
+
+interface BathTrip {
+  startHour: number;
+  effect: Phaser.Time.TimerEvent;
+}
 
 /** ไล่ความมืดระหว่างจุดเวลาใน display.json */
 export function nightAlpha(hour: number): number {
@@ -82,6 +109,11 @@ export class BaseScene extends Phaser.Scene {
   private pond: Pond | null = null;
   private treeSway = new TreeSway();
   private pondObjects: PondObject[] = [];
+  private rig!: FishingRig;
+  private weatherFx!: WeatherEffects;
+  private fishing: FishingTrip | null = null;
+  private bath: BathTrip | null = null;
+  private readonly fishRng = createRng(Date.now());
 
   constructor() {
     super('Base');
@@ -90,6 +122,8 @@ export class BaseScene extends Phaser.Scene {
   create(): void {
     this.labels = [];
     this.pondObjects = [];
+    this.fishing = null;
+    this.bath = null;
     this.treeSway = new TreeSway();
     this.shadeAreas = [];
     this.glows = {};
@@ -156,10 +190,17 @@ export class BaseScene extends Phaser.Scene {
 
     const nightColor = Phaser.Display.Color.HexStringToColor(display.night.color).color;
     this.night = this.add.rectangle(0, 0, worldWidth, worldHeight, nightColor, 0).setOrigin(0).setDepth(DEPTH.night);
+    this.weatherFx = new WeatherEffects(this, DEPTH.weather);
+    this.rig = new FishingRig(this);
 
     this.input.keyboard!.on('keydown-E', () => this.useAction());
     this.input.keyboard!.on('keydown-SPACE', () => this.useAction());
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      // ระหว่างตกปลา แตะตรงไหนก็ได้คือดึงเบ็ด
+      if (this.fishing) {
+        if (this.fishing.phase === 'bite') this.finishFishing(true);
+        return;
+      }
       const tapped = this.plots.findIndex((plot) => Phaser.Math.Distance.Between(pointer.worldX, pointer.worldY, plot.centerX, plot.centerY) < map.tileWidth / 2);
       if (tapped >= 0 && gameState.clockRunning && this.inReach(tapped)) {
         this.useFarm(tapped);
@@ -174,6 +215,8 @@ export class BaseScene extends Phaser.Scene {
     });
     const stopAction = eventBus.on('action-pressed', () => this.useAction());
     const stopDig = eventBus.on('dig-confirmed', (plot) => this.startMove(plot, 'dig'));
+    const stopCast = eventBus.on('fish-cast', (bait) => this.startFishing(bait));
+    const stopBath = eventBus.on('bath-start', () => this.startBath());
     const stopMoved = eventBus.on('player-moved', (point) => this.player.moveTo(point));
     const stopStarted = eventBus.on('game-started', (world) => {
       if (world.player) this.player.moveTo(world.player);
@@ -186,6 +229,8 @@ export class BaseScene extends Phaser.Scene {
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       stopAction();
       stopDig();
+      stopCast();
+      stopBath();
       stopMoved();
       stopStarted();
       stopViewport();
@@ -197,7 +242,9 @@ export class BaseScene extends Phaser.Scene {
     this.pond?.update(time);
     this.treeSway.update(time);
     const running = this.runKey.isDown || gameState.runHeld;
-    this.player.update(gameState.clockRunning ? this.readMoveInput() : STANDING_STILL, running);
+    const input = gameState.clockRunning ? this.readMoveInput() : STANDING_STILL;
+    this.followPond(input);
+    this.player.update(input, running);
     this.gio.update(deltaMs, this.player.feetX, this.player.feetY);
     gameState.trackPlayer({ x: this.player.body.x, y: this.player.body.y });
     const camera = this.cameras.main;
@@ -209,6 +256,8 @@ export class BaseScene extends Phaser.Scene {
     advanceClock(deltaMs, this.door);
     this.updateFarm();
     if (gameState.started) this.night.setFillStyle(this.night.fillColor, nightAlpha(gameState.world.hour));
+    this.weatherFx.update(deltaMs, camera.worldView, gameState.started ? gameState.world.weather : null);
+    this.drawFishingLine();
   }
 
   private placeObject(object: Phaser.Types.Tilemaps.TiledObject): void {
@@ -324,10 +373,145 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private useAction(): void {
+    if (this.fishing) {
+      if (this.fishing.phase === 'bite') this.finishFishing(true);
+      return;
+    }
+    if (this.bath) return;
     const plot = this.targetPlot();
     if (plot !== null && this.farmActionAt(plot)) this.useFarm(plot);
     else if (this.campfireAction()) this.useCampfire();
+    else if (this.pondSpot()) eventBus.emit('pond-open', undefined);
     else if (this.nearDoor() && !this.player.busy) goToSleep(this.door);
+  }
+
+  /** จุดลงทุ่นถ้ายืนริมบ่อ ใช้ทั้งตกปลาและอาบน้ำ */
+  private pondSpot(): CastSpot | null {
+    if (!this.pond || !gameState.clockRunning || this.player.busy) return null;
+    const { castMinPx, castMaxPx, minDepthPx, castThrow } = balance.fishing;
+    const reach = { minPx: castMinPx, maxPx: castMaxPx, minDepth: minDepthPx };
+    return this.pond.castSpot(this.player.feetX, this.player.feetY, reach, this.player.facing4, castThrow);
+  }
+
+  /** เดินหรือเปิดหน้าต่างระหว่างรอปลา เก็บเบ็ดโดยไม่เสียเวลาและเหยื่อ · อาบน้ำครบเวลาหรือเดินออกได้สะอาดตามเวลาที่อาบ */
+  private followPond(input: Vector): void {
+    const moving = input.x !== 0 || input.y !== 0;
+    if (this.fishing && this.fishing.phase !== 'reel' && (moving || !gameState.clockRunning)) this.cancelFishing();
+    if (!this.bath) return;
+    const done = gameState.world.hour - this.bath.startHour >= balance.bath.minutes / MINUTES_PER_HOUR;
+    if (done || moving || !gameState.clockRunning) this.endBath();
+  }
+
+  private startFishing(bait: string): void {
+    const spot = this.pondSpot();
+    const item = baits[bait]?.item;
+    if (!spot || !item || this.fishing) return;
+    if (countOf(gameState.world.bag, item) === 0) {
+      eventBus.emit('player-says', 'noBait');
+      return;
+    }
+    const trip: FishingTrip = { phase: 'cast', bait, spot, castHour: gameState.world.hour, timer: null };
+    this.fishing = trip;
+    this.player.startPose(spot.facing, 'anim_fish', () => this.landBobber(trip));
+  }
+
+  private landBobber(trip: FishingTrip): void {
+    if (this.fishing !== trip) return;
+    const { waitMinMs, waitMaxMs, nibbleRepeatsMin, nibbleRepeatsMax } = balance.fishing;
+    splash(this, trip.spot.x, trip.spot.y);
+    this.rig.show(trip.spot);
+    trip.phase = 'wait';
+    trip.timer = this.time.delayedCall(this.fishRng.between(waitMinMs, waitMaxMs), () => {
+      if (this.fishing !== trip) return;
+      trip.phase = 'nibble';
+      const times = nibbleRepeatsMin + Math.floor(this.fishRng.next() * (nibbleRepeatsMax - nibbleRepeatsMin + 1));
+      this.rig.nibble(times, () => this.startBite(trip));
+    });
+  }
+
+  /** ขึ้น "!" ให้แตะภายในราว 1 วินาที ตั้งค่าตกปลาอัตโนมัติไว้จะดึงให้เอง */
+  private startBite(trip: FishingTrip): void {
+    if (this.fishing !== trip) return;
+    const { biteWindowMs, autoTapMs } = balance.fishing;
+    trip.phase = 'bite';
+    this.rig.bite();
+    this.rig.showMark(this.player.feetX, this.player.feetY);
+    trip.timer = this.time.delayedCall(biteWindowMs, () => this.finishFishing(false));
+    if (gameState.autoFish) this.time.delayedCall(autoTapMs, () => this.finishFishing(true));
+  }
+
+  /** ดึงทันได้ของและเสียเหยื่อ ไม่ทันปลาหลุดแต่เหยื่อยังอยู่ ทั้งสองแบบใช้เวลาครบ 30 นาที */
+  private finishFishing(hooked: boolean): void {
+    const trip = this.fishing;
+    if (!trip || trip.phase !== 'bite') return;
+    trip.timer?.remove();
+    trip.phase = 'reel';
+    const world = gameState.world;
+    const caught = hooked ? rollCatch(world, trip.bait, trip.castHour, this.fishRng) : null;
+    const firstTime = caught?.kind === 'fish' && !world.fishing.caught[caught.fish];
+    const result = finishCast(world, trip.castHour, trip.bait, caught);
+    gameState.setWorld(result.world);
+    this.rig.reel(() => {
+      this.fishing = null;
+      this.player.endPose();
+      if (!caught) eventBus.emit('player-says', 'fishEscaped');
+      else if (!result.stored) eventBus.emit('player-says', 'bagFull');
+      else this.showCatch(trip.spot, caught, firstTime);
+    });
+  }
+
+  private cancelFishing(): void {
+    this.fishing?.timer?.remove();
+    this.fishing = null;
+    this.rig.hide();
+    this.player.endPose();
+  }
+
+  private showCatch(spot: CastSpot, caught: Catch, firstTime: boolean): void {
+    const item = catchItem(caught);
+    const name = caught.kind === 'fish' ? t(`fish.${caught.fish}.name` as TextKey) : t(`item.${item}.name` as TextKey);
+    const label = firstTime ? `+1 ${name} ${t('fishing.new')}` : `+1 ${name}`;
+    const handY = this.player.feetY - PLAYER_HEAD_PX / 2;
+    harvestArc(this, item, spot.x, spot.y, this.player.feetX, handY, () => {
+      popPill(this, this.player.feetX, this.player.feetY - PLAYER_HEAD_PX, item, label, gameState.viewport.zoom);
+    });
+  }
+
+  /** สายเบ็ดออกจากปลายคันของเฟรมที่กำลังแสดง */
+  private drawFishingLine(): void {
+    if (!this.fishing || !this.player.isPosing) return;
+    const facing = this.fishing.spot.facing;
+    const entry = registry[`anim_fish_${facing === 'west' ? 'east' : facing}`];
+    const tip = entry?.type === 'local' ? entry.anchors?.[String(this.player.poseFrame)] : undefined;
+    if (!tip) return;
+    const corner = this.player.frameCorner;
+    this.rig.drawLine({ x: corner.x + (this.player.flipped ? FRAME_LAST_PX - tip[0] : tip[0]), y: corner.y + tip[1] }, this.player.feetY);
+  }
+
+  /** อาบน้ำที่บ่อหันไหนก็ใช้ท่าทิศใต้ มีฟองกับประกายลอยรอบตัว */
+  private startBath(): void {
+    if (!this.pondSpot() || this.bath) return;
+    this.player.startPose('south', 'anim_wash');
+    const effect = this.time.addEvent({
+      delay: BATH_BUBBLE_MS,
+      loop: true,
+      callback: () => {
+        const x = this.player.feetX + this.fishRng.between(-BATH_SPREAD_PX, BATH_SPREAD_PX);
+        const y = this.player.feetY - this.fishRng.between(8, PLAYER_HEAD_PX - 16);
+        if (this.fishRng.next() < BATH_SPARKLE_SHARE) sparkle(this, x, y);
+        else bathBubble(this, x, y);
+      },
+    });
+    this.bath = { startHour: gameState.world.hour, effect };
+  }
+
+  private endBath(): void {
+    if (!this.bath) return;
+    const minutes = (gameState.world.hour - this.bath.startHour) * MINUTES_PER_HOUR;
+    this.bath.effect.remove();
+    this.bath = null;
+    gameState.setWorld(finishBath(gameState.world, minutes));
+    this.player.endPose();
   }
 
   /** เริ่มทำอาหารตอนยืนที่กองไฟจึงเล่นท่าทำ อาหารสุกแล้วลุกขึ้น */
@@ -407,7 +591,7 @@ export class BaseScene extends Phaser.Scene {
     if (!gameState.started) return;
     const { plots } = gameState.world.farm;
     this.plots.forEach((plot, index) => plot.sync(plots[index]!));
-    const target = gameState.clockRunning ? this.targetPlot() : null;
+    const target = gameState.clockRunning && !this.fishing && !this.bath ? this.targetPlot() : null;
     const action = target !== null ? this.farmActionAt(target) : null;
     if (target !== null && action) {
       const plot = this.plots[target]!;
@@ -417,7 +601,14 @@ export class BaseScene extends Phaser.Scene {
     }
     this.campfire?.sync(gameState.world.cooking.slot, this.time.now);
     this.followCooking();
-    gameState.setAction(action ? ACTION_LABEL[action] : this.campfireAction() ?? (this.nearDoor() ? 'action.sleep' : null));
+    gameState.setAction(this.actionLabel(action));
+  }
+
+  private actionLabel(farm: FarmAction | null): TextKey | null {
+    if (this.fishing) return this.fishing.phase === 'bite' ? 'action.reel' : null;
+    if (this.bath) return null;
+    if (farm) return ACTION_LABEL[farm];
+    return this.campfireAction() ?? (this.pondSpot() ? 'action.fish' : null) ?? (this.nearDoor() ? 'action.sleep' : null);
   }
 
   /** ตอนกำลังทำท่าอยู่ แตะใหม่จะจำไว้ทำต่อ */

@@ -1,14 +1,16 @@
-import { defaultCosmetics, emptyWallet, type BagStack, type Farm, type GaugeValues, type RecipeBook, type World } from '../core/state';
+import { createRng } from '../core/rng';
+import { defaultCosmetics, emptyWallet, type BagStack, type Farm, type Fishing, type GaugeValues, type RecipeBook, type Weather, type World } from '../core/state';
 import balance from '../data/balance.json';
 import recipesJson from '../data/recipes.json';
 
-const { gauges, time, farm, cooking } = balance;
+const { gauges, time, farm, cooking, fishing, weather } = balance;
+const SEED_RANGE = 2 ** 31;
 
 const MINUTES_PER_HOUR = 60;
 
 const clamp = (value: number): number => Math.min(gauges.max, Math.max(gauges.min, value));
 
-function clampAll(values: GaugeValues): GaugeValues {
+export function clampGauges(values: GaugeValues): GaugeValues {
   return {
     fullness: clamp(values.fullness),
     happiness: clamp(values.happiness),
@@ -25,6 +27,14 @@ export const starterBag = (): BagStack[] => Object.entries(farm.starterBag).map(
 
 export const cookingStarterBag = (): BagStack[] => Object.entries(cooking.starterBag).map(([item, count]) => ({ item, count }));
 
+export const fishingStarterBag = (): BagStack[] => Object.entries(fishing.starterBag).map(([item, count]) => ({ item, count }));
+
+export const newFishing = (): Fishing => ({ rods: [fishing.startRod], caught: {} });
+
+export const newSeed = (): number => Math.floor(createRng(Date.now()).next() * SEED_RANGE);
+
+export const firstWeather = weather.firstDay as Weather;
+
 export const newRecipeBook = (): RecipeBook => ({
   known: Object.entries(recipesJson)
     .filter(([, recipe]) => recipe.source === 'start')
@@ -40,10 +50,16 @@ export function newWorld(): World {
     player: null,
     wallet: emptyWallet(),
     farm: newFarm(),
-    bag: [...starterBag(), ...cookingStarterBag()],
+    bag: [...starterBag(), ...cookingStarterBag(), ...fishingStarterBag()],
     cooking: { slot: null },
     recipes: newRecipeBook(),
     cosmetics: defaultCosmetics(),
+    seed: newSeed(),
+    weather: firstWeather,
+    fishing: newFishing(),
+    chests: { sinceCosmetic: 0 },
+    toys: [],
+    stash: {},
   };
 }
 
@@ -54,7 +70,7 @@ export function spendGardenTime(world: World): World {
   return {
     ...world,
     hour: world.hour + hours,
-    gauges: clampAll({
+    gauges: clampGauges({
       ...values,
       fullness: values.fullness - gauges.fullness.awakePerHour * hours,
       happiness: values.happiness - farm.gauges.happinessPerHour * hours,
@@ -65,7 +81,7 @@ export function spendGardenTime(world: World): World {
 
 /** เกจลดตามเวลาตอนตื่น สุขลดเฉพาะตอนทำงาน */
 export function decayAwake(values: GaugeValues, hours: number): GaugeValues {
-  return clampAll({
+  return clampGauges({
     ...values,
     fullness: values.fullness - gauges.fullness.awakePerHour * hours,
     cleanliness: values.cleanliness - gauges.cleanliness.idlePerHour * hours,
@@ -75,7 +91,7 @@ export function decayAwake(values: GaugeValues, hours: number): GaugeValues {
 /** นอนจนถึงเช้า หลับคาที่ไม่ได้โบนัสสุขจากการนอน แล้วตื่นมาเสียสุขตามความคิดถึงบ้าน */
 export function sleepUntilMorning(values: GaugeValues, hoursAsleep: number, restful: boolean): GaugeValues {
   const homesickness = clamp(values.homesickness + gauges.homesickness.perDay);
-  return clampAll({
+  return clampGauges({
     fullness: values.fullness - gauges.fullness.asleepPerHour * hoursAsleep,
     cleanliness: values.cleanliness - gauges.cleanliness.idlePerHour * hoursAsleep,
     happiness:

@@ -1,9 +1,9 @@
 import { get, set } from 'idb-keyval';
 import { defaultCosmetics, emptyWallet, type World } from '../core/state';
 import { saveFileSchema, type SaveFile } from '../data/schema';
-import { cookingStarterBag, newFarm, newRecipeBook, starterBag } from './gauges';
+import { cookingStarterBag, firstWeather, fishingStarterBag, newFarm, newFishing, newRecipeBook, newSeed, starterBag } from './gauges';
 
-export const SAVE_VERSION = 5;
+export const SAVE_VERSION = 6;
 export const SLOT_COUNT = 3;
 
 const slotKey = (slot: number): string => `save-slot-${slot}`;
@@ -20,6 +20,24 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
   4: (save) => {
     const world = save.world as { bag: unknown[] };
     return { ...save, world: { ...world, bag: [...world.bag, ...cookingStarterBag()], cooking: { slot: null }, recipes: newRecipeBook() } };
+  },
+  // เวอร์ชัน 6 เพิ่มตกปลา อากาศ และหีบ เซฟเก่าได้เหยื่อเริ่มเกมต่อท้ายกระเป๋า
+  5: (save) => {
+    const world = save.world as { bag: unknown[]; cosmetics: { owned: object } };
+    return {
+      ...save,
+      world: {
+        ...world,
+        bag: [...world.bag, ...fishingStarterBag()],
+        cosmetics: { ...world.cosmetics, owned: { ...world.cosmetics.owned, clips: [] } },
+        seed: newSeed(),
+        weather: firstWeather,
+        fishing: newFishing(),
+        chests: { sinceCosmetic: 0 },
+        toys: [],
+        stash: {},
+      },
+    };
   },
 };
 

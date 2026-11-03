@@ -12,6 +12,35 @@ const POP_MIN_HEIGHT = 16;
 const rng = createRng(Date.now());
 const between = (min: number, max: number): number => Math.floor(rng.between(min, max + 1));
 
+const BUBBLE_KEY = 'fx_bath_bubble';
+const BUBBLE_RISE_PX = 10;
+const BUBBLE_MS = 700;
+
+/** ฟองสบู่ตอนอาบน้ำ วาดด้วยโค้ดทีละพิกเซล */
+export function bathBubble(scene: Phaser.Scene, x: number, y: number): void {
+  if (!scene.textures.exists(BUBBLE_KEY)) {
+    const g = scene.make.graphics({}, false);
+    g.fillStyle(0xffffff).fillRect(1, 0, 3, 1).fillRect(0, 1, 1, 3).fillRect(4, 1, 1, 3).fillRect(1, 4, 3, 1);
+    g.fillStyle(0xcdeefa).fillRect(1, 1, 3, 3);
+    g.fillStyle(0xffffff).fillRect(1, 1, 1, 1);
+    g.generateTexture(BUBBLE_KEY, 5, 5);
+    g.destroy();
+  }
+  const top = Math.round(y);
+  const bubble = scene.add.image(Math.round(x), top, BUBBLE_KEY).setDepth(FX_DEPTH);
+  scene.tweens.addCounter({
+    from: 0,
+    to: BUBBLE_RISE_PX,
+    duration: BUBBLE_MS,
+    ease: 'Sine.easeOut',
+    onUpdate: (tween) => {
+      const rise = tween.getValue() ?? 0;
+      bubble.setY(top - Math.round(rise)).setAlpha(1 - rise / BUBBLE_RISE_PX);
+    },
+    onComplete: () => bubble.destroy(),
+  });
+}
+
 /** เศษดินกระเด็นตอนตบดินและตอนพรวน */
 export function dirtPuff(scene: Phaser.Scene, x: number, y: number, pieces = 5): void {
   for (let index = 0; index < pieces; index += 1) {
@@ -28,7 +57,7 @@ export function dirtPuff(scene: Phaser.Scene, x: number, y: number, pieces = 5):
   }
 }
 
-function splash(scene: Phaser.Scene, x: number, y: number): void {
+export function splash(scene: Phaser.Scene, x: number, y: number): void {
   const mark = scene.add.image(x, y, 'fx_water', 'splash_0').setDepth(FX_DEPTH);
   scene.time.delayedCall(90, () => mark.setFrame('splash_1'));
   scene.time.delayedCall(180, () => mark.destroy());

@@ -3260,5 +3260,260 @@
     "footY": {
       "default": 48
     }
+  },
+  "fish_silver_minnow": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "ing_mini_fish_silver_minnow": {
+    "footY": {
+      "default": 9
+    }
+  },
+  "fish_pond_tilapia": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "ing_mini_fish_pond_tilapia": {
+    "footY": {
+      "default": 11
+    }
+  },
+  "fish_mud_catfish": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "ing_mini_fish_mud_catfish": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "fish_golden_carp": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "ing_mini_fish_golden_carp": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "fish_lost_mackerel": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "ing_mini_fish_lost_mackerel": {
+    "footY": {
+      "default": 10
+    }
+  },
+  "fish_glow_squid": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "ing_mini_fish_glow_squid": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "fish_meow_salmon": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "ing_mini_fish_meow_salmon": {
+    "footY": {
+      "default": 11
+    }
+  },
+  "fish_cloud_bass": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "ing_mini_fish_cloud_bass": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "bait_normal": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "bait_corn": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "bait_cloud_lettuce": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "chest_wooden": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "chest_silver": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "chest_golden": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "toy_feather_wand": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "toy_yarn_ball": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "toy_mouse": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "toy_cardboard_box": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "toy_fish_plush": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "ing_icon_salt_tower_pink": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "charm_pink_bow": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "charm_gold_bell": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "charm_little_fish": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "charm_strawberry": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "charm_basil_leaf": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "charm_star": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "clip_cherry": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "clip_star": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "clip_cat": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "clip_bow": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "can_mint": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "can_lavender": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "can_yellow": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "can_peach": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "can_pink": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "fx_bobber_idle": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "fx_bobber_nibble": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "fx_bobber_bite": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "fx_chest_burst": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "anim_fish_east": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_fish_south": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_fish_north": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_wash_south": {
+    "footY": {
+      "default": 76
+    }
   }
 }

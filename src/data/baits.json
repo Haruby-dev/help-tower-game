@@ -1,0 +1,5 @@
+{
+  "normal": { "item": "bait_normal", "produce": null, "yield": 3, "source": "start" },
+  "corn": { "item": "bait_corn", "produce": "produce_corn", "yield": 2, "source": "gate" },
+  "cloud_lettuce": { "item": "bait_cloud_lettuce", "produce": "produce_cloud_lettuce", "yield": 2, "source": "gate" }
+}

@@ -3,6 +3,7 @@ import balance from '../data/balance.json';
 import recipesJson from '../data/recipes.json';
 import type { Recipe, Recipes } from '../data/schema';
 import { addToBag, countOf, takeFromBag } from './farm';
+import { fishGroupOf, fishGroupRank } from './fishing';
 
 export const recipes = recipesJson as Recipes;
 const { cooking: rules, gauges } = balance;
@@ -36,16 +37,46 @@ export const minutesFor = (recipe: Recipe): number => (recipe.category === 'drin
 /** 3 ดาวรอจนกว่าวัตถุดิบจะมีดาว */
 export const starsFor = (happiness: number): number => (happiness >= rules.twoStarHappiness ? 2 : 1);
 
+/** จำนวนที่มีสำหรับวัตถุดิบในสูตร ปลาแรงก์ F นับปลาแรงก์ F ทุกชนิดในกระเป๋า */
+export function haveFor(bag: BagStack[], item: string): number {
+  if (!fishGroupRank(item)) return countOf(bag, item);
+  return countOf(bag, item) + bag.filter((stack) => fishGroupOf(stack.item) === item).reduce((sum, stack) => sum + stack.count, 0);
+}
+
+/** หยิบตามลำดับในกระเป๋า ปลาที่ใส่ก่อนถูกใช้ก่อน */
+function takeFor(bag: BagStack[], item: string, count: number): BagStack[] | null {
+  if (!fishGroupRank(item)) return takeFromBag(bag, item, count);
+  if (haveFor(bag, item) < count) return null;
+  let left: BagStack[] = bag;
+  let need = count;
+  for (const kind of [item, ...new Set(bag.filter((stack) => fishGroupOf(stack.item) === item).map((stack) => stack.item))]) {
+    const moved = Math.min(need, countOf(left, kind));
+    if (moved > 0) left = takeFromBag(left, kind, moved)!;
+    need -= moved;
+  }
+  return left;
+}
+
 export function hasIngredients(bag: BagStack[], recipe: Recipe): boolean {
-  return Object.entries(recipe.ingredients).every(([item, count]) => countOf(bag, item) >= count);
+  return Object.entries(recipe.ingredients).every(([item, count]) => haveFor(bag, item) >= count);
 }
 
 function takeAll(bag: BagStack[], items: Record<string, number>): BagStack[] | null {
   let left: BagStack[] | null = bag;
   for (const [item, count] of Object.entries(items)) {
-    left = left && takeFromBag(left, item, count);
+    left = left && takeFor(left, item, count);
   }
   return left;
+}
+
+/** ปลาที่ผสมเองนับเป็นปลาแรงก์ของมัน จะได้ตรงกับสูตรที่เขียนว่าปลาแรงก์ F */
+function asRecipeItems(mix: Record<string, number>): Record<string, number> {
+  const items: Record<string, number> = {};
+  for (const [item, count] of Object.entries(mix)) {
+    const key = fishGroupOf(item) ?? item;
+    items[key] = (items[key] ?? 0) + count;
+  }
+  return items;
 }
 
 export function canCook(world: World, id: string): boolean {
@@ -65,7 +96,8 @@ export function startCooking(world: World, id: string): World | null {
 }
 
 /** ของที่ผสมต้องตรงสูตรทุกอย่าง และเป็นเมนูที่กองไฟทำได้ */
-export function matchRecipe(mix: Record<string, number>): string | null {
+export function matchRecipe(raw: Record<string, number>): string | null {
+  const mix = asRecipeItems(raw);
   const kinds = Object.keys(mix);
   const found = Object.entries(recipes).find(
     ([, recipe]) =>

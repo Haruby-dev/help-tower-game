@@ -39,12 +39,12 @@ export const emptyWallet = (): Wallet => ({ coins: 0, stars: 0, log: [], daily: 
 /** ของแต่งเป็นความสวยล้วน เก็บธงไว้ก่อน ระบบร้านค้าและหีบมาทีหลัง */
 export interface Cosmetics {
   equipped: { case: string; charm: string | null; wallpaper: string; canSkin: string };
-  owned: { cases: string[]; charms: string[]; wallpapers: string[]; canSkins: string[] };
+  owned: { cases: string[]; charms: string[]; wallpapers: string[]; canSkins: string[]; clips: string[] };
 }
 
 export const defaultCosmetics = (): Cosmetics => ({
   equipped: { case: 'case_pink_cat', charm: null, wallpaper: 'wallpaper_sky_cats', canSkin: 'can_blue' },
-  owned: { cases: ['case_pink_cat'], charms: [], wallpapers: ['wallpaper_sky_cats'], canSkins: ['can_blue'] },
+  owned: { cases: ['case_pink_cat'], charms: [], wallpapers: ['wallpaper_sky_cats'], canSkins: ['can_blue'], clips: [] },
 });
 
 export interface CropState {
@@ -86,6 +86,14 @@ export interface RecipeBook {
 
 export type Tool = 'hoe' | 'can' | 'sickle' | 'seeds';
 
+export type Weather = 'sunny' | 'rain' | 'cloudy';
+
+export interface Fishing {
+  rods: string[];
+  /** จำนวนที่ตกได้ของแต่ละชนิด */
+  caught: Record<string, number>;
+}
+
 /** ความจริงของเกมที่อยู่ในเซฟ */
 export interface World {
   day: number;
@@ -100,6 +108,12 @@ export interface World {
   cooking: Cooking;
   recipes: RecipeBook;
   cosmetics: Cosmetics;
+  seed: number;
+  weather: Weather;
+  fishing: Fishing;
+  chests: { sinceCosmetic: number };
+  toys: string[];
+  stash: Record<string, number>;
 }
 
 class GameState {
@@ -107,6 +121,7 @@ class GameState {
   private currentRotationRequired = false;
   private currentJoystick: Vector = { x: 0, y: 0 };
   private currentLightingEnabled = true;
+  private currentAutoFish = false;
   private currentZoomStep = 0;
   private currentRunHeld = false;
   private currentWorld: World | null = null;
@@ -226,6 +241,15 @@ class GameState {
     if (step === this.currentZoomStep) return;
     this.currentZoomStep = step;
     eventBus.emit('zoom-step-changed', step);
+  }
+
+  /** ตั้งค่าตกปลาอัตโนมัติ ขึ้น "!" แล้วดึงให้เอง */
+  get autoFish(): boolean {
+    return this.currentAutoFish;
+  }
+
+  setAutoFish(on: boolean): void {
+    this.currentAutoFish = on;
   }
 
   get lightingEnabled(): boolean {

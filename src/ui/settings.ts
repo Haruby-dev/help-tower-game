@@ -7,6 +7,7 @@ import { createSaveRow } from './saves';
 
 const STORAGE_KEY = 'lighting-enabled';
 const ZOOM_STORAGE_KEY = 'zoom-step';
+const AUTO_FISH_KEY = 'auto-fish';
 const ZOOM_LABELS = ['settings.zoom_normal', 'settings.zoom_near', 'settings.zoom_nearer'] as const;
 
 /** ค่าที่จำไว้เฉพาะเครื่องนี้ ถ้าเบราว์เซอร์ไม่ให้เก็บก็ยังเล่นได้ */
@@ -24,6 +25,47 @@ function storeLighting(enabled: boolean): void {
   } catch {
     // ไม่เก็บค่าก็ไม่กระทบการเล่น
   }
+}
+
+function readStoredAutoFish(): boolean {
+  try {
+    return window.localStorage.getItem(AUTO_FISH_KEY) === 'on';
+  } catch {
+    return false;
+  }
+}
+
+function storeAutoFish(on: boolean): void {
+  try {
+    window.localStorage.setItem(AUTO_FISH_KEY, on ? 'on' : 'off');
+  } catch {
+    // ไม่เก็บค่าก็ไม่กระทบการเล่น
+  }
+}
+
+/** ตกปลาอัตโนมัติ ขึ้น "!" แล้วดึงให้เอง สำหรับคนที่ไม่อยากลุ้นจังหวะ */
+function createAutoFishRow(): HTMLElement {
+  const row = document.createElement('div');
+  row.className = 'settings-row';
+  const label = Object.assign(document.createElement('span'), { textContent: t('settings.auto_fish') });
+  const toggle = document.createElement('button');
+  toggle.id = 'auto-fish-toggle';
+  toggle.type = 'button';
+  toggle.className = 'settings-button';
+  toggle.setAttribute('role', 'switch');
+  toggle.setAttribute('aria-label', t('settings.auto_fish'));
+  const show = (): void => {
+    toggle.setAttribute('aria-checked', String(gameState.autoFish));
+    toggle.textContent = t(gameState.autoFish ? 'settings.on' : 'settings.off');
+  };
+  show();
+  toggle.addEventListener('click', () => {
+    gameState.setAutoFish(!gameState.autoFish);
+    storeAutoFish(gameState.autoFish);
+    show();
+  });
+  row.append(label, toggle);
+  return row;
 }
 
 /** จอสัมผัสเริ่มใกล้กว่าจอคอม เพราะจอเล็กและตัวละครจะดูเล็กเกินไป */
@@ -141,6 +183,7 @@ export function initSettings(appRoot: HTMLElement): void {
   appRootForPage = appRoot;
   gameState.setLightingEnabled(readStoredLighting());
   gameState.setZoomStep(readStoredZoomStep());
+  gameState.setAutoFish(readStoredAutoFish());
 }
 
 function createSettingsPage(): HTMLElement {
@@ -171,7 +214,7 @@ function createSettingsPage(): HTMLElement {
   });
   row.append(label, toggle);
 
-  page.append(title, row, createZoomRow(), createSaveRow());
+  page.append(title, row, createAutoFishRow(), createZoomRow(), createSaveRow());
   const fullscreen = appRootForPage ? createFullscreenRow(appRootForPage) : null;
   if (fullscreen) page.append(fullscreen);
   return page;

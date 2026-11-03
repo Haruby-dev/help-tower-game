@@ -1,0 +1,52 @@
+{
+  "tiers": {
+    "wooden": { "item": "chest_wooden", "chance": 0.75, "rolls": 2, "coins": [10, 30], "duplicateStars": 2, "guarantee": null },
+    "silver": { "item": "chest_silver", "chance": 0.2, "rolls": 3, "coins": [30, 80], "duplicateStars": 5, "guarantee": "uncommon" },
+    "golden": { "item": "chest_golden", "chance": 0.05, "rolls": 3, "coins": [100, 200], "duplicateStars": 10, "guarantee": "cosmetic" }
+  },
+  "categories": {
+    "seasoning": { "wooden": 0.45, "silver": 0.35, "golden": 0.2 },
+    "items": { "wooden": 0.35, "silver": 0.3, "golden": 0.25 },
+    "toys": { "wooden": 0.12, "silver": 0.2, "golden": 0.2 },
+    "cosmetics": { "wooden": 0.08, "silver": 0.15, "golden": 0.35 }
+  },
+  "rarity": { "common": 0.7, "uncommon": 0.25, "rare": 0.05 },
+  "pityAfter": 8,
+  "pool": [
+    { "category": "seasoning", "rarity": "common", "kind": "bag", "item": "ing_salt", "min": 2, "max": 3 },
+    { "category": "seasoning", "rarity": "common", "kind": "bag", "item": "ing_sugar", "min": 2, "max": 3 },
+    { "category": "seasoning", "rarity": "common", "kind": "bag", "item": "ing_fish_sauce", "min": 2, "max": 3 },
+    { "category": "seasoning", "rarity": "uncommon", "kind": "bag", "item": "ing_honey", "min": 1, "max": 2 },
+    { "category": "seasoning", "rarity": "uncommon", "kind": "bag", "item": "ing_vanilla", "min": 1, "max": 2 },
+    { "category": "seasoning", "rarity": "uncommon", "kind": "bag", "item": "ing_cocoa", "min": 1, "max": 2 },
+    { "category": "seasoning", "rarity": "uncommon", "kind": "bag", "item": "ing_cherry", "min": 1, "max": 2 },
+    { "category": "seasoning", "rarity": "rare", "kind": "bag", "item": "ing_salt_tower_pink", "min": 1, "max": 1 },
+    { "category": "items", "rarity": "common", "kind": "bag", "item": "bait_normal", "min": 3, "max": 5 },
+    { "category": "items", "rarity": "uncommon", "kind": "bag", "item": "bait_corn", "min": 1, "max": 1, "minTier": "silver" },
+    { "category": "items", "rarity": "uncommon", "kind": "bag", "item": "bait_cloud_lettuce", "min": 1, "max": 1, "minTier": "silver" },
+    { "category": "items", "rarity": "uncommon", "kind": "seed_bag", "item": "seed_bag", "min": 3, "max": 3 },
+    { "category": "items", "rarity": "rare", "kind": "stash", "item": "gio_lick_treat", "min": 1, "max": 1 },
+    { "category": "toys", "rarity": "common", "kind": "toy", "item": "toy_feather_wand", "min": 1, "max": 1 },
+    { "category": "toys", "rarity": "common", "kind": "toy", "item": "toy_yarn_ball", "min": 1, "max": 1 },
+    { "category": "toys", "rarity": "uncommon", "kind": "toy", "item": "toy_mouse", "min": 1, "max": 1 },
+    { "category": "toys", "rarity": "uncommon", "kind": "toy", "item": "toy_cardboard_box", "min": 1, "max": 1 },
+    { "category": "toys", "rarity": "rare", "kind": "toy", "item": "toy_fish_plush", "min": 1, "max": 1, "minTier": "golden" },
+    { "category": "cosmetics", "rarity": "uncommon", "kind": "cosmetic", "item": "can_mint", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "uncommon", "kind": "cosmetic", "item": "can_lavender", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "uncommon", "kind": "cosmetic", "item": "can_yellow", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "uncommon", "kind": "cosmetic", "item": "can_peach", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "common", "kind": "cosmetic", "item": "charm_pink_bow", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "common", "kind": "cosmetic", "item": "charm_gold_bell", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "common", "kind": "cosmetic", "item": "charm_little_fish", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "common", "kind": "cosmetic", "item": "charm_strawberry", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "common", "kind": "cosmetic", "item": "charm_basil_leaf", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "common", "kind": "cosmetic", "item": "charm_star", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "common", "kind": "cosmetic", "item": "clip_cherry", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "common", "kind": "cosmetic", "item": "clip_star", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "common", "kind": "cosmetic", "item": "clip_cat", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "common", "kind": "cosmetic", "item": "clip_bow", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "uncommon", "kind": "cosmetic", "item": "case_mint", "min": 1, "max": 1 },
+    { "category": "cosmetics", "rarity": "rare", "kind": "cosmetic", "item": "case_gio", "min": 1, "max": 1, "minTier": "golden" },
+    { "category": "cosmetics", "rarity": "rare", "kind": "cosmetic", "item": "wallpaper_gio", "min": 1, "max": 1, "minTier": "golden" }
+  ]
+}

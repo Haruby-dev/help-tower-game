@@ -19,6 +19,12 @@ describe('clock', () => {
       cooking: { slot: null },
       recipes: newWorld().recipes,
       cosmetics: defaultCosmetics(),
+      seed: expect.any(Number),
+      weather: 'sunny',
+      fishing: { rods: ['bamboo'], caught: {} },
+      chests: { sinceCosmetic: 0 },
+      toys: [],
+      stash: {},
     });
   });
 

@@ -3,20 +3,26 @@ import { gameState, type Point, type World } from '../core/state';
 import balance from '../data/balance.json';
 import { finishOvernight, tickCooking } from './cooking';
 import { growFarm } from './farm';
+import { rainOnFarm, weatherFor } from './weather';
 import { decayAwake, recoverFromFaint, shouldFaint, sleepUntilMorning } from './gauges';
 
 const { time, gauges } = balance;
 const MS_PER_HOUR = time.realSecondsPerGameHour * 1000;
 const HOURS_PER_DAY = 24;
 
+/** ฝนตกตอนเช้ารดน้ำให้ทั้งฟาร์ม */
 function nextMorning(world: World, restful: boolean): World {
   const morning = time.dayStartHour + HOURS_PER_DAY;
+  const day = world.day + 1;
+  const weather = weatherFor(world.seed, day);
+  const farm = growFarm(world.farm);
   return {
     ...world,
-    day: world.day + 1,
+    day,
+    weather,
     hour: time.dayStartHour,
     gauges: sleepUntilMorning(world.gauges, Math.max(0, morning - world.hour), restful),
-    farm: growFarm(world.farm),
+    farm: weather === 'rain' ? rainOnFarm(farm) : farm,
     cooking: finishOvernight(world.cooking),
   };
 }

@@ -1,7 +1,8 @@
 import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
-import { gameState, type World } from '../core/state';
+import { gameState, type Weather, type World } from '../core/state';
 import balance from '../data/balance.json';
+import { cosmeticTable } from '../systems/chests';
 import { dayOfMonth, encouragementFor, monthOf, stuckTime, weekStrip, weekdayIndex, weekdayName, weekdayShort } from '../systems/phoneCalendar';
 import { formatClock } from './hud';
 import { createInventoryPage } from './inventory';
@@ -36,8 +37,13 @@ const APPS: PhoneApp[] = [
 const PHONE_WINDOW = 'phone';
 const FLIP_MS = 160;
 const SWIPE_UP_PX = 30;
-const WEATHER_ICON = 'ui_weather_sun';
-const CASE_ART = 'ui_v3_case_back_pink';
+/** ไอคอนอากาศเปลี่ยนตามอากาศของวัน */
+const WEATHER_ICONS: Record<Weather, string> = { sunny: 'ui_weather_sun', rain: 'ui_weather_rain', cloudy: 'ui_weather_cloud' };
+const weatherArt = (className: string): HTMLImageElement => {
+  const image = art(WEATHER_ICONS.sunny, className);
+  image.dataset.weatherIcon = '';
+  return image;
+};
 const LOCK_CATS = ['ui_cat_orange', 'ui_cat_calico', 'ui_cat_gio', 'ui_cat_grey'];
 const MINI_CATS = ['ui_cat_orange', 'ui_cat_gio'];
 
@@ -76,7 +82,7 @@ function createMini(): { root: HTMLButtonElement; time: HTMLElement; date: HTMLE
   time.id = 'phone-cover-time';
   const cats = element('span', 'mini__cats');
   cats.append(...MINI_CATS.map((id) => art(id, 'mini__cat')));
-  screen.append(art(WEATHER_ICON, 'mini__weather'), date, punchHole(), time, cats);
+  screen.append(weatherArt('mini__weather'), date, punchHole(), time, cats);
   root.append(screen);
   return { root, time, date };
 }
@@ -98,7 +104,7 @@ function createLock(): { root: HTMLElement; time: HTMLElement; date: HTMLElement
   open.setAttribute('aria-label', t('phone.unlock'));
   open.append(art('ui_v3_paw_button', 'lock__paw'));
   const top = element('div', 'lock__top');
-  top.append(date, art(WEATHER_ICON, 'lock__sun'));
+  top.append(date, weatherArt('lock__sun'));
   root.append(top, time, weather, card, open);
   return { root, time, date, weather, line, open };
 }
@@ -189,14 +195,22 @@ function createStuckWidget(): { root: HTMLElement; update: (world: World) => voi
   };
 }
 
-function createBack(): { root: HTMLElement; flip: HTMLButtonElement } {
+function createBack(): { root: HTMLElement; flip: HTMLButtonElement; showCase: (id: string) => void } {
   const root = element('div', 'phone-back');
   root.id = 'phone-back-side';
   const name = element('small', 'phone-back__name', t('phone.case_default'));
   const flip = element('button', 'phone-tool', t('phone.flip_back'));
   flip.type = 'button';
-  root.append(art(CASE_ART, 'phone-back__case'), name, flip);
-  return { root, flip };
+  const caseArt = art(cosmeticTable.case_pink_cat!.art, 'phone-back__case');
+  root.append(caseArt, name, flip);
+  /** เคสที่เลือกในแอปกระเป๋า แท็บสะสม */
+  const showCase = (id: string): void => {
+    const chosen = cosmeticTable[id];
+    if (!chosen) return;
+    caseArt.src = artUrl(chosen.art);
+    name.textContent = t(`cosmetic.${id}.name` as TextKey);
+  };
+  return { root, flip, showCase };
 }
 
 export function createPhone(uiRoot: HTMLElement): void {
@@ -374,10 +388,13 @@ export function createPhone(uiRoot: HTMLElement): void {
     mini.date.textContent = short;
     lock.time.textContent = time;
     lock.date.textContent = short;
-    lock.weather.textContent = t('weather.sunny');
+    const weather = t(`weather.${world.weather}` as TextKey);
+    lock.weather.textContent = weather;
+    for (const icon of document.querySelectorAll<HTMLImageElement>('[data-weather-icon]')) icon.src = artUrl(WEATHER_ICONS[world.weather]);
+    back.showCase(world.cosmetics.equipped.case);
     lock.line.textContent = encouragementFor(world.day);
     clock.textContent = time;
-    status.textContent = `${t(weekdayShort(world.day))} ${world.day} · ${t('weather.sunny')}`;
+    status.textContent = `${t(weekdayShort(world.day))} ${world.day} · ${weather}`;
     date.update(world);
     calendar.update(world);
     stuck.update(world);
