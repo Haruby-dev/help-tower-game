@@ -9,7 +9,7 @@ import { BootScene } from './scenes/BootScene';
 import { changeMoney } from './systems/economy';
 import { newWorld } from './systems/gauges';
 import { createOverlay, updateRotationRequired } from './ui/overlay';
-import { showSlotPicker } from './ui/saves';
+import { showTitleScreen } from './ui/saves';
 import './ui/styles.css';
 
 const appRoot = document.getElementById('app')!;
@@ -90,4 +90,4 @@ if (params.has('test')) {
 }
 // การทดสอบที่ไม่ได้สนใจเซฟข้ามหน้าเลือกช่อง
 if (params.has('test') && !params.has('saves')) gameState.startGame(1, newWorld());
-else void showSlotPicker(uiRoot);
+else showTitleScreen(uiRoot);

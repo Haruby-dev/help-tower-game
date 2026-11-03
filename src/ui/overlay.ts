@@ -48,6 +48,7 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   eventBus.on('viewport-changed', (viewport) => {
     const pixel = uiZoomFor(viewport, display.uiDesign) / window.devicePixelRatio;
     uiRoot.style.setProperty('--px', `${pixel}px`);
+    uiRoot.style.setProperty('--tpx', `${uiZoomFor(viewport, display.titleDesign) / window.devicePixelRatio}px`);
     uiRoot.style.setProperty('--bpx', `${uiZoomFor(viewport, display.bookDesign) / window.devicePixelRatio}px`);
   });
   createHud(uiRoot);

@@ -3225,5 +3225,40 @@
     "footY": {
       "default": 128
     }
+  },
+  "title_logo": {
+    "footY": {
+      "default": 57
+    }
+  },
+  "title_logo_8f": {
+    "footY": {
+      "default": 60
+    }
+  },
+  "title_v4_board": {
+    "footY": {
+      "default": 197
+    }
+  },
+  "title_v4_tagline": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "title_v4_twinkle": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "title_v4_btn_start": {
+    "footY": {
+      "default": 48
+    }
+  },
+  "title_v4_btn_load": {
+    "footY": {
+      "default": 48
+    }
   }
 }

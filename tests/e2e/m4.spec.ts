@@ -119,11 +119,28 @@ test('a right mix unlocks the recipe', async ({ page }) => {
   expect(world.cooking.slot?.recipe).toBe('tomato_soup');
 });
 
-test('the save screen shows the new game name', async ({ page }) => {
+test('the title screen shows the logo board and opens the save slots', async ({ page }) => {
   await page.goto('/help-tower-game/?test&saves');
-  await expect(page.locator('#slot-picker h1')).toHaveText('Floor & Flavor');
-  await expect(page.locator('#slot-picker')).toContainText('ติดหอคอยทั้งที ขอเปิดร้านข้าวก่อนนะ!');
+  await expect(page.locator('#title-screen')).toBeVisible();
+  await expect(page.locator('.title-logo')).toHaveAttribute('aria-label', 'Floor & Flavor');
+  await expect(page.locator('.title-tagline')).toHaveAttribute('aria-label', 'ติดหอคอยทั้งที ขอเปิดร้านข้าวก่อนนะ!');
+  await expect(page.locator('.title-twinkle')).toHaveCount(11);
   await expect(page).toHaveTitle('Floor & Flavor');
+  const buttonTop = (await page.locator('#title-start').boundingBox())!.y;
+  const offsets = new Set<string>();
+  for (let i = 0; i < 12; i += 1) {
+    offsets.add(await page.locator('.title-sign').evaluate((node) => (node as HTMLElement).style.transform));
+    await page.waitForTimeout(250);
+  }
+  expect(offsets.size).toBeGreaterThan(1);
+  expect((await page.locator('#title-start').boundingBox())!.y).toBe(buttonTop);
+  await page.locator('#title-load').click();
+  await expect(page.locator('.slot-button')).toHaveCount(3);
+  await page.locator('#slot-back').click();
+  await expect(page.locator('#slot-picker')).toHaveCount(0);
+  await page.locator('#title-start').click();
+  await expect(page.locator('#title-screen')).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => (window as unknown as { __state: { started: boolean } }).__state.started)).toBe(true);
 });
 
 test('the recipe book fits the screen at a whole-number size', async ({ page }) => {

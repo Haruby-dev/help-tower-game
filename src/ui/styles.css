@@ -2946,3 +2946,98 @@ canvas {
   top: calc(var(--px) * 6);
   left: calc(var(--px) * 6);
 }
+
+/* หน้าเริ่มเกม v4 พื้นขาว ฉาก 640×360 ขยายจำนวนเต็มด้วย --tpx */
+#title-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  pointer-events: auto;
+}
+
+.title-stage {
+  position: relative;
+  width: calc(var(--tpx) * 640);
+  height: calc(var(--tpx) * 360);
+}
+
+.title-sign {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.title-sprite {
+  position: absolute;
+  display: block;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+
+@keyframes title-sheet {
+  to { background-position-x: calc(var(--sheet) * -1); }
+}
+
+.title-logo.is-moving {
+  background-size: auto 100%;
+  animation: title-sheet steps(8) infinite;
+}
+
+.title-twinkle {
+  background-position: 0 0;
+}
+
+.title-twinkle.is-playing {
+  animation: title-twinkle 0.4s steps(1) 1;
+}
+
+@keyframes title-twinkle {
+  0% { background-position-x: 0; }
+  25% { background-position-x: calc(var(--tpx) * -7); }
+  50% { background-position-x: calc(var(--tpx) * -14); }
+  75% { background-position-x: calc(var(--tpx) * -21); }
+  100% { background-position-x: 0; }
+}
+
+.title-button {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+/* ปุ่มบนจอเตี้ยเล็กลงตามซูม แต่พื้นที่กดยังอย่างน้อย 44px */
+.title-button::before {
+  position: absolute;
+  inset: min(0px, calc((100% - 44px) / 2)) 0;
+  content: '';
+}
+
+.title-button__face {
+  top: 0;
+  left: 0;
+  background-position-x: 0;
+  pointer-events: none;
+}
+
+.title-button:hover .title-button__face,
+.title-button:focus-visible .title-button__face {
+  background-position-x: calc(var(--tpx) * var(--frame-w) * -1);
+}
+
+.title-button:active .title-button__face {
+  background-position-x: calc(var(--tpx) * var(--frame-w) * -2);
+}
+
+.title-button:focus-visible {
+  outline: none;
+}
+
+#slot-picker {
+  z-index: 5;
+}

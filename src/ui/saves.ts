@@ -2,6 +2,8 @@ import { eventBus } from '../core/events';
 import { t } from '../core/i18n';
 import { gameState } from '../core/state';
 import { newWorld } from '../systems/gauges';
+import { showTitle } from './title';
+import type { SaveFile } from '../data/schema';
 import { SLOT_COUNT, downloadSave, readSaveUpload, readSlot, toSaveFile, writeSaveFile, writeSlot } from '../systems/save';
 
 const slots = Array.from({ length: SLOT_COUNT }, (_, index) => index + 1);
@@ -17,18 +19,41 @@ function startAutoSave(): void {
   });
 }
 
-/** หน้าเลือกช่องเซฟแบบง่าย หน้าเริ่มเกมจริงจะมาใน M9 */
-export async function showSlotPicker(uiRoot: HTMLElement): Promise<void> {
+/** หน้าเริ่มเกม: เริ่มเกมเล่นต่อจากเซฟล่าสุด ถ้ายังไม่มีเซฟเริ่มใหม่ในช่อง 1 · โหลดเซฟเปิดหน้าเลือกช่อง */
+export function showTitleScreen(uiRoot: HTMLElement): void {
+  gameState.setWindowOpen('slots', true);
+  const close = showTitle(uiRoot, {
+    onStart: () => {
+      void latestSlot().then(({ slot, world }) => {
+        close();
+        gameState.startGame(slot, world ?? newWorld());
+        gameState.setWindowOpen('slots', false);
+      });
+    },
+    onLoad: () => {
+      void showSlotPicker(uiRoot, close);
+    },
+  });
+}
+
+async function latestSlot(): Promise<{ slot: number; world: SaveFile['world'] | null }> {
+  let best: { slot: number; save: SaveFile } | null = null;
+  for (const slot of slots) {
+    const save = await readSlot(slot);
+    if (save && (!best || save.savedAt > best.save.savedAt)) best = { slot, save };
+  }
+  return best ? { slot: best.slot, world: best.save.world } : { slot: slots[0]!, world: null };
+}
+
+/** หน้าเลือกช่องเซฟ เปิดจากปุ่มโหลดเซฟบนหน้าเริ่มเกม */
+export async function showSlotPicker(uiRoot: HTMLElement, closeTitle: () => void = () => undefined): Promise<void> {
+  if (document.getElementById('slot-picker')) return;
   const panel = document.createElement('div');
   panel.id = 'slot-picker';
   panel.className = 'panel';
-  const name = document.createElement('h1');
-  name.textContent = t('game.title');
-  const subtitle = document.createElement('p');
-  subtitle.textContent = t('game.subtitle');
   const title = document.createElement('h2');
   title.textContent = t('save.choose_slot');
-  panel.append(name, subtitle, title);
+  panel.append(title);
   gameState.setWindowOpen('slots', true);
 
   for (const slot of slots) {
@@ -41,12 +66,20 @@ export async function showSlotPicker(uiRoot: HTMLElement): Promise<void> {
       ? `${t('save.slot')} ${slot} · ${t('hud.day')} ${save.world.day}`
       : `${t('save.slot')} ${slot} · ${t('save.empty')}`;
     button.addEventListener('click', () => {
+      closeTitle();
       gameState.startGame(slot, save?.world ?? newWorld());
       panel.remove();
       gameState.setWindowOpen('slots', false);
     });
     panel.append(button);
   }
+  const back = document.createElement('button');
+  back.type = 'button';
+  back.id = 'slot-back';
+  back.className = 'settings-button';
+  back.textContent = t('save.back');
+  back.addEventListener('click', () => panel.remove());
+  panel.append(back);
   uiRoot.append(panel);
 }
 

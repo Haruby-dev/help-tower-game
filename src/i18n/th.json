@@ -218,5 +218,8 @@
   "cook.star_tip": "อารมณ์ดีถึง 70 จะได้ 2 ดาว",
   "cook.mix_title": "หม้อทดลอง",
   "cook.mix_warning": "ผิดสูตรได้อาหารปริศนา ของในหม้อจะหมดนะ",
-  "cook.mix_remove": "เอาออก"
+  "cook.mix_remove": "เอาออก",
+  "title.start": "เริ่มเกม",
+  "title.load": "โหลดเซฟ",
+  "save.back": "กลับ"
 }

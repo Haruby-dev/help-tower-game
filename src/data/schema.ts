@@ -14,6 +14,8 @@ export const displaySchema = z.strictObject({
   uiDesign: z.strictObject({ width: z.number().positive(), height: z.number().positive() }),
   /** ขนาดที่หน้าสมุดสูตร 201×300 ต้องใส่ได้ พร้อมขอบ */
   bookDesign: z.strictObject({ width: z.number().positive(), height: z.number().positive() }),
+  /** หน้าเริ่มเกมวาดที่ 640×360 */
+  titleDesign: z.strictObject({ width: z.number().positive(), height: z.number().positive() }),
   zoomSteps: z.array(z.number().int().nonnegative()).min(1),
   touchDefaultZoomStep: z.number().int().nonnegative(),
   lighting: z.strictObject({

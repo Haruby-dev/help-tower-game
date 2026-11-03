@@ -6909,5 +6909,68 @@
     "source": "public/assets/world/fx/trees/tree_big_3_light_mask.png",
     "file": "world/fx/trees/tree_big_3_light_mask.png",
     "jade_tone": false
+  },
+  "title_logo": {
+    "type": "local",
+    "width": 389,
+    "height": 57,
+    "source": "public/assets/ui/title/logo_floor_flavor.png",
+    "file": "ui/title/logo_floor_flavor.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "title_logo_8f": {
+    "type": "local",
+    "width": 3112,
+    "height": 60,
+    "source": "public/assets/ui/title/logo_floor_flavor_8f.png",
+    "file": "ui/title/logo_floor_flavor_8f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "title_v4_board": {
+    "type": "local",
+    "width": 520,
+    "height": 197,
+    "source": "public/assets/ui/title/v4/title_board.png",
+    "file": "ui/title/v4/title_board.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "title_v4_tagline": {
+    "type": "local",
+    "width": 333,
+    "height": 33,
+    "source": "public/assets/ui/title/v4/title_tagline.png",
+    "file": "ui/title/v4/title_tagline.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "title_v4_twinkle": {
+    "type": "local",
+    "width": 28,
+    "height": 7,
+    "source": "public/assets/ui/title/v4/twinkle_4f.png",
+    "file": "ui/title/v4/twinkle_4f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "title_v4_btn_start": {
+    "type": "local",
+    "width": 516,
+    "height": 49,
+    "source": "public/assets/ui/title/v4/btn_start_3state.png",
+    "file": "ui/title/v4/btn_start_3state.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "title_v4_btn_load": {
+    "type": "local",
+    "width": 516,
+    "height": 49,
+    "source": "public/assets/ui/title/v4/btn_load_3state.png",
+    "file": "ui/title/v4/btn_load_3state.png",
+    "jade_tone": false,
+    "lazy": true
   }
 }

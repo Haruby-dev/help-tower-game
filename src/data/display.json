@@ -92,5 +92,9 @@
   "bookDesign": {
     "width": 225,
     "height": 318
+  },
+  "titleDesign": {
+    "width": 640,
+    "height": 360
   }
 }

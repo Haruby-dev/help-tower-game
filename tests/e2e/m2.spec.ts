@@ -59,6 +59,7 @@ test('the clock stops while the phone is open', async ({ page }) => {
 
 test('sleeps at the door, starts the next day, and the save loads after reopening', async ({ page }) => {
   await open(page, '/help-tower-game/?test&saves');
+  await page.locator('#title-load').click();
   await expect(page.locator('.slot-button')).toHaveCount(3);
   await expect(page.locator('[data-slot="2"]')).toContainText('เริ่มใหม่');
   await page.locator('[data-slot="2"]').click();
@@ -78,6 +79,7 @@ test('sleeps at the door, starts the next day, and the save loads after reopenin
   expect(morning.hour).toBeLessThan(7);
 
   await open(page, '/help-tower-game/?test&saves');
+  await page.locator('#title-load').click();
   await expect(page.locator('[data-slot="2"]')).toContainText('2');
   await page.locator('[data-slot="2"]').click();
   await expect.poll(async () => (await world(page)).day).toBe(2);
