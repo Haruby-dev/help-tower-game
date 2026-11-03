@@ -24,6 +24,49 @@ const steps = recipeSteps as Record<string, string[]>;
 const ORDER = Object.keys(recipes);
 
 const book = (name: string): string => artUrl(`ui_book_${name}`);
+
+/** ขนาดปกรอบหน้า ด้านซ้ายกว้างกว่าเพราะเป็นสัน */
+const COVER = { left: 12, right: 8, top: 6, bottom: 8 };
+const COVER_RADIUS = 9;
+const PAGE_RADIUS = 6;
+/** ความหนาของขอบกระดาษที่ซ้อนอยู่ใต้หน้า */
+const EDGE = 4;
+
+/** มุมมนแบบขั้นบันไดพิกเซล ทุกจุดเป็นจำนวนเต็มของ --bpx ภาพจึงไม่เบลอ */
+export function roundedCorner(radius: number): [number, number][] {
+  const steps: [number, number][] = [];
+  for (let row = 0; row < radius; row += 1) {
+    const dy = radius - row - 0.5;
+    steps.push([Math.round(radius - Math.sqrt(radius * radius - dy * dy)), row]);
+  }
+  return steps;
+}
+
+function roundedClip(width: number, height: number, radius: number): string {
+  const corner = roundedCorner(radius);
+  const unit = (value: number): string => `calc(var(--bpx) * ${value})`;
+  const points: string[] = [];
+  const add = (x: number, y: number): void => {
+    points.push(`${unit(x)} ${unit(y)}`);
+  };
+  for (const [inset, row] of corner) {
+    add(inset, row);
+    add(inset, row + 1);
+  }
+  for (const [inset, row] of [...corner].reverse()) {
+    add(inset, height - row - 1);
+    add(inset, height - row);
+  }
+  for (const [inset, row] of corner) {
+    add(width - inset, height - row);
+    add(width - inset, height - row - 1);
+  }
+  for (const [inset, row] of [...corner].reverse()) {
+    add(width - inset, row + 1);
+    add(width - inset, row);
+  }
+  return `polygon(${points.join(', ')})`;
+}
 const themed = (name: string, theme: Category): string => book(`${name}_${theme}`);
 
 /** ทุกตำแหน่งนับเป็นพิกเซลของหน้า 201×300 แล้วคูณ --bpx */
@@ -69,11 +112,20 @@ export function createRecipeBook(uiRoot: HTMLElement): void {
   backdrop.id = 'recipe-book';
   backdrop.hidden = true;
   const page = element('div', 'book-page');
+  page.style.clipPath = roundedClip(201, 300, PAGE_RADIUS);
+  // ปก สัน และขอบกระดาษวาดด้วยโค้ด ให้หน้าสูตรดูเป็นสมุดจริง
+  const cover = element('i', 'book-cover');
+  cover.style.clipPath = roundedClip(201 + COVER.left + COVER.right, 300 + COVER.top + COVER.bottom, COVER_RADIUS);
+  const edges = element('i', 'book-edges');
+  edges.style.clipPath = roundedClip(201 + EDGE, 300 + EDGE, PAGE_RADIUS);
+  const spine = element('i', 'book-spine');
+  const volume = element('div', 'book-volume');
+  volume.append(cover, spine, edges, page);
   const close = element('button', 'phone-tool book-close', '×');
   close.id = 'book-close';
   close.type = 'button';
   close.setAttribute('aria-label', t('ui.close'));
-  backdrop.append(page, close);
+  backdrop.append(volume, close);
   uiRoot.append(backdrop);
 
   let current = 'home_kaprao';
@@ -181,6 +233,7 @@ export function createRecipeBook(uiRoot: HTMLElement): void {
     const known = world.known.includes(current);
     const best = world.bestStars[current] ?? 0;
     page.dataset.theme = theme;
+    volume.dataset.theme = theme;
     page.dataset.recipe = current;
     page.classList.toggle('is-locked', !known);
     const parts: HTMLElement[] = [...background(theme)];

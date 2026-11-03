@@ -9,6 +9,7 @@ import { createHud } from './hud';
 import { createJoystick } from './joystick';
 import { createPhone } from './phone';
 import { createRecipeBook } from './recipeBook';
+import { createUpdateCheck } from './update';
 import { createSaves } from './saves';
 import { createSettings, initSettings } from './settings';
 import { createToolbar } from './toolbar';
@@ -59,6 +60,7 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   createPhone(uiRoot);
   createSaves(uiRoot);
   createRecipeBook(uiRoot);
+  createUpdateCheck(uiRoot);
 }
 
 export function updateRotationRequired(appRoot: HTMLElement): void {

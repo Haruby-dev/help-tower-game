@@ -2481,3 +2481,89 @@ canvas {
 .book-note > * {
   position: absolute;
 }
+
+/* ปก สัน และขอบกระดาษของสมุดสูตร ทึบทั้งหมด วาดเป็นพิกเซล */
+.book-volume {
+  --cover: #d9965a;
+  --cover-dark: #a06030;
+  --stitch: #fff1dc;
+  position: relative;
+  width: calc(var(--bpx) * 201);
+  height: calc(var(--bpx) * 300);
+}
+
+.book-volume[data-theme='sweet'] {
+  --cover: #e996b4;
+  --cover-dark: #b25276;
+  --stitch: #fff0f5;
+}
+
+.book-volume[data-theme='drink'] {
+  --cover: #86c497;
+  --cover-dark: #408052;
+  --stitch: #f0fff4;
+}
+
+.book-cover,
+.book-edges,
+.book-spine {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.book-cover {
+  top: calc(var(--bpx) * -6);
+  left: calc(var(--bpx) * -12);
+  width: calc(var(--bpx) * 221);
+  height: calc(var(--bpx) * 314);
+  background: var(--cover-dark);
+}
+
+/* ผิวปกอยู่ใน ขอบเข้ม 1 พิกเซลรอบนอก */
+.book-cover::after {
+  position: absolute;
+  inset: calc(var(--bpx) * 1);
+  background: var(--cover);
+  clip-path: inherit;
+  content: '';
+}
+
+.book-spine {
+  top: calc(var(--bpx) * -2);
+  left: calc(var(--bpx) * -9);
+  width: calc(var(--bpx) * 5);
+  height: calc(var(--bpx) * 304);
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--stitch) 0 calc(var(--bpx) * 4),
+    transparent calc(var(--bpx) * 4) calc(var(--bpx) * 8)
+  ) center / calc(var(--bpx) * 1) 100% no-repeat,
+    var(--cover-dark);
+  z-index: 1;
+}
+
+/* กระดาษหลายแผ่นซ้อนกันโผล่ด้านขวาและด้านล่าง */
+.book-edges {
+  top: 0;
+  left: 0;
+  width: calc(var(--bpx) * 205);
+  height: calc(var(--bpx) * 304);
+  background:
+    repeating-linear-gradient(to right, #fffaf0 0 calc(var(--bpx) * 1), #e3d6bf calc(var(--bpx) * 1) calc(var(--bpx) * 2)) right / calc(var(--bpx) * 4) 100% no-repeat,
+    repeating-linear-gradient(to bottom, #fffaf0 0 calc(var(--bpx) * 1), #e3d6bf calc(var(--bpx) * 1) calc(var(--bpx) * 2)) bottom / 100% calc(var(--bpx) * 4) no-repeat,
+    #e3d6bf;
+}
+
+#update-button {
+  position: absolute;
+  top: max(6px, env(safe-area-inset-top));
+  left: 50%;
+  z-index: 6;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+#update-button[hidden] {
+  display: none;
+}
