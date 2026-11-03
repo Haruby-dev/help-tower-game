@@ -8,6 +8,7 @@ import { createCookingWindow } from './cooking';
 import { createHud } from './hud';
 import { createJoystick } from './joystick';
 import { createPhone } from './phone';
+import { createRecipeBook } from './recipeBook';
 import { createSaves } from './saves';
 import { createSettings, initSettings } from './settings';
 import { createToolbar } from './toolbar';
@@ -46,6 +47,7 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   eventBus.on('viewport-changed', (viewport) => {
     const pixel = uiZoomFor(viewport, display.uiDesign) / window.devicePixelRatio;
     uiRoot.style.setProperty('--px', `${pixel}px`);
+    uiRoot.style.setProperty('--bpx', `${uiZoomFor(viewport, display.bookDesign) / window.devicePixelRatio}px`);
   });
   createHud(uiRoot);
   createJoystick(uiRoot);
@@ -56,6 +58,7 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   createSettings(uiRoot);
   createPhone(uiRoot);
   createSaves(uiRoot);
+  createRecipeBook(uiRoot);
 }
 
 export function updateRotationRequired(appRoot: HTMLElement): void {

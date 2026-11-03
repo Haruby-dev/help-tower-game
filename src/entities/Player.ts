@@ -15,6 +15,7 @@ export class Player {
   readonly sprite: Phaser.GameObjects.Sprite;
   private facing: Direction8 = 'south';
   private acting = false;
+  private cooking = false;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     this.body = scene.add.zone(x, y, BODY_WIDTH, BODY_HEIGHT).setName('player_body');
@@ -49,15 +50,10 @@ export class Player {
 
   /** ท่าทำสวนมี 3 ทิศ ทิศตะวันตกกลับด้านจากตะวันออก ระหว่างทำจะเดินไม่ได้ */
   playGardenMove(move: GardenMove, toward: { x: number; y: number }, onFrame: (frame: number) => void, onDone: () => void): void {
-    const dx = toward.x - this.feetX;
-    const dy = toward.y - this.feetY;
-    const sideways = Math.abs(dx) > Math.abs(dy);
-    this.facing = sideways ? (dx > 0 ? 'east' : 'west') : dy > 0 ? 'south' : 'north';
-    const sheet = this.facing === 'west' ? 'east' : this.facing;
+    this.cooking = false;
+    const sheet = this.faceToward(toward);
     const key = `anim_${move}_${sheet}`;
     this.acting = true;
-    this.sprite.setFlipX(this.facing === 'west');
-    this.sprite.setOrigin(0.5, footY(WALK_ID, sheet) / characterEntry(WALK_ID).frameHeight);
     this.sprite.anims.timeScale = 1;
     const update = (_animation: unknown, frame: Phaser.Animations.AnimationFrame): void => onFrame(Number(frame.textureFrame));
     this.sprite.on(Phaser.Animations.Events.ANIMATION_UPDATE, update);
@@ -70,7 +66,57 @@ export class Player {
     this.sprite.play(key);
   }
 
+  get isCooking(): boolean {
+    return this.cooking;
+  }
+
+  private faceToward(toward: { x: number; y: number }): string {
+    const dx = toward.x - this.feetX;
+    const dy = toward.y - this.feetY;
+    this.facing = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'east' : 'west') : dy > 0 ? 'south' : 'north';
+    const sheet = this.facing === 'west' ? 'east' : this.facing;
+    this.sprite.setFlipX(this.facing === 'west');
+    this.sprite.setOrigin(0.5, footY(WALK_ID, sheet) / characterEntry(WALK_ID).frameHeight);
+    return sheet;
+  }
+
+  /** หันหน้าเข้ากองไฟ ย่อตัวแล้ววนท่าทำอาหาร เดินออกเมื่อไหร่ก็ได้ */
+  startCooking(toward: { x: number; y: number }): void {
+    if (this.acting) return;
+    const sheet = this.faceToward(toward);
+    this.cooking = true;
+    this.sprite.anims.timeScale = 1;
+    this.sprite.play(`anim_cook_${sheet}_intro`);
+    this.sprite.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}anim_cook_${sheet}_intro`, () => {
+      if (this.cooking) this.sprite.play(`anim_cook_${sheet}_loop`);
+    });
+  }
+
+  finishCooking(): void {
+    if (!this.cooking) return;
+    const key = this.sprite.anims.currentAnim?.key ?? '';
+    this.cooking = false;
+    if (!key.startsWith('anim_cook_')) return;
+    const sheet = key.split('_')[2];
+    this.acting = true;
+    this.sprite.play(`anim_cook_${sheet}_outro`);
+    this.sprite.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}anim_cook_${sheet}_outro`, () => {
+      this.acting = false;
+      this.sprite.setFlipX(false);
+      this.showStanding();
+    });
+  }
+
   update(input: Vector, running = false): void {
+    if (this.cooking && direction8From(input)) {
+      this.cooking = false;
+      this.sprite.setFlipX(false);
+    }
+    if (this.cooking) {
+      this.physicsBody.setVelocity(0, 0);
+      this.syncSprite();
+      return;
+    }
     if (this.acting) {
       this.physicsBody.setVelocity(0, 0);
       this.syncSprite();

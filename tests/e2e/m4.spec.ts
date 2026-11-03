@@ -65,10 +65,26 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
 
   await page.locator('#phone-back').click();
   await page.locator('[data-app="recipes"]').click();
-  await expect(page.locator('[data-book-recipe="home_kaprao"] .book-stamp')).toHaveText('★★');
-  await expect(page.locator('[data-book-recipe="tomato_soup"]')).toContainText('???');
+  const book = page.locator('.book-page');
+  await expect(book).toHaveAttribute('data-recipe', 'home_kaprao');
+  await expect(book).toHaveAttribute('data-theme', 'savory');
+  await expect(page.locator('.book-stars')).toHaveAttribute('data-stars', '2');
+  await expect(page.locator('.book-note')).toContainText('เหมือนสูตรที่บ้าน');
+  await expect(page.locator('.book-steam')).toHaveCount(1);
+  await page.locator('#book-next').click();
+  await expect(book).toHaveAttribute('data-recipe', 'scallion_omelet');
+  await expect(page.locator('.book-title')).toHaveText('? ? ?');
+  await expect(page.locator('.book-float')).toHaveCount(0);
+  await expect(page.locator('.book-sparkle')).toHaveCount(3);
   await page.locator('[data-book-tab="drink"]').click();
-  await expect(page.locator('[data-book-recipe="basil_tea"]')).toContainText('ชากะเพรา');
+  await expect(book).toHaveAttribute('data-theme', 'drink');
+  await expect(page.locator('.book-title')).toHaveText('นมอุ่นน้ำผึ้ง');
+  await page.locator('#book-next').click();
+  await page.locator('#book-next').click();
+  await expect(page.locator('.book-title')).toHaveText('ชากะเพรา');
+  await expect(page.locator('.book-steam')).toHaveCount(1);
+  await page.locator('#book-close').click();
+  await expect(page.locator('#recipe-book')).toBeHidden();
 });
 
 test('a wrong mix makes mystery food and the player says so', async ({ page }) => {
@@ -106,4 +122,32 @@ test('the save screen shows the new game name', async ({ page }) => {
   await expect(page.locator('#slot-picker h1')).toHaveText('Floor & Flavor');
   await expect(page.locator('#slot-picker')).toContainText('ติดหอคอยทั้งที ขอเปิดร้านข้าวก่อนนะ!');
   await expect(page).toHaveTitle('Floor & Flavor');
+});
+
+test('the recipe book fits the screen at a whole-number size', async ({ page }) => {
+  await open(page);
+  await page.locator('#phone-button').click();
+  await page.locator('#lock-open').click();
+  await page.locator('[data-app="recipes"]').click();
+  const box = (await page.locator('.book-page').boundingBox())!;
+  const viewport = page.viewportSize()!;
+  expect(box.height).toBeLessThanOrEqual(viewport.height);
+  const ratio = await page.evaluate(() => {
+    const pixel = Number.parseFloat(getComputedStyle(document.getElementById('ui')!).getPropertyValue('--bpx'));
+    return pixel * window.devicePixelRatio;
+  });
+  expect(Number.isInteger(Math.round(ratio * 1000) / 1000)).toBe(true);
+  await page.locator('[data-book-tab="sweet"]').click();
+  await expect(page.locator('.book-page')).toHaveAttribute('data-theme', 'sweet');
+  await expect(page.locator('.book-steam')).toHaveCount(0);
+});
+
+test('cooking at the campfire plays the cooking move until walking away', async ({ page }) => {
+  await open(page);
+  await standAtFire(page);
+  await page.locator('#action-button').click();
+  await page.locator('[data-recipe="boiled_egg"]').click();
+  await expect
+    .poll(() => page.evaluate(() => (window as unknown as { __game: { scene: { getScene(k: string): { children: { getByName(n: string): { anims: { currentAnim?: { key: string } } } } } } } }).__game.scene.getScene('Base').children.getByName('player').anims.currentAnim?.key ?? ''))
+    .toContain('anim_cook_');
 });

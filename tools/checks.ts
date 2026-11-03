@@ -6,6 +6,7 @@ import {
   balanceSchema,
   cropsSchema,
   ingredientsSchema,
+  recipeStepsSchema,
   recipesSchema,
   displaySchema,
   linesSchema,
@@ -46,6 +47,7 @@ export function checkProject(): string[] {
   checkSchema('src/data/crops.json', cropsSchema, problems);
   checkSchema('src/data/recipes.json', recipesSchema, problems);
   checkSchema('src/data/ingredients.json', ingredientsSchema, problems);
+  checkSchema('src/data/recipe_steps.json', recipeStepsSchema, problems);
   checkSchema('src/data/sprite-meta.json', spriteMetaSchema, problems);
   checkSchema('src/i18n/th.json', translationsSchema, problems);
   checkSchema('assets-src/registry.json', registrySchema, problems);
@@ -85,6 +87,8 @@ export function checkProject(): string[] {
   for (const [id, recipe] of Object.entries(recipesSchema.parse(readJson('src/data/recipes.json')))) {
     if (!translations[`dish.${id}.name`]) problems.push(`src/i18n/th.json: dish ${id} has no name`);
     if (recipe.icon && !registry[recipe.icon]) problems.push(`src/data/recipes.json: ${id} icon ${recipe.icon} is not registered`);
+    if (recipe.bagIcon && !registry[recipe.bagIcon]) problems.push(`src/data/recipes.json: ${id} bag icon ${recipe.bagIcon} is not registered`);
+    if (!recipeStepsSchema.parse(readJson('src/data/recipe_steps.json'))[id]) problems.push(`src/data/recipe_steps.json: ${id} has no steps`);
     for (const item of Object.keys(recipe.ingredients)) {
       const known = item.startsWith('produce_') ? cropIds[item.slice('produce_'.length)] : ingredientIds[item.slice('ing_'.length)];
       if (!known) problems.push(`src/data/recipes.json: ${id} uses unknown ${item}`);

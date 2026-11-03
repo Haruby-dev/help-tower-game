@@ -4,6 +4,7 @@ import type { TextKey } from '../core/i18n';
 import { t } from '../core/i18n';
 import type { Rng } from '../core/rng';
 import type { CookingSlot } from '../core/state';
+import balance from '../data/balance.json';
 import { MYSTERY, isCooked, minutesFor, recipes } from '../systems/cooking';
 
 const OVERHEAD_LIFT = 60;
@@ -100,7 +101,7 @@ export class Campfire {
     if (this.shownRecipe === id && this.done) return;
     this.clearDone();
     this.shownRecipe = id;
-    const icon = id === MYSTERY ? undefined : recipes[id]?.icon;
+    const icon = id === MYSTERY ? balance.cooking.mystery.icon : recipes[id]?.icon;
     const y = this.y - OVERHEAD_LIFT;
     // ไอคอนอาหารที่ยังไม่มาใช้กล่องสีแทน สลับเป็นภาพจริงด้วยการแก้ทะเบียนและข้อมูลสูตร
     const shown =

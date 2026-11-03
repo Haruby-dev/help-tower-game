@@ -2158,3 +2158,326 @@ canvas {
 .book-note {
   color: #6b8f4e;
 }
+
+/* สมุดสูตร v4 ผ้าลายตารางตามหมวด หน้า 201×300 ขยายจำนวนเต็มด้วย --bpx */
+#recipe-book {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  background: rgb(92 48 76 / 45%);
+  pointer-events: auto;
+}
+
+#recipe-book[hidden] {
+  display: none;
+}
+
+.book-page {
+  --book-text: #965024;
+  --book-ad: #a06030;
+  position: relative;
+  width: calc(var(--bpx) * 201);
+  height: calc(var(--bpx) * 300);
+  overflow: hidden;
+  color: #54382c;
+  image-rendering: pixelated;
+}
+
+.book-page[data-theme='sweet'] {
+  --book-text: #aa466e;
+  --book-ad: #b25276;
+}
+
+.book-page[data-theme='drink'] {
+  --book-text: #38764a;
+  --book-ad: #408052;
+}
+
+.book-page > *,
+.book-float > * {
+  position: absolute;
+}
+
+.book-sprite {
+  display: block;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.book-layer {
+  inset: 0;
+  pointer-events: none;
+}
+
+.book-cloth {
+  background-repeat: repeat;
+  background-size: calc(var(--bpx) * 40) calc(var(--bpx) * 40);
+}
+
+.book-frame {
+  border: calc(var(--bpx) * 8) solid transparent;
+  border-image-slice: 8;
+  border-image-width: calc(var(--bpx) * 8);
+}
+
+.book-ribbon--flip {
+  transform: scaleY(-1);
+}
+
+/* แผ่นหลายเฟรม เลื่อนภาพทีละเฟรมเต็ม ๆ ไม่เกลี่ย */
+@keyframes book-sheet {
+  to { background-position-x: calc(var(--sheet) * -1); }
+}
+
+.book-sheet {
+  background-size: auto 100%;
+}
+
+.book-light {
+  left: 0;
+  top: 0;
+  animation: book-sheet 8s steps(16) infinite, book-breathe 6s ease-in-out infinite alternate;
+}
+
+@keyframes book-breathe {
+  from { opacity: 0.85; }
+  to { opacity: 1; }
+}
+
+.book-deco {
+  animation: book-sheet 1.33s steps(8) infinite;
+}
+
+.book-deco--2 { animation-delay: -0.5s; }
+.book-deco--3 { animation-delay: -0.9s; }
+
+.book-float {
+  inset: 0;
+  pointer-events: none;
+  animation: book-float 2.4s infinite;
+}
+
+@keyframes book-float {
+  0%, 25% { transform: translateY(0); animation-timing-function: step-end; }
+  25%, 50% { transform: translateY(calc(var(--bpx) * -1)); animation-timing-function: step-end; }
+  50%, 75% { transform: translateY(calc(var(--bpx) * -2)); animation-timing-function: step-end; }
+  75%, 100% { transform: translateY(calc(var(--bpx) * -1)); animation-timing-function: step-end; }
+}
+
+.book-shadow,
+.book-steam {
+  animation: book-sheet 2.4s steps(8) infinite;
+}
+
+.book-sparkle {
+  animation: book-sheet 2.4s steps(8) infinite;
+}
+
+.book-sparkle--1 { animation-delay: -0.9s; }
+.book-sparkle--2 { animation-delay: -1.8s; }
+
+.book-silhouette {
+  width: calc(var(--bpx) * 48);
+  height: calc(var(--bpx) * 48);
+  background: var(--book-ad);
+  opacity: 0.6;
+  -webkit-mask: var(--icon) center / 100% 100% no-repeat;
+  mask: var(--icon) center / 100% 100% no-repeat;
+}
+
+.book-question {
+  width: calc(var(--bpx) * 48);
+  height: calc(var(--bpx) * 48);
+  display: grid;
+  place-items: center;
+  color: #fffaf4;
+  font-size: calc(var(--bpx) * 20);
+  text-shadow: 1px 0 var(--book-ad), -1px 0 var(--book-ad), 0 1px var(--book-ad), 0 -1px var(--book-ad);
+}
+
+.book-tabs {
+  display: flex;
+  gap: calc(var(--bpx) * 3);
+  height: calc(var(--bpx) * 15);
+}
+
+.book-tab {
+  position: relative;
+  min-width: calc(var(--bpx) * 32);
+  height: calc(var(--bpx) * 15);
+  padding: 0 calc(var(--bpx) * 5);
+  border: calc(var(--bpx) * 1) solid transparent;
+  border-image-slice: 5 fill;
+  border-image-width: calc(var(--bpx) * 5);
+  background: none;
+  color: var(--book-text);
+  font-size: calc(var(--bpx) * 7);
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* ปุ่มเล็กตามแบบ แต่พื้นที่กดอย่างน้อย 44px */
+.book-tab::before,
+.book-arrow::before {
+  position: absolute;
+  inset: max(-15px, calc(50% - 22px));
+  content: '';
+}
+
+.book-tab.is-active {
+  color: #fffaf4;
+}
+
+.book-number {
+  color: var(--book-text);
+  font-size: calc(var(--bpx) * 7);
+}
+
+.book-title {
+  width: 100%;
+  margin: 0;
+  font-size: calc(var(--bpx) * 12);
+  text-align: center;
+}
+
+.book-page.is-locked .book-title {
+  color: var(--book-text);
+}
+
+.book-divider {
+  right: calc(var(--bpx) * 14);
+  height: calc(var(--bpx) * 5);
+  background-repeat: repeat-x;
+  background-size: calc(var(--bpx) * 48) calc(var(--bpx) * 5);
+  pointer-events: none;
+}
+
+.book-label {
+  color: var(--book-text);
+  font-size: calc(var(--bpx) * 8);
+}
+
+.book-ingredients {
+  inset: 0;
+  pointer-events: none;
+}
+
+.book-ing > *,
+.book-stars > * {
+  position: absolute;
+}
+
+.book-ing__label {
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--bpx) * 4);
+  line-height: 1;
+  text-align: center;
+}
+
+.book-badge,
+.book-bullet {
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--bpx) * 6);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.book-badge {
+  color: #fff;
+}
+
+.book-bullet {
+  color: var(--book-ad);
+}
+
+.book-step {
+  font-size: calc(var(--bpx) * 7);
+  line-height: calc(var(--bpx) * 12);
+  white-space: nowrap;
+}
+
+.book-step.is-hidden {
+  width: calc(var(--bpx) * 140);
+  height: calc(var(--bpx) * 5);
+  margin-top: calc(var(--bpx) * 4);
+  background: #d6cce2;
+  opacity: 0.6;
+}
+
+.book-note {
+  right: calc(var(--bpx) * 22);
+  margin: 0;
+  padding: calc(var(--bpx) * 3) calc(var(--bpx) * 6);
+  border: calc(var(--bpx) * 1) solid transparent;
+  border-image: url('/assets/ui/book/book_note_9slice.png') 5 fill / calc(var(--bpx) * 5) stretch;
+  color: #60503a;
+  font-size: calc(var(--bpx) * 7);
+}
+
+.book-note--hint {
+  border-image: none;
+  color: var(--book-text);
+}
+
+.book-arrow {
+  width: calc(var(--bpx) * 12);
+  height: calc(var(--bpx) * 13);
+  padding: 0;
+  border: 0;
+  background: none no-repeat center / 100% 100%;
+  image-rendering: pixelated;
+  cursor: pointer;
+}
+
+.book-dots {
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--bpx) * 2);
+  pointer-events: none;
+}
+
+.book-dots > * {
+  position: static;
+}
+
+.book-close {
+  position: absolute;
+  top: max(8px, env(safe-area-inset-top));
+  right: max(8px, env(safe-area-inset-right));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-light,
+  .book-float,
+  .book-shadow,
+  .book-steam,
+  .book-sparkle {
+    animation: none;
+  }
+
+  .book-deco {
+    margin-top: calc(var(--bpx) * 2);
+    background-image: var(--still) !important;
+    background-size: 100% 100% !important;
+    animation: none;
+  }
+
+  .book-steam {
+    display: none;
+  }
+}
+
+.book-ingredients > *,
+.book-note > * {
+  position: absolute;
+}

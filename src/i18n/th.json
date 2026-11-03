@@ -206,5 +206,9 @@
   "book.kaprao_note": "เหมือนสูตรที่บ้านเลย… บังเอิญเหรอ",
   "bag.eat": "กิน",
   "bag.flavour_dish": "หอมกรุ่น น่ากินสุด ๆ",
-  "bag.flavour_ingredient": "เอาไว้ทำอาหาร"
+  "bag.flavour_ingredient": "เอาไว้ทำอาหาร",
+  "book.ingredients": "วัตถุดิบ",
+  "book.steps": "วิธีทำ",
+  "book.prev": "หน้าก่อน",
+  "book.next": "หน้าถัดไป"
 }

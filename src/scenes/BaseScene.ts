@@ -75,6 +75,7 @@ export class BaseScene extends Phaser.Scene {
   private plotMarker!: Phaser.GameObjects.Sprite;
   private queuedPlot: number | null = null;
   private campfire: Campfire | null = null;
+  private cookingShown: boolean | null = null;
 
   constructor() {
     super('Base');
@@ -305,6 +306,17 @@ export class BaseScene extends Phaser.Scene {
     else if (this.nearDoor() && !this.player.busy) goToSleep(this.door);
   }
 
+  /** เริ่มทำอาหารตอนยืนที่กองไฟจึงเล่นท่าทำ อาหารสุกแล้วลุกขึ้น */
+  private followCooking(): void {
+    const { slot } = gameState.world.cooking;
+    const cooking = slot !== null && !isCooked(slot);
+    if (cooking === this.cookingShown) return;
+    const started = cooking && this.cookingShown === false;
+    this.cookingShown = cooking;
+    if (started && this.campfire && this.campfireInReach()) this.player.startCooking({ x: this.campfire.x, y: this.campfire.y });
+    if (!cooking) this.player.finishCooking();
+  }
+
   private campfireInReach(): boolean {
     if (!this.campfire || !gameState.clockRunning) return false;
     return Phaser.Math.Distance.Between(this.player.feetX, this.player.feetY, this.campfire.x, this.campfire.y) < balance.cooking.reachPx;
@@ -380,6 +392,7 @@ export class BaseScene extends Phaser.Scene {
       this.plotMarker.setVisible(false);
     }
     this.campfire?.sync(gameState.world.cooking.slot, this.time.now);
+    this.followCooking();
     gameState.setAction(action ? ACTION_LABEL[action] : this.campfireAction() ?? (this.nearDoor() ? 'action.sleep' : null));
   }
 

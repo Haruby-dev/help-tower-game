@@ -7,7 +7,9 @@
       "ing_salt": 1
     },
     "price": 30,
-    "source": "start"
+    "source": "start",
+    "icon": "dish_icon_grilled_fish",
+    "bagIcon": "dish_bag_grilled_fish"
   },
   "boiled_egg": {
     "category": "savory",
@@ -16,7 +18,9 @@
       "ing_egg": 1
     },
     "price": 30,
-    "source": "start"
+    "source": "start",
+    "icon": "dish_icon_boiled_egg",
+    "bagIcon": "dish_bag_boiled_egg"
   },
   "baked_potato": {
     "category": "savory",
@@ -26,7 +30,9 @@
       "ing_salt": 1
     },
     "price": 50,
-    "source": "quest"
+    "source": "quest",
+    "icon": "dish_icon_baked_potato",
+    "bagIcon": "dish_bag_baked_potato"
   },
   "grilled_corn": {
     "category": "sweet",
@@ -36,7 +42,9 @@
       "ing_sugar": 1
     },
     "price": 40,
-    "source": "shop"
+    "source": "shop",
+    "icon": "dish_icon_grilled_corn",
+    "bagIcon": "dish_bag_grilled_corn"
   },
   "strawberry_skewer": {
     "category": "sweet",
@@ -46,7 +54,9 @@
       "ing_sugar": 1
     },
     "price": 75,
-    "source": "shop"
+    "source": "shop",
+    "icon": "dish_icon_strawberry_skewer",
+    "bagIcon": "dish_bag_strawberry_skewer"
   },
   "home_kaprao": {
     "category": "savory",
@@ -60,7 +70,9 @@
       "ing_pork": 1
     },
     "price": 120,
-    "source": "start"
+    "source": "start",
+    "icon": "dish_icon_home_kaprao",
+    "bagIcon": "dish_bag_home_kaprao"
   },
   "scallion_omelet": {
     "category": "savory",
@@ -71,7 +83,9 @@
       "ing_fish_sauce": 1
     },
     "price": 60,
-    "source": "shop"
+    "source": "shop",
+    "icon": "dish_icon_scallion_omelet",
+    "bagIcon": "dish_bag_scallion_omelet"
   },
   "tomato_soup": {
     "category": "savory",
@@ -82,7 +96,9 @@
       "ing_salt": 1
     },
     "price": 60,
-    "source": "shop"
+    "source": "shop",
+    "icon": "dish_icon_tomato_soup",
+    "bagIcon": "dish_bag_tomato_soup"
   },
   "honey_apple_grill": {
     "category": "sweet",
@@ -92,7 +108,9 @@
       "ing_honey": 1
     },
     "price": 65,
-    "source": "shop"
+    "source": "shop",
+    "icon": "dish_icon_honey_apple_grill",
+    "bagIcon": "dish_bag_honey_apple_grill"
   },
   "warm_honey_milk": {
     "category": "drink",
@@ -102,7 +120,9 @@
       "ing_honey": 1
     },
     "price": 60,
-    "source": "start"
+    "source": "start",
+    "icon": "dish_icon_warm_honey_milk",
+    "bagIcon": "dish_bag_warm_honey_milk"
   },
   "fish_congee": {
     "category": "savory",
@@ -114,7 +134,9 @@
       "produce_garlic": 1
     },
     "price": 120,
-    "source": "shop"
+    "source": "shop",
+    "icon": "dish_icon_fish_congee",
+    "bagIcon": "dish_bag_fish_congee"
   },
   "corn_egg_fried_rice": {
     "category": "savory",
@@ -127,7 +149,9 @@
       "produce_scallion": 1
     },
     "price": 120,
-    "source": "shop"
+    "source": "shop",
+    "icon": "dish_icon_corn_egg_fried_rice",
+    "bagIcon": "dish_bag_corn_egg_fried_rice"
   },
   "potato_carrot_stew": {
     "category": "savory",
@@ -139,7 +163,9 @@
       "ing_salt": 1
     },
     "price": 180,
-    "source": "shop"
+    "source": "shop",
+    "icon": "dish_icon_potato_carrot_stew",
+    "bagIcon": "dish_bag_potato_carrot_stew"
   },
   "honey_pancake": {
     "category": "sweet",
@@ -150,7 +176,9 @@
       "ing_honey": 1
     },
     "price": 120,
-    "source": "gate"
+    "source": "gate",
+    "icon": "dish_icon_honey_pancake",
+    "bagIcon": "dish_bag_honey_pancake"
   },
   "strawberry_milk_pudding": {
     "category": "sweet",
@@ -162,7 +190,9 @@
       "ing_sugar": 1
     },
     "price": 120,
-    "source": "gate"
+    "source": "gate",
+    "icon": "dish_icon_strawberry_milk_pudding",
+    "bagIcon": "dish_bag_strawberry_milk_pudding"
   },
   "tomato_juice": {
     "category": "drink",
@@ -171,7 +201,9 @@
       "produce_tomato": 2
     },
     "price": 40,
-    "source": "start"
+    "source": "start",
+    "icon": "dish_icon_tomato_juice",
+    "bagIcon": "dish_bag_tomato_juice"
   },
   "basil_tea": {
     "category": "drink",
@@ -180,7 +212,9 @@
       "produce_basil": 1
     },
     "price": 30,
-    "source": "start"
+    "source": "start",
+    "icon": "dish_icon_basil_tea",
+    "bagIcon": "dish_bag_basil_tea"
   },
   "strawberry_juice": {
     "category": "drink",
@@ -200,7 +234,8 @@
     },
     "price": 40,
     "source": "shop",
-    "icon": "food_slime24"
+    "icon": "food_slime24",
+    "bagIcon": "food_bag_food_slime24"
   },
   "strawberry_jelly": {
     "category": "sweet",
@@ -212,7 +247,8 @@
     },
     "price": 50,
     "source": "shop",
-    "icon": "food_slime2"
+    "icon": "food_slime2",
+    "bagIcon": "food_bag_food_slime2"
   },
   "caramel_pudding": {
     "category": "sweet",
@@ -224,7 +260,8 @@
     },
     "price": 50,
     "source": "shop",
-    "icon": "food_slime9"
+    "icon": "food_slime9",
+    "bagIcon": "food_bag_food_slime9"
   },
   "berry_pudding": {
     "category": "sweet",
@@ -237,7 +274,8 @@
     },
     "price": 105,
     "source": "shop",
-    "icon": "food_slime8"
+    "icon": "food_slime8",
+    "bagIcon": "food_bag_food_slime8"
   },
   "soda_jelly_dessert": {
     "category": "sweet",
@@ -249,7 +287,8 @@
     },
     "price": 60,
     "source": "shop",
-    "icon": "food_slime1"
+    "icon": "food_slime1",
+    "bagIcon": "food_bag_food_slime1"
   },
   "soda_ice_cream": {
     "category": "sweet",
@@ -262,7 +301,8 @@
     },
     "price": 80,
     "source": "shop",
-    "icon": "food_slime12"
+    "icon": "food_slime12",
+    "bagIcon": "food_bag_food_slime12"
   },
   "honey_macaron": {
     "category": "sweet",
@@ -274,7 +314,8 @@
     },
     "price": 80,
     "source": "shop",
-    "icon": "food_bee22"
+    "icon": "food_bee22",
+    "bagIcon": "food_bag_food_bee22"
   },
   "cherry_cream_macaron": {
     "category": "sweet",
@@ -287,7 +328,8 @@
     },
     "price": 120,
     "source": "shop",
-    "icon": "food_bee7"
+    "icon": "food_bee7",
+    "bagIcon": "food_bag_food_bee7"
   },
   "blueberry_macaron": {
     "category": "sweet",
@@ -300,7 +342,8 @@
     },
     "price": 120,
     "source": "shop",
-    "icon": "food_bee12"
+    "icon": "food_bee12",
+    "bagIcon": "food_bag_food_bee12"
   },
   "cream_puff": {
     "category": "sweet",
@@ -313,7 +356,8 @@
     },
     "price": 150,
     "source": "shop",
-    "icon": "food_bee6"
+    "icon": "food_bee6",
+    "bagIcon": "food_bag_food_bee6"
   },
   "choco_donut": {
     "category": "sweet",
@@ -326,7 +370,8 @@
     },
     "price": 125,
     "source": "shop",
-    "icon": "food_bee13"
+    "icon": "food_bee13",
+    "bagIcon": "food_bag_food_bee13"
   },
   "choco_macaron": {
     "category": "sweet",
@@ -339,7 +384,8 @@
     },
     "price": 200,
     "source": "shop",
-    "icon": "food_bee17"
+    "icon": "food_bee17",
+    "bagIcon": "food_bag_food_bee17"
   },
   "swiss_roll": {
     "category": "sweet",
@@ -352,7 +398,8 @@
     },
     "price": 220,
     "source": "shop",
-    "icon": "food_bee14"
+    "icon": "food_bee14",
+    "bagIcon": "food_bag_food_bee14"
   },
   "strawberry_parfait": {
     "category": "sweet",
@@ -366,7 +413,8 @@
     },
     "price": 350,
     "source": "shop",
-    "icon": "food_slime23"
+    "icon": "food_slime23",
+    "bagIcon": "food_bag_food_slime23"
   },
   "choco_parfait": {
     "category": "sweet",
@@ -380,6 +428,7 @@
     },
     "price": 350,
     "source": "shop",
-    "icon": "food_slime22"
+    "icon": "food_slime22",
+    "bagIcon": "food_bag_food_slime22"
   }
 }

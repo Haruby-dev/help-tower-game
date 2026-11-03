@@ -5,6 +5,8 @@ import { createPlaceholderTexture } from './sceneArt';
 
 const LABEL_FONT = '700 8px Mali';
 const CURSOR_FPS = 2;
+const COOK_INTRO_END = 3;
+const COOK_LAST_FRAME = 8;
 const ZZZ_FPS = 3;
 const SPARKLE_FPS = 10;
 const READY_SPARKLE_PAUSE_MS = 1400;
@@ -50,10 +52,22 @@ export class BootScene extends Phaser.Scene {
     this.anims.create({ key: 'fx_sparkle_idle', frames: frames('fx_sparkle'), frameRate: SPARKLE_FPS, repeat: -1, repeatDelay: READY_SPARKLE_PAUSE_MS });
   }
 
+  /** ย่อตัวครั้งเดียว วนท่าทำระหว่างรอ แล้วลุกขึ้นตอนเสร็จ */
+  private createCookAnimations(id: string): void {
+    const frameRate = balance.cooking.animationFps;
+    const frames = (start: number, end: number): Phaser.Types.Animations.AnimationFrame[] =>
+      this.anims.generateFrameNumbers(id, { start, end });
+    this.anims.create({ key: `${id}_intro`, frames: frames(0, COOK_INTRO_END), frameRate });
+    this.anims.create({ key: `${id}_loop`, frames: frames(COOK_INTRO_END + 1, COOK_LAST_FRAME), frameRate, repeat: -1 });
+    this.anims.create({ key: `${id}_outro`, frames: frames(COOK_INTRO_END, 0), frameRate });
+  }
+
   create(): void {
     this.createFarmEffects();
     for (const [id, entry] of Object.entries(registry)) {
-      if (entry.type === 'local' && id.startsWith('anim_')) {
+      if (entry.type === 'local' && id.startsWith('anim_cook_')) {
+        this.createCookAnimations(id);
+      } else if (entry.type === 'local' && id.startsWith('anim_')) {
         this.anims.create({
           key: id,
           frames: this.anims.generateFrameNumbers(id, { start: entry.play_from ?? 0 }),

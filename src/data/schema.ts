@@ -12,6 +12,8 @@ export const displaySchema = z.strictObject({
   }),
   /** ขนาดที่หน้าจอโทรศัพท์ต้องใส่ได้ เป็นพิกเซลเกม */
   uiDesign: z.strictObject({ width: z.number().positive(), height: z.number().positive() }),
+  /** ขนาดที่หน้าสมุดสูตร 201×300 ต้องใส่ได้ พร้อมขอบ */
+  bookDesign: z.strictObject({ width: z.number().positive(), height: z.number().positive() }),
   zoomSteps: z.array(z.number().int().nonnegative()).min(1),
   touchDefaultZoomStep: z.number().int().nonnegative(),
   lighting: z.strictObject({
@@ -93,7 +95,14 @@ export const balanceSchema = z.strictObject({
     rawFullness: z.number(),
     ranks: z.record(z.string().min(1), z.strictObject({ minutes: z.number().positive(), fullness: z.number(), equipment: z.string().min(1) })),
     drink: z.strictObject({ minutes: z.number().positive(), fullness: z.number() }),
-    mystery: z.strictObject({ minutes: z.number().positive(), fullness: z.number(), happinessPenalty: z.number() }),
+    mystery: z.strictObject({
+      minutes: z.number().positive(),
+      fullness: z.number(),
+      happinessPenalty: z.number(),
+      icon: z.string().min(1),
+      bagIcon: z.string().min(1),
+    }),
+    animationFps: z.number().positive(),
     /** ของเริ่มเกมชั่วคราวจนกว่าบทนำจะมาใน M9 */
     starterBag: z.record(z.string().min(1), z.number().int().positive()),
   }),
@@ -220,7 +229,12 @@ const recipeSchema = z.strictObject({
   source: z.enum(['start', 'shop', 'gate', 'quest']),
   /** รหัสภาพในทะเบียน ไม่มีคือใช้กล่องสีแทน */
   icon: z.string().min(1).optional(),
+  /** ภาพเล็กสำหรับช่องกระเป๋า ไม่เกิน 32px */
+  bagIcon: z.string().min(1).optional(),
 });
+
+/** วิธีทำสูตรละ 3 ขั้น */
+export const recipeStepsSchema = z.record(z.string().regex(/^[a-z_]+$/), z.array(z.string().min(1).max(40)).length(3));
 
 export const recipesSchema = z.record(z.string().regex(/^[a-z_]+$/), recipeSchema);
 export const ingredientsSchema = z.record(z.string().regex(/^[a-zA-Z_]+$/), z.strictObject({ value: z.number().positive() }));

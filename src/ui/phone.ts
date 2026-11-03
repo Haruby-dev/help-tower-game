@@ -5,7 +5,6 @@ import balance from '../data/balance.json';
 import { dayOfMonth, encouragementFor, monthOf, stuckTime, weekStrip, weekdayIndex, weekdayName, weekdayShort } from '../systems/phoneCalendar';
 import { formatClock } from './hud';
 import { createInventoryPage } from './inventory';
-import { createRecipeBookPage } from './recipeBook';
 import { artUrl, stickerIcon } from './pixelArt';
 import { createWalletPage } from './wallet';
 
@@ -16,13 +15,15 @@ interface PhoneApp {
   place: 'grid' | 'dock';
   /** แอปใหญ่กางจอให้เอง */
   big?: boolean;
+  /** แอปที่เปิดหน้าต่างของตัวเองแทนหน้าในโทรศัพท์ */
+  opens?: 'book-open';
   page?: () => HTMLElement;
 }
 
 const APPS: PhoneApp[] = [
   { id: 'inventory', name: 'app.inventory', icon: 'ui_app_bag', place: 'grid', big: true, page: createInventoryPage },
   { id: 'shop', name: 'app.shop', icon: 'ui_app_shop', place: 'grid' },
-  { id: 'recipes', name: 'app.recipes', icon: 'ui_app_recipe', place: 'grid', big: true, page: createRecipeBookPage },
+  { id: 'recipes', name: 'app.recipes', icon: 'ui_app_recipe', place: 'grid', opens: 'book-open' },
   { id: 'album', name: 'app.album', icon: 'ui_app_album', place: 'grid' },
   { id: 'pets', name: 'app.pets', icon: 'ui_app_pets', place: 'grid' },
   { id: 'gate', name: 'app.gate', icon: 'ui_app_gate', place: 'grid' },
@@ -290,6 +291,10 @@ export function createPhone(uiRoot: HTMLElement): void {
   };
 
   function openApp(app: PhoneApp): void {
+    if (app.opens) {
+      eventBus.emit(app.opens, undefined);
+      return;
+    }
     let page = pages.get(app.id);
     if (!page) {
       page = app.page ? app.page() : placeholderPage(app);

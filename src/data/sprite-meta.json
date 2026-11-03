@@ -2355,5 +2355,835 @@
     "footY": {
       "default": 41
     }
+  },
+  "ui_book_book_apron_drink": {
+    "footY": {
+      "default": 33
+    }
+  },
+  "ui_book_book_apron_savory": {
+    "footY": {
+      "default": 33
+    }
+  },
+  "ui_book_book_apron_sweet": {
+    "footY": {
+      "default": 33
+    }
+  },
+  "ui_book_book_arrow_left_drink": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_book_book_arrow_left_savory": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_book_book_arrow_left_sweet": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_book_book_arrow_right_drink": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_book_book_arrow_right_savory": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_book_book_arrow_right_sweet": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_book_book_cloth_drink": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "ui_book_book_cloth_savory": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "ui_book_book_cloth_sweet": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "ui_book_book_corner_plant_drink": {
+    "footY": {
+      "default": 44
+    }
+  },
+  "ui_book_book_corner_plant_savory": {
+    "footY": {
+      "default": 44
+    }
+  },
+  "ui_book_book_corner_plant_sweet": {
+    "footY": {
+      "default": 44
+    }
+  },
+  "ui_book_book_count_badge_drink": {
+    "footY": {
+      "default": 9
+    }
+  },
+  "ui_book_book_count_badge_savory": {
+    "footY": {
+      "default": 9
+    }
+  },
+  "ui_book_book_count_badge_sweet": {
+    "footY": {
+      "default": 9
+    }
+  },
+  "ui_book_book_deco_drink_1": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "ui_book_book_deco_drink_1_8f": {
+    "footY": {
+      "default": 20
+    }
+  },
+  "ui_book_book_deco_drink_2": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "ui_book_book_deco_drink_2_8f": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "ui_book_book_deco_drink_3": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "ui_book_book_deco_drink_3_8f": {
+    "footY": {
+      "default": 21
+    }
+  },
+  "ui_book_book_deco_savory_1": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "ui_book_book_deco_savory_1_8f": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "ui_book_book_deco_savory_2": {
+    "footY": {
+      "default": 20
+    }
+  },
+  "ui_book_book_deco_savory_2_8f": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "ui_book_book_deco_savory_3": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_book_book_deco_savory_3_8f": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "ui_book_book_deco_sweet_1": {
+    "footY": {
+      "default": 20
+    }
+  },
+  "ui_book_book_deco_sweet_1_8f": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "ui_book_book_deco_sweet_2": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_book_book_deco_sweet_2_8f": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "ui_book_book_deco_sweet_3": {
+    "footY": {
+      "default": 14
+    }
+  },
+  "ui_book_book_deco_sweet_3_8f": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "ui_book_book_dish_halo_drink": {
+    "footY": {
+      "default": 70
+    }
+  },
+  "ui_book_book_dish_halo_savory": {
+    "footY": {
+      "default": 70
+    }
+  },
+  "ui_book_book_dish_halo_sweet": {
+    "footY": {
+      "default": 70
+    }
+  },
+  "ui_book_book_dish_shadow_8f": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "ui_book_book_dish_sparkle_8f": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "ui_book_book_dish_steam_8f": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "ui_book_book_divider_drink": {
+    "footY": {
+      "default": 4
+    }
+  },
+  "ui_book_book_divider_savory": {
+    "footY": {
+      "default": 4
+    }
+  },
+  "ui_book_book_divider_sweet": {
+    "footY": {
+      "default": 4
+    }
+  },
+  "ui_book_book_frame_drink_9slice": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "ui_book_book_frame_savory_9slice": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "ui_book_book_frame_sweet_9slice": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "ui_book_book_ing_slot_drink": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "ui_book_book_ing_slot_locked_drink": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "ui_book_book_ing_slot_locked_savory": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "ui_book_book_ing_slot_locked_sweet": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "ui_book_book_ing_slot_savory": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "ui_book_book_ing_slot_sweet": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "ui_book_book_light_16f": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "ui_book_book_note_9slice": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_book_book_page_dot_off_drink": {
+    "footY": {
+      "default": 5
+    }
+  },
+  "ui_book_book_page_dot_off_savory": {
+    "footY": {
+      "default": 5
+    }
+  },
+  "ui_book_book_page_dot_off_sweet": {
+    "footY": {
+      "default": 5
+    }
+  },
+  "ui_book_book_page_dot_on_drink": {
+    "footY": {
+      "default": 5
+    }
+  },
+  "ui_book_book_page_dot_on_savory": {
+    "footY": {
+      "default": 5
+    }
+  },
+  "ui_book_book_page_dot_on_sweet": {
+    "footY": {
+      "default": 5
+    }
+  },
+  "ui_book_book_ribbon_drink": {
+    "footY": {
+      "default": 34
+    }
+  },
+  "ui_book_book_ribbon_savory": {
+    "footY": {
+      "default": 34
+    }
+  },
+  "ui_book_book_ribbon_sweet": {
+    "footY": {
+      "default": 34
+    }
+  },
+  "ui_book_book_star_off": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_book_book_star_on": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_book_book_step_bullet_drink": {
+    "footY": {
+      "default": 11
+    }
+  },
+  "ui_book_book_step_bullet_savory": {
+    "footY": {
+      "default": 11
+    }
+  },
+  "ui_book_book_step_bullet_sweet": {
+    "footY": {
+      "default": 11
+    }
+  },
+  "ui_book_book_tab_active_drink": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_book_book_tab_active_savory": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_book_book_tab_active_sweet": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_book_book_tab_drink": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_book_book_tab_savory": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_book_book_tab_sweet": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ui_book_book_tape": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "dish_icon_grilled_fish": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "dish_bag_grilled_fish": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "dish_icon_boiled_egg": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "dish_bag_boiled_egg": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "dish_icon_baked_potato": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "dish_bag_baked_potato": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "dish_icon_grilled_corn": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "dish_bag_grilled_corn": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "dish_icon_strawberry_skewer": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "dish_bag_strawberry_skewer": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "dish_icon_home_kaprao": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "dish_bag_home_kaprao": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "dish_icon_scallion_omelet": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "dish_bag_scallion_omelet": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "dish_icon_tomato_soup": {
+    "footY": {
+      "default": 44
+    }
+  },
+  "dish_bag_tomato_soup": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "dish_icon_honey_apple_grill": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "dish_bag_honey_apple_grill": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "dish_icon_warm_honey_milk": {
+    "footY": {
+      "default": 44
+    }
+  },
+  "dish_bag_warm_honey_milk": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "dish_icon_fish_congee": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "dish_bag_fish_congee": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "dish_icon_corn_egg_fried_rice": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "dish_bag_corn_egg_fried_rice": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "dish_icon_potato_carrot_stew": {
+    "footY": {
+      "default": 46
+    }
+  },
+  "dish_bag_potato_carrot_stew": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "dish_icon_honey_pancake": {
+    "footY": {
+      "default": 39
+    }
+  },
+  "dish_bag_honey_pancake": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "dish_icon_strawberry_milk_pudding": {
+    "footY": {
+      "default": 46
+    }
+  },
+  "dish_bag_strawberry_milk_pudding": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "dish_icon_tomato_juice": {
+    "footY": {
+      "default": 44
+    }
+  },
+  "dish_bag_tomato_juice": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "dish_icon_basil_tea": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "dish_bag_basil_tea": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "food_bag_food_slime24": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "food_bag_food_slime2": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "food_bag_food_slime9": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "food_bag_food_slime8": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "food_bag_food_slime1": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "food_bag_food_slime12": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "food_bag_food_bee22": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "food_bag_food_bee7": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "food_bag_food_bee12": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "food_bag_food_bee6": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "food_bag_food_bee13": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "food_bag_food_bee17": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "food_bag_food_bee14": {
+    "footY": {
+      "default": 20
+    }
+  },
+  "food_bag_food_slime23": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "food_bag_food_slime22": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "dish_icon_mystery_food": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "dish_bag_mystery_food": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "ing_icon_cherry": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "ing_icon_cocoa": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "ing_icon_egg": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "ing_icon_fish_f": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "ing_icon_fish_sauce": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "ing_icon_golden_wheat": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "ing_icon_honey": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "ing_icon_honey_apple": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "ing_icon_milk": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "ing_icon_pork": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "ing_icon_salt": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "ing_icon_sugar": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "ing_mini_ing_cherry": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_ing_cocoa": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_ing_egg": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "ing_mini_ing_fish_f": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "ing_mini_ing_fish_sauce": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_ing_golden_wheat": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_ing_honey": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_ing_honey_apple": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_ing_milk": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_ing_pork": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ing_mini_ing_salt": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_ing_sugar": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_produce_basil": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_produce_blueberry": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_produce_carrot": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_produce_chili": {
+    "footY": {
+      "default": 14
+    }
+  },
+  "ing_mini_produce_corn": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_produce_garlic": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_produce_potato": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "ing_mini_produce_rice": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_produce_scallion": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_produce_strawberry": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_mini_produce_tomato": {
+    "footY": {
+      "default": 14
+    }
+  },
+  "anim_cook_south": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_cook_east": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_cook_north": {
+    "footY": {
+      "default": 74
+    }
   }
 }

@@ -5363,5 +5363,1487 @@
     "source": "public/assets/food/desserts/food_slime22.png",
     "file": "food/desserts/food_slime22.png",
     "jade_tone": false
+  },
+  "ui_book_book_apron_drink": {
+    "type": "local",
+    "width": 26,
+    "height": 34,
+    "source": "public/assets/ui/book/book_apron_drink.png",
+    "file": "ui/book/book_apron_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_apron_savory": {
+    "type": "local",
+    "width": 26,
+    "height": 34,
+    "source": "public/assets/ui/book/book_apron_savory.png",
+    "file": "ui/book/book_apron_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_apron_sweet": {
+    "type": "local",
+    "width": 26,
+    "height": 34,
+    "source": "public/assets/ui/book/book_apron_sweet.png",
+    "file": "ui/book/book_apron_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_arrow_left_drink": {
+    "type": "local",
+    "width": 12,
+    "height": 13,
+    "source": "public/assets/ui/book/book_arrow_left_drink.png",
+    "file": "ui/book/book_arrow_left_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_arrow_left_savory": {
+    "type": "local",
+    "width": 12,
+    "height": 13,
+    "source": "public/assets/ui/book/book_arrow_left_savory.png",
+    "file": "ui/book/book_arrow_left_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_arrow_left_sweet": {
+    "type": "local",
+    "width": 12,
+    "height": 13,
+    "source": "public/assets/ui/book/book_arrow_left_sweet.png",
+    "file": "ui/book/book_arrow_left_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_arrow_right_drink": {
+    "type": "local",
+    "width": 12,
+    "height": 13,
+    "source": "public/assets/ui/book/book_arrow_right_drink.png",
+    "file": "ui/book/book_arrow_right_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_arrow_right_savory": {
+    "type": "local",
+    "width": 12,
+    "height": 13,
+    "source": "public/assets/ui/book/book_arrow_right_savory.png",
+    "file": "ui/book/book_arrow_right_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_arrow_right_sweet": {
+    "type": "local",
+    "width": 12,
+    "height": 13,
+    "source": "public/assets/ui/book/book_arrow_right_sweet.png",
+    "file": "ui/book/book_arrow_right_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_cloth_drink": {
+    "type": "local",
+    "width": 40,
+    "height": 40,
+    "source": "public/assets/ui/book/book_cloth_drink.png",
+    "file": "ui/book/book_cloth_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_cloth_savory": {
+    "type": "local",
+    "width": 40,
+    "height": 40,
+    "source": "public/assets/ui/book/book_cloth_savory.png",
+    "file": "ui/book/book_cloth_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_cloth_sweet": {
+    "type": "local",
+    "width": 40,
+    "height": 40,
+    "source": "public/assets/ui/book/book_cloth_sweet.png",
+    "file": "ui/book/book_cloth_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_corner_plant_drink": {
+    "type": "local",
+    "width": 44,
+    "height": 44,
+    "source": "public/assets/ui/book/book_corner_plant_drink.png",
+    "file": "ui/book/book_corner_plant_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_corner_plant_savory": {
+    "type": "local",
+    "width": 44,
+    "height": 44,
+    "source": "public/assets/ui/book/book_corner_plant_savory.png",
+    "file": "ui/book/book_corner_plant_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_corner_plant_sweet": {
+    "type": "local",
+    "width": 44,
+    "height": 44,
+    "source": "public/assets/ui/book/book_corner_plant_sweet.png",
+    "file": "ui/book/book_corner_plant_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_count_badge_drink": {
+    "type": "local",
+    "width": 12,
+    "height": 9,
+    "source": "public/assets/ui/book/book_count_badge_drink.png",
+    "file": "ui/book/book_count_badge_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_count_badge_savory": {
+    "type": "local",
+    "width": 12,
+    "height": 9,
+    "source": "public/assets/ui/book/book_count_badge_savory.png",
+    "file": "ui/book/book_count_badge_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_count_badge_sweet": {
+    "type": "local",
+    "width": 12,
+    "height": 9,
+    "source": "public/assets/ui/book/book_count_badge_sweet.png",
+    "file": "ui/book/book_count_badge_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_drink_1": {
+    "type": "local",
+    "width": 18,
+    "height": 18,
+    "source": "public/assets/ui/book/book_deco_drink_1.png",
+    "file": "ui/book/book_deco_drink_1.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_drink_1_8f": {
+    "type": "local",
+    "width": 144,
+    "height": 20,
+    "source": "public/assets/ui/book/book_deco_drink_1_8f.png",
+    "file": "ui/book/book_deco_drink_1_8f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_drink_2": {
+    "type": "local",
+    "width": 22,
+    "height": 22,
+    "source": "public/assets/ui/book/book_deco_drink_2.png",
+    "file": "ui/book/book_deco_drink_2.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_drink_2_8f": {
+    "type": "local",
+    "width": 176,
+    "height": 24,
+    "source": "public/assets/ui/book/book_deco_drink_2_8f.png",
+    "file": "ui/book/book_deco_drink_2_8f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_drink_3": {
+    "type": "local",
+    "width": 18,
+    "height": 18,
+    "source": "public/assets/ui/book/book_deco_drink_3.png",
+    "file": "ui/book/book_deco_drink_3.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_drink_3_8f": {
+    "type": "local",
+    "width": 144,
+    "height": 22,
+    "source": "public/assets/ui/book/book_deco_drink_3_8f.png",
+    "file": "ui/book/book_deco_drink_3_8f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_savory_1": {
+    "type": "local",
+    "width": 26,
+    "height": 16,
+    "source": "public/assets/ui/book/book_deco_savory_1.png",
+    "file": "ui/book/book_deco_savory_1.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_savory_1_8f": {
+    "type": "local",
+    "width": 208,
+    "height": 18,
+    "source": "public/assets/ui/book/book_deco_savory_1_8f.png",
+    "file": "ui/book/book_deco_savory_1_8f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_savory_2": {
+    "type": "local",
+    "width": 20,
+    "height": 20,
+    "source": "public/assets/ui/book/book_deco_savory_2.png",
+    "file": "ui/book/book_deco_savory_2.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_savory_2_8f": {
+    "type": "local",
+    "width": 160,
+    "height": 22,
+    "source": "public/assets/ui/book/book_deco_savory_2_8f.png",
+    "file": "ui/book/book_deco_savory_2_8f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_savory_3": {
+    "type": "local",
+    "width": 22,
+    "height": 16,
+    "source": "public/assets/ui/book/book_deco_savory_3.png",
+    "file": "ui/book/book_deco_savory_3.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_savory_3_8f": {
+    "type": "local",
+    "width": 176,
+    "height": 18,
+    "source": "public/assets/ui/book/book_deco_savory_3_8f.png",
+    "file": "ui/book/book_deco_savory_3_8f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_sweet_1": {
+    "type": "local",
+    "width": 18,
+    "height": 20,
+    "source": "public/assets/ui/book/book_deco_sweet_1.png",
+    "file": "ui/book/book_deco_sweet_1.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_sweet_1_8f": {
+    "type": "local",
+    "width": 144,
+    "height": 22,
+    "source": "public/assets/ui/book/book_deco_sweet_1_8f.png",
+    "file": "ui/book/book_deco_sweet_1_8f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_sweet_2": {
+    "type": "local",
+    "width": 22,
+    "height": 16,
+    "source": "public/assets/ui/book/book_deco_sweet_2.png",
+    "file": "ui/book/book_deco_sweet_2.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_sweet_2_8f": {
+    "type": "local",
+    "width": 176,
+    "height": 18,
+    "source": "public/assets/ui/book/book_deco_sweet_2_8f.png",
+    "file": "ui/book/book_deco_sweet_2_8f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_sweet_3": {
+    "type": "local",
+    "width": 15,
+    "height": 14,
+    "source": "public/assets/ui/book/book_deco_sweet_3.png",
+    "file": "ui/book/book_deco_sweet_3.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_deco_sweet_3_8f": {
+    "type": "local",
+    "width": 152,
+    "height": 18,
+    "source": "public/assets/ui/book/book_deco_sweet_3_8f.png",
+    "file": "ui/book/book_deco_sweet_3_8f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_dish_halo_drink": {
+    "type": "local",
+    "width": 72,
+    "height": 72,
+    "source": "public/assets/ui/book/book_dish_halo_drink.png",
+    "file": "ui/book/book_dish_halo_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_dish_halo_savory": {
+    "type": "local",
+    "width": 72,
+    "height": 72,
+    "source": "public/assets/ui/book/book_dish_halo_savory.png",
+    "file": "ui/book/book_dish_halo_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_dish_halo_sweet": {
+    "type": "local",
+    "width": 72,
+    "height": 72,
+    "source": "public/assets/ui/book/book_dish_halo_sweet.png",
+    "file": "ui/book/book_dish_halo_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_dish_shadow_8f": {
+    "type": "local",
+    "width": 320,
+    "height": 8,
+    "source": "public/assets/ui/book/book_dish_shadow_8f.png",
+    "file": "ui/book/book_dish_shadow_8f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_dish_sparkle_8f": {
+    "type": "local",
+    "width": 56,
+    "height": 7,
+    "source": "public/assets/ui/book/book_dish_sparkle_8f.png",
+    "file": "ui/book/book_dish_sparkle_8f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_dish_steam_8f": {
+    "type": "local",
+    "width": 128,
+    "height": 22,
+    "source": "public/assets/ui/book/book_dish_steam_8f.png",
+    "file": "ui/book/book_dish_steam_8f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_divider_drink": {
+    "type": "local",
+    "width": 48,
+    "height": 5,
+    "source": "public/assets/ui/book/book_divider_drink.png",
+    "file": "ui/book/book_divider_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_divider_savory": {
+    "type": "local",
+    "width": 48,
+    "height": 5,
+    "source": "public/assets/ui/book/book_divider_savory.png",
+    "file": "ui/book/book_divider_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_divider_sweet": {
+    "type": "local",
+    "width": 48,
+    "height": 5,
+    "source": "public/assets/ui/book/book_divider_sweet.png",
+    "file": "ui/book/book_divider_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_frame_drink_9slice": {
+    "type": "local",
+    "width": 24,
+    "height": 24,
+    "source": "public/assets/ui/book/book_frame_drink_9slice.png",
+    "file": "ui/book/book_frame_drink_9slice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_frame_savory_9slice": {
+    "type": "local",
+    "width": 24,
+    "height": 24,
+    "source": "public/assets/ui/book/book_frame_savory_9slice.png",
+    "file": "ui/book/book_frame_savory_9slice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_frame_sweet_9slice": {
+    "type": "local",
+    "width": 24,
+    "height": 24,
+    "source": "public/assets/ui/book/book_frame_sweet_9slice.png",
+    "file": "ui/book/book_frame_sweet_9slice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_ing_slot_drink": {
+    "type": "local",
+    "width": 22,
+    "height": 22,
+    "source": "public/assets/ui/book/book_ing_slot_drink.png",
+    "file": "ui/book/book_ing_slot_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_ing_slot_locked_drink": {
+    "type": "local",
+    "width": 22,
+    "height": 22,
+    "source": "public/assets/ui/book/book_ing_slot_locked_drink.png",
+    "file": "ui/book/book_ing_slot_locked_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_ing_slot_locked_savory": {
+    "type": "local",
+    "width": 22,
+    "height": 22,
+    "source": "public/assets/ui/book/book_ing_slot_locked_savory.png",
+    "file": "ui/book/book_ing_slot_locked_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_ing_slot_locked_sweet": {
+    "type": "local",
+    "width": 22,
+    "height": 22,
+    "source": "public/assets/ui/book/book_ing_slot_locked_sweet.png",
+    "file": "ui/book/book_ing_slot_locked_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_ing_slot_savory": {
+    "type": "local",
+    "width": 22,
+    "height": 22,
+    "source": "public/assets/ui/book/book_ing_slot_savory.png",
+    "file": "ui/book/book_ing_slot_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_ing_slot_sweet": {
+    "type": "local",
+    "width": 22,
+    "height": 22,
+    "source": "public/assets/ui/book/book_ing_slot_sweet.png",
+    "file": "ui/book/book_ing_slot_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_light_16f": {
+    "type": "local",
+    "width": 1072,
+    "height": 100,
+    "source": "public/assets/ui/book/book_light_16f.png",
+    "file": "ui/book/book_light_16f.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_note_9slice": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/book/book_note_9slice.png",
+    "file": "ui/book/book_note_9slice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_page_dot_off_drink": {
+    "type": "local",
+    "width": 5,
+    "height": 5,
+    "source": "public/assets/ui/book/book_page_dot_off_drink.png",
+    "file": "ui/book/book_page_dot_off_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_page_dot_off_savory": {
+    "type": "local",
+    "width": 5,
+    "height": 5,
+    "source": "public/assets/ui/book/book_page_dot_off_savory.png",
+    "file": "ui/book/book_page_dot_off_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_page_dot_off_sweet": {
+    "type": "local",
+    "width": 5,
+    "height": 5,
+    "source": "public/assets/ui/book/book_page_dot_off_sweet.png",
+    "file": "ui/book/book_page_dot_off_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_page_dot_on_drink": {
+    "type": "local",
+    "width": 5,
+    "height": 5,
+    "source": "public/assets/ui/book/book_page_dot_on_drink.png",
+    "file": "ui/book/book_page_dot_on_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_page_dot_on_savory": {
+    "type": "local",
+    "width": 5,
+    "height": 5,
+    "source": "public/assets/ui/book/book_page_dot_on_savory.png",
+    "file": "ui/book/book_page_dot_on_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_page_dot_on_sweet": {
+    "type": "local",
+    "width": 5,
+    "height": 5,
+    "source": "public/assets/ui/book/book_page_dot_on_sweet.png",
+    "file": "ui/book/book_page_dot_on_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_ribbon_drink": {
+    "type": "local",
+    "width": 44,
+    "height": 44,
+    "source": "public/assets/ui/book/book_ribbon_drink.png",
+    "file": "ui/book/book_ribbon_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_ribbon_savory": {
+    "type": "local",
+    "width": 44,
+    "height": 44,
+    "source": "public/assets/ui/book/book_ribbon_savory.png",
+    "file": "ui/book/book_ribbon_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_ribbon_sweet": {
+    "type": "local",
+    "width": 44,
+    "height": 44,
+    "source": "public/assets/ui/book/book_ribbon_sweet.png",
+    "file": "ui/book/book_ribbon_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_star_off": {
+    "type": "local",
+    "width": 13,
+    "height": 13,
+    "source": "public/assets/ui/book/book_star_off.png",
+    "file": "ui/book/book_star_off.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_star_on": {
+    "type": "local",
+    "width": 13,
+    "height": 13,
+    "source": "public/assets/ui/book/book_star_on.png",
+    "file": "ui/book/book_star_on.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_step_bullet_drink": {
+    "type": "local",
+    "width": 11,
+    "height": 11,
+    "source": "public/assets/ui/book/book_step_bullet_drink.png",
+    "file": "ui/book/book_step_bullet_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_step_bullet_savory": {
+    "type": "local",
+    "width": 11,
+    "height": 11,
+    "source": "public/assets/ui/book/book_step_bullet_savory.png",
+    "file": "ui/book/book_step_bullet_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_step_bullet_sweet": {
+    "type": "local",
+    "width": 11,
+    "height": 11,
+    "source": "public/assets/ui/book/book_step_bullet_sweet.png",
+    "file": "ui/book/book_step_bullet_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_tab_active_drink": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/book/book_tab_active_drink.png",
+    "file": "ui/book/book_tab_active_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_tab_active_savory": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/book/book_tab_active_savory.png",
+    "file": "ui/book/book_tab_active_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_tab_active_sweet": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/book/book_tab_active_sweet.png",
+    "file": "ui/book/book_tab_active_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_tab_drink": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/book/book_tab_drink.png",
+    "file": "ui/book/book_tab_drink.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_tab_savory": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/book/book_tab_savory.png",
+    "file": "ui/book/book_tab_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_tab_sweet": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/book/book_tab_sweet.png",
+    "file": "ui/book/book_tab_sweet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_book_book_tape": {
+    "type": "local",
+    "width": 16,
+    "height": 7,
+    "source": "public/assets/ui/book/book_tape.png",
+    "file": "ui/book/book_tape.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_grilled_fish": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/grilled_fish.png",
+    "file": "food/dishes/grilled_fish.png",
+    "jade_tone": false
+  },
+  "dish_bag_grilled_fish": {
+    "type": "local",
+    "width": 32,
+    "height": 30,
+    "source": "public/assets/food/dishes_bag/grilled_fish.png",
+    "file": "food/dishes_bag/grilled_fish.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_boiled_egg": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/boiled_egg.png",
+    "file": "food/dishes/boiled_egg.png",
+    "jade_tone": false
+  },
+  "dish_bag_boiled_egg": {
+    "type": "local",
+    "width": 32,
+    "height": 26,
+    "source": "public/assets/food/dishes_bag/boiled_egg.png",
+    "file": "food/dishes_bag/boiled_egg.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_baked_potato": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/baked_potato.png",
+    "file": "food/dishes/baked_potato.png",
+    "jade_tone": false
+  },
+  "dish_bag_baked_potato": {
+    "type": "local",
+    "width": 32,
+    "height": 30,
+    "source": "public/assets/food/dishes_bag/baked_potato.png",
+    "file": "food/dishes_bag/baked_potato.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_grilled_corn": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/grilled_corn.png",
+    "file": "food/dishes/grilled_corn.png",
+    "jade_tone": false
+  },
+  "dish_bag_grilled_corn": {
+    "type": "local",
+    "width": 32,
+    "height": 28,
+    "source": "public/assets/food/dishes_bag/grilled_corn.png",
+    "file": "food/dishes_bag/grilled_corn.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_strawberry_skewer": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/strawberry_skewer.png",
+    "file": "food/dishes/strawberry_skewer.png",
+    "jade_tone": false
+  },
+  "dish_bag_strawberry_skewer": {
+    "type": "local",
+    "width": 28,
+    "height": 32,
+    "source": "public/assets/food/dishes_bag/strawberry_skewer.png",
+    "file": "food/dishes_bag/strawberry_skewer.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_home_kaprao": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/home_kaprao.png",
+    "file": "food/dishes/home_kaprao.png",
+    "jade_tone": false
+  },
+  "dish_bag_home_kaprao": {
+    "type": "local",
+    "width": 32,
+    "height": 27,
+    "source": "public/assets/food/dishes_bag/home_kaprao.png",
+    "file": "food/dishes_bag/home_kaprao.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_scallion_omelet": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/scallion_omelet.png",
+    "file": "food/dishes/scallion_omelet.png",
+    "jade_tone": false
+  },
+  "dish_bag_scallion_omelet": {
+    "type": "local",
+    "width": 32,
+    "height": 30,
+    "source": "public/assets/food/dishes_bag/scallion_omelet.png",
+    "file": "food/dishes_bag/scallion_omelet.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_tomato_soup": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/tomato_soup.png",
+    "file": "food/dishes/tomato_soup.png",
+    "jade_tone": false
+  },
+  "dish_bag_tomato_soup": {
+    "type": "local",
+    "width": 29,
+    "height": 32,
+    "source": "public/assets/food/dishes_bag/tomato_soup.png",
+    "file": "food/dishes_bag/tomato_soup.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_honey_apple_grill": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/honey_apple_grill.png",
+    "file": "food/dishes/honey_apple_grill.png",
+    "jade_tone": false
+  },
+  "dish_bag_honey_apple_grill": {
+    "type": "local",
+    "width": 32,
+    "height": 23,
+    "source": "public/assets/food/dishes_bag/honey_apple_grill.png",
+    "file": "food/dishes_bag/honey_apple_grill.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_warm_honey_milk": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/warm_honey_milk.png",
+    "file": "food/dishes/warm_honey_milk.png",
+    "jade_tone": false
+  },
+  "dish_bag_warm_honey_milk": {
+    "type": "local",
+    "width": 25,
+    "height": 32,
+    "source": "public/assets/food/dishes_bag/warm_honey_milk.png",
+    "file": "food/dishes_bag/warm_honey_milk.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_fish_congee": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/fish_congee.png",
+    "file": "food/dishes/fish_congee.png",
+    "jade_tone": false
+  },
+  "dish_bag_fish_congee": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/dishes_bag/fish_congee.png",
+    "file": "food/dishes_bag/fish_congee.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_corn_egg_fried_rice": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/corn_egg_fried_rice.png",
+    "file": "food/dishes/corn_egg_fried_rice.png",
+    "jade_tone": false
+  },
+  "dish_bag_corn_egg_fried_rice": {
+    "type": "local",
+    "width": 32,
+    "height": 29,
+    "source": "public/assets/food/dishes_bag/corn_egg_fried_rice.png",
+    "file": "food/dishes_bag/corn_egg_fried_rice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_potato_carrot_stew": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/potato_carrot_stew.png",
+    "file": "food/dishes/potato_carrot_stew.png",
+    "jade_tone": false
+  },
+  "dish_bag_potato_carrot_stew": {
+    "type": "local",
+    "width": 29,
+    "height": 32,
+    "source": "public/assets/food/dishes_bag/potato_carrot_stew.png",
+    "file": "food/dishes_bag/potato_carrot_stew.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_honey_pancake": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/honey_pancake.png",
+    "file": "food/dishes/honey_pancake.png",
+    "jade_tone": false
+  },
+  "dish_bag_honey_pancake": {
+    "type": "local",
+    "width": 31,
+    "height": 30,
+    "source": "public/assets/food/dishes_bag/honey_pancake.png",
+    "file": "food/dishes_bag/honey_pancake.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_strawberry_milk_pudding": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/strawberry_milk_pudding.png",
+    "file": "food/dishes/strawberry_milk_pudding.png",
+    "jade_tone": false
+  },
+  "dish_bag_strawberry_milk_pudding": {
+    "type": "local",
+    "width": 29,
+    "height": 32,
+    "source": "public/assets/food/dishes_bag/strawberry_milk_pudding.png",
+    "file": "food/dishes_bag/strawberry_milk_pudding.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_tomato_juice": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/tomato_juice.png",
+    "file": "food/dishes/tomato_juice.png",
+    "jade_tone": false
+  },
+  "dish_bag_tomato_juice": {
+    "type": "local",
+    "width": 26,
+    "height": 32,
+    "source": "public/assets/food/dishes_bag/tomato_juice.png",
+    "file": "food/dishes_bag/tomato_juice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_basil_tea": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/basil_tea.png",
+    "file": "food/dishes/basil_tea.png",
+    "jade_tone": false
+  },
+  "dish_bag_basil_tea": {
+    "type": "local",
+    "width": 32,
+    "height": 30,
+    "source": "public/assets/food/dishes_bag/basil_tea.png",
+    "file": "food/dishes_bag/basil_tea.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_slime24": {
+    "type": "local",
+    "width": 30,
+    "height": 30,
+    "source": "public/assets/food/desserts_bag/food_slime24.png",
+    "file": "food/desserts_bag/food_slime24.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_slime2": {
+    "type": "local",
+    "width": 29,
+    "height": 32,
+    "source": "public/assets/food/desserts_bag/food_slime2.png",
+    "file": "food/desserts_bag/food_slime2.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_slime9": {
+    "type": "local",
+    "width": 30,
+    "height": 30,
+    "source": "public/assets/food/desserts_bag/food_slime9.png",
+    "file": "food/desserts_bag/food_slime9.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_slime8": {
+    "type": "local",
+    "width": 30,
+    "height": 29,
+    "source": "public/assets/food/desserts_bag/food_slime8.png",
+    "file": "food/desserts_bag/food_slime8.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_slime1": {
+    "type": "local",
+    "width": 29,
+    "height": 32,
+    "source": "public/assets/food/desserts_bag/food_slime1.png",
+    "file": "food/desserts_bag/food_slime1.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_slime12": {
+    "type": "local",
+    "width": 29,
+    "height": 31,
+    "source": "public/assets/food/desserts_bag/food_slime12.png",
+    "file": "food/desserts_bag/food_slime12.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_bee22": {
+    "type": "local",
+    "width": 29,
+    "height": 29,
+    "source": "public/assets/food/desserts_bag/food_bee22.png",
+    "file": "food/desserts_bag/food_bee22.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_bee7": {
+    "type": "local",
+    "width": 29,
+    "height": 32,
+    "source": "public/assets/food/desserts_bag/food_bee7.png",
+    "file": "food/desserts_bag/food_bee7.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_bee12": {
+    "type": "local",
+    "width": 29,
+    "height": 32,
+    "source": "public/assets/food/desserts_bag/food_bee12.png",
+    "file": "food/desserts_bag/food_bee12.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_bee6": {
+    "type": "local",
+    "width": 29,
+    "height": 31,
+    "source": "public/assets/food/desserts_bag/food_bee6.png",
+    "file": "food/desserts_bag/food_bee6.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_bee13": {
+    "type": "local",
+    "width": 32,
+    "height": 22,
+    "source": "public/assets/food/desserts_bag/food_bee13.png",
+    "file": "food/desserts_bag/food_bee13.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_bee17": {
+    "type": "local",
+    "width": 29,
+    "height": 28,
+    "source": "public/assets/food/desserts_bag/food_bee17.png",
+    "file": "food/desserts_bag/food_bee17.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_bee14": {
+    "type": "local",
+    "width": 32,
+    "height": 20,
+    "source": "public/assets/food/desserts_bag/food_bee14.png",
+    "file": "food/desserts_bag/food_bee14.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_slime23": {
+    "type": "local",
+    "width": 23,
+    "height": 32,
+    "source": "public/assets/food/desserts_bag/food_slime23.png",
+    "file": "food/desserts_bag/food_slime23.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "food_bag_food_slime22": {
+    "type": "local",
+    "width": 23,
+    "height": 32,
+    "source": "public/assets/food/desserts_bag/food_slime22.png",
+    "file": "food/desserts_bag/food_slime22.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_mystery_food": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/mystery_food.png",
+    "file": "food/dishes/mystery_food.png",
+    "jade_tone": false
+  },
+  "dish_bag_mystery_food": {
+    "type": "local",
+    "width": 32,
+    "height": 28,
+    "source": "public/assets/food/dishes_bag/mystery_food.png",
+    "file": "food/dishes_bag/mystery_food.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_cherry": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/cherry.png",
+    "file": "food/ingredients/cherry.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_cocoa": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/cocoa.png",
+    "file": "food/ingredients/cocoa.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_egg": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/egg.png",
+    "file": "food/ingredients/egg.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_fish_f": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/fish_F.png",
+    "file": "food/ingredients/fish_F.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_fish_sauce": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/fish_sauce.png",
+    "file": "food/ingredients/fish_sauce.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_golden_wheat": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/golden_wheat.png",
+    "file": "food/ingredients/golden_wheat.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_honey": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/honey.png",
+    "file": "food/ingredients/honey.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_honey_apple": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/honey_apple.png",
+    "file": "food/ingredients/honey_apple.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_milk": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/milk.png",
+    "file": "food/ingredients/milk.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_pork": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/pork.png",
+    "file": "food/ingredients/pork.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_salt": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/salt.png",
+    "file": "food/ingredients/salt.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_sugar": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/sugar.png",
+    "file": "food/ingredients/sugar.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_cherry": {
+    "type": "local",
+    "width": 14,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_cherry.png",
+    "file": "food/ingredients_mini/ing_cherry.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_cocoa": {
+    "type": "local",
+    "width": 14,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_cocoa.png",
+    "file": "food/ingredients_mini/ing_cocoa.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_egg": {
+    "type": "local",
+    "width": 16,
+    "height": 15,
+    "source": "public/assets/food/ingredients_mini/ing_egg.png",
+    "file": "food/ingredients_mini/ing_egg.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_fish_f": {
+    "type": "local",
+    "width": 16,
+    "height": 15,
+    "source": "public/assets/food/ingredients_mini/ing_fish_F.png",
+    "file": "food/ingredients_mini/ing_fish_F.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_fish_sauce": {
+    "type": "local",
+    "width": 6,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_fish_sauce.png",
+    "file": "food/ingredients_mini/ing_fish_sauce.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_golden_wheat": {
+    "type": "local",
+    "width": 12,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_golden_wheat.png",
+    "file": "food/ingredients_mini/ing_golden_wheat.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_honey": {
+    "type": "local",
+    "width": 15,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_honey.png",
+    "file": "food/ingredients_mini/ing_honey.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_honey_apple": {
+    "type": "local",
+    "width": 14,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_honey_apple.png",
+    "file": "food/ingredients_mini/ing_honey_apple.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_milk": {
+    "type": "local",
+    "width": 11,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_milk.png",
+    "file": "food/ingredients_mini/ing_milk.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_pork": {
+    "type": "local",
+    "width": 16,
+    "height": 12,
+    "source": "public/assets/food/ingredients_mini/ing_pork.png",
+    "file": "food/ingredients_mini/ing_pork.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_salt": {
+    "type": "local",
+    "width": 14,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_salt.png",
+    "file": "food/ingredients_mini/ing_salt.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_sugar": {
+    "type": "local",
+    "width": 15,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_sugar.png",
+    "file": "food/ingredients_mini/ing_sugar.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_produce_basil": {
+    "type": "local",
+    "width": 14,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/produce_basil.png",
+    "file": "food/ingredients_mini/produce_basil.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_produce_blueberry": {
+    "type": "local",
+    "width": 12,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/produce_blueberry.png",
+    "file": "food/ingredients_mini/produce_blueberry.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_produce_carrot": {
+    "type": "local",
+    "width": 14,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/produce_carrot.png",
+    "file": "food/ingredients_mini/produce_carrot.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_produce_chili": {
+    "type": "local",
+    "width": 16,
+    "height": 14,
+    "source": "public/assets/food/ingredients_mini/produce_chili.png",
+    "file": "food/ingredients_mini/produce_chili.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_produce_corn": {
+    "type": "local",
+    "width": 14,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/produce_corn.png",
+    "file": "food/ingredients_mini/produce_corn.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_produce_garlic": {
+    "type": "local",
+    "width": 14,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/produce_garlic.png",
+    "file": "food/ingredients_mini/produce_garlic.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_produce_potato": {
+    "type": "local",
+    "width": 16,
+    "height": 13,
+    "source": "public/assets/food/ingredients_mini/produce_potato.png",
+    "file": "food/ingredients_mini/produce_potato.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_produce_rice": {
+    "type": "local",
+    "width": 15,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/produce_rice.png",
+    "file": "food/ingredients_mini/produce_rice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_produce_scallion": {
+    "type": "local",
+    "width": 15,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/produce_scallion.png",
+    "file": "food/ingredients_mini/produce_scallion.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_produce_strawberry": {
+    "type": "local",
+    "width": 15,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/produce_strawberry.png",
+    "file": "food/ingredients_mini/produce_strawberry.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_produce_tomato": {
+    "type": "local",
+    "width": 16,
+    "height": 14,
+    "source": "public/assets/food/ingredients_mini/produce_tomato.png",
+    "file": "food/ingredients_mini/produce_tomato.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "anim_cook_south": {
+    "type": "local",
+    "width": 792,
+    "height": 88,
+    "source": "public/assets/farm/anims/cook_south.png",
+    "file": "farm/anims/cook_south.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9
+  },
+  "anim_cook_east": {
+    "type": "local",
+    "width": 792,
+    "height": 88,
+    "source": "public/assets/farm/anims/cook_east.png",
+    "file": "farm/anims/cook_east.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9
+  },
+  "anim_cook_north": {
+    "type": "local",
+    "width": 792,
+    "height": 88,
+    "source": "public/assets/farm/anims/cook_north.png",
+    "file": "farm/anims/cook_north.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9
   }
 }

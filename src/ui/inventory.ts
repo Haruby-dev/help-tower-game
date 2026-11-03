@@ -4,7 +4,7 @@ import { t, type TextKey } from '../core/i18n';
 import { createRng } from '../core/rng';
 import { gameState, type BagStack } from '../core/state';
 import balance from '../data/balance.json';
-import { eatItem, fullnessOf, isDish, isIngredient, parseDish, recipes } from '../systems/cooking';
+import { MYSTERY, eatItem, fullnessOf, isDish, isIngredient, parseDish, recipes } from '../systems/cooking';
 import { convertToSeeds, crops, cropOfItem, isSeed } from '../systems/farm';
 import { artUrl } from './pixelArt';
 
@@ -50,7 +50,13 @@ export const itemName = (item: string): string => {
 
 /** รูปในช่องกระเป๋าไม่มีประกาย รูปในการ์ดรายละเอียดมีประกาย */
 function artFor(item: string, sparkly: boolean): string | null {
-  if (isDish(item)) return recipes[parseDish(item).recipe]?.icon ?? null;
+  if (isDish(item)) {
+    const { recipe } = parseDish(item);
+    if (recipe === MYSTERY) return sparkly ? balance.cooking.mystery.icon : balance.cooking.mystery.bagIcon;
+    const info = recipes[recipe];
+    return (sparkly ? info?.icon : info?.bagIcon) ?? null;
+  }
+  if (isIngredient(item)) return `ing_icon_${item.slice('ing_'.length).toLowerCase()}`;
   if (!isKnownCrop(item)) return null;
   const crop = cropOfItem(item);
   if (isSeed(item)) return `seed_${crop}`;

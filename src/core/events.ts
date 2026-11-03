@@ -22,6 +22,7 @@ export interface GameEvents {
   /** key ของบทพูดตัวเอกใน lines.json */
   'player-says': 'bagFull' | 'mysteryFood';
   'cook-open': undefined;
+  'book-open': undefined;
 }
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

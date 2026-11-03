@@ -170,7 +170,9 @@
     "mystery": {
       "minutes": 20,
       "fullness": 5,
-      "happinessPenalty": 5
+      "happinessPenalty": 5,
+      "icon": "dish_icon_mystery_food",
+      "bagIcon": "dish_bag_mystery_food"
     },
     "starterBag": {
       "ing_egg": 2,
@@ -180,6 +182,7 @@
       "ing_fish_sauce": 2,
       "ing_milk": 1,
       "ing_honey": 1
-    }
+    },
+    "animationFps": 8
   }
 }
