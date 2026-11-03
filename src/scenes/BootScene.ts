@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { animationKey, assetUrl, directionsOf, registry } from '../core/assets';
 import balance from '../data/balance.json';
 import { createPlaceholderTexture } from './sceneArt';
+import { prepareTreeSway } from './treeSway';
 
 const LABEL_FONT = '700 8px Mali';
 const CURSOR_FPS = 2;
@@ -64,6 +65,7 @@ export class BootScene extends Phaser.Scene {
 
   create(): void {
     this.createFarmEffects();
+    prepareTreeSway(this);
     for (const [id, entry] of Object.entries(registry)) {
       if (entry.type === 'local' && id.startsWith('anim_cook_')) {
         this.createCookAnimations(id);

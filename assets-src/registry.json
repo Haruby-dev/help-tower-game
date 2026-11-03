@@ -6845,5 +6845,69 @@
     "frame_width": 88,
     "frame_height": 88,
     "frames": 9
+  },
+  "fx_tree_big_0_canopy_mask": {
+    "type": "local",
+    "width": 128,
+    "height": 128,
+    "source": "public/assets/world/fx/trees/tree_big_0_canopy_mask.png",
+    "file": "world/fx/trees/tree_big_0_canopy_mask.png",
+    "jade_tone": false
+  },
+  "fx_tree_big_0_light_mask": {
+    "type": "local",
+    "width": 128,
+    "height": 128,
+    "source": "public/assets/world/fx/trees/tree_big_0_light_mask.png",
+    "file": "world/fx/trees/tree_big_0_light_mask.png",
+    "jade_tone": false
+  },
+  "fx_tree_big_1_canopy_mask": {
+    "type": "local",
+    "width": 128,
+    "height": 128,
+    "source": "public/assets/world/fx/trees/tree_big_1_canopy_mask.png",
+    "file": "world/fx/trees/tree_big_1_canopy_mask.png",
+    "jade_tone": false
+  },
+  "fx_tree_big_1_light_mask": {
+    "type": "local",
+    "width": 128,
+    "height": 128,
+    "source": "public/assets/world/fx/trees/tree_big_1_light_mask.png",
+    "file": "world/fx/trees/tree_big_1_light_mask.png",
+    "jade_tone": false
+  },
+  "fx_tree_big_2_canopy_mask": {
+    "type": "local",
+    "width": 128,
+    "height": 128,
+    "source": "public/assets/world/fx/trees/tree_big_2_canopy_mask.png",
+    "file": "world/fx/trees/tree_big_2_canopy_mask.png",
+    "jade_tone": false
+  },
+  "fx_tree_big_2_light_mask": {
+    "type": "local",
+    "width": 128,
+    "height": 128,
+    "source": "public/assets/world/fx/trees/tree_big_2_light_mask.png",
+    "file": "world/fx/trees/tree_big_2_light_mask.png",
+    "jade_tone": false
+  },
+  "fx_tree_big_3_canopy_mask": {
+    "type": "local",
+    "width": 128,
+    "height": 128,
+    "source": "public/assets/world/fx/trees/tree_big_3_canopy_mask.png",
+    "file": "world/fx/trees/tree_big_3_canopy_mask.png",
+    "jade_tone": false
+  },
+  "fx_tree_big_3_light_mask": {
+    "type": "local",
+    "width": 128,
+    "height": 128,
+    "source": "public/assets/world/fx/trees/tree_big_3_light_mask.png",
+    "file": "world/fx/trees/tree_big_3_light_mask.png",
+    "jade_tone": false
   }
 }

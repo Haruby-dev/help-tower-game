@@ -178,3 +178,19 @@ test('the campfire window shows what is missing and lets the pot be emptied', as
   await page.locator('[data-cook-tab="drink"]').click();
   await expect(page.locator('.cook-panel')).toHaveAttribute('data-theme', 'drink');
 });
+
+test('the pond is drawn from the map and the trees sway', async ({ page }) => {
+  await open(page);
+  const info = await page.evaluate(() => {
+    const game = (window as unknown as { __game: { textures: { exists(k: string): boolean }; scene: { getScene(k: string): { children: { list: { texture?: { key: string } }[] } } } } }).__game;
+    const keys = game.scene.getScene('Base').children.list.map((child) => child.texture?.key ?? '');
+    return {
+      floor: game.textures.exists('pond_floor'),
+      trees: keys.filter((key) => /^tree_big_\d$/.test(key)).length,
+      canopies: keys.filter((key) => key.startsWith('tree_canopy_')).length,
+    };
+  });
+  expect(info.floor).toBe(true);
+  expect(info.canopies).toBe(info.trees);
+  expect(info.trees).toBeGreaterThan(0);
+});

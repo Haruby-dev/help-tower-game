@@ -17,6 +17,8 @@ import balance from '../data/balance.json';
 import display from '../data/display.json';
 import { LIGHTING_PIPELINE, LightingPipeline, type LightSpot } from './LightingPipeline';
 import { dirtPuff, harvestArc, popPill, sparkle, waterDrops } from './farmEffects';
+import { Pond, type PondObject } from './Pond';
+import { TreeSway } from './treeSway';
 import { createCanopyMask, softEllipseTexture, type ShadeArea } from './sceneArt';
 
 type MoveKeys = Record<'up' | 'down' | 'left' | 'right' | 'w' | 'a' | 's' | 'd', Phaser.Input.Keyboard.Key>;
@@ -26,6 +28,7 @@ const DEPTH = {
   ground: -10,
   flat: -8,
   flowers: -7,
+  pond: -9.5,
   plotMarker: -6,
   night: 8000,
   label: 9001,
@@ -76,6 +79,9 @@ export class BaseScene extends Phaser.Scene {
   private queuedPlot: number | null = null;
   private campfire: Campfire | null = null;
   private cookingShown: boolean | null = null;
+  private pond: Pond | null = null;
+  private treeSway = new TreeSway();
+  private pondObjects: PondObject[] = [];
 
   constructor() {
     super('Base');
@@ -83,6 +89,8 @@ export class BaseScene extends Phaser.Scene {
 
   create(): void {
     this.labels = [];
+    this.pondObjects = [];
+    this.treeSway = new TreeSway();
     this.shadeAreas = [];
     this.glows = {};
     const map = this.make.tilemap({ key: 'base_map' });
@@ -106,6 +114,8 @@ export class BaseScene extends Phaser.Scene {
       this.add.image(object.x ?? 0, object.y ?? 0, object.name).setDepth(DEPTH.flowers);
     }
     for (const object of map.getObjectLayer('objects')!.objects) this.placeObject(object);
+    this.pond = Pond.create(this, ground, this.pondObjects, DEPTH.pond);
+    this.pond?.setEffects(gameState.lightingEnabled);
     for (const effect of map.getObjectLayer('effects')!.objects) this.placeEffect(effect);
 
     const spawns = map.getObjectLayer('spawns')!.objects;
@@ -183,7 +193,9 @@ export class BaseScene extends Phaser.Scene {
     });
   }
 
-  override update(_time: number, deltaMs: number): void {
+  override update(time: number, deltaMs: number): void {
+    this.pond?.update(time);
+    this.treeSway.update(time);
     const running = this.runKey.isDown || gameState.runHeld;
     this.player.update(gameState.clockRunning ? this.readMoveInput() : STANDING_STILL, running);
     this.gio.update(deltaMs, this.player.feetX, this.player.feetY);
@@ -216,6 +228,18 @@ export class BaseScene extends Phaser.Scene {
 
     const submerged = this.property<number>(object, 'submerged');
     if (submerged) image.setCrop(0, 0, entry.width, Math.round(entry.height * submerged));
+    if (id === 'fishing_dock' || submerged) {
+      const corner = image.getTopLeft();
+      this.pondObjects.push({
+        key: id,
+        left: Math.round(corner.x),
+        top: Math.round(corner.y),
+        width: entry.width,
+        height: submerged ? Math.round(entry.height * submerged) : entry.height,
+      });
+    }
+    const treeKind = /^tree_big_(\d)$/.exec(id)?.[1];
+    if (treeKind !== undefined) this.treeSway.add(this, image, Number(treeKind));
 
     const plot = this.property<number>(object, 'plot');
     if (plot !== undefined) {
@@ -477,6 +501,7 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private applyLighting(enabled: boolean): void {
+    this.pond?.setEffects(enabled);
     const { fire, gate, burrow } = this.glows;
     const camera = this.cameras.main;
     if (!(this.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) || !fire || !gate || !burrow) return;

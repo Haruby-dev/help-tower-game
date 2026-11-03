@@ -3185,5 +3185,45 @@
     "footY": {
       "default": 74
     }
+  },
+  "fx_tree_big_0_canopy_mask": {
+    "footY": {
+      "default": 128
+    }
+  },
+  "fx_tree_big_0_light_mask": {
+    "footY": {
+      "default": 128
+    }
+  },
+  "fx_tree_big_1_canopy_mask": {
+    "footY": {
+      "default": 128
+    }
+  },
+  "fx_tree_big_1_light_mask": {
+    "footY": {
+      "default": 128
+    }
+  },
+  "fx_tree_big_2_canopy_mask": {
+    "footY": {
+      "default": 128
+    }
+  },
+  "fx_tree_big_2_light_mask": {
+    "footY": {
+      "default": 128
+    }
+  },
+  "fx_tree_big_3_canopy_mask": {
+    "footY": {
+      "default": 128
+    }
+  },
+  "fx_tree_big_3_light_mask": {
+    "footY": {
+      "default": 128
+    }
   }
 }
