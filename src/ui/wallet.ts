@@ -1,6 +1,7 @@
 import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
 import { gameState, type Currency, type WalletEntry } from '../core/state';
+import { setMoney } from './money';
 import { entriesFor, formatMoney, netFor, type WalletRange } from '../systems/economy';
 
 const RANGES: { id: WalletRange; label: TextKey }[] = [
@@ -60,7 +61,7 @@ export function createWalletPage(): HTMLElement {
   const render = (): void => {
     if (!gameState.started) return;
     const { wallet, day } = gameState.world;
-    coins.value.textContent = formatMoney(wallet.coins);
+    setMoney(coins.value, wallet.coins);
     stars.value.textContent = formatMoney(wallet.stars);
     net.textContent = signed(netFor(wallet, day, range, 'coins'));
     const entries = entriesFor(wallet, day, range);

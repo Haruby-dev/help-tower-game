@@ -38,7 +38,7 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
   await open(page);
   await standAtFire(page);
   const act = page.locator('#action-button');
-  await expect(act).toContainText('ทำอาหาร');
+  await expect(act).toHaveAttribute('aria-label', /ทำอาหาร/);
   await act.click();
   await expect(page.locator('#cook-window')).toBeVisible();
   await page.locator('[data-recipe="home_kaprao"]').click();
@@ -49,7 +49,7 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
   expect(await count(page, 'ing_pork')).toBe(0);
 
   await finishCooking(page);
-  await expect(act).toContainText('เก็บ');
+  await expect(act).toHaveAttribute('aria-label', /เก็บ/);
   await act.click();
   await expect.poll(() => count(page, 'dish_home_kaprao_2')).toBe(1);
 
@@ -245,7 +245,7 @@ test('cooks several plates of one recipe with the − n + stepper, then collects
   expect(await count(page, 'ing_egg')).toBe(0);
 
   await finishCooking(page);
-  await expect(act).toContainText('เก็บ');
+  await expect(act).toHaveAttribute('aria-label', /เก็บ/);
   await act.click();
   await expect.poll(() => count(page, 'dish_boiled_egg_1')).toBe(3);
 });

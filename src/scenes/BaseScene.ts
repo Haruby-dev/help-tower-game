@@ -6,7 +6,7 @@ import { createRng } from '../core/rng';
 import { gameState, type ActionIcon, type ContextAction } from '../core/state';
 import type { Vector } from '../core/movement';
 import type { Viewport } from '../core/viewport';
-import { Gio } from '../entities/Gio';
+import { Gio, type GioSeat } from '../entities/Gio';
 import { Campfire } from '../entities/Campfire';
 import { Player, type GardenMove } from '../entities/Player';
 import { Plot } from '../entities/Plot';
@@ -99,6 +99,9 @@ export function nightAlpha(hour: number): number {
 export class BaseScene extends Phaser.Scene {
   private player!: Player;
   private gio!: Gio;
+  private gioSeat: GioSeat | null = null;
+  /** สรุปยอดเปิดเองครั้งเดียวต่อรอบที่จีโอกลับ ตอนเดินมาใกล้ */
+  private receiptShownDay = 0;
   private keys!: MoveKeys;
   private runKey!: Phaser.Input.Keyboard.Key;
   private labels: Phaser.GameObjects.Text[] = [];
@@ -172,7 +175,7 @@ export class BaseScene extends Phaser.Scene {
     const playerSpawn = spawn('player');
     const gioSpawn = spawn('gio');
     this.player = new Player(this, playerSpawn.x, playerSpawn.y);
-    this.gio = new Gio(this, gioSpawn.x, gioSpawn.y, createRng(Date.now()));
+    this.gio = new Gio(this, gioSpawn, this.gioSeat, createRng(Date.now()));
 
     this.physics.add.collider(this.player.body, obstacles);
     this.physics.add.collider(this.gio.body, obstacles);
@@ -234,6 +237,7 @@ export class BaseScene extends Phaser.Scene {
     this.applyViewport(gameState.viewport);
     const stopViewport = eventBus.on('viewport-changed', (viewport) => this.applyViewport(viewport));
     const stopLighting = eventBus.on('lighting-changed', (enabled) => this.applyLighting(enabled));
+    const stopTreat = eventBus.on('gio-treat', (taste) => this.gio.eatTreat(taste));
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       stopAction();
       stopDig();
@@ -241,6 +245,7 @@ export class BaseScene extends Phaser.Scene {
       stopStarted();
       stopViewport();
       stopLighting();
+      stopTreat();
     });
   }
 
@@ -252,7 +257,8 @@ export class BaseScene extends Phaser.Scene {
     this.followPond();
     this.player.update(input, running);
     if (gameState.started) this.gio.setPresent(isGioHome(gameState.world.hour));
-    this.gio.update(deltaMs, this.player.feetX, this.player.feetY);
+    this.gio.update(deltaMs, this.player.feetX, this.player.feetY, !gameState.clockRunning);
+    if (gameState.started) this.openReceiptWhenNear();
     this.followPlayer();
     gameState.trackPlayer({ x: this.player.body.x, y: this.player.body.y });
     const camera = this.cameras.main;
@@ -302,6 +308,10 @@ export class BaseScene extends Phaser.Scene {
     const flat = this.property<boolean>(object, 'flat') ?? false;
     const originY = entry.type === 'placeholder' ? 1 : footY(id) / entry.height;
     const image = this.add.image(x, y, id).setOrigin(0.5, originY).setDepth(flat ? DEPTH.flat : y);
+    if (id === 'gio_seat') {
+      const top = y - originY * entry.height;
+      this.gioSeat = { x, top, bottom: top + entry.height, width: entry.width };
+    }
 
     const submerged = this.property<number>(object, 'submerged');
     if (submerged) image.setCrop(0, 0, entry.width, Math.round(entry.height * submerged));
@@ -423,6 +433,14 @@ export class BaseScene extends Phaser.Scene {
       if (gameState.selectedTool === 'rod') this.startFishing();
       else this.startBath();
     } else if (this.nearDoor() && !this.player.busy) goToSleep(this.door);
+  }
+
+  /** จีโอกลับมาพร้อมเงิน ใบสรุปยอดเปิดเองครั้งแรกที่เดินมาใกล้ (ครั้งเดียวต่อรอบ) */
+  private openReceiptWhenNear(): void {
+    const report = gameState.world.gio.report;
+    if (!report || this.receiptShownDay === report.day || !this.nearGio()) return;
+    this.receiptShownDay = report.day;
+    eventBus.emit('gio-talk', undefined);
   }
 
   /** คุยกับจีโอได้เมื่อจีโออยู่บ้านและยืนใกล้ */

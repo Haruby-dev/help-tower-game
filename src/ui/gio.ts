@@ -1,3 +1,4 @@
+import { registry } from '../core/assets';
 import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
 import { gameState, type BagStack } from '../core/state';
@@ -13,20 +14,32 @@ import {
   consign,
   estimate,
   giveTreat,
+  hasUnreadNews,
   isTreat,
   petGio,
+  pettedToday,
+  readNews,
+  soldTotal,
+  treatsInBag,
   removeFromGioBag,
   returnsToday,
   tierFor,
-  treatsLeftToday,
 } from '../systems/gio';
 import { itemImage, itemName } from './inventory';
 import { artUrl } from './pixelArt';
 import { revealWhenReady } from './preload';
+import { coinIcon, setMoney } from './money';
 
 const lines = linesJson.gio;
 const TALK_WINDOW = 'gio';
 const CONSIGN_WINDOW = 'consign';
+const RECEIPT_WINDOW = 'receipt';
+/** ใบสรุปยอดแสดงได้ราว 3 แถว เกินนี้เลื่อนดูในใบ */
+const RECEIPT_ROWS = 3;
+/** ขอบล่างใบเสร็จฉีกเป็นฟันเลื่อย ทุกช่วง 8 ลึก 4 พิกเซลเกม */
+const TEAR_PERIOD = 8;
+const TEAR_DEPTH = 4;
+const RECEIPT_WIDTH = 204;
 /** กดค้างนานเท่านี้ใส่ทั้งกอง */
 const HOLD_MS = 450;
 type ConsignTab = 'all' | 'produce' | 'food';
@@ -49,6 +62,35 @@ const button = (className: string, text: string, onClick: () => void): HTMLButto
   node.addEventListener('click', onClick);
   return node;
 };
+
+const unit = (value: number): string => `calc(var(--px) * ${value})`;
+
+/** ขอบล่างฟันเลื่อยวาดด้วย clip-path จุดทุกจุดเป็นจำนวนเต็มพิกเซลเกม */
+function tearBottom(...nodes: HTMLElement[]): void {
+  const points = ['0 0', '100% 0'];
+  for (let x = RECEIPT_WIDTH; x >= 0; x -= TEAR_PERIOD / 2) {
+    const tip = (x / (TEAR_PERIOD / 2)) % 2 === 0;
+    points.push(`${unit(x)} ${tip ? '100%' : `calc(100% - ${unit(TEAR_DEPTH)})`}`);
+  }
+  for (const node of nodes) node.style.clipPath = `polygon(${points.join(', ')})`;
+}
+
+/** ไอคอนเล็ก 16 พิกเซลของวัตถุดิบ ถ้ายังไม่มีภาพใช้กล่องสีขนาดเดียวกัน */
+function miniIcon(item: string): HTMLElement {
+  const id = `ing_mini_${item.toLowerCase()}`;
+  const entry = registry[id];
+  if (entry?.type !== 'local') {
+    const box = element('i', 'receipt__icon receipt__icon--missing');
+    box.title = itemName(item);
+    return box;
+  }
+  const image = element('img', 'pixel-img receipt__icon');
+  image.src = artUrl(id);
+  image.alt = '';
+  image.style.width = unit(entry.width);
+  image.style.height = unit(entry.height);
+  return image;
+}
 
 /** แถบหัวใจความสุขจีโอ ความกว้างเป็นจำนวนเต็มพิกเซลเกม */
 function heartBar(happiness: number): HTMLElement {
@@ -85,7 +127,7 @@ export function createGioWindows(uiRoot: HTMLElement): void {
   const talk = element('div', 'gio-backdrop');
   talk.id = 'gio-window';
   talk.hidden = true;
-  const talkPanel = element('div', 'gio-panel');
+  const talkPanel = element('div', 'gio-talk');
   talk.append(talkPanel);
 
   const consignRoot = element('div', 'gio-backdrop');
@@ -93,7 +135,12 @@ export function createGioWindows(uiRoot: HTMLElement): void {
   consignRoot.hidden = true;
   const consignPanel = element('div', 'consign-panel');
   consignRoot.append(consignPanel);
-  uiRoot.append(talk, consignRoot);
+  const receiptRoot = element('div', 'receipt-backdrop');
+  receiptRoot.id = 'receipt-window';
+  receiptRoot.hidden = true;
+  const receiptPanel = element('div', 'receipt-scene');
+  receiptRoot.append(receiptPanel);
+  uiRoot.append(talk, consignRoot, receiptRoot);
 
   let line = lines.greet;
   let treatPicker = false;
@@ -109,119 +156,265 @@ export function createGioWindows(uiRoot: HTMLElement): void {
     gameState.setWindowOpen(CONSIGN_WINDOW, false);
   };
 
-  const portrait = (): HTMLElement => {
-    const gio = element('img', 'pixel-img gio-panel__face');
-    gio.src = artUrl('ui_shop_gio');
-    gio.alt = '';
-    return gio;
+  const art = (id: string, className: string): HTMLImageElement => {
+    const image = element('img', `pixel-img ${className}`);
+    image.src = artUrl(id);
+    image.alt = '';
+    return image;
   };
 
-  const renderReport = (): void => {
-    const { report } = gameState.world.gio;
-    if (!report) return;
-    const list = (stacks: BagStack[]): HTMLElement => {
-      const row = element('div', 'gio-report__items');
-      row.append(...stacks.map((stack) => stackSlot(stack, 'bag-slot gio-report__slot')));
-      return row;
-    };
-    const money = (label: TextKey, amount: number, id: string): HTMLElement => {
-      const row = element('p', 'gio-report__row');
-      row.id = id;
-      row.append(element('span', '', t(label)), element('b', '', formatMoney(amount)));
-      return row;
-    };
-    const body = element('div', 'gio-report');
-    body.id = 'gio-report';
-    body.append(element('h2', 'gio-panel__title', t('report.title')), element('p', 'gio-panel__line', lines.back), element('b', 'gio-report__label', t('report.sold')), list(report.sold));
-    if (report.returned.length > 0) body.append(element('b', 'gio-report__label', t('report.returned')), list(report.returned));
-    body.append(
-      money('report.gross', report.gross, 'report-gross'),
-      money('report.commission', -report.commission, 'report-commission'),
-      money('report.coins', report.coins, 'report-coins'),
-      button('phone-tool gio-report__ok', t('report.ok'), () => {
-        const next = collectReport(gameState.world);
-        if (!next) {
-          eventBus.emit('player-says', 'bagFull');
-          return;
-        }
-        gameState.setWorld(next);
-        line = lines.greet;
-        renderTalk();
-      }),
-    );
-    const face = portrait();
-    talkPanel.replaceChildren(face, body);
+  /** กรอบรูปหน้าเหรียญของ HUD กับหน้าจีโอยิ้ม ตัดด้วยหน้ากากวงใน */
+  const talkPortrait = (): HTMLElement => {
+    const holder = element('div', 'gio-talk__portrait');
+    const bust = element('div', 'gio-talk__bust');
+    const mask = `url("${artUrl('ui_portrait_mask')}")`;
+    bust.style.setProperty('mask-image', mask);
+    bust.style.setProperty('-webkit-mask-image', mask);
+    const face = element('i', 'gio-talk__face');
+    face.style.backgroundImage = `url("${artUrl('ui_gio_gio_face_happy')}")`;
+    bust.append(face);
+    holder.append(art('ui_portrait_frame', 'gio-talk__frame'), bust);
+    return holder;
   };
 
-  const renderTreats = (): HTMLElement => {
-    const row = element('div', 'gio-treats');
+  const choice = (action: string, icon: string, label: string, onClick: () => void): HTMLButtonElement => {
+    const node = element('button', 'gio-talk__choice');
+    node.type = 'button';
+    node.dataset.gioAction = action;
+    node.append(art(icon, 'gio-talk__icon'), element('span', 'gio-talk__label', label));
+    node.addEventListener('click', onClick);
+    return node;
+  };
+
+  const giveTreatItem = (item: string): void => {
+    const result = giveTreat(gameState.world, item);
+    if (!result.world) {
+      line = result.reason === 'full' ? lines.treatFull : lines.noTreat;
+    } else {
+      gameState.setWorld(result.world);
+      line = lines.treat[result.taste];
+      eventBus.emit('gio-treat', result.taste);
+    }
+    treatPicker = false;
+    renderTalk();
+  };
+
+  /** มีแมวเลียหลายรสให้เลือกรสก่อน ช่องเครื่องมือขนาดจริงพร้อมจำนวน */
+  const treatChoices = (): HTMLElement[] => {
     const stacks = gameState.world.bag.filter((stack) => isTreat(stack.item));
-    if (stacks.length === 0) {
-      row.append(element('small', 'gio-treats__empty', lines.noTreat));
-      return row;
-    }
-    for (const stack of stacks) {
-      const slot = stackSlot(stack, 'bag-slot gio-treat');
-      slot.addEventListener('click', () => {
-        const result = giveTreat(gameState.world, stack.item);
-        if (!result.world) {
-          line = result.reason === 'full' ? lines.treatFull : lines.noTreat;
-        } else {
-          gameState.setWorld(result.world);
-          line = lines.treat[result.taste];
-        }
-        treatPicker = false;
-        renderTalk();
-      });
-      row.append(slot);
-    }
-    return row;
+    const slots = stacks.map((stack) => {
+      const slot = element('button', 'gio-talk__treat gio-treat');
+      slot.type = 'button';
+      slot.dataset.item = stack.item;
+      slot.setAttribute('aria-label', itemName(stack.item));
+      slot.append(itemImage(stack.item, false), element('b', 'gio-talk__treat-count', `×${stack.count}`));
+      slot.addEventListener('click', () => giveTreatItem(stack.item));
+      return slot;
+    });
+    const back = element('button', 'gio-talk__treat gio-talk__treat--back', '←');
+    back.type = 'button';
+    back.setAttribute('aria-label', t('ui.back'));
+    back.addEventListener('click', () => {
+      treatPicker = false;
+      renderTalk();
+    });
+    return [...slots, back];
   };
 
   function renderTalk(): void {
     if (gameState.world.gio.report) {
-      renderReport();
+      closeTalk();
+      openReceipt();
       return;
     }
     const world = gameState.world;
-    const info = element('div', 'gio-panel__info');
-    info.append(element('h2', 'gio-panel__title', t('gio.name')), heartBar(world.gio.happiness));
-    const say = element('p', 'gio-panel__line', line);
-    say.id = 'gio-line';
-    const menu = element('div', 'gio-menu');
-    menu.append(
-      button('phone-tool gio-menu__button', t('gio.consign'), () => {
-        if (gameState.world.gio.consignment) {
-          line = lines.busy;
+    const say = element('p', 'gio-talk__say');
+    const spoken = element('span', 'gio-talk__line', line);
+    spoken.id = 'gio-line';
+    say.append(element('b', 'gio-talk__name', t('gio.name')), spoken);
+    const close = element('button', 'gio-talk__close');
+    close.type = 'button';
+    close.dataset.gioAction = 'close';
+    close.setAttribute('aria-label', t('ui.close'));
+    close.append(art('ui_gio_talk_close_btn', 'gio-talk__close-art'));
+    close.addEventListener('click', closeTalk);
+
+    const menu = element('div', `gio-talk__menu${treatPicker ? ' gio-talk__menu--treats' : ''}`);
+    if (treatPicker) {
+      menu.append(...treatChoices());
+    } else {
+      const treats = treatsInBag(world);
+      const treat = choice('treat', 'ui_gio_talk_icon_treat_12', t('gio.treat'), () => {
+        const kinds = gameState.world.bag.filter((stack) => isTreat(stack.item));
+        if (kinds.length === 1) giveTreatItem(kinds[0]!.item);
+        else {
+          treatPicker = true;
           renderTalk();
-          return;
         }
-        closeTalk();
-        openConsign();
-      }),
-      button('phone-tool gio-menu__button', `${t('gio.treat')} (${treatsLeftToday(world)})`, () => {
-        treatPicker = !treatPicker;
-        renderTalk();
-      }),
-      button('phone-tool gio-menu__button', t('gio.pet'), () => {
+      });
+      treat.append(element('small', 'gio-talk__count', `×${treats}`));
+      treat.disabled = treats === 0;
+      treat.classList.toggle('is-empty', treats === 0);
+      const pet = choice('pet', 'ui_gio_talk_icon_pat_12', t('gio.pet'), () => {
         const next = petGio(gameState.world);
         if (next) gameState.setWorld(next);
         line = next ? lines.pet : lines.petDone;
         renderTalk();
-      }),
-      button('phone-tool gio-menu__button', t('gio.news'), () => {
+      });
+      if (pettedToday(world)) pet.append(art('ui_gio_talk_check_done', 'gio-talk__check'));
+      const news = choice('news', 'ui_gio_talk_icon_news_12', t('gio.news'), () => {
+        gameState.setWorld(readNews(gameState.world));
         line = lines.news;
         renderTalk();
-      }),
-      button('phone-tool gio-menu__button gio-menu__close', t('gio.close'), closeTalk),
+      });
+      if (hasUnreadNews(world)) news.append(element('i', 'gio-talk__dot'));
+      menu.append(
+        choice('consign', 'ui_gio_talk_icon_sell_12', t('gio.consign'), () => {
+          if (gameState.world.gio.consignment) {
+            line = lines.busy;
+            renderTalk();
+            return;
+          }
+          closeTalk();
+          openConsign();
+        }),
+        treat,
+        pet,
+        news,
+      );
+    }
+    const box = element('div', 'gio-talk__box');
+    talkPanel.replaceChildren(
+      art('ui_gio_talk_ear_left', 'gio-talk__ear'),
+      art('ui_gio_talk_ear_left', 'gio-talk__ear gio-talk__ear--right'),
+      box,
+      talkPortrait(),
+      say,
+      menu,
+      close,
     );
-    menu.querySelectorAll('button').forEach((node, index) => {
-      node.dataset.gioAction = ['consign', 'treat', 'pet', 'news', 'close'][index]!;
+  }
+
+  /** ใบสรุปยอดของจีโอ รายการเกิน 3 ชนิดเลื่อนดูในใบ ความสูงใบเท่าเดิมเสมอ */
+  function renderReceipt(): void {
+    const report = gameState.world.gio.report;
+    if (!report) return;
+    const paper = element('div', 'receipt');
+    paper.id = 'gio-report';
+    const sub = element('small', 'receipt__sub', `${t('report.back')} · ${t('hud.day')} ${report.day}`);
+    const list = element('div', 'receipt__list');
+    const rows = report.sold.map((stack) => {
+      const row = element('div', 'receipt__row');
+      const price = element('b', 'receipt__price');
+      setMoney(price, soldTotal(report, stack));
+      row.append(miniIcon(stack.item), element('span', 'receipt__name', itemName(stack.item)), element('small', 'receipt__count', `×${stack.count}`), price);
+      return row;
     });
-    info.append(say);
-    if (treatPicker) info.append(renderTreats());
-    info.append(menu);
-    talkPanel.replaceChildren(portrait(), info);
+    list.append(...rows);
+    const windowBox = element('div', 'receipt__window');
+    windowBox.append(list);
+    const scrolls = rows.length > RECEIPT_ROWS;
+    windowBox.classList.toggle('is-scrolling', scrolls);
+    if (scrolls) {
+      const hint = element('small', 'receipt__more');
+      const bar = element('i', 'receipt__bar');
+      const thumb = element('b', 'receipt__thumb');
+      bar.append(thumb);
+      const update = (): void => {
+        const rowHeight = list.scrollHeight / rows.length || 1;
+        const seen = Math.min(rows.length, Math.floor((list.scrollTop + list.clientHeight) / rowHeight + 0.4));
+        const left = rows.length - seen;
+        hint.textContent = t('report.more').replace('{n}', String(left));
+        hint.hidden = left <= 0;
+        windowBox.classList.toggle('is-end', left <= 0);
+        const share = list.clientHeight / list.scrollHeight;
+        thumb.style.height = `${share * 100}%`;
+        thumb.style.top = `${(list.scrollTop / list.scrollHeight) * 100}%`;
+      };
+      list.addEventListener('scroll', update);
+      requestAnimationFrame(update);
+      windowBox.append(hint, bar);
+      hint.textContent = t('report.more').replace('{n}', String(rows.length - RECEIPT_ROWS));
+    }
+
+    const sum = (label: string, amount: number, className: string, id: string, sign = ''): HTMLElement => {
+      const row = element('p', `receipt__sum ${className}`);
+      row.id = id;
+      const value = element('b', '');
+      setMoney(value, amount, sign);
+      row.append(element('span', '', label), value);
+      return row;
+    };
+    const tier = Math.round((report.gross > 0 ? report.commission / report.gross : 0) * 100);
+    const net = element('div', 'receipt__net');
+    net.id = 'report-coins';
+    const netValue = element('b', 'receipt__net-value', formatMoney(report.coins));
+    const coins = element('span', 'receipt__coins');
+    coins.append(coinIcon('receipt__coin-back'), coinIcon('receipt__coin-front'));
+    net.append(element('span', 'receipt__net-label', t('report.coins')), art('ui_gio_receipt_paw_stamp', 'receipt__stamp'), netValue, coins);
+
+    const extras: HTMLElement[] = [];
+    if (report.gift) {
+      const gift = element('div', 'receipt__gift');
+      gift.append(miniIcon(report.gift.item), element('span', '', `${t('report.gift')} ${itemName(report.gift.item)} ×${report.gift.count}`), element('i', 'receipt__spark'), element('i', 'receipt__spark receipt__spark--low'));
+      extras.push(gift);
+    }
+    for (const stack of report.returned) {
+      const note = element('p', 'receipt__note');
+      note.append(miniIcon(stack.item), element('span', '', `${t('report.returned')} ${itemName(stack.item)} ×${stack.count}`));
+      extras.push(note);
+    }
+
+    const take = element('button', 'receipt__take gio-report__ok', t('report.ok'));
+    take.type = 'button';
+    take.addEventListener('click', () => {
+      const next = collectReport(gameState.world);
+      if (!next) {
+        eventBus.emit('player-says', 'bagFull');
+        closeReceipt();
+        return;
+      }
+      gameState.setWorld(next);
+      closeReceipt();
+    });
+
+    paper.append(
+      element('h2', 'receipt__title', t('report.title')),
+      sub,
+      element('hr', 'receipt__dash'),
+      windowBox,
+      element('hr', 'receipt__dash'),
+      sum(t('report.gross'), report.gross, '', 'report-gross'),
+      sum(`${t('report.commission')} ${tier}%`, report.commission, 'receipt__sum--pink', 'report-commission', '−'),
+      element('hr', 'receipt__double'),
+      net,
+      element('hr', 'receipt__dash'),
+      ...extras,
+      take,
+    );
+    const shadow = element('i', 'receipt__shadow');
+    const edge = element('i', 'receipt__edge');
+    const sheet = element('div', 'receipt__sheet');
+    sheet.append(shadow, edge, paper, art('ui_gio_receipt_washi_tape', 'receipt__tape'));
+    const gio = element('div', 'receipt-gio');
+    const bigDay = report.coins >= balance.gioCare.bigDayCoins;
+    gio.append(element('p', 'receipt-gio__bubble', bigDay ? lines.backBig : lines.back), art('ui_shop_gio', 'receipt-gio__art'));
+    receiptPanel.replaceChildren(gio, sheet);
+    tearBottom(paper, shadow, edge);
+  }
+
+  function openReceipt(): void {
+    renderReceipt();
+    receiptRoot.hidden = false;
+    uiRoot.dataset.receipt = 'open';
+    revealWhenReady(receiptRoot);
+    gameState.setWindowOpen(RECEIPT_WINDOW, true);
+  }
+
+  function closeReceipt(): void {
+    receiptRoot.hidden = true;
+    delete uiRoot.dataset.receipt;
+    gameState.setWindowOpen(RECEIPT_WINDOW, false);
   }
 
   function renderConsign(): void {
@@ -300,7 +493,8 @@ export function createGioWindows(uiRoot: HTMLElement): void {
     }
     const used = element('small', 'consign-pack__used', `${picked.length}/${balance.gioCare.bagSlots}`);
     const guess = estimate(picked, world.gio.happiness);
-    const total = element('b', 'consign-estimate', `${t('consign.estimate')} ${formatMoney(guess.coins)}`);
+    const total = element('b', 'consign-estimate');
+    setMoney(total, guess.coins, `${t('consign.estimate')} `);
     total.id = 'consign-estimate';
     const go = button('phone-tool consign-go', t('consign.go'), () => {
       const next = consign(gameState.world, picked);
@@ -335,6 +529,10 @@ export function createGioWindows(uiRoot: HTMLElement): void {
 
   function openTalk(): void {
     treatPicker = false;
+    if (gameState.world.gio.report) {
+      openReceipt();
+      return;
+    }
     renderTalk();
     talk.hidden = false;
     revealWhenReady(talk);
@@ -351,9 +549,13 @@ export function createGioWindows(uiRoot: HTMLElement): void {
   consignRoot.addEventListener('click', (event) => {
     if (event.target === consignRoot) closeConsign();
   });
+  receiptRoot.addEventListener('click', (event) => {
+    if (event.target === receiptRoot) closeReceipt();
+  });
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;
-    if (!consignRoot.hidden) closeConsign();
+    if (!receiptRoot.hidden) closeReceipt();
+    else if (!consignRoot.hidden) closeConsign();
     else if (!talk.hidden) closeTalk();
   });
 }

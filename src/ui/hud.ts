@@ -7,6 +7,7 @@ import lines from '../data/lines.json';
 import { beadFills, isAlert, isDirty, isPulsing, moodOf, type Mood } from '../systems/mood';
 import { artUrl, bubbleImage, drawSpeechBubble, type NineSlice } from './pixelArt';
 import { formatMoney } from '../systems/economy';
+import { setMoney } from './money';
 
 const REST_MESSAGE: Record<RestCause, TextKey> = {
   sleep: 'rest.sleep',
@@ -133,7 +134,8 @@ function createMoneyPop(uiRoot: HTMLElement): void {
   const pop = (amount: number, icon: string): void => {
     const number = document.createElement('p');
     const sign = amount > 0 ? '+' : '−';
-    number.textContent = `${sign}${formatMoney(Math.abs(amount))}${icon}`;
+    if (icon) number.textContent = `${sign}${formatMoney(Math.abs(amount))}${icon}`;
+    else setMoney(number, Math.abs(amount), sign);
     number.className = amount > 0 ? 'money-pop--in' : 'money-pop--out';
     layer.append(number);
     window.setTimeout(() => number.remove(), POP_MS);
@@ -218,7 +220,7 @@ function centredIcon(icon: HTMLImageElement, id: string): void {
   icon.style.setProperty('--y', String(Math.ceil((ACTION_FRAME - entry.height) / 2)));
 }
 
-/** ปุ่มกระทำปุ่มเดียวข้างปุ่มวิ่ง ไอคอนเปลี่ยนตามจุดที่ยืนและของที่ถือ ป้ายชมพูใต้ปุ่ม ไม่มีอะไรทำก็ซ่อน */
+/** ปุ่มกระทำปุ่มเดียวข้างปุ่มวิ่ง ไอคอนเปลี่ยนตามจุดที่ยืนและของที่ถือ ไม่มีป้ายใต้ปุ่ม (ผู้ใช้ตัดสิน 4 พ.ย. 2026) ไม่มีอะไรทำก็ซ่อน */
 function createActionControls(uiRoot: HTMLElement): void {
   const isTouch = window.matchMedia('(pointer: coarse)').matches;
   const button = document.createElement('button');
@@ -237,9 +239,7 @@ function createActionControls(uiRoot: HTMLElement): void {
   const icon = document.createElement('img');
   icon.className = 'action-button__icon';
   icon.alt = '';
-  const label = document.createElement('span');
-  label.className = 'action-button__label';
-  button.append(frame, pressed, icon, label);
+  button.append(frame, pressed, icon);
   if (!isTouch) {
     const key = document.createElement('span');
     key.className = 'action-button__key';
@@ -254,7 +254,7 @@ function createActionControls(uiRoot: HTMLElement): void {
     if (!action) return;
     button.dataset.icon = action.icon;
     centredIcon(icon, `ui_action_icon_${action.icon}`);
-    label.textContent = t(action.label);
+    button.dataset.action = action.label;
     button.setAttribute('aria-label', t(action.label));
   });
 }

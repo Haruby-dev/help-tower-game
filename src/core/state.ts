@@ -112,6 +112,10 @@ export interface GioReport {
   gross: number;
   commission: number;
   coins: number;
+  /** ของแปลก ๆ ที่จีโอได้มาฝาก (ความสุขช่วงบนสุด) */
+  gift: BagStack | null;
+  /** ช่วงความสุขตอนฝาก ใช้คิดราคาต่อชิ้นในใบสรุปยอด */
+  tier: number;
 }
 
 /** ความสุขจีโอ แมวเลียวันนี้ ลูบหัว และของที่ฝากขาย */
@@ -121,6 +125,8 @@ export interface GioCare {
   treatsToday: number;
   pettedDay: number;
   specialWeek: number;
+  /** วันที่อ่านข่าวแล้ว */
+  newsDay: number;
   /** tier คือช่วงความสุขตอนฝาก ใช้คิดค่าคอมตอนจีโอกลับ */
   consignment: { items: BagStack[]; returnDay: number; tier: number } | null;
   report: GioReport | null;

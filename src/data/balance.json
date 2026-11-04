@@ -72,14 +72,51 @@
     "sitMinMs": 2000,
     "sitMaxMs": 5000,
     "walkSpeed": 28,
-    "walkFps": 8,
+    "walkFps": 9,
     "walkMinMs": 1400,
     "walkMaxMs": 2600,
     "sitFps": 8,
     "blinkEveryMinMs": 2500,
     "blinkEveryMaxMs": 5000,
     "wanderRadius": 96,
-    "keepAwayDistance": 56
+    "keepAwayDistance": 56,
+    "standMinMs": 1500,
+    "standMaxMs": 3500,
+    "walksBeforeHomeMin": 1,
+    "walksBeforeHomeMax": 3,
+    "stuckMs": 700,
+    "seatFeetRow": 21,
+    "seatRimRow": 19,
+    "seatExitGap": 8,
+    "eatFps": 10,
+    "eatLoops": 2,
+    "heartRisePx": 22,
+    "heartRiseMs": 600,
+    "heartStaggerMs": 250,
+    "heartsByTaste": {
+      "like": 1,
+      "love": 3,
+      "special": 2
+    },
+    "sparkleBlinkMs": 150,
+    "sparkleSpots": [
+      [
+        -15,
+        -34
+      ],
+      [
+        14,
+        -30
+      ],
+      [
+        -17,
+        -14
+      ],
+      [
+        16,
+        -10
+      ]
+    ]
   },
   "gioCare": {
     "startHappiness": 50,
@@ -122,7 +159,15 @@
       1.5
     ],
     "talkReachPx": 44,
-    "firstGiftCoins": 1000
+    "firstGiftCoins": 1000,
+    "giftChance": 0.2,
+    "giftPool": [
+      {
+        "item": "ing_honey",
+        "count": 1
+      }
+    ],
+    "bigDayCoins": 5000
   },
   "farm": {
     "plotOrigin": {

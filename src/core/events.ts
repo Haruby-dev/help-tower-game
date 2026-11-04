@@ -27,6 +27,8 @@ export interface GameEvents {
   'chest-open': string;
   /** กดคุยกับจีโอ */
   'gio-talk': undefined;
+  /** ให้แมวเลียสำเร็จ จีโอเล่นท่าเลียพร้อมหัวใจตามรส */
+  'gio-treat': 'like' | 'love' | 'special';
 }
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

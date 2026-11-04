@@ -475,40 +475,6 @@ canvas {
 }
 
 /* ป้ายทรงแคปซูล ปลายมนเต็มแบบขั้นพิกเซล ขอบม่วง 1 พิกเซล ตัวหนังสืออยู่บนรูปทรงจึงไม่ถูกตัด */
-.action-button__label {
-  position: absolute;
-  top: calc(var(--px) * 42);
-  left: 50%;
-  isolation: isolate;
-  height: calc(var(--px) * 11);
-  padding: 0 calc(var(--px) * 6);
-  color: #fff;
-  font-size: max(11px, calc(var(--px) * 7));
-  font-weight: 700;
-  line-height: calc(var(--px) * 11);
-  white-space: nowrap;
-  transform: translateX(-50%);
-  pointer-events: none;
-}
-
-.action-button__label::before,
-.action-button__label::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-}
-
-.action-button__label::before {
-  background: var(--outline);
-  clip-path: polygon(calc(var(--px) * 4) 0, calc(var(--px) * 4) calc(var(--px) * 1), calc(var(--px) * 2) calc(var(--px) * 1), calc(var(--px) * 2) calc(var(--px) * 2), calc(var(--px) * 1) calc(var(--px) * 2), calc(var(--px) * 1) calc(var(--px) * 3), calc(var(--px) * 1) calc(var(--px) * 3), calc(var(--px) * 1) calc(var(--px) * 4), 0 calc(var(--px) * 4), 0 calc(var(--px) * 5), 0 calc(var(--px) * 5), 0 calc(var(--px) * 6), 0 calc(var(--px) * 6), 0 calc(var(--px) * 7), calc(var(--px) * 1) calc(var(--px) * 7), calc(var(--px) * 1) calc(var(--px) * 8), calc(var(--px) * 1) calc(var(--px) * 8), calc(var(--px) * 1) calc(var(--px) * 9), calc(var(--px) * 2) calc(var(--px) * 9), calc(var(--px) * 2) calc(var(--px) * 10), calc(var(--px) * 4) calc(var(--px) * 10), calc(var(--px) * 4) calc(var(--px) * 11), calc(100% - var(--px) * 4) calc(var(--px) * 11), calc(100% - var(--px) * 4) calc(var(--px) * 10), calc(100% - var(--px) * 2) calc(var(--px) * 10), calc(100% - var(--px) * 2) calc(var(--px) * 9), calc(100% - var(--px) * 1) calc(var(--px) * 9), calc(100% - var(--px) * 1) calc(var(--px) * 8), calc(100% - var(--px) * 1) calc(var(--px) * 8), calc(100% - var(--px) * 1) calc(var(--px) * 7), 100% calc(var(--px) * 7), 100% calc(var(--px) * 6), 100% calc(var(--px) * 6), 100% calc(var(--px) * 5), 100% calc(var(--px) * 5), 100% calc(var(--px) * 4), calc(100% - var(--px) * 1) calc(var(--px) * 4), calc(100% - var(--px) * 1) calc(var(--px) * 3), calc(100% - var(--px) * 1) calc(var(--px) * 3), calc(100% - var(--px) * 1) calc(var(--px) * 2), calc(100% - var(--px) * 2) calc(var(--px) * 2), calc(100% - var(--px) * 2) calc(var(--px) * 1), calc(100% - var(--px) * 4) calc(var(--px) * 1), calc(100% - var(--px) * 4) 0);
-}
-
-.action-button__label::after {
-  background: #f8789a;
-  clip-path: polygon(calc(var(--px) * 4) calc(var(--px) * 1), calc(var(--px) * 4) calc(var(--px) * 2), calc(var(--px) * 2) calc(var(--px) * 2), calc(var(--px) * 2) calc(var(--px) * 3), calc(var(--px) * 2) calc(var(--px) * 3), calc(var(--px) * 2) calc(var(--px) * 4), calc(var(--px) * 1) calc(var(--px) * 4), calc(var(--px) * 1) calc(var(--px) * 5), calc(var(--px) * 1) calc(var(--px) * 5), calc(var(--px) * 1) calc(var(--px) * 6), calc(var(--px) * 1) calc(var(--px) * 6), calc(var(--px) * 1) calc(var(--px) * 7), calc(var(--px) * 2) calc(var(--px) * 7), calc(var(--px) * 2) calc(var(--px) * 8), calc(var(--px) * 2) calc(var(--px) * 8), calc(var(--px) * 2) calc(var(--px) * 9), calc(var(--px) * 4) calc(var(--px) * 9), calc(var(--px) * 4) calc(var(--px) * 10), calc(100% - var(--px) * 4) calc(var(--px) * 10), calc(100% - var(--px) * 4) calc(var(--px) * 9), calc(100% - var(--px) * 2) calc(var(--px) * 9), calc(100% - var(--px) * 2) calc(var(--px) * 8), calc(100% - var(--px) * 2) calc(var(--px) * 8), calc(100% - var(--px) * 2) calc(var(--px) * 7), calc(100% - var(--px) * 1) calc(var(--px) * 7), calc(100% - var(--px) * 1) calc(var(--px) * 6), calc(100% - var(--px) * 1) calc(var(--px) * 6), calc(100% - var(--px) * 1) calc(var(--px) * 5), calc(100% - var(--px) * 1) calc(var(--px) * 5), calc(100% - var(--px) * 1) calc(var(--px) * 4), calc(100% - var(--px) * 2) calc(var(--px) * 4), calc(100% - var(--px) * 2) calc(var(--px) * 3), calc(100% - var(--px) * 2) calc(var(--px) * 3), calc(100% - var(--px) * 2) calc(var(--px) * 2), calc(100% - var(--px) * 4) calc(var(--px) * 2), calc(100% - var(--px) * 4) calc(var(--px) * 1));
-}
-
 .action-button__key {
   position: absolute;
   top: calc(var(--px) * 3);
@@ -3919,8 +3885,7 @@ canvas {
 
 /* ปุ่มหลักสีชมพูเข้ม ใช้การ์ดชมพูของโทรศัพท์ */
 .shop-page .shop-buy,
-.consign-panel .consign-go,
-.gio-report .gio-report__ok {
+.consign-panel .consign-go {
   border-image-source: url('/assets/ui/phone/card_pink.png');
   box-shadow: none;
   color: var(--outline);
@@ -3937,4 +3902,591 @@ canvas {
 #phone[data-app='shop'] .phone-content__page {
   min-height: 0;
   flex: 1;
+}
+
+/* ===== M6 ภาพจริง: เหรียญอุ้งเท้า หน้าต่างคุยจีโอ ใบสรุปยอด (ผู้ใช้อนุมัติ 5 พ.ย. 2026) ===== */
+.money {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--px) * 2);
+}
+
+.coin-icon {
+  width: calc(var(--px) * 12);
+  height: calc(var(--px) * 12);
+  flex: none;
+}
+
+.shop-purse {
+  display: flex;
+  justify-content: flex-end;
+  padding-left: calc(var(--px) * 4);
+  background: #fff3c4;
+}
+
+#money-pop p.money {
+  display: flex;
+}
+
+#gio-window {
+  background: rgb(92 48 76 / 25%);
+}
+
+.gio-talk {
+  position: relative;
+  width: min(calc(var(--px) * 420), calc(100% - var(--px) * 8));
+  height: calc(var(--px) * 92);
+  margin-top: calc(var(--px) * 10);
+  color: var(--outline);
+}
+
+.gio-talk__ear {
+  position: absolute;
+  top: calc(var(--px) * -10);
+  left: calc(var(--px) * 13);
+  width: calc(var(--px) * 16);
+  height: calc(var(--px) * 15);
+}
+
+.gio-talk__ear--right {
+  left: calc(var(--px) * 47);
+  transform: scaleX(-1);
+}
+
+.gio-talk__box {
+  position: absolute;
+  inset: 0;
+  border: var(--px) solid transparent;
+  border-image: url('/assets/ui/hud_v2/tool_tray_9slice.png') 9 fill / calc(var(--px) * 9) stretch;
+  image-rendering: pixelated;
+}
+
+.gio-talk__portrait {
+  position: absolute;
+  top: calc(var(--px) * 23);
+  left: calc(var(--px) * 10);
+  width: calc(var(--px) * 46);
+  height: calc(var(--px) * 46);
+}
+
+.gio-talk__frame,
+.gio-talk__bust {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.gio-talk__bust {
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+}
+
+.gio-talk__face {
+  position: absolute;
+  top: calc(var(--px) * 7);
+  left: calc(var(--px) * 4);
+  width: calc(var(--px) * 38);
+  height: calc(var(--px) * 34);
+  background-position: calc(var(--px) * -5) calc(var(--px) * -4);
+  background-size: calc(var(--px) * 56) calc(var(--px) * 56);
+  image-rendering: pixelated;
+}
+
+.gio-talk__say {
+  position: absolute;
+  top: calc(var(--px) * 6);
+  right: calc(var(--px) * 28);
+  left: calc(var(--px) * 72);
+  height: calc(var(--px) * 18);
+  margin: 0;
+  overflow: hidden;
+  font-size: max(10px, calc(var(--px) * 7));
+  font-weight: 700;
+  line-height: calc(var(--px) * 9);
+}
+
+.gio-talk__name {
+  margin-right: calc(var(--px) * 6);
+  color: #d65484;
+}
+
+.gio-talk__menu {
+  position: absolute;
+  top: calc(var(--px) * 24);
+  right: calc(var(--px) * 20);
+  left: calc(var(--px) * 70);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--px) * 4) calc(var(--px) * 6);
+}
+
+.gio-talk__choice,
+.gio-talk__treat {
+  position: relative;
+  min-width: 0;
+  padding: 0;
+  border: var(--px) solid transparent;
+  border-image: url('/assets/ui/hud_v2/tool_slot.png') 9 fill / calc(var(--px) * 9) stretch;
+  background: none;
+  color: var(--outline);
+  font: inherit;
+  image-rendering: pixelated;
+  cursor: pointer;
+}
+
+.gio-talk__choice {
+  height: calc(var(--px) * 28);
+  text-align: left;
+}
+
+.gio-talk__choice:active:not(:disabled),
+.gio-talk__treat:active {
+  border-image-source: url('/assets/ui/gio/tool_slot_pressed.png');
+  color: #fff;
+}
+
+.gio-talk__icon {
+  position: absolute;
+  top: calc(var(--px) * 7);
+  left: calc(var(--px) * 8);
+  width: calc(var(--px) * 12);
+  height: calc(var(--px) * 12);
+}
+
+.gio-talk__label {
+  position: absolute;
+  inset: 0 calc(var(--px) * 24) 0 calc(var(--px) * 26);
+  display: flex;
+  align-items: center;
+  font-size: max(10px, calc(var(--px) * 7));
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.gio-talk__count {
+  position: absolute;
+  top: 0;
+  right: calc(var(--px) * 9);
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  color: #b26e8c;
+  font-size: max(9px, calc(var(--px) * 5));
+  font-weight: 700;
+}
+
+.gio-talk__choice:disabled {
+  filter: grayscale(1);
+  cursor: default;
+}
+
+.gio-talk__choice:disabled .gio-talk__label,
+.gio-talk__choice:disabled .gio-talk__count {
+  color: #aa9ca8;
+}
+
+.gio-talk__check {
+  position: absolute;
+  top: calc(var(--px) * 9);
+  right: calc(var(--px) * 19);
+  width: calc(var(--px) * 11);
+  height: calc(var(--px) * 8);
+}
+
+.gio-talk__dot {
+  position: absolute;
+  top: calc(var(--px) * 11);
+  right: calc(var(--px) * 13);
+  width: calc(var(--px) * 4);
+  height: calc(var(--px) * 4);
+  background: #f06892;
+  clip-path: polygon(25% 0, 75% 0, 75% 25%, 100% 25%, 100% 75%, 75% 75%, 75% 100%, 25% 100%, 25% 75%, 0 75%, 0 25%, 25% 25%);
+}
+
+.gio-talk__menu--treats {
+  display: flex;
+  gap: calc(var(--px) * 4);
+}
+
+.gio-talk__treat {
+  display: grid;
+  width: calc(var(--px) * 42);
+  height: calc(var(--px) * 37);
+  place-items: center;
+  font-size: max(11px, calc(var(--px) * 9));
+  font-weight: 700;
+}
+
+.gio-talk__treat-count {
+  position: absolute;
+  right: calc(var(--px) * 4);
+  bottom: calc(var(--px) * 2);
+  color: #b26e8c;
+  font-size: max(9px, calc(var(--px) * 5));
+}
+
+.gio-talk__close {
+  position: absolute;
+  top: calc(var(--px) * -4);
+  left: calc(100% - var(--px) * 24);
+  width: calc(var(--px) * 18);
+  height: calc(var(--px) * 18);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+/* พื้นที่กดใหญ่กว่าภาพเหรียญ นิ้วจะได้กดโดน */
+.gio-talk__close::after {
+  content: '';
+  position: absolute;
+  inset: calc(var(--px) * -7);
+}
+
+.gio-talk__close-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ใบสรุปยอดของจีโอ ซ่อน HUD ระหว่างเปิด */
+.receipt-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  background: rgb(60 30 70 / 47%);
+  pointer-events: auto;
+}
+
+.receipt-backdrop[hidden] {
+  display: none;
+}
+
+#ui[data-receipt='open'] :is(#toolbar, #action-button, #run-button, #joystick, #portrait, #phone-button, #money-pop, #settings-button, #fullscreen-button) {
+  visibility: hidden;
+}
+
+.receipt-scene {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--px) * 8);
+  max-height: 100%;
+  transform: translateX(calc(var(--px) * 18));
+  color: var(--outline);
+}
+
+.receipt-gio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--px) * 3);
+  width: calc(var(--px) * 72);
+}
+
+.receipt-gio__art {
+  width: calc(var(--px) * 64);
+  height: calc(var(--px) * 64);
+}
+
+.receipt-gio__bubble {
+  margin: 0;
+  padding: calc(var(--px) * 3) calc(var(--px) * 4);
+  background: #fff;
+  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--outline), 0 var(--px) 0 0 var(--outline), calc(var(--px) * -1) 0 0 0 var(--outline), var(--px) 0 0 0 var(--outline);
+  font-size: max(9px, calc(var(--px) * 6));
+  font-weight: 700;
+  line-height: calc(var(--px) * 8);
+  text-align: center;
+}
+
+.receipt__sheet {
+  position: relative;
+  width: calc(var(--px) * 204);
+  margin-top: calc(var(--px) * 4);
+}
+
+.receipt__shadow,
+.receipt__edge {
+  position: absolute;
+  inset: 0;
+}
+
+.receipt__shadow {
+  background: rgb(92 48 76 / 30%);
+  transform: translate(calc(var(--px) * 3), calc(var(--px) * 4));
+}
+
+.receipt__edge {
+  background: var(--outline);
+}
+
+.receipt {
+  position: relative;
+  display: flex;
+  max-height: calc(100vh - var(--px) * 14);
+  flex-direction: column;
+  gap: calc(var(--px) * 3);
+  margin: var(--px);
+  padding: calc(var(--px) * 9) calc(var(--px) * 9) calc(var(--px) * 12);
+  overflow-y: auto;
+  border-right: calc(var(--px) * 2) solid #f4ecdf;
+  background: #fffcf4;
+  scrollbar-width: none;
+}
+
+.receipt::-webkit-scrollbar,
+.receipt__list::-webkit-scrollbar {
+  display: none;
+}
+
+.receipt__tape {
+  position: absolute;
+  top: calc(var(--px) * -4);
+  left: calc(50% - var(--px) * 26);
+  width: calc(var(--px) * 52);
+  height: calc(var(--px) * 11);
+}
+
+.receipt__title {
+  margin: calc(var(--px) * 3) 0 0;
+  font-size: max(14px, calc(var(--px) * 10));
+  line-height: calc(var(--px) * 13);
+  text-align: center;
+}
+
+.receipt__sub {
+  color: #b07a96;
+  font-size: max(9px, calc(var(--px) * 6));
+  font-weight: 700;
+  text-align: center;
+}
+
+.receipt__dash,
+.receipt__double {
+  flex: none;
+  width: 100%;
+  margin: 0;
+  border: 0;
+}
+
+.receipt__dash {
+  height: var(--px);
+  background: repeating-linear-gradient(90deg, #e8b4c8 0 calc(var(--px) * 3), transparent calc(var(--px) * 3) calc(var(--px) * 5));
+}
+
+.receipt__double {
+  height: calc(var(--px) * 3);
+  border-top: var(--px) solid #f0b0c8;
+  border-bottom: var(--px) solid #f0b0c8;
+}
+
+.receipt__window {
+  position: relative;
+  flex: none;
+}
+
+.receipt__list {
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.receipt__window.is-scrolling .receipt__list {
+  height: calc(var(--px) * 65);
+  padding-right: calc(var(--px) * 5);
+}
+
+/* แถวสุดท้ายที่เห็นจางลงเข้าหากระดาษ บอกว่ายังมีอีก */
+.receipt__window.is-scrolling:not(.is-end)::after {
+  content: '';
+  position: absolute;
+  right: calc(var(--px) * 4);
+  bottom: 0;
+  left: 0;
+  height: calc(var(--px) * 14);
+  background: linear-gradient(rgb(255 252 244 / 0%), #fffcf4 80%);
+  pointer-events: none;
+}
+
+.receipt__row {
+  display: grid;
+  grid-template-columns: calc(var(--px) * 19) 1fr calc(var(--px) * 18) auto;
+  align-items: center;
+  height: calc(var(--px) * 18);
+  font-size: max(10px, calc(var(--px) * 7));
+  font-weight: 700;
+}
+
+.receipt__name {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.receipt__count {
+  color: #b26e8c;
+  font-size: max(9px, calc(var(--px) * 6));
+}
+
+.receipt__price {
+  justify-self: end;
+}
+
+.receipt__icon {
+  flex: none;
+  justify-self: center;
+}
+
+.receipt__icon--missing {
+  display: block;
+  width: calc(var(--px) * 16);
+  height: calc(var(--px) * 16);
+  background: #f8b4cc;
+}
+
+.receipt__more {
+  position: absolute;
+  bottom: calc(var(--px) * 1);
+  left: 50%;
+  z-index: 1;
+  color: #f06892;
+  font-size: max(9px, calc(var(--px) * 6));
+  font-weight: 700;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.receipt__bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: calc(var(--px) * 2);
+  background: #f6dee6;
+}
+
+.receipt__thumb {
+  position: absolute;
+  right: 0;
+  left: 0;
+  background: #f078a0;
+}
+
+.receipt__sum {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  font-size: max(10px, calc(var(--px) * 7));
+  font-weight: 700;
+}
+
+.receipt__sum--pink {
+  color: #e0588a;
+}
+
+.receipt__net {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--px) * 3);
+  height: calc(var(--px) * 26);
+  flex: none;
+}
+
+.receipt__net-label {
+  font-size: max(13px, calc(var(--px) * 9));
+  font-weight: 700;
+}
+
+.receipt__stamp {
+  position: absolute;
+  top: calc(var(--px) * -2);
+  left: calc(50% - var(--px) * 22);
+  width: calc(var(--px) * 30);
+  height: calc(var(--px) * 30);
+  pointer-events: none;
+}
+
+.receipt__net-value {
+  position: relative;
+  margin-left: auto;
+  font-size: max(15px, calc(var(--px) * 11));
+}
+
+.receipt__coins {
+  position: relative;
+  width: calc(var(--px) * 17);
+  height: calc(var(--px) * 15);
+  flex: none;
+}
+
+.receipt__coin-back {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.receipt__coin-front {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.receipt__gift {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--px) * 4);
+  padding: calc(var(--px) * 2) calc(var(--px) * 12) calc(var(--px) * 2) calc(var(--px) * 3);
+  background: #ffe4ee;
+  box-shadow: 0 calc(var(--px) * -1) 0 0 #f4a8c4, 0 var(--px) 0 0 #f4a8c4, calc(var(--px) * -1) 0 0 0 #f4a8c4, var(--px) 0 0 0 #f4a8c4;
+  color: #e0588a;
+  font-size: max(9px, calc(var(--px) * 6));
+  font-weight: 700;
+}
+
+.receipt__spark {
+  position: absolute;
+  top: calc(var(--px) * 3);
+  right: calc(var(--px) * 7);
+  width: calc(var(--px) * 3);
+  height: calc(var(--px) * 3);
+  background: #ffd84a;
+  clip-path: polygon(33% 0, 66% 0, 66% 33%, 100% 33%, 100% 66%, 66% 66%, 66% 100%, 33% 100%, 33% 66%, 0 66%, 0 33%, 33% 33%);
+}
+
+.receipt__spark--low {
+  top: auto;
+  right: calc(var(--px) * 3);
+  bottom: calc(var(--px) * 3);
+}
+
+.receipt__note {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--px) * 4);
+  margin: 0;
+  color: #92607c;
+  font-size: max(9px, calc(var(--px) * 6));
+  font-weight: 700;
+}
+
+.receipt__take {
+  flex: none;
+  align-self: center;
+  width: calc(var(--px) * 120);
+  height: calc(var(--px) * 28);
+  margin-top: calc(var(--px) * 3);
+  padding: 0 0 0 calc(var(--px) * 26);
+  border: 0;
+  background: url('/assets/ui/gio/receipt_take_button_120x28.png') 0 0 / 100% 100%;
+  color: #fff;
+  font: inherit;
+  font-size: max(12px, calc(var(--px) * 8));
+  font-weight: 700;
+  image-rendering: pixelated;
+  cursor: pointer;
 }

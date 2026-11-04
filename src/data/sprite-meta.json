@@ -17,21 +17,6 @@
       "west": 48
     }
   },
-  "gio_walk_south": {
-    "footY": {
-      "default": 65
-    }
-  },
-  "gio_walk_north": {
-    "footY": {
-      "default": 64
-    }
-  },
-  "gio_walk_east": {
-    "footY": {
-      "default": 58
-    }
-  },
   "player_girl_stand": {
     "footY": {
       "south": 62,
@@ -3654,6 +3639,131 @@
   "ui_shop_gio": {
     "footY": {
       "default": 59
+    }
+  },
+  "gio_stand4": {
+    "footY": {
+      "default": 60
+    }
+  },
+  "gio_walk4_south": {
+    "footY": {
+      "default": 60
+    }
+  },
+  "gio_walk4_east": {
+    "footY": {
+      "default": 60
+    }
+  },
+  "gio_walk4_west": {
+    "footY": {
+      "default": 60
+    }
+  },
+  "gio_walk4_north": {
+    "footY": {
+      "default": 60
+    }
+  },
+  "gio_eat_lick": {
+    "footY": {
+      "default": 47
+    }
+  },
+  "ui_action_icon_talk": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "ui_gio_talk_ear_left": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "ui_gio_talk_close_btn": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "ui_gio_talk_icon_sell_12": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_gio_talk_icon_treat_12": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_gio_talk_icon_pat_12": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ui_gio_talk_icon_news_12": {
+    "footY": {
+      "default": 11
+    }
+  },
+  "ui_gio_tool_slot_pressed": {
+    "footY": {
+      "default": 37
+    }
+  },
+  "ui_gio_talk_check_done": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "ui_gio_receipt_paw_stamp": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "ui_gio_receipt_washi_tape": {
+    "footY": {
+      "default": 11
+    }
+  },
+  "ui_gio_receipt_take_button_120x28": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "ui_gio_gio_face_happy": {
+    "footY": {
+      "default": 48
+    }
+  },
+  "ui_coin_paw": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "fx_heart_5": {
+    "footY": {
+      "default": 5
+    }
+  },
+  "fx_sparkle_5": {
+    "footY": {
+      "default": 5
+    }
+  },
+  "shop_item_kitchen_pots_pans": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "shop_item_recipe_scroll_savory": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "shop_item_recipe_scroll_sweet": {
+    "footY": {
+      "default": 29
     }
   }
 }

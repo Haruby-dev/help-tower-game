@@ -36,42 +36,6 @@
     ],
     "note": "วาดมือ เฟรม 3–5 หลับตา ทิศเหนือไม่เปลี่ยน"
   },
-  "gio_walk_south": {
-    "type": "local",
-    "width": 480,
-    "height": 76,
-    "source": "public/assets/characters/gio_v2/gio_walk_south.png",
-    "file": "characters/gio_v2/gio_walk_south.png",
-    "jade_tone": false,
-    "frame_width": 60,
-    "frame_height": 76,
-    "frames": 8,
-    "note": "เดินสี่ขา c3bb7039"
-  },
-  "gio_walk_north": {
-    "type": "local",
-    "width": 480,
-    "height": 76,
-    "source": "public/assets/characters/gio_v2/gio_walk_north.png",
-    "file": "characters/gio_v2/gio_walk_north.png",
-    "jade_tone": false,
-    "frame_width": 60,
-    "frame_height": 76,
-    "frames": 8,
-    "note": "เดินสี่ขา c3bb7039"
-  },
-  "gio_walk_east": {
-    "type": "local",
-    "width": 608,
-    "height": 68,
-    "source": "public/assets/characters/gio_v2/gio_walk_east.png",
-    "file": "characters/gio_v2/gio_walk_east.png",
-    "jade_tone": false,
-    "frame_width": 76,
-    "frame_height": 68,
-    "frames": 8,
-    "note": "เดินสี่ขา c3bb7039 ทิศตะวันตกกลับด้าน"
-  },
   "player_girl_stand": {
     "type": "character",
     "pixellabId": "797a0fad-5c6d-4c95-8bc6-8d9d8a74aec8",
@@ -7853,6 +7817,253 @@
     "height": 64,
     "source": "public/assets/ui/shop/gio_shop_rubpaws.png",
     "file": "ui/shop/gio_shop_rubpaws.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "gio_stand4": {
+    "type": "local",
+    "width": 272,
+    "height": 68,
+    "source": "public/assets/characters/gio_v2/gio_stand4.png",
+    "file": "characters/gio_v2/gio_stand4.png",
+    "jade_tone": false,
+    "frame_width": 68,
+    "frame_height": 68,
+    "frames": 4,
+    "note": "ยืนสี่ขา 4 เฟรม เรียง ใต้ ตะวันออก เหนือ ตะวันตก (state c93287af) ผู้ใช้อนุมัติ 5 พ.ย. 2026"
+  },
+  "gio_walk4_south": {
+    "type": "local",
+    "width": 544,
+    "height": 68,
+    "source": "public/assets/characters/gio_v2/gio_walk4_south.png",
+    "file": "characters/gio_v2/gio_walk4_south.png",
+    "jade_tone": false,
+    "frame_width": 68,
+    "frame_height": 68,
+    "frames": 8,
+    "note": "เดินสี่ขา 8 เฟรม ผืน 68 เท้า y 60 ผู้ใช้อนุมัติ 5 พ.ย. 2026"
+  },
+  "gio_walk4_east": {
+    "type": "local",
+    "width": 544,
+    "height": 68,
+    "source": "public/assets/characters/gio_v2/gio_walk4_east.png",
+    "file": "characters/gio_v2/gio_walk4_east.png",
+    "jade_tone": false,
+    "frame_width": 68,
+    "frame_height": 68,
+    "frames": 8,
+    "note": "เดินสี่ขา 8 เฟรม ผืน 68 เท้า y 60 ผู้ใช้อนุมัติ 5 พ.ย. 2026"
+  },
+  "gio_walk4_west": {
+    "type": "local",
+    "width": 544,
+    "height": 68,
+    "source": "public/assets/characters/gio_v2/gio_walk4_west.png",
+    "file": "characters/gio_v2/gio_walk4_west.png",
+    "jade_tone": false,
+    "frame_width": 68,
+    "frame_height": 68,
+    "frames": 8,
+    "note": "เดินสี่ขา 8 เฟรม ผืน 68 เท้า y 60 ผู้ใช้อนุมัติ 5 พ.ย. 2026 ทิศตะวันตกกลับด้านมาแล้วในภาพ"
+  },
+  "gio_walk4_north": {
+    "type": "local",
+    "width": 544,
+    "height": 68,
+    "source": "public/assets/characters/gio_v2/gio_walk4_north.png",
+    "file": "characters/gio_v2/gio_walk4_north.png",
+    "jade_tone": false,
+    "frame_width": 68,
+    "frame_height": 68,
+    "frames": 8,
+    "note": "เดินสี่ขา 8 เฟรม ผืน 68 เท้า y 60 ผู้ใช้อนุมัติ 5 พ.ย. 2026"
+  },
+  "gio_eat_lick": {
+    "type": "local",
+    "width": 672,
+    "height": 56,
+    "source": "public/assets/characters/gio_v2/gio_eat_lick_south.png",
+    "file": "characters/gio_v2/gio_eat_lick_south.png",
+    "jade_tone": false,
+    "frame_width": 56,
+    "frame_height": 56,
+    "frames": 12,
+    "note": "นั่งเลียแมวเลีย หันใต้ 12 เฟรม เล่น 2 รอบ"
+  },
+  "ui_action_icon_talk": {
+    "type": "local",
+    "width": 28,
+    "height": 23,
+    "source": "public/assets/ui/hud_v2/icon_talk.png",
+    "file": "ui/hud_v2/icon_talk.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ฟองคำพูดหูแมวมีหัวใจ"
+  },
+  "ui_gio_talk_ear_left": {
+    "type": "local",
+    "width": 16,
+    "height": 15,
+    "source": "public/assets/ui/gio/talk_ear_left.png",
+    "file": "ui/gio/talk_ear_left.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_gio_talk_close_btn": {
+    "type": "local",
+    "width": 18,
+    "height": 18,
+    "source": "public/assets/ui/gio/talk_close_btn.png",
+    "file": "ui/gio/talk_close_btn.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_gio_talk_icon_sell_12": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "public/assets/ui/gio/talk_icon_sell_12.png",
+    "file": "ui/gio/talk_icon_sell_12.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_gio_talk_icon_treat_12": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "public/assets/ui/gio/talk_icon_treat_12.png",
+    "file": "ui/gio/talk_icon_treat_12.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_gio_talk_icon_pat_12": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "public/assets/ui/gio/talk_icon_pat_12.png",
+    "file": "ui/gio/talk_icon_pat_12.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_gio_talk_icon_news_12": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "public/assets/ui/gio/talk_icon_news_12.png",
+    "file": "ui/gio/talk_icon_news_12.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_gio_tool_slot_pressed": {
+    "type": "local",
+    "width": 42,
+    "height": 37,
+    "source": "public/assets/ui/gio/tool_slot_pressed.png",
+    "file": "ui/gio/tool_slot_pressed.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_gio_talk_check_done": {
+    "type": "local",
+    "width": 11,
+    "height": 8,
+    "source": "public/assets/ui/gio/talk_check_done.png",
+    "file": "ui/gio/talk_check_done.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_gio_receipt_paw_stamp": {
+    "type": "local",
+    "width": 30,
+    "height": 30,
+    "source": "public/assets/ui/gio/receipt_paw_stamp.png",
+    "file": "ui/gio/receipt_paw_stamp.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_gio_receipt_washi_tape": {
+    "type": "local",
+    "width": 52,
+    "height": 11,
+    "source": "public/assets/ui/gio/receipt_washi_tape.png",
+    "file": "ui/gio/receipt_washi_tape.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_gio_receipt_take_button_120x28": {
+    "type": "local",
+    "width": 120,
+    "height": 28,
+    "source": "public/assets/ui/gio/receipt_take_button_120x28.png",
+    "file": "ui/gio/receipt_take_button_120x28.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_gio_gio_face_happy": {
+    "type": "local",
+    "width": 56,
+    "height": 56,
+    "source": "public/assets/ui/gio/gio_face_happy.png",
+    "file": "ui/gio/gio_face_happy.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "คัดลอกจาก art-src/gio_v2/faces ใช้ครอป (5,4)-(43,38) ในกรอบรูปหน้าคุย"
+  },
+  "ui_coin_paw": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "public/assets/ui/coin_paw_12.png",
+    "file": "ui/coin_paw_12.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "เหรียญอุ้งเท้า ใช้ทุกที่ที่แสดงเงิน"
+  },
+  "fx_heart_5": {
+    "type": "local",
+    "width": 5,
+    "height": 5,
+    "source": "public/assets/fx/fx_heart_5.png",
+    "file": "fx/fx_heart_5.png",
+    "jade_tone": false,
+    "note": "หัวใจลอยตอนจีโอเลียแมวเลีย"
+  },
+  "fx_sparkle_5": {
+    "type": "local",
+    "width": 5,
+    "height": 5,
+    "source": "public/assets/fx/fx_sparkle_5.png",
+    "file": "fx/fx_sparkle_5.png",
+    "jade_tone": false,
+    "note": "ประกายรอบจีโอตอนได้รสพิเศษ"
+  },
+  "shop_item_kitchen_pots_pans": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/kitchen_pots_pans.png",
+    "file": "ui/shop/items/kitchen_pots_pans.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "หม้อและกระทะ ใช้เมื่อแท็บอุปกรณ์เปิดขาย"
+  },
+  "shop_item_recipe_scroll_savory": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/recipe_scroll_savory.png",
+    "file": "ui/shop/items/recipe_scroll_savory.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "shop_item_recipe_scroll_sweet": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/recipe_scroll_sweet.png",
+    "file": "ui/shop/items/recipe_scroll_sweet.png",
     "jade_tone": false,
     "lazy": true
   }

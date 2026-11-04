@@ -45,7 +45,7 @@ async function cast(page: Page, bait: string): Promise<void> {
   await page.locator(`.bait-slot[data-bait="${bait}"]`).click();
   await expect(page.locator(`.bait-slot[data-bait="${bait}"]`)).toHaveClass(/is-selected/);
   const act = page.locator('#action-button');
-  await expect(act).toContainText('ตกปลา');
+  await expect(act).toHaveAttribute('aria-label', /ตกปลา/);
   await expect(act).toHaveAttribute('data-icon', 'fish');
   await act.click();
 }
@@ -57,7 +57,7 @@ test('catches a fish at the dock by tapping when the "!" shows, using up one bai
   const bait = await count(page, 'bait_cloud_lettuce');
   await cast(page, 'cloud_lettuce');
   const act = page.locator('#action-button');
-  await expect(act).toContainText('ดึง', BITE_WAIT);
+  await expect(act).toHaveAttribute('aria-label', /ดึง/, BITE_WAIT);
   // กด E แทนการคลิก เพราะคลิกของเครื่องทดสอบช้ากว่าช่วงที่ปลาติดเบ็ด
   await page.keyboard.press('e');
   await expect.poll(() => count(page, 'fish_') .then(async (fish) => fish + (await count(page, 'chest_'))), { timeout: 30_000 }).toBe(1);
@@ -75,8 +75,8 @@ test('lets the fish get away without losing the bait when the tap is late', asyn
   const hour = (await state(page)).hour;
   await cast(page, 'corn');
   const act = page.locator('#action-button');
-  await expect(act).toContainText('ดึง', BITE_WAIT);
-  await expect(act).not.toContainText('ดึง', { timeout: 30_000 });
+  await expect(act).toHaveAttribute('aria-label', /ดึง/, BITE_WAIT);
+  await expect(act).not.toHaveAttribute('aria-label', /ดึง/, { timeout: 30_000 });
   await expect.poll(() => state(page).then((world) => world.hour), { timeout: 30_000 }).toBeGreaterThanOrEqual(hour + 0.5);
   expect(await count(page, 'bait_corn')).toBe(bait);
   expect(await count(page, 'fish_')).toBe(0);
@@ -113,7 +113,7 @@ test('fishing locks walking, and pressing the button again puts the rod away wit
   await cast(page, 'corn');
   await page.waitForTimeout(1200);
   const act = page.locator('#action-button');
-  await expect(act).toContainText('หยุด');
+  await expect(act).toHaveAttribute('aria-label', /หยุด/);
   const before = await page.evaluate(() => ({ ...(window as unknown as { __state: TestState }).__state.world }) as unknown as { player: { x: number; y: number } });
   await page.keyboard.down('ArrowDown');
   await page.waitForTimeout(400);
@@ -122,7 +122,7 @@ test('fishing locks walking, and pressing the button again puts the rod away wit
   expect(Math.hypot(still.x - before.player.x, still.y - before.player.y)).toBeLessThan(1);
   const hour = (await state(page)).hour;
   await act.click();
-  await expect(act).toContainText('ตกปลา');
+  await expect(act).toHaveAttribute('aria-label', /ตกปลา/);
   expect((await state(page)).hour).toBeLessThan(hour + 0.1);
   expect(await count(page, 'bait_corn')).toBe(5);
 });
@@ -153,7 +153,7 @@ test('makes normal bait from a vegetable and bathes at the pond', async ({ page 
   await standOnDock(page);
   // ไม่ได้ถือคันเบ็ด ที่ริมบ่อปุ่มกระทำคืออาบน้ำ
   const act = page.locator('#action-button');
-  await expect(act).toContainText('อาบน้ำ');
+  await expect(act).toHaveAttribute('aria-label', /อาบน้ำ/);
   await expect(act).toHaveAttribute('data-icon', 'bath');
   await act.click();
   await expect
@@ -164,7 +164,7 @@ test('makes normal bait from a vegetable and bathes at the pond', async ({ page 
   await page.keyboard.down('ArrowDown');
   await page.waitForTimeout(200);
   await page.keyboard.up('ArrowDown');
-  await expect(act).toContainText('หยุด');
+  await expect(act).toHaveAttribute('aria-label', /หยุด/);
   await expect(act).toHaveAttribute('data-icon', 'bath');
   await act.click();
   // อาบไปราว 2–3 นาทีเกม ได้สะอาดตามสัดส่วน
@@ -181,7 +181,7 @@ test('opens a golden chest from the bag, pops out the rewards and keeps the cosm
   await page.locator('#bag-open-chest').click();
   await expect(page.locator('#chest-window')).toBeVisible();
   await expect(page.locator('.chest-reward')).toHaveCount(4, { timeout: 10_000 });
-  await expect(page.locator('[data-reward="coins"]')).toContainText('เหรียญ');
+  await expect(page.locator('[data-reward="coins"] .coin-icon')).toHaveAttribute('src', /coin_paw_12/);
   const world = await state(page);
   expect(world.wallet.coins).toBeGreaterThanOrEqual(100);
   expect(world.bag.some((stack) => stack.item === 'chest_golden')).toBe(false);
@@ -199,20 +199,11 @@ test('shows the day weather on the phone and draws rain', async ({ page }) => {
   await expect(page.locator('#lock-screen [data-weather-icon]')).toHaveAttribute('src', /weather_rain/);
 });
 
-test('the action label is a rounded pill that stays at least 4 game pixels above the bottom edge', async ({ page }) => {
+test('the action button has no text label under it, only the icon, and still names the action for screen readers', async ({ page }) => {
   await open(page);
   await standOnDock(page);
-  const label = page.locator('.action-button__label');
-  await expect(label).toHaveText('อาบน้ำ');
-  const { bottom, screen, px, clip } = await label.evaluate((node) => {
-    const root = node.closest('[style*="--px"]') as HTMLElement;
-    return {
-      bottom: node.getBoundingClientRect().bottom,
-      screen: window.innerHeight,
-      px: parseFloat(getComputedStyle(root).getPropertyValue('--px')),
-      clip: getComputedStyle(node, '::after').clipPath,
-    };
-  });
-  expect(screen - bottom).toBeGreaterThanOrEqual(px * 4 - 0.5);
-  expect(clip).toContain('polygon');
+  const button = page.locator('#action-button');
+  await expect(button).toHaveAttribute('aria-label', 'อาบน้ำ');
+  await expect(button.locator('.action-button__label')).toHaveCount(0);
+  await expect(button).toHaveText(/^E?$/);
 });

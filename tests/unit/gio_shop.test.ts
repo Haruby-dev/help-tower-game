@@ -12,8 +12,13 @@ import {
   giveTreat,
   gioMorning,
   isGioHome,
+  hasUnreadNews,
   petGio,
+  pettedToday,
+  readNews,
   saleValue,
+  soldTotal,
+  treatsInBag,
   settleGio,
   tierFor,
   treatsLeftToday,
@@ -190,13 +195,63 @@ describe('system shop', () => {
   });
 });
 
+describe('Gio receipt, gift and news', () => {
+  it('lists each kind at the hand-over price, and the rows add up to the gross', () => {
+    const start: World = { ...withGio(newWorld(), 80), hour: 9, bag: [{ item: 'produce_tomato', count: 3 }, { item: 'produce_scallion', count: 2 }] };
+    const back = settleGio({ ...consign(start, [{ item: 'produce_tomato', count: 3 }, { item: 'produce_scallion', count: 2 }])!, hour: 18 });
+    const report = back.gio.report!;
+    expect(report.tier).toBe(0);
+    expect(report.sold.reduce((sum, stack) => sum + soldTotal(report, stack), 0)).toBe(report.gross);
+  });
+
+  it('brings a gift only at the top happiness, about 20% of the time, and puts it in the bag', () => {
+    let gifts = 0;
+    for (let seed = 1; seed <= 400; seed += 1) {
+      const start: World = { ...withGio(newWorld(), 90), seed, hour: 9, bag: [{ item: 'produce_tomato', count: 1 }] };
+      const back = settleGio({ ...consign(start, [{ item: 'produce_tomato', count: 1 }])!, hour: 18 });
+      if (back.gio.report!.gift) {
+        gifts += 1;
+        expect(balance.gioCare.giftPool.map((entry) => entry.item)).toContain(back.gio.report!.gift.item);
+        if (gifts === 1) expect(countOf(collectReport(back)!.bag, back.gio.report!.gift.item)).toBe(back.gio.report!.gift.count);
+      }
+      const sad = settleGio({ ...consign({ ...start, gio: { ...start.gio, happiness: 50 } }, [{ item: 'produce_tomato', count: 1 }])!, hour: 18 });
+      expect(sad.gio.report!.gift).toBeNull();
+    }
+    expect(gifts / 400).toBeGreaterThan(0.12);
+    expect(gifts / 400).toBeLessThan(0.28);
+  });
+
+  it('shows the news dot until the news is read today, the check after the pat, and counts treats in the bag', () => {
+    const world: World = { ...newWorld(), bag: [{ item: 'treat_tuna', count: 2 }, { item: 'treat_special', count: 1 }] };
+    expect(hasUnreadNews(world)).toBe(true);
+    const read = readNews(world);
+    expect(hasUnreadNews(read)).toBe(false);
+    expect(hasUnreadNews({ ...read, day: 2 })).toBe(true);
+    expect(pettedToday(world)).toBe(false);
+    expect(pettedToday(petGio(world)!)).toBe(true);
+    expect(treatsInBag(world)).toBe(3);
+  });
+});
+
+describe('save version 10', () => {
+  it('adds the news day, and an open summary gets no gift and a tier guessed from its commission', () => {
+    const world = newWorld();
+    const { newsDay: _news, ...oldGio } = world.gio;
+    const report = { day: 2, sold: [{ item: 'produce_tomato', count: 1 }], returned: [], gross: 1000, commission: 300, coins: 700 };
+    const parsed = parseSaveFile({ version: 9, savedAt: '2026-11-05T00:00:00.000Z', world: { ...world, gio: { ...oldGio, report } } })!;
+    expect(parsed.version).toBe(10);
+    expect(parsed.world.gio.newsDay).toBe(0);
+    expect(parsed.world.gio.report).toMatchObject({ gift: null, tier: 2 });
+  });
+});
+
 describe('save version 9', () => {
   it('adds Gio at the start values and moves a chest cat treat into the bag as the special flavour', () => {
     const world = newWorld();
     const { gio: _gio, ...rest } = world;
     const v8 = { version: 8, savedAt: '2026-11-04T00:00:00.000Z', world: { ...rest, stash: { gio_lick_treat: 2, other: 1 } } };
     const parsed = parseSaveFile(v8)!;
-    expect(SAVE_VERSION).toBe(9);
+    expect(SAVE_VERSION).toBe(10);
     expect(parsed.world.gio.happiness).toBe(balance.gioCare.startHappiness);
     expect(parsed.world.gio.consignment).toBeNull();
     expect(countOf(parsed.world.bag, 'treat_special')).toBe(2);

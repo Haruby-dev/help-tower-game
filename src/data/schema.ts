@@ -193,6 +193,25 @@ export const balanceSchema = z.strictObject({
     blinkEveryMaxMs: z.number().positive(),
     wanderRadius: z.number().positive(),
     keepAwayDistance: z.number().positive(),
+    /** ยืนสี่ขาพักระหว่างเดินเล่น แล้วกลับไปนั่งในตะกร้าหลังเดินครบจำนวนรอบที่สุ่ม */
+    standMinMs: z.number().positive(),
+    standMaxMs: z.number().positive(),
+    walksBeforeHomeMin: z.number().int().positive(),
+    walksBeforeHomeMax: z.number().int().positive(),
+    /** เดินไม่ขยับนานเท่านี้ (ชนของ) ให้หยุดยืน */
+    stuckMs: z.number().positive(),
+    /** แถวในภาพตะกร้า: เท้าตอนนั่ง ขอบหน้าที่วาดทับตัวจีโอ และระยะจุดลุกหน้าตะกร้า */
+    seatFeetRow: z.number().int().nonnegative(),
+    seatRimRow: z.number().int().nonnegative(),
+    seatExitGap: z.number().positive(),
+    eatFps: z.number().positive(),
+    eatLoops: z.number().int().positive(),
+    heartRisePx: z.number().positive(),
+    heartRiseMs: z.number().positive(),
+    heartStaggerMs: z.number().nonnegative(),
+    heartsByTaste: z.strictObject({ like: z.number().int().nonnegative(), love: z.number().int().nonnegative(), special: z.number().int().nonnegative() }),
+    sparkleBlinkMs: z.number().positive(),
+    sparkleSpots: z.array(z.tuple([z.number().int(), z.number().int()])),
   }),
   /** ความสุขจีโอ ฝากขาย แมวเลีย ตามขั้นที่ 1 ของ GDD ช่วงความสุขเรียงจากสูงไปต่ำ */
   gioCare: z.strictObject({
@@ -211,6 +230,11 @@ export const balanceSchema = z.strictObject({
     talkReachPx: z.number().positive(),
     /** เกมใหม่จีโอให้เงินก้อนแรก แทนรางวัลเควสแรกของจีโอที่จะมาใน M9 (GDD 100 ×10) */
     firstGiftCoins: z.number().int().nonnegative(),
+    /** ความสุขช่วงบนสุด จีโอมีโอกาสได้ของแปลก ๆ มาฝาก (GDD 20%) รายการของยังเป็นค่าชั่วคราว */
+    giftChance: z.number().min(0).max(1),
+    /** ได้รับตั้งแต่เท่านี้ จีโอพูดบทขายดีสุด ๆ (ค่าชั่วคราว) */
+    bigDayCoins: z.number().int().nonnegative(),
+    giftPool: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })).min(1),
   }),
 });
 
@@ -305,9 +329,11 @@ export const saveFileSchema = z.strictObject({
       treatsToday: z.number().int().nonnegative(),
       pettedDay: z.number().int().nonnegative(),
       specialWeek: z.number().int(),
+      /** วันที่อ่านข่าววันนี้แล้ว จุดชมพูบนปุ่มข่าวหายไป */
+      newsDay: z.number().int().nonnegative(),
       consignment: z.strictObject({ items: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })), returnDay: z.number().int().positive(), tier: z.number().int().nonnegative() }).nullable(),
       report: z
-        .strictObject({ day: z.number().int().positive(), sold: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })), returned: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })), gross: z.number(), commission: z.number(), coins: z.number() })
+        .strictObject({ day: z.number().int().positive(), sold: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })), returned: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })), gross: z.number(), commission: z.number(), coins: z.number(), tier: z.number().int().nonnegative(), gift: z.strictObject({ item: z.string().min(1), count: z.number().int().positive() }).nullable() })
         .nullable(),
     }),
   }),
@@ -457,6 +483,7 @@ export const linesSchema = z.strictObject({
     consigned: z.string().min(1),
     busy: z.string().min(1),
     back: z.string().min(1),
+    backBig: z.string().min(1),
   }),
   encouragement: z.array(z.string().min(1)).min(1),
 });

@@ -3,6 +3,7 @@ import balance from '../data/balance.json';
 import shopJson from '../data/shop.json';
 import type { ShopData } from '../data/schema';
 import { MYSTERY, isDish, isRawProduce, parseDish, recipes } from './cooking';
+import { createRng } from '../core/rng';
 import { applyTransaction } from './economy';
 import { addToBag, countOf, cropOfItem, crops, takeFromBag } from './farm';
 import { fishOfItem, fishTable, isFish } from './fishing';
@@ -12,6 +13,7 @@ const shop = shopJson as ShopData;
 const DAYS_PER_WEEK = 7;
 const HAPPINESS_MAX = 100;
 const HAPPINESS_MIN = 0;
+const GIFT_SEED_STEP = 4091;
 
 export type TreatTaste = ShopData['treats'][number]['taste'];
 
@@ -21,6 +23,7 @@ export const newGioCare = (): GioCare => ({
   treatsToday: 0,
   pettedDay: 0,
   specialWeek: -1,
+  newsDay: 0,
   consignment: null,
   report: null,
 });
@@ -130,17 +133,26 @@ export function settleGio(world: World): World {
   const gross = sold.reduce((sum, stack) => sum + pricedAt(stack.item, tier.priceBonus) * stack.count, 0);
   const commission = Math.round(gross * tier.commission);
   const coins = gross - commission;
-  const report: GioReport = { day: world.day, sold, returned, gross, commission, coins };
+  const report: GioReport = { day: world.day, sold, returned, gross, commission, coins, gift: rollGift(world, deal.tier), tier: deal.tier };
   const next: World = { ...world, gio: { ...world.gio, consignment: null, report } };
   return coins > 0 ? applyTransaction(next, 'coins', coins, 'wallet.gio_sale', 'wallet.category_sale') : next;
 }
 
-/** ปิดสรุปยอดแล้วรับของที่ขายไม่หมดคืน กระเป๋าไม่พอตอบ null ของจึงไม่หาย */
+/** ความสุขช่วงบนสุดมีโอกาสได้ของมาฝาก สุ่มจาก seed ของเซฟกับวันที่ จึงได้ผลเดิมทุกครั้ง */
+function rollGift(world: World, tier: number): BagStack | null {
+  if (tier !== 0) return null;
+  const rng = createRng(world.seed + world.day * GIFT_SEED_STEP);
+  if (rng.next() >= care.giftChance) return null;
+  const pick = care.giftPool[Math.floor(rng.next() * care.giftPool.length)]!;
+  return { item: pick.item, count: pick.count };
+}
+
+/** ปิดสรุปยอดแล้วรับของที่ขายไม่หมดและของฝากเข้ากระเป๋า กระเป๋าไม่พอตอบ null ของจึงไม่หาย */
 export function collectReport(world: World): World | null {
   const { report } = world.gio;
   if (!report) return world;
   let bag: BagStack[] | null = world.bag;
-  for (const stack of report.returned) bag = bag && addToBag(bag, stack.item, stack.count);
+  for (const stack of [...report.returned, ...(report.gift ? [report.gift] : [])]) bag = bag && addToBag(bag, stack.item, stack.count);
   if (!bag) return null;
   return { ...world, bag, gio: { ...world.gio, report: null } };
 }
@@ -189,3 +201,18 @@ export const withFirstGift = (world: World): World =>
 
 /** ผ่านไป 1 วันความสุขลดลง */
 export const gioMorning = (gio: GioCare): GioCare => ({ ...gio, happiness: clampHappiness(gio.happiness - care.dailyDecay) });
+
+/** อ่านข่าววันนี้แล้ว จุดชมพูบนปุ่มข่าวหายไปจนถึงพรุ่งนี้ */
+export const readNews = (world: World): World => (world.gio.newsDay === world.day ? world : { ...world, gio: { ...world.gio, newsDay: world.day } });
+
+export const hasUnreadNews = (world: World): boolean => world.gio.newsDay !== world.day;
+
+export const pettedToday = (world: World): boolean => world.gio.pettedDay === world.day;
+
+/** จำนวนแมวเลียทุกรสในกระเป๋า */
+export const treatsInBag = (world: World): number =>
+  world.bag.filter((stack) => isTreat(stack.item)).reduce((sum, stack) => sum + stack.count, 0);
+
+/** ยอดขายของหนึ่งชนิดในใบสรุปยอด ราคาตามช่วงความสุขตอนฝาก รวมทุกแถวได้เท่ายอดขาย */
+export const soldTotal = (report: GioReport, stack: BagStack): number =>
+  pricedAt(stack.item, (care.tiers[report.tier] ?? care.tiers[care.tiers.length - 1]!).priceBonus) * stack.count;

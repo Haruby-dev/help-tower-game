@@ -59,13 +59,13 @@ test('grows a scallion from seed to harvest in 3 game days and saves it', async 
   const act = page.locator('#action-button');
 
   await page.locator('[data-tool="hoe"]').click();
-  await expect(act).toContainText('พรวน');
+  await expect(act).toHaveAttribute('aria-label', /พรวน/);
   await act.click();
   await expect.poll(async () => (await plot0(page)).tilled, { timeout: 30000 }).toBe(true);
 
   await page.locator('[data-tool="seeds"]').click();
   await page.locator('[data-seed="scallion"]').click();
-  await expect(act).toContainText('ปลูก');
+  await expect(act).toHaveAttribute('aria-label', /ปลูก/);
   await act.click();
   await expect.poll(async () => (await plot0(page)).crop?.id, { timeout: 30000 }).toBe('scallion');
 
@@ -84,7 +84,7 @@ test('grows a scallion from seed to harvest in 3 game days and saves it', async 
   expect((await plot0(page)).crop?.daysGrown).toBe(3);
 
   await page.locator('[data-tool="sickle"]').click();
-  await expect(act).toContainText('เก็บ');
+  await expect(act).toHaveAttribute('aria-label', /เก็บ/);
   const held = await count(page, 'produce_scallion');
   await act.click();
   await expect.poll(() => count(page, 'produce_scallion'), { timeout: 30000 }).toBeGreaterThan(held);

@@ -99,7 +99,7 @@ describe('save migration', () => {
       world: { day: 3, hour: 6, gauges: gauges(50, 60, 70), player: { x: 1, y: 2 } },
     };
     const parsed = parseSaveFile(old);
-    expect(SAVE_VERSION).toBe(9);
+    expect(SAVE_VERSION).toBe(10);
     expect(parsed?.version).toBe(SAVE_VERSION);
     expect(parsed?.world.day).toBe(3);
     expect(parsed?.world.wallet).toEqual(emptyWallet());

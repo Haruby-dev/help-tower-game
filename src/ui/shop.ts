@@ -2,10 +2,11 @@ import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
 import { gameState } from '../core/state';
 import balance from '../data/balance.json';
-import { dishItem } from '../systems/cooking';
-import { formatMoney } from '../systems/economy';
+import { registry } from '../core/assets';
+import { recipes } from '../systems/cooking';
 import { buyOffer, maxQuantity, offersFor, tasteOfTreat, type Offer, type ShopGroup } from '../systems/shop';
 import { itemImage, itemName } from './inventory';
+import { setMoney } from './money';
 import { artUrl } from './pixelArt';
 
 type Tab = 'daily' | 'random' | 'equipment' | 'farm';
@@ -30,9 +31,24 @@ const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className: strin
   return node;
 };
 
-/** ภาพของบนชั้น สูตรใช้ภาพอาหารของสูตรนั้น */
+/** ม้วนสูตร: อาหารคาวใช้ม้วนคาว ของหวานกับเครื่องดื่มใช้ม้วนหวาน */
+const scrollFor = (recipe: string): string =>
+  recipes[recipe]?.category === 'savory' ? 'shop_item_recipe_scroll_savory' : 'shop_item_recipe_scroll_sweet';
+
+function artImage(id: string, scale: number): HTMLElement {
+  const entry = registry[id];
+  if (entry?.type !== 'local') throw new Error(`${id} is not local art`);
+  const image = element('img', 'pixel-img');
+  image.src = artUrl(id);
+  image.alt = '';
+  image.style.width = `calc(var(--px) * ${entry.width * scale})`;
+  image.style.height = `calc(var(--px) * ${entry.height * scale})`;
+  return image;
+}
+
+/** ภาพของบนชั้น สูตรเป็นม้วนกระดาษตามหมวด ของที่ยังไม่มีภาพใช้กล่องสี */
 const offerImage = (offer: Offer, scale = 1): HTMLElement =>
-  itemImage(offer.kind === 'recipe' ? dishItem(offer.target, 1) : offer.target, false, scale);
+  offer.kind === 'recipe' ? artImage(scrollFor(offer.target), scale) : itemImage(offer.target, false, scale);
 
 const offerName = (offer: Offer): string => (offer.kind === 'recipe' ? t(`dish.${offer.target}.name` as TextKey) : itemName(offer.target));
 
@@ -109,7 +125,9 @@ export function createShopPage(): HTMLElement {
     buy.id = 'shop-buy';
     const known = offer.kind === 'recipe' && world.recipes.known.includes(offer.target);
     buy.disabled = most < 1;
-    buy.textContent = known ? t('shop.known') : most < 1 ? t('shop.no_money') : `${t('shop.buy')} ${formatMoney(offer.price * quantity)}`;
+    if (known) buy.textContent = t('shop.known');
+    else if (most < 1) buy.textContent = t('shop.no_money');
+    else setMoney(buy, offer.price * quantity, `${t('shop.buy')} `);
     buy.addEventListener('click', () => {
       const next = buyOffer(gameState.world, offer, quantity);
       if (!next) {
@@ -130,7 +148,9 @@ export function createShopPage(): HTMLElement {
     const holder = element('span', 'shop-item__art');
     holder.append(offerImage(offer));
     if (offer.target === 'treat_special') holder.append(element('small', 'shop-item__badge', t('shop.special_badge')));
-    button.append(holder, element('b', 'shop-item__price', formatMoney(offer.price)));
+    const price = element('b', 'shop-item__price');
+    setMoney(price, offer.price);
+    button.append(holder, price);
     button.addEventListener('click', () => {
       if (picked !== offer.id) quantity = 1;
       picked = offer.id;
@@ -142,7 +162,7 @@ export function createShopPage(): HTMLElement {
   function render(): void {
     if (!gameState.started) return;
     const world = gameState.world;
-    purse.textContent = formatMoney(world.wallet.coins);
+    setMoney(purse, world.wallet.coins);
     tabs.replaceChildren(
       ...TABS.map(({ id, label }) => {
         const button = element('button', `shop-tab${id === tab ? ' is-active' : ''}`, t(label));

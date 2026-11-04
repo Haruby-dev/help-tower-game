@@ -1,11 +1,12 @@
 import { get, set } from 'idb-keyval';
-import { defaultCosmetics, emptyWallet, type BagStack, type Wallet, type World } from '../core/state';
+import { defaultCosmetics, emptyWallet, type BagStack, type GioCare, type Wallet, type World } from '../core/state';
 import { addToBag } from './farm';
 import { newGioCare } from './gio';
+import balance from '../data/balance.json';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 import { cookingStarterBag, firstWeather, fishingStarterBag, newFarm, newFishing, newRecipeBook, newSeed, starterBag } from './gauges';
 
-export const SAVE_VERSION = 9;
+export const SAVE_VERSION = 10;
 /** ผู้ใช้ตัดสิน 4 พ.ย. 2026: ตัวเลขเหรียญทั้งเกมใหญ่ขึ้น 10 เท่า สัดส่วนเศรษฐกิจเท่าเดิม */
 export const COIN_SCALE = 10;
 const OLD_TREAT = 'gio_lick_treat';
@@ -79,7 +80,23 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
       world: { ...world, bag: moved ?? world.bag, stash: keep ? world.stash : rest, gio: newGioCare() },
     };
   },
+  // เวอร์ชัน 10 จำวันที่อ่านข่าวจีโอแล้ว และสรุปยอดมีของฝากได้
+  9: (save) => {
+    const world = save.world as { gio: GioCare };
+    const report = world.gio.report;
+    return { ...save, world: { ...world, gio: { ...world.gio, newsDay: 0, report: report ? { ...report, gift: null, tier: tierOfCommission(report) } : null } } };
+  },
 };
+
+/** เซฟเก่าไม่ได้เก็บช่วงความสุขของสรุปยอด เดาจากสัดส่วนค่าคอม */
+function tierOfCommission(report: { gross: number; commission: number }): number {
+  const share = report.gross > 0 ? report.commission / report.gross : 0;
+  let best = 0;
+  balance.gioCare.tiers.forEach((tier, index) => {
+    if (Math.abs(tier.commission - share) < Math.abs(balance.gioCare.tiers[best]!.commission - share)) best = index;
+  });
+  return best;
+}
 
 export function toSaveFile(world: World): SaveFile {
   return { version: SAVE_VERSION, savedAt: new Date().toISOString(), world };
