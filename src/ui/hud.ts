@@ -6,6 +6,7 @@ import balance from '../data/balance.json';
 import lines from '../data/lines.json';
 import { beadFills, isAlert, isDirty, isPulsing, moodOf, type Mood } from '../systems/mood';
 import { artUrl, bubbleImage, drawSpeechBubble, type NineSlice } from './pixelArt';
+import { formatMoney } from '../systems/economy';
 
 const REST_MESSAGE: Record<RestCause, TextKey> = {
   sleep: 'rest.sleep',
@@ -132,7 +133,7 @@ function createMoneyPop(uiRoot: HTMLElement): void {
   const pop = (amount: number, icon: string): void => {
     const number = document.createElement('p');
     const sign = amount > 0 ? '+' : '−';
-    number.textContent = `${sign}${Math.abs(amount).toLocaleString('en-US')}${icon}`;
+    number.textContent = `${sign}${formatMoney(Math.abs(amount))}${icon}`;
     number.className = amount > 0 ? 'money-pop--in' : 'money-pop--out';
     layer.append(number);
     window.setTimeout(() => number.remove(), POP_MS);

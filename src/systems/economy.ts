@@ -6,6 +6,9 @@ export type WalletRange = 'today' | 'week' | 'all';
 
 const DAYS_PER_WEEK = 7;
 
+/** ตัวเลขเงินทุกจุดในเกมใช้รูปแบบเดียวกัน มีจุลภาคคั่นหลักพัน เช่น 40,000 */
+export const formatMoney = (amount: number): string => amount.toLocaleString('en-US');
+
 /** ทางเดียวที่เงินเปลี่ยนได้ ทุกครั้งจึงมีรายการเสมอ คำนวณอย่างเดียวเพื่อทดสอบแยกได้ */
 export function applyTransaction(
   world: World,

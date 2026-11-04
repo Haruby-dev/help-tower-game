@@ -1,9 +1,11 @@
 import { get, set } from 'idb-keyval';
-import { defaultCosmetics, emptyWallet, type World } from '../core/state';
+import { defaultCosmetics, emptyWallet, type Wallet, type World } from '../core/state';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 import { cookingStarterBag, firstWeather, fishingStarterBag, newFarm, newFishing, newRecipeBook, newSeed, starterBag } from './gauges';
 
-export const SAVE_VERSION = 7;
+export const SAVE_VERSION = 8;
+/** ผู้ใช้ตัดสิน 4 พ.ย. 2026: ตัวเลขเหรียญทั้งเกมใหญ่ขึ้น 10 เท่า สัดส่วนเศรษฐกิจเท่าเดิม */
+export const COIN_SCALE = 10;
 export const SLOT_COUNT = 3;
 
 const slotKey = (slot: number): string => `save-slot-${slot}`;
@@ -44,6 +46,23 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
     const world = save.world as { cooking: { slot: object | null } };
     const { slot } = world.cooking;
     return { ...save, world: { ...world, cooking: { slot: slot ? { ...slot, count: 1 } : null } } };
+  },
+  // เวอร์ชัน 8 เหรียญทั้งเกม ×10 เซฟเก่าคูณยอดเหรียญ รายการรับจ่ายเหรียญ และยอดรายวันครั้งเดียว อำนาจซื้อจึงเท่าเดิม ดาวน้ำตาลไม่เปลี่ยน
+  7: (save) => {
+    const world = save.world as { wallet: Wallet };
+    const { wallet } = world;
+    return {
+      ...save,
+      world: {
+        ...world,
+        wallet: {
+          ...wallet,
+          coins: wallet.coins * COIN_SCALE,
+          log: wallet.log.map((entry) => (entry.currency === 'coins' ? { ...entry, amount: entry.amount * COIN_SCALE } : entry)),
+          daily: wallet.daily.map((total) => ({ ...total, coins: total.coins * COIN_SCALE })),
+        },
+      },
+    };
   },
 };
 

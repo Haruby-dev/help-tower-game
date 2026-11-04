@@ -6,7 +6,7 @@
       "ing_fish_F": 1,
       "ing_salt": 1
     },
-    "price": 30,
+    "price": 300,
     "source": "start",
     "icon": "dish_icon_grilled_fish",
     "bagIcon": "dish_bag_grilled_fish"
@@ -17,7 +17,7 @@
     "ingredients": {
       "ing_egg": 1
     },
-    "price": 30,
+    "price": 300,
     "source": "start",
     "icon": "dish_icon_boiled_egg",
     "bagIcon": "dish_bag_boiled_egg"
@@ -29,7 +29,7 @@
       "produce_potato": 1,
       "ing_salt": 1
     },
-    "price": 50,
+    "price": 500,
     "source": "quest",
     "icon": "dish_icon_baked_potato",
     "bagIcon": "dish_bag_baked_potato"
@@ -41,7 +41,7 @@
       "produce_corn": 1,
       "ing_sugar": 1
     },
-    "price": 40,
+    "price": 400,
     "source": "shop",
     "icon": "dish_icon_grilled_corn",
     "bagIcon": "dish_bag_grilled_corn"
@@ -53,7 +53,7 @@
       "produce_strawberry": 2,
       "ing_sugar": 1
     },
-    "price": 75,
+    "price": 750,
     "source": "shop",
     "icon": "dish_icon_strawberry_skewer",
     "bagIcon": "dish_bag_strawberry_skewer"
@@ -69,7 +69,7 @@
       "ing_egg": 1,
       "ing_pork": 1
     },
-    "price": 120,
+    "price": 1200,
     "source": "start",
     "icon": "dish_icon_home_kaprao",
     "bagIcon": "dish_bag_home_kaprao"
@@ -82,7 +82,7 @@
       "produce_scallion": 1,
       "ing_fish_sauce": 1
     },
-    "price": 60,
+    "price": 600,
     "source": "shop",
     "icon": "dish_icon_scallion_omelet",
     "bagIcon": "dish_bag_scallion_omelet"
@@ -95,7 +95,7 @@
       "produce_garlic": 1,
       "ing_salt": 1
     },
-    "price": 60,
+    "price": 600,
     "source": "shop",
     "icon": "dish_icon_tomato_soup",
     "bagIcon": "dish_bag_tomato_soup"
@@ -107,7 +107,7 @@
       "ing_honey_apple": 1,
       "ing_honey": 1
     },
-    "price": 65,
+    "price": 650,
     "source": "shop",
     "icon": "dish_icon_honey_apple_grill",
     "bagIcon": "dish_bag_honey_apple_grill"
@@ -119,7 +119,7 @@
       "ing_milk": 1,
       "ing_honey": 1
     },
-    "price": 60,
+    "price": 600,
     "source": "start",
     "icon": "dish_icon_warm_honey_milk",
     "bagIcon": "dish_bag_warm_honey_milk"
@@ -133,7 +133,7 @@
       "produce_scallion": 1,
       "produce_garlic": 1
     },
-    "price": 120,
+    "price": 1200,
     "source": "shop",
     "icon": "dish_icon_fish_congee",
     "bagIcon": "dish_bag_fish_congee"
@@ -148,7 +148,7 @@
       "produce_carrot": 1,
       "produce_scallion": 1
     },
-    "price": 120,
+    "price": 1200,
     "source": "shop",
     "icon": "dish_icon_corn_egg_fried_rice",
     "bagIcon": "dish_bag_corn_egg_fried_rice"
@@ -162,7 +162,7 @@
       "produce_tomato": 1,
       "ing_salt": 1
     },
-    "price": 180,
+    "price": 1800,
     "source": "shop",
     "icon": "dish_icon_potato_carrot_stew",
     "bagIcon": "dish_bag_potato_carrot_stew"
@@ -175,7 +175,7 @@
       "ing_egg": 1,
       "ing_honey": 1
     },
-    "price": 120,
+    "price": 1200,
     "source": "gate",
     "icon": "dish_icon_honey_pancake",
     "bagIcon": "dish_bag_honey_pancake"
@@ -189,7 +189,7 @@
       "produce_strawberry": 2,
       "ing_sugar": 1
     },
-    "price": 120,
+    "price": 1200,
     "source": "gate",
     "icon": "dish_icon_strawberry_milk_pudding",
     "bagIcon": "dish_bag_strawberry_milk_pudding"
@@ -200,7 +200,7 @@
     "ingredients": {
       "produce_tomato": 2
     },
-    "price": 40,
+    "price": 400,
     "source": "start",
     "icon": "dish_icon_tomato_juice",
     "bagIcon": "dish_bag_tomato_juice"
@@ -211,7 +211,7 @@
     "ingredients": {
       "produce_basil": 1
     },
-    "price": 30,
+    "price": 300,
     "source": "start",
     "icon": "dish_icon_basil_tea",
     "bagIcon": "dish_bag_basil_tea"
@@ -222,7 +222,7 @@
     "ingredients": {
       "produce_strawberry": 3
     },
-    "price": 108,
+    "price": 1080,
     "source": "shop"
   },
   "whip_cream_mumu": {
@@ -232,7 +232,7 @@
       "ing_cream": 1,
       "ing_sugar": 1
     },
-    "price": 40,
+    "price": 400,
     "source": "shop",
     "icon": "food_slime24",
     "bagIcon": "food_bag_food_slime24"
@@ -245,7 +245,7 @@
       "ing_sugar": 1,
       "ing_slime_jelly_scrap": 1
     },
-    "price": 50,
+    "price": 500,
     "source": "shop",
     "icon": "food_slime2",
     "bagIcon": "food_bag_food_slime2"
@@ -258,7 +258,7 @@
       "ing_milk": 1,
       "ing_sugar": 2
     },
-    "price": 50,
+    "price": 500,
     "source": "shop",
     "icon": "food_slime9",
     "bagIcon": "food_bag_food_slime9"
@@ -272,7 +272,7 @@
       "produce_blueberry": 2,
       "ing_sugar": 1
     },
-    "price": 105,
+    "price": 1050,
     "source": "shop",
     "icon": "food_slime8",
     "bagIcon": "food_bag_food_slime8"
@@ -285,7 +285,7 @@
       "ing_cherry": 1,
       "ing_slime_jelly_scrap": 1
     },
-    "price": 60,
+    "price": 600,
     "source": "shop",
     "icon": "food_slime1",
     "bagIcon": "food_bag_food_slime1"
@@ -299,7 +299,7 @@
       "ing_fizzy_water": 1,
       "ing_sugar": 1
     },
-    "price": 80,
+    "price": 800,
     "source": "shop",
     "icon": "food_slime12",
     "bagIcon": "food_bag_food_slime12"
@@ -312,7 +312,7 @@
       "ing_egg": 1,
       "ing_honey": 1
     },
-    "price": 80,
+    "price": 800,
     "source": "shop",
     "icon": "food_bee22",
     "bagIcon": "food_bag_food_bee22"
@@ -326,7 +326,7 @@
       "ing_cream": 1,
       "ing_cherry": 1
     },
-    "price": 120,
+    "price": 1200,
     "source": "shop",
     "icon": "food_bee7",
     "bagIcon": "food_bag_food_bee7"
@@ -340,7 +340,7 @@
       "produce_blueberry": 2,
       "ing_sugar": 1
     },
-    "price": 120,
+    "price": 1200,
     "source": "shop",
     "icon": "food_bee12",
     "bagIcon": "food_bag_food_bee12"
@@ -354,7 +354,7 @@
       "ing_cream": 1,
       "ing_butter": 1
     },
-    "price": 150,
+    "price": 1500,
     "source": "shop",
     "icon": "food_bee6",
     "bagIcon": "food_bag_food_bee6"
@@ -368,7 +368,7 @@
       "ing_cocoa": 1,
       "ing_sugar": 1
     },
-    "price": 125,
+    "price": 1250,
     "source": "shop",
     "icon": "food_bee13",
     "bagIcon": "food_bag_food_bee13"
@@ -382,7 +382,7 @@
       "ing_cocoa": 2,
       "ing_cream": 1
     },
-    "price": 200,
+    "price": 2000,
     "source": "shop",
     "icon": "food_bee17",
     "bagIcon": "food_bag_food_bee17"
@@ -396,7 +396,7 @@
       "ing_cream": 2,
       "produce_strawberry": 1
     },
-    "price": 220,
+    "price": 2200,
     "source": "shop",
     "icon": "food_bee14",
     "bagIcon": "food_bag_food_bee14"
@@ -411,7 +411,7 @@
       "ing_cherry": 1,
       "ing_golden_wheat": 1
     },
-    "price": 350,
+    "price": 3500,
     "source": "shop",
     "icon": "food_slime23",
     "bagIcon": "food_bag_food_slime23"
@@ -426,7 +426,7 @@
       "ing_cherry": 1,
       "ing_honey": 1
     },
-    "price": 350,
+    "price": 3500,
     "source": "shop",
     "icon": "food_slime22",
     "bagIcon": "food_bag_food_slime22"

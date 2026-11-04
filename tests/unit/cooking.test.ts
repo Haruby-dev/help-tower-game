@@ -23,7 +23,7 @@ import {
 } from '../../src/systems/cooking';
 import { countOf } from '../../src/systems/farm';
 import { newWorld } from '../../src/systems/gauges';
-import { parseSaveFile, SAVE_VERSION } from '../../src/systems/save';
+import { parseSaveFile } from '../../src/systems/save';
 import { sleep, stepClock } from '../../src/systems/time';
 
 const KAPRAO = recipes.home_kaprao!;
@@ -46,7 +46,7 @@ describe('recipe data', () => {
 
   it('follows the economy doc over the GDD', () => {
     expect(recipes.strawberry_skewer?.ingredients).toEqual({ produce_strawberry: 2, ing_sugar: 1 });
-    expect(KAPRAO.price).toBe(120);
+    expect(KAPRAO.price).toBe(1200);
   });
 
   it('times F 20, E 25 and drinks short', () => {
@@ -232,7 +232,6 @@ describe('batch cooking (her decision 4 Nov 2026)', () => {
     const world = newWorld();
     const v6 = { version: 6, savedAt: '2026-11-04T00:00:00.000Z', world: { ...world, cooking: { slot: { recipe: 'boiled_egg', stars: 1, minutesLeft: 5 } } } };
     const parsed = parseSaveFile(v6);
-    expect(SAVE_VERSION).toBe(7);
     expect(parsed?.world.cooking.slot).toEqual({ recipe: 'boiled_egg', stars: 1, minutesLeft: 5, count: 1 });
     expect(parseSaveFile({ ...v6, world: { ...world, cooking: { slot: null } } })?.world.cooking.slot).toBeNull();
   });

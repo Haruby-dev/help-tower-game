@@ -25,7 +25,7 @@ describe('fish table', () => {
   it('has the 8 zone-1 fish from the GDD, all catchable with the bamboo rod', () => {
     expect(Object.keys(fishTable)).toHaveLength(8);
     expect(Object.values(fishTable).every((fish) => fish.rod === 'bamboo')).toBe(true);
-    expect(fishTable.meow_salmon).toMatchObject({ rank: 'D', hours: [6, 9], bait: 'corn', price: 45 });
+    expect(fishTable.meow_salmon).toMatchObject({ rank: 'D', hours: [6, 9], bait: 'corn', price: 450 });
     expect(fishTable.cloud_bass).toMatchObject({ rank: 'D', weather: 'rain', bait: 'cloud_lettuce' });
   });
 
@@ -222,8 +222,8 @@ describe('bath and saves', () => {
       },
     };
     const parsed = parseSaveFile(v5);
-    expect(SAVE_VERSION).toBe(7);
-    expect(parsed?.version).toBe(7);
+    expect(SAVE_VERSION).toBe(8);
+    expect(parsed?.version).toBe(8);
     expect(parsed?.world.weather).toBe('sunny');
     expect(parsed?.world.fishing).toEqual({ rods: ['bamboo'], caught: {} });
     expect(parsed?.world.cosmetics.owned.clips).toEqual([]);

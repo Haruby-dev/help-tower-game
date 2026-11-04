@@ -6,6 +6,7 @@ import { gameState } from '../core/state';
 import { cosmeticTable, openChest, type Reward } from '../systems/chests';
 import { itemImage, itemName } from './inventory';
 import { artUrl } from './pixelArt';
+import { formatMoney } from '../systems/economy';
 
 const WINDOW = 'chest';
 const SHAKE_MS = 400;
@@ -42,7 +43,7 @@ function rewardRow(reward: Reward): HTMLElement {
   row.className = 'chest-reward';
   if (reward.kind === 'coins') {
     row.dataset.reward = 'coins';
-    row.append(Object.assign(document.createElement('b'), { textContent: `+${reward.amount} ${t('chest.coins')}` }));
+    row.append(Object.assign(document.createElement('b'), { textContent: `+${formatMoney(reward.amount)} ${t('chest.coins')}` }));
     return row;
   }
   row.dataset.reward = reward.item;

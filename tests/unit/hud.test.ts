@@ -4,7 +4,7 @@ import { applyTransaction, entriesFor, netFor } from '../../src/systems/economy'
 import { newWorld } from '../../src/systems/gauges';
 import { beadFills, isAlert, isDirty, isPulsing, moodOf } from '../../src/systems/mood';
 import { dayOfMonth, encouragementFor, monthOf, stuckTime, weekStrip, weekdayIndex } from '../../src/systems/phoneCalendar';
-import { SAVE_VERSION, parseSaveFile } from '../../src/systems/save';
+import { COIN_SCALE, SAVE_VERSION, parseSaveFile } from '../../src/systems/save';
 import { uiZoomFor } from '../../src/core/viewport';
 import display from '../../src/data/display.json';
 import lines from '../../src/data/lines.json';
@@ -99,7 +99,7 @@ describe('save migration', () => {
       world: { day: 3, hour: 6, gauges: gauges(50, 60, 70), player: { x: 1, y: 2 } },
     };
     const parsed = parseSaveFile(old);
-    expect(SAVE_VERSION).toBe(7);
+    expect(SAVE_VERSION).toBe(8);
     expect(parsed?.version).toBe(SAVE_VERSION);
     expect(parsed?.world.day).toBe(3);
     expect(parsed?.world.wallet).toEqual(emptyWallet());
@@ -114,7 +114,8 @@ describe('save migration', () => {
       world: { day: 2, hour: 6, gauges: gauges(50, 60, 70), player: null, wallet },
     });
     expect(parsed?.version).toBe(SAVE_VERSION);
-    expect(parsed?.world.wallet.coins).toBe(50);
+    // เซฟก่อนเวอร์ชัน 8 เหรียญถูกคูณ 10 ตอนแปลง อำนาจซื้อเท่าเดิม
+    expect(parsed?.world.wallet.coins).toBe(500);
     expect(parsed?.world.cosmetics.equipped.case).toBe('case_pink_cat');
   });
 });
@@ -160,5 +161,36 @@ describe('UI zoom', () => {
     expect(uiZoomFor(viewport(4, 2442, 1140), display.uiDesign)).toBe(4);
     expect(uiZoomFor(viewport(5, 2442, 1140), display.uiDesign)).toBe(4);
     expect(uiZoomFor(viewport(1, 640, 360), display.uiDesign)).toBe(1);
+  });
+});
+
+describe('coins ×10 (her decision 4 Nov 2026)', () => {
+  const v7 = () => {
+    let world = newWorld();
+    world = applyTransaction(world, 'coins', 120, 'wallet.test_income', 'wallet.category_test');
+    world = applyTransaction(world, 'coins', -30, 'wallet.test_income', 'wallet.category_test');
+    world = applyTransaction(world, 'stars', 4, 'wallet.test_income', 'wallet.category_test');
+    return { version: 7, savedAt: '2026-11-04T00:00:00.000Z', world };
+  };
+
+  it('multiplies an old save\'s coins, coin log and daily coin totals by 10, and leaves sugar stars alone', () => {
+    const parsed = parseSaveFile(v7())!;
+    expect(COIN_SCALE).toBe(10);
+    expect(parsed.version).toBe(SAVE_VERSION);
+    expect(parsed.world.wallet.coins).toBe(900);
+    expect(parsed.world.wallet.stars).toBe(4);
+    expect(parsed.world.wallet.log.map((entry) => [entry.currency, entry.amount])).toEqual([
+      ['stars', 4],
+      ['coins', -300],
+      ['coins', 1200],
+    ]);
+    expect(parsed.world.wallet.daily[0]).toMatchObject({ coins: 900, stars: 4 });
+  });
+
+  it('does it exactly once: loading the converted save again keeps the same coins', () => {
+    const once = parseSaveFile(v7())!;
+    const twice = parseSaveFile(JSON.parse(JSON.stringify(once)))!;
+    expect(twice.world.wallet).toEqual(once.world.wallet);
+    expect(twice.world.wallet.coins).toBe(900);
   });
 });

@@ -1,10 +1,10 @@
 {
-  "silver_minnow": { "rank": "F", "hours": null, "weather": "any", "bait": "normal", "price": 15, "weight": 3, "rod": "bamboo" },
-  "pond_tilapia": { "rank": "F", "hours": null, "weather": "any", "bait": "normal", "price": 15, "weight": 3, "rod": "bamboo" },
-  "mud_catfish": { "rank": "F", "hours": [18, 26], "weather": "rain", "bait": "normal", "price": 15, "weight": 3, "rod": "bamboo" },
-  "golden_carp": { "rank": "E", "hours": [6, 10], "weather": "any", "bait": "normal", "price": 25, "weight": 2, "rod": "bamboo" },
-  "lost_mackerel": { "rank": "E", "hours": [10, 18], "weather": "sunny", "bait": "normal", "price": 25, "weight": 2, "rod": "bamboo" },
-  "glow_squid": { "rank": "E", "hours": [20, 26], "weather": "any", "bait": "normal", "price": 25, "weight": 2, "rod": "bamboo" },
-  "meow_salmon": { "rank": "D", "hours": [6, 9], "weather": "any", "bait": "corn", "price": 45, "weight": 1, "rod": "bamboo" },
-  "cloud_bass": { "rank": "D", "hours": null, "weather": "rain", "bait": "cloud_lettuce", "price": 45, "weight": 1, "rod": "bamboo" }
+  "silver_minnow": { "rank": "F", "hours": null, "weather": "any", "bait": "normal", "price": 150, "weight": 3, "rod": "bamboo" },
+  "pond_tilapia": { "rank": "F", "hours": null, "weather": "any", "bait": "normal", "price": 150, "weight": 3, "rod": "bamboo" },
+  "mud_catfish": { "rank": "F", "hours": [18, 26], "weather": "rain", "bait": "normal", "price": 150, "weight": 3, "rod": "bamboo" },
+  "golden_carp": { "rank": "E", "hours": [6, 10], "weather": "any", "bait": "normal", "price": 250, "weight": 2, "rod": "bamboo" },
+  "lost_mackerel": { "rank": "E", "hours": [10, 18], "weather": "sunny", "bait": "normal", "price": 250, "weight": 2, "rod": "bamboo" },
+  "glow_squid": { "rank": "E", "hours": [20, 26], "weather": "any", "bait": "normal", "price": 250, "weight": 2, "rod": "bamboo" },
+  "meow_salmon": { "rank": "D", "hours": [6, 9], "weather": "any", "bait": "corn", "price": 450, "weight": 1, "rod": "bamboo" },
+  "cloud_bass": { "rank": "D", "hours": null, "weather": "rain", "bait": "cloud_lettuce", "price": 450, "weight": 1, "rod": "bamboo" }
 }

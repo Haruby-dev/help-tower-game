@@ -1,14 +1,14 @@
 import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
 import { gameState, type Currency, type WalletEntry } from '../core/state';
-import { entriesFor, netFor, type WalletRange } from '../systems/economy';
+import { entriesFor, formatMoney, netFor, type WalletRange } from '../systems/economy';
 
 const RANGES: { id: WalletRange; label: TextKey }[] = [
   { id: 'today', label: 'wallet.today' },
   { id: 'week', label: 'wallet.week' },
   { id: 'all', label: 'wallet.all' },
 ];
-const signed = (amount: number): string => `${amount > 0 ? '+' : ''}${amount.toLocaleString('en-US')}`;
+const signed = (amount: number): string => `${amount > 0 ? '+' : ''}${formatMoney(amount)}`;
 
 function balanceCard(currency: Currency, label: TextKey): { card: HTMLElement; value: HTMLElement } {
   const card = document.createElement('div');
@@ -60,8 +60,8 @@ export function createWalletPage(): HTMLElement {
   const render = (): void => {
     if (!gameState.started) return;
     const { wallet, day } = gameState.world;
-    coins.value.textContent = wallet.coins.toLocaleString('en-US');
-    stars.value.textContent = wallet.stars.toLocaleString('en-US');
+    coins.value.textContent = formatMoney(wallet.coins);
+    stars.value.textContent = formatMoney(wallet.stars);
     net.textContent = signed(netFor(wallet, day, range, 'coins'));
     const entries = entriesFor(wallet, day, range);
     if (entries.length === 0) {

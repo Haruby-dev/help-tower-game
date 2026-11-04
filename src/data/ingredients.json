@@ -1,53 +1,53 @@
 {
   "egg": {
-    "value": 10
+    "value": 100
   },
   "pork": {
-    "value": 15
+    "value": 150
   },
   "fish_F": {
-    "value": 8
+    "value": 80
   },
   "milk": {
-    "value": 12
+    "value": 120
   },
   "honey": {
-    "value": 12
+    "value": 120
   },
   "salt": {
-    "value": 1
+    "value": 10
   },
   "sugar": {
-    "value": 1
+    "value": 10
   },
   "fish_sauce": {
-    "value": 1
+    "value": 10
   },
   "honey_apple": {
-    "value": 20
+    "value": 200
   },
   "golden_wheat": {
-    "value": 18
+    "value": 180
   },
   "cream": {
-    "value": 18
+    "value": 180
   },
   "butter": {
-    "value": 20
+    "value": 200
   },
   "cocoa": {
-    "value": 15
+    "value": 150
   },
   "cherry": {
-    "value": 10
+    "value": 100
   },
   "slime_jelly_scrap": {
-    "value": 5
+    "value": 50
   },
   "fizzy_water": {
-    "value": 10
+    "value": 100
   },
   "vanilla": {
-    "value": 15
+    "value": 150
   }
 }

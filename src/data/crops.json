@@ -6,8 +6,8 @@
     "regrowTimes": 0,
     "firstYield": 3,
     "regrowYield": null,
-    "sellPrice": 8,
-    "seedPrice": 8
+    "sellPrice": 80,
+    "seedPrice": 80
   },
   "chili": {
     "source": "start",
@@ -16,8 +16,8 @@
     "regrowTimes": 3,
     "firstYield": 3,
     "regrowYield": 2,
-    "sellPrice": 8,
-    "seedPrice": 30
+    "sellPrice": 80,
+    "seedPrice": 300
   },
   "basil": {
     "source": "start",
@@ -26,8 +26,8 @@
     "regrowTimes": 3,
     "firstYield": 3,
     "regrowYield": 2,
-    "sellPrice": 8,
-    "seedPrice": 30
+    "sellPrice": 80,
+    "seedPrice": 300
   },
   "tomato": {
     "source": "start",
@@ -36,8 +36,8 @@
     "regrowTimes": 3,
     "firstYield": 3,
     "regrowYield": 2,
-    "sellPrice": 10,
-    "seedPrice": 35
+    "sellPrice": 100,
+    "seedPrice": 350
   },
   "garlic": {
     "source": "start",
@@ -46,8 +46,8 @@
     "regrowTimes": 0,
     "firstYield": 3,
     "regrowYield": null,
-    "sellPrice": 8,
-    "seedPrice": 8
+    "sellPrice": 80,
+    "seedPrice": 80
   },
   "rice": {
     "source": "start",
@@ -56,8 +56,8 @@
     "regrowTimes": 0,
     "firstYield": 3,
     "regrowYield": null,
-    "sellPrice": 10,
-    "seedPrice": 10
+    "sellPrice": 100,
+    "seedPrice": 100
   },
   "carrot": {
     "source": "shop",
@@ -66,8 +66,8 @@
     "regrowTimes": 0,
     "firstYield": 3,
     "regrowYield": null,
-    "sellPrice": 15,
-    "seedPrice": 15
+    "sellPrice": 150,
+    "seedPrice": 150
   },
   "cabbage": {
     "source": "shop",
@@ -76,8 +76,8 @@
     "regrowTimes": 0,
     "firstYield": 3,
     "regrowYield": null,
-    "sellPrice": 25,
-    "seedPrice": 25
+    "sellPrice": 250,
+    "seedPrice": 250
   },
   "cucumber": {
     "source": "shop",
@@ -86,8 +86,8 @@
     "regrowTimes": 3,
     "firstYield": 3,
     "regrowYield": 2,
-    "sellPrice": 10,
-    "seedPrice": 35
+    "sellPrice": 100,
+    "seedPrice": 350
   },
   "corn": {
     "source": "shop",
@@ -96,8 +96,8 @@
     "regrowTimes": 3,
     "firstYield": 3,
     "regrowYield": 2,
-    "sellPrice": 18,
-    "seedPrice": 65
+    "sellPrice": 180,
+    "seedPrice": 650
   },
   "potato": {
     "source": "shop",
@@ -106,8 +106,8 @@
     "regrowTimes": 0,
     "firstYield": 3,
     "regrowYield": null,
-    "sellPrice": 25,
-    "seedPrice": 25
+    "sellPrice": 250,
+    "seedPrice": 250
   },
   "pumpkin": {
     "source": "shop",
@@ -116,8 +116,8 @@
     "regrowTimes": 0,
     "firstYield": 3,
     "regrowYield": null,
-    "sellPrice": 45,
-    "seedPrice": 45
+    "sellPrice": 450,
+    "seedPrice": 450
   },
   "soybean": {
     "source": "shop",
@@ -126,8 +126,8 @@
     "regrowTimes": 3,
     "firstYield": 3,
     "regrowYield": 2,
-    "sellPrice": 12,
-    "seedPrice": 40
+    "sellPrice": 120,
+    "seedPrice": 400
   },
   "strawberry": {
     "source": "shop",
@@ -136,8 +136,8 @@
     "regrowTimes": 3,
     "firstYield": 3,
     "regrowYield": 2,
-    "sellPrice": 18,
-    "seedPrice": 65
+    "sellPrice": 180,
+    "seedPrice": 650
   },
   "blueberry": {
     "source": "shop",
@@ -146,7 +146,7 @@
     "regrowTimes": 3,
     "firstYield": 3,
     "regrowYield": 2,
-    "sellPrice": 15,
-    "seedPrice": 50
+    "sellPrice": 150,
+    "seedPrice": 500
   }
 }

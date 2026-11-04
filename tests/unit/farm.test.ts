@@ -43,7 +43,7 @@ function growUntilReady(start: World): World {
 describe('crop numbers', () => {
   it('match the GDD growth table', () => {
     expect(Object.keys(crops)).toHaveLength(15);
-    expect(crops.blueberry).toMatchObject({ growDays: 7, regrowDays: 3, regrowTimes: 3, sellPrice: 15, seedPrice: 50 });
+    expect(crops.blueberry).toMatchObject({ growDays: 7, regrowDays: 3, regrowTimes: 3, sellPrice: 150, seedPrice: 500 });
     expect(crops.scallion).toMatchObject({ growDays: 3, regrowDays: null });
     expect(crops.chili).toMatchObject({ growDays: 5, regrowDays: 3 });
     expect(crops.pumpkin).toMatchObject({ growDays: 10, regrowDays: null });
@@ -216,8 +216,8 @@ describe('regrow lifetime', () => {
   });
 
   it('uses the new economy prices', () => {
-    expect(crops.scallion).toMatchObject({ sellPrice: 8, seedPrice: 8, regrowTimes: 0 });
-    expect(crops.corn).toMatchObject({ sellPrice: 18, seedPrice: 65, regrowTimes: 3 });
+    expect(crops.scallion).toMatchObject({ sellPrice: 80, seedPrice: 80, regrowTimes: 0 });
+    expect(crops.corn).toMatchObject({ sellPrice: 180, seedPrice: 650, regrowTimes: 3 });
   });
 });
 
@@ -238,14 +238,14 @@ describe('harvest seed drop (her decision 4 Nov 2026)', () => {
     expect(countOf(lucky.bag, 'produce_scallion')).toBe(countOf(unlucky.bag, 'produce_scallion'));
   });
 
-  it('sells the six starter crops at the temporary seed prices', () => {
+  it('sells the six starter crops at the temporary seed prices (×10 coins since 4 Nov 2026)', () => {
     expect(Object.fromEntries(['scallion', 'garlic', 'rice', 'chili', 'basil', 'tomato'].map((id) => [id, crops[id]!.seedPrice]))).toEqual({
-      scallion: 8,
-      garlic: 8,
-      rice: 10,
-      chili: 30,
-      basil: 30,
-      tomato: 35,
+      scallion: 80,
+      garlic: 80,
+      rice: 100,
+      chili: 300,
+      basil: 300,
+      tomato: 350,
     });
   });
 });

@@ -1,8 +1,8 @@
 {
   "tiers": {
-    "wooden": { "item": "chest_wooden", "chance": 0.75, "rolls": 2, "coins": [10, 30], "duplicateStars": 2, "guarantee": null },
-    "silver": { "item": "chest_silver", "chance": 0.2, "rolls": 3, "coins": [30, 80], "duplicateStars": 5, "guarantee": "uncommon" },
-    "golden": { "item": "chest_golden", "chance": 0.05, "rolls": 3, "coins": [100, 200], "duplicateStars": 10, "guarantee": "cosmetic" }
+    "wooden": { "item": "chest_wooden", "chance": 0.75, "rolls": 2, "coins": [100, 300], "duplicateStars": 2, "guarantee": null },
+    "silver": { "item": "chest_silver", "chance": 0.2, "rolls": 3, "coins": [300, 800], "duplicateStars": 5, "guarantee": "uncommon" },
+    "golden": { "item": "chest_golden", "chance": 0.05, "rolls": 3, "coins": [1000, 2000], "duplicateStars": 10, "guarantee": "cosmetic" }
   },
   "categories": {
     "seasoning": { "wooden": 0.45, "silver": 0.35, "golden": 0.2 },

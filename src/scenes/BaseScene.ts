@@ -25,6 +25,7 @@ import { Pond, type CastSpot, type PondObject } from './Pond';
 import { WeatherEffects } from './weatherEffects';
 import { TreeSway } from './treeSway';
 import { createCanopyMask, softEllipseTexture, type ShadeArea } from './sceneArt';
+import { formatMoney } from '../systems/economy';
 
 type MoveKeys = Record<'up' | 'down' | 'left' | 'right' | 'w' | 'a' | 's' | 'd', Phaser.Input.Keyboard.Key>;
 
@@ -318,7 +319,7 @@ export class BaseScene extends Phaser.Scene {
     const plot = this.property<number>(object, 'plot');
     if (plot !== undefined) {
       const price = this.add
-        .text(x, y - PRICE_LIFT_PX, String(balance.land.prices[plot]), {
+        .text(x, y - PRICE_LIFT_PX, formatMoney(balance.land.prices[plot]!), {
           fontFamily: 'Mali',
           fontSize: `${PRICE_FONT_PX}px`,
           fontStyle: 'bold',
