@@ -207,6 +207,9 @@ function createLowGaugeBubble(uiRoot: HTMLElement): void {
 /** ไอคอนวางกลางกรอบ 48×48 ปัดเศษขึ้นแบบภาพตัวอย่างที่ฝั่งวางแผนทำ */
 function centredIcon(icon: HTMLImageElement, id: string): void {
   const entry = registry[id];
+  // ไอคอนที่ยังไม่มีภาพ (เช่น คุย) ใช้กล่องสีแทนตามกฎทะเบียน
+  icon.hidden = entry?.type !== 'local';
+  icon.parentElement?.toggleAttribute('data-missing-icon', icon.hidden);
   if (entry?.type !== 'local') return;
   icon.src = artUrl(id);
   icon.style.setProperty('--w', String(entry.width));

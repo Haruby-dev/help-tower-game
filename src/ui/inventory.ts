@@ -1,16 +1,15 @@
 import { registry } from '../core/assets';
 import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
-import { createRng } from '../core/rng';
 import { gameState, type BagStack } from '../core/state';
 import balance from '../data/balance.json';
 import { MYSTERY, eatItem, fullnessOf, isDish, isIngredient, parseDish, recipes } from '../systems/cooking';
 import { cosmeticTable, isChest } from '../systems/chests';
-import { convertToSeeds, crops, cropOfItem, isSeed } from '../systems/farm';
+import { crops, cropOfItem, isSeed } from '../systems/farm';
 import { fishOfItem, isBait, isFish, makeBait } from '../systems/fishing';
 import { artUrl } from './pixelArt';
+import { isTreat } from '../systems/gio';
 
-const rng = createRng(Date.now());
 
 type BagTab = 'all' | 'seeds' | 'produce' | 'goods' | 'collection';
 
@@ -42,6 +41,7 @@ const flavourKey = (item: string): TextKey => {
   if (isFish(item)) return 'bag.flavour_fish';
   if (isBait(item)) return 'bag.flavour_bait';
   if (isChest(item)) return 'bag.flavour_chest';
+  if (isTreat(item)) return 'bag.flavour_treat';
   if (isDish(item)) return 'bag.flavour_dish';
   return isIngredient(item) ? 'bag.flavour_ingredient' : 'bag.flavour_produce';
 };
@@ -188,18 +188,8 @@ export function createInventoryPage(): HTMLElement {
       });
       detail.append(eat);
     }
+    // ปุ่มแปลงผักเป็นเมล็ดเอาออกแล้วเมื่อร้านค้ามาใน M6 เหลือแค่บทสอนวันแรกใน M9 (ผู้ใช้ตัดสิน 4 พ.ย. 2026)
     if (!isProduce(item)) return;
-    const convert = document.createElement('button');
-    convert.id = 'bag-convert';
-    convert.type = 'button';
-    convert.className = 'phone-tool';
-    convert.textContent = t('bag.convert');
-    convert.addEventListener('click', () => {
-      const next = convertToSeeds(gameState.world, cropOfItem(item), rng);
-      if (next) gameState.setWorld(next);
-      else eventBus.emit('player-says', 'bagFull');
-      render();
-    });
     const bait = document.createElement('button');
     bait.id = 'bag-make-bait';
     bait.type = 'button';
@@ -218,7 +208,7 @@ export function createInventoryPage(): HTMLElement {
     sell.className = 'phone-tool';
     sell.disabled = true;
     sell.textContent = t('bag.sell_tray');
-    detail.append(convert, bait, sell);
+    detail.append(bait, sell);
   };
 
   /** ของแต่ง ของเล่น และของที่ยังไม่มีระบบ ไม่กินช่องกระเป๋า */

@@ -7810,5 +7810,50 @@
     "jade_tone": false,
     "lazy": true,
     "note": "กรอบแถบเหยื่อ ตัด 9 ส่วน"
+  },
+  "treat_tuna": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/treat_tuna.png",
+    "file": "items/treat_tuna.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "treat_chicken": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/treat_chicken.png",
+    "file": "items/treat_chicken.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "treat_salmon": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/treat_salmon.png",
+    "file": "items/treat_salmon.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "treat_special": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/treat_special.png",
+    "file": "items/treat_special.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_shop_gio": {
+    "type": "local",
+    "width": 64,
+    "height": 64,
+    "source": "public/assets/ui/shop/gio_shop_rubpaws.png",
+    "file": "ui/shop/gio_shop_rubpaws.png",
+    "jade_tone": false,
+    "lazy": true
   }
 }

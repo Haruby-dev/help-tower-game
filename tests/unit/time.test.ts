@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { defaultCosmetics, type World } from '../../src/core/state';
 import { newWorld } from '../../src/systems/gauges';
+import { newGioCare } from '../../src/systems/gio';
 import { faint, sleep, stepClock } from '../../src/systems/time';
 
 const HOUR_MS = 45_000;
@@ -25,6 +26,7 @@ describe('clock', () => {
       chests: { sinceCosmetic: 0 },
       toys: [],
       stash: {},
+      gio: newGioCare(),
     });
   });
 

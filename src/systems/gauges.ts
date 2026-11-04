@@ -2,6 +2,7 @@ import { createRng } from '../core/rng';
 import { defaultCosmetics, emptyWallet, type BagStack, type Farm, type Fishing, type GaugeValues, type RecipeBook, type Weather, type World } from '../core/state';
 import balance from '../data/balance.json';
 import recipesJson from '../data/recipes.json';
+import { newGioCare } from './gio';
 
 const { gauges, time, farm, cooking, fishing, weather } = balance;
 const SEED_RANGE = 2 ** 31;
@@ -60,6 +61,7 @@ export function newWorld(): World {
     chests: { sinceCosmetic: 0 },
     toys: [],
     stash: {},
+    gio: newGioCare(),
   };
 }
 

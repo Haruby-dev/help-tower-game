@@ -25,7 +25,7 @@
     { "category": "items", "rarity": "uncommon", "kind": "bag", "item": "bait_corn", "min": 1, "max": 1, "minTier": "silver" },
     { "category": "items", "rarity": "uncommon", "kind": "bag", "item": "bait_cloud_lettuce", "min": 1, "max": 1, "minTier": "silver" },
     { "category": "items", "rarity": "uncommon", "kind": "seed_bag", "item": "seed_bag", "min": 3, "max": 3 },
-    { "category": "items", "rarity": "rare", "kind": "stash", "item": "gio_lick_treat", "min": 1, "max": 1 },
+    { "category": "items", "rarity": "rare", "kind": "bag", "item": "treat_special", "min": 1, "max": 1 },
     { "category": "toys", "rarity": "common", "kind": "toy", "item": "toy_feather_wand", "min": 1, "max": 1 },
     { "category": "toys", "rarity": "common", "kind": "toy", "item": "toy_yarn_ball", "min": 1, "max": 1 },
     { "category": "toys", "rarity": "uncommon", "kind": "toy", "item": "toy_mouse", "min": 1, "max": 1 },

@@ -5,6 +5,7 @@ import { newWorld } from '../systems/gauges';
 import { showTitle } from './title';
 import type { SaveFile } from '../data/schema';
 import { SLOT_COUNT, downloadSave, readSaveUpload, readSlot, toSaveFile, writeSaveFile, writeSlot } from '../systems/save';
+import { withFirstGift } from '../systems/gio';
 
 const slots = Array.from({ length: SLOT_COUNT }, (_, index) => index + 1);
 
@@ -26,7 +27,7 @@ export function showTitleScreen(uiRoot: HTMLElement): void {
     onStart: () => {
       void latestSlot().then(({ slot, world }) => {
         close();
-        gameState.startGame(slot, world ?? newWorld());
+        gameState.startGame(slot, world ?? withFirstGift(newWorld()));
         gameState.setWindowOpen('slots', false);
       });
     },
@@ -67,7 +68,7 @@ export async function showSlotPicker(uiRoot: HTMLElement, closeTitle: () => void
       : `${t('save.slot')} ${slot} · ${t('save.empty')}`;
     button.addEventListener('click', () => {
       closeTitle();
-      gameState.startGame(slot, save?.world ?? newWorld());
+      gameState.startGame(slot, save?.world ?? withFirstGift(newWorld()));
       panel.remove();
       gameState.setWindowOpen('slots', false);
     });

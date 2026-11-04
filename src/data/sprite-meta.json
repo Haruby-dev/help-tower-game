@@ -3630,5 +3630,30 @@
     "footY": {
       "default": 20
     }
+  },
+  "treat_tuna": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "treat_chicken": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "treat_salmon": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "treat_special": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "ui_shop_gio": {
+    "footY": {
+      "default": 59
+    }
   }
 }

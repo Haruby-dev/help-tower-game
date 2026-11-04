@@ -1,0 +1,27 @@
+{
+  "treats": [
+    {
+      "item": "treat_tuna",
+      "price": 200,
+      "taste": "like"
+    },
+    {
+      "item": "treat_chicken",
+      "price": 200,
+      "taste": "like"
+    },
+    {
+      "item": "treat_salmon",
+      "price": 200,
+      "taste": "love"
+    },
+    {
+      "item": "treat_special",
+      "price": 500,
+      "taste": "special"
+    }
+  ],
+  "randomSeeds": 3,
+  "randomRecipes": 2,
+  "recipePriceMultiplier": 5
+}

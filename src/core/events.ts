@@ -25,6 +25,8 @@ export interface GameEvents {
   'book-open': undefined;
   /** ไอเท็มหีบในกระเป๋าที่จะเปิด */
   'chest-open': string;
+  /** กดคุยกับจีโอ */
+  'gio-talk': undefined;
 }
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

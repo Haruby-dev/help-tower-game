@@ -7,6 +7,7 @@ import { dayOfMonth, encouragementFor, monthOf, stuckTime, weekStrip, weekdayInd
 import { formatClock } from './hud';
 import { createInventoryPage } from './inventory';
 import { artUrl, stickerIcon } from './pixelArt';
+import { createShopPage } from './shop';
 import { createWalletPage } from './wallet';
 import { revealWhenReady } from './preload';
 
@@ -24,7 +25,7 @@ interface PhoneApp {
 
 const APPS: PhoneApp[] = [
   { id: 'inventory', name: 'app.inventory', icon: 'ui_app_bag', place: 'grid', big: true, page: createInventoryPage },
-  { id: 'shop', name: 'app.shop', icon: 'ui_app_shop', place: 'grid' },
+  { id: 'shop', name: 'app.shop', icon: 'ui_app_shop', place: 'grid', big: true, page: createShopPage },
   { id: 'recipes', name: 'app.recipes', icon: 'ui_app_recipe', place: 'grid', opens: 'book-open' },
   { id: 'album', name: 'app.album', icon: 'ui_app_album', place: 'grid' },
   { id: 'pets', name: 'app.pets', icon: 'ui_app_pets', place: 'grid' },
@@ -316,6 +317,7 @@ export function createPhone(uiRoot: HTMLElement): void {
       pages.set(app.id, page);
     }
     pageHolder.replaceChildren(page);
+    page.dispatchEvent(new Event('phone-page-shown'));
     content.hidden = false;
     revealWhenReady(content);
     phone.dataset.app = app.id;

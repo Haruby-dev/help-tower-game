@@ -84,7 +84,33 @@ export class Gio {
     return this.walking;
   }
 
+  /** จีโออยู่บ้านช่วงเย็นถึงเช้า กลางวันออกไปเร่ขาย จึงซ่อนทั้งภาพและตัวชน */
+  get present(): boolean {
+    return this.sprite.visible;
+  }
+
+  setPresent(present: boolean): void {
+    if (this.sprite.visible === present) return;
+    this.sprite.setVisible(present);
+    this.physicsBody.enable = present;
+    if (!present) {
+      this.physicsBody.setVelocity(0, 0);
+      this.body.setPosition(this.homeX, this.homeY);
+      this.sit();
+      this.syncSprite();
+    }
+  }
+
+  get feetX(): number {
+    return this.body.x;
+  }
+
+  get feetY(): number {
+    return this.body.y + BODY_HEIGHT / 2;
+  }
+
   update(deltaMs: number, playerX: number, playerY: number): void {
+    if (!this.present) return;
     if (this.walking) {
       this.walkRemainingMs -= deltaMs;
       if (this.walkRemainingMs <= 0 || this.tooClose(playerX, playerY, 0)) this.sit();

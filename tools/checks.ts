@@ -15,6 +15,7 @@ import {
   recipesSchema,
   displaySchema,
   linesSchema,
+  shopSchema,
   registrySchema,
   spriteMetaSchema,
   translationsSchema,
@@ -75,6 +76,7 @@ export function checkProject(): string[] {
   checkSchema('src/data/baits.json', baitsSchema, problems);
   checkSchema('src/data/chests.json', chestsSchema, problems);
   checkSchema('src/data/cosmetics.json', cosmeticsSchema, problems);
+  checkSchema('src/data/shop.json', shopSchema, problems);
   checkSchema('src/data/sprite-meta.json', spriteMetaSchema, problems);
   checkSchema('src/i18n/th.json', translationsSchema, problems);
   checkSchema('assets-src/registry.json', registrySchema, problems);
@@ -83,6 +85,9 @@ export function checkProject(): string[] {
   const registry = registrySchema.parse(readJson('assets-src/registry.json'));
   const spriteMeta = spriteMetaSchema.parse(readJson('src/data/sprite-meta.json'));
   const translations = translationsSchema.parse(readJson('src/i18n/th.json'));
+  for (const treat of shopSchema.parse(readJson('src/data/shop.json')).treats) {
+    if (!translations[`item.${treat.item}.name`]) problems.push(`src/data/shop.json: ${treat.item} has no name in th.json`);
+  }
   for (const [id, entry] of Object.entries(registry)) {
     if (entry.type === 'placeholder') {
       if (!translations[entry.labelKey]) problems.push(`assets-src/registry.json: ${id} has no text ${entry.labelKey}`);

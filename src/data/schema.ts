@@ -45,6 +45,13 @@ export const displaySchema = z.strictObject({
   }),
 });
 
+const gioTierSchema = z.strictObject({
+  from: z.number(),
+  commission: z.number().min(0).max(1),
+  priceBonus: z.number().min(0),
+  sellShare: z.number().positive().max(1),
+});
+
 export const balanceSchema = z.strictObject({
   player: z.strictObject({
     speed: z.number().positive(),
@@ -187,7 +194,37 @@ export const balanceSchema = z.strictObject({
     wanderRadius: z.number().positive(),
     keepAwayDistance: z.number().positive(),
   }),
+  /** ความสุขจีโอ ฝากขาย แมวเลีย ตามขั้นที่ 1 ของ GDD ช่วงความสุขเรียงจากสูงไปต่ำ */
+  gioCare: z.strictObject({
+    startHappiness: z.number(),
+    dailyDecay: z.number(),
+    homeFromHour: z.number(),
+    homeUntilHour: z.number(),
+    returnHour: z.number(),
+    bagSlots: z.number().int().positive(),
+    tiers: z.array(gioTierSchema).min(1),
+    treatsPerDay: z.number().int().positive(),
+    treatGains: z.array(z.number()).min(1),
+    specialWeeklyGain: z.number(),
+    petGain: z.number(),
+    dishStarPrice: z.array(z.number().positive()).length(3),
+    talkReachPx: z.number().positive(),
+    /** เกมใหม่จีโอให้เงินก้อนแรก แทนรางวัลเควสแรกของจีโอที่จะมาใน M9 (GDD 100 ×10) */
+    firstGiftCoins: z.number().int().nonnegative(),
+  }),
 });
+
+
+/** ร้านค้าระบบ ขายทุกวันกับสุ่มวันนี้ ราคาเมล็ดอ่านจาก crops.json ราคาสูตร = ราคาอาหาร × ตัวคูณ */
+export const shopSchema = z.strictObject({
+  treats: z
+    .array(z.strictObject({ item: z.string().regex(/^treat_[a-z_]+$/), price: z.number().int().positive(), taste: z.enum(['like', 'love', 'special']) }))
+    .min(1),
+  randomSeeds: z.number().int().nonnegative(),
+  randomRecipes: z.number().int().nonnegative(),
+  recipePriceMultiplier: z.number().positive(),
+});
+export type ShopData = z.infer<typeof shopSchema>;
 
 export const weatherSchema = z.enum(['sunny', 'rain', 'cloudy']);
 
@@ -261,6 +298,18 @@ export const saveFileSchema = z.strictObject({
     toys: z.array(z.string().min(1)),
     /** ของจากหีบที่ยังไม่มีระบบ เก็บจำนวนไว้ก่อน */
     stash: z.record(z.string(), z.number().int().positive()),
+    /** ความสุขจีโอ แมวเลียวันนี้ ลูบหัว และของที่ฝากขาย */
+    gio: z.strictObject({
+      happiness: z.number(),
+      treatDay: z.number().int().nonnegative(),
+      treatsToday: z.number().int().nonnegative(),
+      pettedDay: z.number().int().nonnegative(),
+      specialWeek: z.number().int(),
+      consignment: z.strictObject({ items: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })), returnDay: z.number().int().positive(), tier: z.number().int().nonnegative() }).nullable(),
+      report: z
+        .strictObject({ day: z.number().int().positive(), sold: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })), returned: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })), gross: z.number(), commission: z.number(), coins: z.number() })
+        .nullable(),
+    }),
   }),
 });
 
@@ -396,6 +445,18 @@ export const linesSchema = z.strictObject({
     fishEscaped: z.string().min(1),
     noBait: z.string().min(1),
     baitRanOut: z.string().min(1),
+  }),
+  gio: z.strictObject({
+    greet: z.string().min(1),
+    treat: z.strictObject({ like: z.string().min(1), love: z.string().min(1), special: z.string().min(1) }),
+    treatFull: z.string().min(1),
+    noTreat: z.string().min(1),
+    pet: z.string().min(1),
+    petDone: z.string().min(1),
+    news: z.string().min(1),
+    consigned: z.string().min(1),
+    busy: z.string().min(1),
+    back: z.string().min(1),
   }),
   encouragement: z.array(z.string().min(1)).min(1),
 });

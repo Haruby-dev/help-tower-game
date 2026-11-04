@@ -133,8 +133,9 @@ test('opens from the mini lock screen, to the lock screen, to home with 10 apps'
     expect(size.width).toBeGreaterThanOrEqual(44);
     expect(size.height).toBeGreaterThanOrEqual(44);
   }
+  // ร้านค้าเปิดแล้วใน M6a
   await page.locator('[data-app="shop"]').click();
-  await expect(page.locator('.phone-page__empty')).toBeVisible();
+  await expect(page.locator('.shop-page')).toBeVisible();
   await page.locator('#phone-back').click();
   await page.locator('[data-app="support"]').click();
   await expect(page.locator('.phone-page__empty')).toBeVisible();

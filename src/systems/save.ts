@@ -1,11 +1,15 @@
 import { get, set } from 'idb-keyval';
-import { defaultCosmetics, emptyWallet, type Wallet, type World } from '../core/state';
+import { defaultCosmetics, emptyWallet, type BagStack, type Wallet, type World } from '../core/state';
+import { addToBag } from './farm';
+import { newGioCare } from './gio';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 import { cookingStarterBag, firstWeather, fishingStarterBag, newFarm, newFishing, newRecipeBook, newSeed, starterBag } from './gauges';
 
-export const SAVE_VERSION = 8;
+export const SAVE_VERSION = 9;
 /** ผู้ใช้ตัดสิน 4 พ.ย. 2026: ตัวเลขเหรียญทั้งเกมใหญ่ขึ้น 10 เท่า สัดส่วนเศรษฐกิจเท่าเดิม */
 export const COIN_SCALE = 10;
+const OLD_TREAT = 'gio_lick_treat';
+const NEW_TREAT = 'treat_special';
 export const SLOT_COUNT = 3;
 
 const slotKey = (slot: number): string => `save-slot-${slot}`;
@@ -62,6 +66,17 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
           daily: wallet.daily.map((total) => ({ ...total, coins: total.coins * COIN_SCALE })),
         },
       },
+    };
+  },
+  // เวอร์ชัน 9 เพิ่มความสุขจีโอกับฝากขาย · แมวเลียจากหีบที่เก็บเป็นธงไว้ย้ายเข้ากระเป๋าเป็นรสพิเศษ ถ้ากระเป๋าเต็มเก็บธงไว้เหมือนเดิม
+  8: (save) => {
+    const world = save.world as { bag: BagStack[]; stash: Record<string, number> };
+    const { [OLD_TREAT]: treats = 0, ...rest } = world.stash;
+    const moved = treats > 0 ? addToBag(world.bag, NEW_TREAT, treats) : world.bag;
+    const keep = moved === null;
+    return {
+      ...save,
+      world: { ...world, bag: moved ?? world.bag, stash: keep ? world.stash : rest, gio: newGioCare() },
     };
   },
 };

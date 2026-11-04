@@ -89,7 +89,7 @@ export interface RecipeBook {
 export type Tool = 'hoe' | 'can' | 'sickle' | 'seeds' | 'rod';
 
 /** ไอคอนบนปุ่มกระทำปุ่มเดียว เปลี่ยนตามจุดที่ยืนและของที่ถือ */
-export type ActionIcon = 'fish' | 'bath' | 'water' | 'till' | 'plant' | 'harvest' | 'cook' | 'sleep' | 'chest';
+export type ActionIcon = 'fish' | 'bath' | 'water' | 'till' | 'plant' | 'harvest' | 'cook' | 'sleep' | 'chest' | 'talk';
 
 export interface ContextAction {
   icon: ActionIcon;
@@ -102,6 +102,28 @@ export interface Fishing {
   rods: string[];
   /** จำนวนที่ตกได้ของแต่ละชนิด */
   caught: Record<string, number>;
+}
+
+/** สรุปยอดตอนจีโอกลับมา เงินเข้ากระเป๋าเงินแล้ว ของที่ขายไม่หมดรอรับคืนตอนคุย */
+export interface GioReport {
+  day: number;
+  sold: BagStack[];
+  returned: BagStack[];
+  gross: number;
+  commission: number;
+  coins: number;
+}
+
+/** ความสุขจีโอ แมวเลียวันนี้ ลูบหัว และของที่ฝากขาย */
+export interface GioCare {
+  happiness: number;
+  treatDay: number;
+  treatsToday: number;
+  pettedDay: number;
+  specialWeek: number;
+  /** tier คือช่วงความสุขตอนฝาก ใช้คิดค่าคอมตอนจีโอกลับ */
+  consignment: { items: BagStack[]; returnDay: number; tier: number } | null;
+  report: GioReport | null;
 }
 
 /** ความจริงของเกมที่อยู่ในเซฟ */
@@ -124,6 +146,7 @@ export interface World {
   chests: { sinceCosmetic: number };
   toys: string[];
   stash: Record<string, number>;
+  gio: GioCare;
 }
 
 class GameState {

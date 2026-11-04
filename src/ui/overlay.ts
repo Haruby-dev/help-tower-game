@@ -14,6 +14,7 @@ import { createUpdateCheck } from './update';
 import { createSaves } from './saves';
 import { createSettings, initSettings } from './settings';
 import { createToolbar } from './toolbar';
+import { createGioWindows } from './gio';
 
 function createRotatePrompt(uiRoot: HTMLElement): void {
   const gio = registry.gio_sit;
@@ -60,6 +61,7 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   initSettings(appRoot);
   createToolbar(uiRoot);
   createCookingWindow(uiRoot);
+  createGioWindows(uiRoot);
   createChestWindow(uiRoot);
   createSettings(uiRoot);
   createPhone(uiRoot);

@@ -26,6 +26,7 @@ import { WeatherEffects } from './weatherEffects';
 import { TreeSway } from './treeSway';
 import { createCanopyMask, softEllipseTexture, type ShadeArea } from './sceneArt';
 import { formatMoney } from '../systems/economy';
+import { isGioHome } from '../systems/gio';
 
 type MoveKeys = Record<'up' | 'down' | 'left' | 'right' | 'w' | 'a' | 's' | 'd', Phaser.Input.Keyboard.Key>;
 
@@ -250,6 +251,7 @@ export class BaseScene extends Phaser.Scene {
     const input = gameState.clockRunning ? this.readMoveInput() : STANDING_STILL;
     this.followPond();
     this.player.update(input, running);
+    if (gameState.started) this.gio.setPresent(isGioHome(gameState.world.hour));
     this.gio.update(deltaMs, this.player.feetX, this.player.feetY);
     this.followPlayer();
     gameState.trackPlayer({ x: this.player.body.x, y: this.player.body.y });
@@ -416,10 +418,18 @@ export class BaseScene extends Phaser.Scene {
     const plot = this.targetPlot();
     if (plot !== null && this.farmActionAt(plot)) this.useFarm(plot);
     else if (this.campfireAction()) this.useCampfire();
+    else if (this.nearGio()) eventBus.emit('gio-talk', undefined);
     else if (this.pondSpot()) {
       if (gameState.selectedTool === 'rod') this.startFishing();
       else this.startBath();
     } else if (this.nearDoor() && !this.player.busy) goToSleep(this.door);
+  }
+
+  /** คุยกับจีโอได้เมื่อจีโออยู่บ้านและยืนใกล้ */
+  private nearGio(): boolean {
+    if (!this.gio.present || !gameState.clockRunning || this.player.busy) return false;
+    const distance = Phaser.Math.Distance.Between(this.player.feetX, this.player.feetY, this.gio.feetX, this.gio.feetY);
+    return distance < balance.gioCare.talkReachPx;
   }
 
   /** จุดลงทุ่นถ้ายืนริมบ่อ ใช้ทั้งตกปลาและอาบน้ำ */
@@ -678,6 +688,7 @@ export class BaseScene extends Phaser.Scene {
     if (farm) return { icon: FARM_ICON[farm], label: ACTION_LABEL[farm] };
     const fire = this.campfireAction();
     if (fire) return { icon: 'cook', label: fire };
+    if (this.nearGio()) return { icon: 'talk', label: 'action.talk' };
     if (this.pondSpot()) return gameState.selectedTool === 'rod' ? { icon: 'fish', label: 'action.fish' } : { icon: 'bath', label: 'action.bath' };
     return this.nearDoor() ? { icon: 'sleep', label: 'action.sleep' } : null;
   }

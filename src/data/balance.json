@@ -81,6 +81,49 @@
     "wanderRadius": 96,
     "keepAwayDistance": 56
   },
+  "gioCare": {
+    "startHappiness": 50,
+    "dailyDecay": 10,
+    "homeFromHour": 18,
+    "homeUntilHour": 8,
+    "returnHour": 18,
+    "bagSlots": 10,
+    "tiers": [
+      {
+        "from": 70,
+        "commission": 0.1,
+        "priceBonus": 0.1,
+        "sellShare": 1
+      },
+      {
+        "from": 30,
+        "commission": 0.2,
+        "priceBonus": 0,
+        "sellShare": 1
+      },
+      {
+        "from": 0,
+        "commission": 0.3,
+        "priceBonus": 0,
+        "sellShare": 0.5
+      }
+    ],
+    "treatsPerDay": 3,
+    "treatGains": [
+      15,
+      8,
+      4
+    ],
+    "specialWeeklyGain": 25,
+    "petGain": 3,
+    "dishStarPrice": [
+      1,
+      1.2,
+      1.5
+    ],
+    "talkReachPx": 44,
+    "firstGiftCoins": 1000
+  },
   "farm": {
     "plotOrigin": {
       "col": 5,

@@ -41,17 +41,19 @@ test('grows a scallion from seed to harvest in 3 game days and saves it', async 
     expect((await box.boundingBox())!.width).toBeGreaterThanOrEqual(44);
   }
 
-  // แปลงผักเป็นเมล็ดในแอปกระเป๋า
+  // ปุ่มแปลงผักเป็นเมล็ดเอาออกแล้วเมื่อร้านค้ามา (M6) เมล็ดต้นหอมมีในกระเป๋าเริ่มเกมอยู่แล้ว
   await page.locator('#phone-button').click();
   await page.locator('#lock-open').click();
   await page.locator('[data-app="inventory"]').click();
   await expect(page.locator('.bag-slot')).toHaveCount(30);
-  const before = await count(page, 'produce_scallion');
   await page.locator('[data-item="produce_scallion"]').click();
-  await page.locator('#bag-convert').click();
-  expect(await count(page, 'produce_scallion')).toBe(before - 1);
-  expect(await count(page, 'seed_scallion')).toBeGreaterThanOrEqual(2);
+  await expect(page.locator('#bag-convert')).toHaveCount(0);
   await page.locator('#phone-close').click();
+  // เมล็ดมาจากร้านค้าแล้ว ในเทสต์ใส่เมล็ดให้ตรง ๆ
+  await page.evaluate(() => {
+    const s = (window as unknown as { __state: { world: FarmWorld; setWorld(w: unknown): void } }).__state;
+    s.setWorld({ ...s.world, bag: [...s.world.bag, { item: 'seed_scallion', count: 1 }] });
+  });
 
   await standOnFirstPlot(page);
   const act = page.locator('#action-button');
@@ -163,7 +165,7 @@ test('the bag opens unfolded with 30 slots and survives an item with no art', as
   await page.locator('[data-bag-tab="produce"]').click();
   await page.locator('[data-item="produce_tomato"]').click();
   await expect(page.locator('#bag-sell')).toBeDisabled();
-  await expect(page.locator('#bag-convert')).toBeEnabled();
+  await expect(page.locator('#bag-convert')).toHaveCount(0);
 });
 
 test('the seed slot shows the chosen bag and its count', async ({ page }) => {

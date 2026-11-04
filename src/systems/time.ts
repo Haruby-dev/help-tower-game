@@ -3,6 +3,7 @@ import { gameState, type Point, type World } from '../core/state';
 import balance from '../data/balance.json';
 import { finishOvernight, tickCooking } from './cooking';
 import { growFarm } from './farm';
+import { gioMorning, settleGio } from './gio';
 import { rainOnFarm, weatherFor } from './weather';
 import { decayAwake, recoverFromFaint, shouldFaint, sleepUntilMorning } from './gauges';
 
@@ -24,6 +25,7 @@ function nextMorning(world: World, restful: boolean): World {
     gauges: sleepUntilMorning(world.gauges, Math.max(0, morning - world.hour), restful),
     farm: weather === 'rain' ? rainOnFarm(farm) : farm,
     cooking: finishOvernight(world.cooking),
+    gio: gioMorning(world.gio),
   };
 }
 
@@ -40,8 +42,8 @@ export function stepClock(world: World, deltaMs: number): StepResult {
   };
 
   if (shouldFaint(next.gauges)) return { world: faint(next), cause: 'faint' };
-  if (next.hour >= time.lateLimitHour) return { world: nextMorning(next, false), cause: 'passed_out' };
-  return { world: next, cause: null };
+  if (next.hour >= time.lateLimitHour) return { world: settleGio(nextMorning(next, false)), cause: 'passed_out' };
+  return { world: settleGio(next), cause: null };
 }
 
 export function faint(world: World): World {
@@ -53,7 +55,7 @@ export function faint(world: World): World {
 }
 
 export function sleep(world: World): World {
-  return nextMorning(world, true);
+  return settleGio(nextMorning(world, true));
 }
 
 /** ฉากเรียกทุกเฟรม ส่ง home มาเพราะเป็นตำแหน่งบนแผนที่ที่ระบบไม่รู้เอง */
