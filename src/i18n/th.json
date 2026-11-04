@@ -268,10 +268,6 @@
   "cosmetic.wallpaper_gio.name": "วอลเปเปอร์ลายจีโอ",
   "action.fish": "ตกปลา",
   "action.reel": "ดึง!",
-  "pond.title": "ริมบ่อ",
-  "pond.pick_bait": "เลือกเหยื่อแล้วเหวี่ยงเบ็ด",
-  "pond.no_bait": "ไม่มีเหยื่อเลย ทำเหยื่อจากผักในแอปกระเป๋าก่อนนะ",
-  "pond.bath": "อาบน้ำ",
   "fishing.new": "ใหม่!",
   "bag.make_bait": "ทำเหยื่อ",
   "bag.open_chest": "เปิดหีบ",
@@ -291,5 +287,10 @@
   "wallet.chest": "ของในหีบสมบัติ",
   "wallet.chest_duplicate": "ของซ้ำในหีบสมบัติ",
   "wallet.category_chest": "หีบสมบัติ",
-  "settings.auto_fish": "ตกปลาอัตโนมัติ"
+  "settings.auto_fish": "ตกปลาอัตโนมัติ",
+  "action.bath": "อาบน้ำ",
+  "action.stop": "หยุด",
+  "settings.auto_rebait": "ใช้เหยื่อเดิมต่ออัตโนมัติ",
+  "tool.rod": "คันเบ็ด",
+  "bait.strip": "เลือกเหยื่อ"
 }

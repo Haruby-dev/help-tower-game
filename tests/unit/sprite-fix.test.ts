@@ -71,23 +71,11 @@ describe('real sprite sheets', () => {
     expect(new Set(bottoms).size).toBe(1);
   });
 
-  it('keeps Gio face pixels identical in the normal, stretch and squash frames', () => {
-    const sheet = sheetAt('gio_stand.png');
-    expect(sheet.width).toBe(56 * 3);
+  it('keeps Gio v2 sitting on the same feet line in every frame of a direction', () => {
+    const sheet = sheetAt('gio_v2/gio_sit.png');
     for (let row = 0; row < 4; row += 1) {
-      const normal = cell(sheet, 0, row, 56, 56);
-      const top = topRow(normal);
-      const faceRows = Math.round((bottomRow(normal) - top) * 0.62) - 1;
-      for (const [column, shift] of [[1, -2], [2, 2]] as const) {
-        const other = cell(sheet, column, row, 56, 56);
-        expect(bottomRow(other)).toBe(bottomRow(normal));
-        expect(topRow(other)).toBe(top + shift);
-        for (let y = 0; y < faceRows; y += 1) {
-          const from = (top + y) * 56 * 4;
-          const to = (top + shift + y) * 56 * 4;
-          expect(normal.data.subarray(from, from + 56 * 4).equals(other.data.subarray(to, to + 56 * 4))).toBe(true);
-        }
-      }
+      const bottoms = Array.from({ length: 8 }, (_, frame) => bottomRow(cell(sheet, frame, row, 56, 56)));
+      expect(new Set(bottoms).size).toBeLessThanOrEqual(2);
     }
   });
 

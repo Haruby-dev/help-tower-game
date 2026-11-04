@@ -69,15 +69,19 @@ export class FishingRig {
     this.bobber.play(key);
   }
 
-  /** ปลาตอด 1–2 ครั้งก่อนขึ้น "!" */
-  nibble(times: number, onDone: () => void): void {
+  /** ปลาตอด 1–2 ครั้งก่อนขึ้น "!" จังหวะเท่ากันทุกครั้ง: ตอด · พัก · ตอด · พัก แล้วทุ่นจม */
+  nibble(times: number, gapMs: number, leadMs: number, onDone: () => void): void {
     let left = times;
     const once = (): void => {
       this.play('nibble', 'fx_bobber_nibble_once');
       this.bobber.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}fx_bobber_nibble_once`, () => {
         left -= 1;
-        if (left > 0) once();
-        else onDone();
+        this.play('idle', 'fx_bobber_idle_loop');
+        this.scene.time.delayedCall(left > 0 ? gapMs : leadMs, () => {
+          if (!this.bobber.visible) return;
+          if (left > 0) once();
+          else onDone();
+        });
       });
     };
     once();

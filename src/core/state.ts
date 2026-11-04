@@ -84,7 +84,15 @@ export interface RecipeBook {
   bestStars: Record<string, number>;
 }
 
-export type Tool = 'hoe' | 'can' | 'sickle' | 'seeds';
+export type Tool = 'hoe' | 'can' | 'sickle' | 'seeds' | 'rod';
+
+/** ไอคอนบนปุ่มกระทำปุ่มเดียว เปลี่ยนตามจุดที่ยืนและของที่ถือ */
+export type ActionIcon = 'fish' | 'bath' | 'water' | 'till' | 'plant' | 'harvest' | 'cook' | 'sleep' | 'chest';
+
+export interface ContextAction {
+  icon: ActionIcon;
+  label: TextKey;
+}
 
 export type Weather = 'sunny' | 'rain' | 'cloudy';
 
@@ -126,7 +134,9 @@ class GameState {
   private currentRunHeld = false;
   private currentWorld: World | null = null;
   private currentSlot: number | null = null;
-  private currentAction: TextKey | null = null;
+  private currentAction: ContextAction | null = null;
+  private currentBait: string | null = null;
+  private currentAutoRebait = false;
   private openWindows = new Set<string>();
   private currentPlayerScreen: Point = { x: 0, y: 0 };
   private currentTool: Tool = 'hoe';
@@ -200,8 +210,8 @@ class GameState {
     else this.openWindows.delete(name);
   }
 
-  setAction(action: TextKey | null): void {
-    if (action === this.currentAction) return;
+  setAction(action: ContextAction | null): void {
+    if (action?.icon === this.currentAction?.icon && action?.label === this.currentAction?.label) return;
     this.currentAction = action;
     eventBus.emit('action-changed', action);
   }
@@ -222,6 +232,25 @@ class GameState {
   setSelectedSeed(seed: string | null): void {
     this.currentSeed = seed;
     eventBus.emit('tool-changed', this.currentTool);
+  }
+
+  /** เหยื่อที่เลือกในแถบเหนือช่องคันเบ็ด id ใน baits.json */
+  get selectedBait(): string | null {
+    return this.currentBait;
+  }
+
+  setSelectedBait(bait: string | null): void {
+    this.currentBait = bait;
+    eventBus.emit('tool-changed', this.currentTool);
+  }
+
+  /** ตกปลาอัตโนมัติแล้วเหวี่ยงเบ็ดใหม่ด้วยเหยื่อเดิมจนกว่าเหยื่อหมด */
+  get autoRebait(): boolean {
+    return this.currentAutoRebait;
+  }
+
+  setAutoRebait(on: boolean): void {
+    this.currentAutoRebait = on;
   }
 
   /** ปุ่มวิ่งบนจอสัมผัส กดค้างแล้ววิ่ง */

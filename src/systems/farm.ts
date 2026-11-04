@@ -111,6 +111,7 @@ export function actionFor(plot: PlotState, tool: Tool, seed: string | null, bag:
     return 'water';
   }
   if (tool === 'sickle') return isReady(plot) ? 'harvest' : null;
+  if (tool !== 'seeds') return null;
   return plot.tilled && !plot.crop && seed !== null && countOf(bag, seedItem(seed)) > 0 ? 'plant' : null;
 }
 
@@ -141,7 +142,8 @@ function afterHarvest(plot: PlotState): PlotState {
 }
 
 /** ทำงาน 1 ช่อง ตอบ null เมื่อทำไม่ได้ เช่น กระเป๋าเต็มตอนเก็บเกี่ยว ผักจึงยังอยู่ที่แปลง */
-export function applyFarmAction(world: World, index: number, action: FarmAction, seed: string | null): World | null {
+/** rng ใส่มาเมื่อให้มีโอกาสได้เมล็ดตอนเก็บเกี่ยว กระเป๋าเต็มก็ไม่ได้เมล็ด แต่ผลผลิตยังเก็บได้ */
+export function applyFarmAction(world: World, index: number, action: FarmAction, seed: string | null, rng?: Rng): World | null {
   const plot = world.farm.plots[index];
   if (!plot) return null;
   let next: PlotState;
@@ -163,6 +165,7 @@ export function applyFarmAction(world: World, index: number, action: FarmAction,
     const stored = addToBag(bag, produceItem(plot.crop.id), yieldOf(plot));
     if (!stored) return null;
     bag = stored;
+    if (rng && rng.next() < rules.seedDropChance) bag = addToBag(bag, seedItem(plot.crop.id), 1) ?? bag;
     next = afterHarvest(plot);
   }
   const plots = world.farm.plots.map((candidate, candidateIndex) => (candidateIndex === index ? next : candidate));

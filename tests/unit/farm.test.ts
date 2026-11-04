@@ -216,7 +216,36 @@ describe('regrow lifetime', () => {
   });
 
   it('uses the new economy prices', () => {
-    expect(crops.scallion).toMatchObject({ sellPrice: 8, seedPrice: null, regrowTimes: 0 });
+    expect(crops.scallion).toMatchObject({ sellPrice: 8, seedPrice: 8, regrowTimes: 0 });
     expect(crops.corn).toMatchObject({ sellPrice: 18, seedPrice: 65, regrowTimes: 3 });
+  });
+});
+
+describe('harvest seed drop (her decision 4 Nov 2026)', () => {
+  const always = { next: () => 0, between: (min: number) => min };
+  const never = { next: () => 0.99, between: (min: number) => min };
+
+  it('keeps the chance in balance.json at 10%', () => {
+    expect(balance.farm.seedDropChance).toBe(0.1);
+  });
+
+  it('gives 1 extra seed of the same crop when the roll is under the chance, and none otherwise', () => {
+    const ready = growUntilReady(planted('scallion'));
+    const lucky = applyFarmAction(ready, 0, 'harvest', null, always)!;
+    const unlucky = applyFarmAction(ready, 0, 'harvest', null, never)!;
+    expect(countOf(lucky.bag, 'seed_scallion') - countOf(ready.bag, 'seed_scallion')).toBe(1);
+    expect(countOf(unlucky.bag, 'seed_scallion')).toBe(countOf(ready.bag, 'seed_scallion'));
+    expect(countOf(lucky.bag, 'produce_scallion')).toBe(countOf(unlucky.bag, 'produce_scallion'));
+  });
+
+  it('sells the six starter crops at the temporary seed prices', () => {
+    expect(Object.fromEntries(['scallion', 'garlic', 'rice', 'chili', 'basil', 'tomato'].map((id) => [id, crops[id]!.seedPrice]))).toEqual({
+      scallion: 8,
+      garlic: 8,
+      rice: 10,
+      chili: 30,
+      basil: 30,
+      tomato: 35,
+    });
   });
 });

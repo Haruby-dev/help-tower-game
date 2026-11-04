@@ -8,6 +8,7 @@ import { createSaveRow } from './saves';
 const STORAGE_KEY = 'lighting-enabled';
 const ZOOM_STORAGE_KEY = 'zoom-step';
 const AUTO_FISH_KEY = 'auto-fish';
+const AUTO_REBAIT_KEY = 'auto-rebait';
 const ZOOM_LABELS = ['settings.zoom_normal', 'settings.zoom_near', 'settings.zoom_nearer'] as const;
 
 /** ค่าที่จำไว้เฉพาะเครื่องนี้ ถ้าเบราว์เซอร์ไม่ให้เก็บก็ยังเล่นได้ */
@@ -43,8 +44,51 @@ function storeAutoFish(on: boolean): void {
   }
 }
 
-/** ตกปลาอัตโนมัติ ขึ้น "!" แล้วดึงให้เอง สำหรับคนที่ไม่อยากลุ้นจังหวะ */
-function createAutoFishRow(): HTMLElement {
+function readStoredFlag(key: string): boolean {
+  try {
+    return window.localStorage.getItem(key) === 'on';
+  } catch {
+    return false;
+  }
+}
+
+function storeFlag(key: string, on: boolean): void {
+  try {
+    window.localStorage.setItem(key, on ? 'on' : 'off');
+  } catch {
+    // ไม่เก็บค่าก็ไม่กระทบการเล่น
+  }
+}
+
+/** ใช้เหยื่อเดิมต่ออัตโนมัติ แสดงเฉพาะตอนเปิดตกปลาอัตโนมัติ */
+function createAutoRebaitRow(): { row: HTMLElement; sync(): void } {
+  const row = document.createElement('div');
+  row.className = 'settings-row';
+  row.id = 'auto-rebait-row';
+  const label = Object.assign(document.createElement('span'), { textContent: t('settings.auto_rebait') });
+  const toggle = document.createElement('button');
+  toggle.id = 'auto-rebait-toggle';
+  toggle.type = 'button';
+  toggle.className = 'settings-button';
+  toggle.setAttribute('role', 'switch');
+  toggle.setAttribute('aria-label', t('settings.auto_rebait'));
+  const sync = (): void => {
+    row.hidden = !gameState.autoFish;
+    toggle.setAttribute('aria-checked', String(gameState.autoRebait));
+    toggle.textContent = t(gameState.autoRebait ? 'settings.on' : 'settings.off');
+  };
+  toggle.addEventListener('click', () => {
+    gameState.setAutoRebait(!gameState.autoRebait);
+    storeFlag(AUTO_REBAIT_KEY, gameState.autoRebait);
+    sync();
+  });
+  row.append(label, toggle);
+  sync();
+  return { row, sync };
+}
+
+/** ตกปลาอัตโนมัติ ขึ้น "!" แล้วดึงให้เอง สำหรับคนที่ไม่อยากลุ้นจังหวะ รอนานกว่าและพลาดได้ */
+function createAutoFishRow(onChange: () => void): HTMLElement {
   const row = document.createElement('div');
   row.className = 'settings-row';
   const label = Object.assign(document.createElement('span'), { textContent: t('settings.auto_fish') });
@@ -63,6 +107,7 @@ function createAutoFishRow(): HTMLElement {
     gameState.setAutoFish(!gameState.autoFish);
     storeAutoFish(gameState.autoFish);
     show();
+    onChange();
   });
   row.append(label, toggle);
   return row;
@@ -184,6 +229,7 @@ export function initSettings(appRoot: HTMLElement): void {
   gameState.setLightingEnabled(readStoredLighting());
   gameState.setZoomStep(readStoredZoomStep());
   gameState.setAutoFish(readStoredAutoFish());
+  gameState.setAutoRebait(readStoredFlag(AUTO_REBAIT_KEY));
 }
 
 function createSettingsPage(): HTMLElement {
@@ -214,7 +260,8 @@ function createSettingsPage(): HTMLElement {
   });
   row.append(label, toggle);
 
-  page.append(title, row, createAutoFishRow(), createZoomRow(), createSaveRow());
+  const rebait = createAutoRebaitRow();
+  page.append(title, row, createAutoFishRow(rebait.sync), rebait.row, createZoomRow(), createSaveRow());
   const fullscreen = appRootForPage ? createFullscreenRow(appRootForPage) : null;
   if (fullscreen) page.append(fullscreen);
   return page;

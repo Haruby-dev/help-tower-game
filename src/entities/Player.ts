@@ -162,11 +162,8 @@ export class Player {
     });
   }
 
+  /** ระหว่างทำอาหารเดินไม่ได้ กดปุ่มกระทำอีกครั้งเพื่อลุก อาหารยังสุกต่อที่กองไฟ */
   update(input: Vector, running = false): void {
-    if (this.cooking && direction8From(input)) {
-      this.cooking = false;
-      this.sprite.setFlipX(false);
-    }
     if (this.cooking) {
       this.physicsBody.setVelocity(0, 0);
       this.syncSprite();

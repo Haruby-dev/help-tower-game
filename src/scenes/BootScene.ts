@@ -3,8 +3,10 @@ import { animationKey, assetUrl, directionsOf, registry } from '../core/assets';
 import balance from '../data/balance.json';
 import { createPlaceholderTexture } from './sceneArt';
 import { prepareTreeSway } from './treeSway';
+import { preloadInterfaceArt } from '../ui/preload';
 
 const LABEL_FONT = '700 8px Mali';
+const PRELOAD_LIMIT_MS = 8000;
 const CURSOR_FPS = 2;
 const COOK_INTRO_END = 3;
 const COOK_LAST_FRAME = 8;
@@ -118,9 +120,9 @@ export class BootScene extends Phaser.Scene {
       });
     }
     // ชื่อบนกล่องแทนภาพใช้ฟอนต์ Mali ถ้าโหลดฟอนต์ไม่ได้ก็ยังเข้าเกมได้
-    void document.fonts
-      .load(LABEL_FONT)
-      .catch(() => undefined)
-      .finally(() => this.scene.start('Base'));
+    // ภาพหน้าจอโหลดให้ครบก่อนเข้าเกม แต่ไม่รอเกิน PRELOAD_LIMIT_MS ถ้าเน็ตช้า
+    const fonts = document.fonts.load(LABEL_FONT).catch(() => undefined);
+    const art = Promise.race([preloadInterfaceArt(), new Promise((resolve) => window.setTimeout(resolve, PRELOAD_LIMIT_MS))]);
+    void Promise.all([fonts, art]).finally(() => this.scene.start('Base'));
   }
 }

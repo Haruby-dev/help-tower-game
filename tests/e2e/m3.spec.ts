@@ -36,7 +36,7 @@ test('grows a scallion from seed to harvest in 3 game days and saves it', async 
     const s = (window as unknown as { __state: { world: FarmWorld; setWorld(w: unknown): void } }).__state;
     s.setWorld({ ...s.world, seed: 101 });
   });
-  await expect(page.locator('#toolbar .tool-slot')).toHaveCount(4);
+  await expect(page.locator('#toolbar .tool-slot')).toHaveCount(5);
   for (const box of await page.locator('#toolbar .tool-slot').all()) {
     expect((await box.boundingBox())!.width).toBeGreaterThanOrEqual(44);
   }
@@ -176,7 +176,21 @@ test('the seed slot shows the chosen bag and its count', async ({ page }) => {
   await page.locator('[data-seed="blueberry"]').click();
   await expect(page.locator('[data-tool="seeds"] img').first()).toHaveAttribute('src', /seed_blueberry/);
   await expect(page.locator('.tool-slot__count')).toHaveText('12');
-  await expect(page.locator('.tool-slot__key')).toHaveCount(4);
+  await expect(page.locator('.tool-slot__key')).toHaveCount(5);
+});
+
+test('tool icons show at their real size, never shrunk to fit the slot', async ({ page }) => {
+  await open(page);
+  const sizes = await page.evaluate(() => {
+    const px = Number.parseFloat(getComputedStyle(document.getElementById('ui')!).getPropertyValue('--px'));
+    return [...document.querySelectorAll<HTMLImageElement>('#toolbar .tool-slot img')].map((img) => ({
+      src: img.src.split('/').pop(),
+      shown: [Math.round(img.getBoundingClientRect().width / px), Math.round(img.getBoundingClientRect().height / px)],
+      real: [img.naturalWidth, img.naturalHeight],
+    }));
+  });
+  for (const icon of sizes) expect(icon.shown, icon.src).toEqual(icon.real);
+  expect(sizes.find((icon) => icon.src === 'watering_can.png')?.shown).toEqual([38, 29]);
 });
 
 test('the till move skips the frames with no hoe', async ({ page }) => {

@@ -119,6 +119,8 @@ export const balanceSchema = z.strictObject({
     gauges: z.strictObject({ happinessPerHour: z.number(), cleanlinessPerHour: z.number() }),
     bag: z.strictObject({ slots: z.number().int().positive(), stack: z.number().int().positive() }),
     seedsPerProduce: z.strictObject({ min: z.number().int().positive(), max: z.number().int().positive() }),
+    /** เก็บเกี่ยวแต่ละครั้งมีโอกาสได้เมล็ดพืชนั้นเพิ่ม 1 เมล็ด ทักษะชาวสวนแรงก์ C จะเพิ่มเป็นราว 0.33 */
+    seedDropChance: z.number().min(0).max(1),
     /** ของเริ่มเกมชั่วคราวจนกว่าบทนำจะมาใน M9 */
     starterBag: z.record(z.string().min(1), z.number().int().positive()),
   }),
@@ -141,8 +143,16 @@ export const balanceSchema = z.strictObject({
     waitMaxMs: z.number().positive(),
     biteWindowMs: z.number().positive(),
     autoTapMs: z.number().positive(),
+    /** ตกปลาอัตโนมัติรอนานกว่าและพลาดได้ ตกเองยังดีที่สุด */
+    autoWaitMultiplier: z.number().min(1),
+    autoCatchChance: z.number().min(0).max(1),
+    /** พักก่อนเหวี่ยงเบ็ดใหม่ด้วยเหยื่อเดิม ให้เห็นของที่ได้ก่อน */
+    rebaitDelayMs: z.number().nonnegative(),
     nibbleRepeatsMin: z.number().int().positive(),
     nibbleRepeatsMax: z.number().int().positive(),
+    /** จังหวะทุ่นเท่ากันทุกครั้ง พักระหว่างตอดแต่ละครั้ง และพักก่อนทุ่นจม */
+    nibbleGapMs: z.number().nonnegative(),
+    biteLeadMs: z.number().nonnegative(),
     castFps: z.number().positive(),
     waitFps: z.number().positive(),
     bobberIdleFps: z.number().positive(),
@@ -165,12 +175,15 @@ export const balanceSchema = z.strictObject({
   gio: z.strictObject({
     sitMinMs: z.number().positive(),
     sitMaxMs: z.number().positive(),
-    hopSpeed: z.number().positive(),
-    hopsPerSecond: z.number().positive(),
-    hopsPerTrip: z.number().int().positive(),
-    hopArcPx: z.number().positive(),
-    hopTakeOffShare: z.number().positive(),
-    hopLandingShare: z.number().positive(),
+    /** จีโอ v2 เดินสี่ขา ไม่กระโดดแล้ว */
+    walkSpeed: z.number().positive(),
+    walkFps: z.number().positive(),
+    walkMinMs: z.number().positive(),
+    walkMaxMs: z.number().positive(),
+    sitFps: z.number().positive(),
+    /** กะพริบตาระหว่างนั่งทุก ๆ ช่วงนี้ */
+    blinkEveryMinMs: z.number().positive(),
+    blinkEveryMaxMs: z.number().positive(),
     wanderRadius: z.number().positive(),
     keepAwayDistance: z.number().positive(),
   }),
@@ -263,7 +276,7 @@ export const cropsSchema = z.record(
     regrowTimes: z.number().int().nonnegative(),
     regrowYield: z.number().int().positive().nullable(),
     sellPrice: z.number().int().positive(),
-    /** null คือไม่ขายในร้าน ได้เมล็ดจากการแปลงผลผลิตเท่านั้น */
+    /** ราคาเมล็ดในร้าน พืชเริ่มเกมขายทุกวัน (ราคาชั่วคราว ปรับใน M10) null คือไม่ขาย */
     seedPrice: z.number().int().positive().nullable(),
   }),
 );
@@ -380,6 +393,7 @@ export const linesSchema = z.strictObject({
     mysteryFood: z.string().min(1),
     fishEscaped: z.string().min(1),
     noBait: z.string().min(1),
+    baitRanOut: z.string().min(1),
   }),
   encouragement: z.array(z.string().min(1)).min(1),
 });
@@ -452,6 +466,8 @@ const localEntrySchema = z.strictObject({
   frame_width: z.number().int().positive().optional(),
   frame_height: z.number().int().positive().optional(),
   frames: z.number().int().positive().optional(),
+  /** แผ่นหลายแถว แถวละทิศ จุดเท้าวัดแยกตามแถว */
+  rows: z.array(z.string().min(1)).optional(),
   /** เริ่มเล่นท่าจากเฟรมนี้ เฟรมก่อนหน้าใช้ไม่ได้ เช่น ยังไม่มีจอบในมือ */
   play_from: z.number().int().nonnegative().optional(),
   frames_meaning: z.array(z.string().min(1)).optional(),

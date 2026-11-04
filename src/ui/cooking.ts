@@ -8,6 +8,7 @@ import { canCook, canUseCampfire, haveFor, isIngredient, isRawProduce, minutesFo
 import { fishGroupOf, isFish } from '../systems/fishing';
 import { itemImage, itemName } from './inventory';
 import { artUrl } from './pixelArt';
+import { revealWhenReady } from './preload';
 
 const WINDOW = 'cooking';
 type Theme = Recipe['category'];
@@ -282,6 +283,7 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     mix = {};
     render();
     backdrop.hidden = false;
+    revealWhenReady(backdrop);
     gameState.setWindowOpen(WINDOW, true);
   });
 }

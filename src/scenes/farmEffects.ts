@@ -63,27 +63,6 @@ export function splash(scene: Phaser.Scene, x: number, y: number): void {
   scene.time.delayedCall(180, () => mark.destroy());
 }
 
-/** หยดน้ำโค้งลงจากบัวแล้วกระเซ็นบนดิน */
-export function waterDrops(scene: Phaser.Scene, fromX: number, fromY: number, toX: number, toY: number): void {
-  for (let index = 0; index < 8; index += 1) {
-    const drop = scene.add.image(fromX, fromY, 'fx_water', 'drop').setDepth(FX_DEPTH);
-    const landX = toX + between(-9, 9);
-    const landY = toY + between(-5, 7);
-    scene.tweens.add({
-      targets: drop,
-      x: landX,
-      y: landY,
-      delay: index * 55,
-      duration: 300,
-      ease: 'Quad.easeIn',
-      onComplete: () => {
-        drop.destroy();
-        splash(scene, landX, landY);
-      },
-    });
-  }
-}
-
 export function sparkle(scene: Phaser.Scene, x: number, y: number): void {
   const star = scene.add.sprite(x + between(-6, 6), y + between(-7, 3), 'fx_sparkle').setDepth(FX_DEPTH);
   star.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => star.destroy());

@@ -1,4 +1,4 @@
-import { assetUrl, characterEntry } from '../core/assets';
+import { assetUrl, registry } from '../core/assets';
 import { eventBus } from '../core/events';
 import { t } from '../core/i18n';
 import { gameState } from '../core/state';
@@ -6,7 +6,6 @@ import { needsRotation, uiZoomFor } from '../core/viewport';
 import display from '../data/display.json';
 import { createChestWindow } from './chest';
 import { createCookingWindow } from './cooking';
-import { createPondMenu } from './pond';
 import { createHud } from './hud';
 import { createJoystick } from './joystick';
 import { createPhone } from './phone';
@@ -17,7 +16,8 @@ import { createSettings, initSettings } from './settings';
 import { createToolbar } from './toolbar';
 
 function createRotatePrompt(uiRoot: HTMLElement): void {
-  const gio = characterEntry('gio_idle');
+  const gio = registry.gio_sit;
+  if (gio?.type !== 'local' || !gio.frame_width || !gio.frame_height) throw new Error('gio_sit is not a sheet');
   const prompt = document.createElement('div');
   prompt.id = 'rotate-prompt';
   prompt.hidden = true;
@@ -25,9 +25,10 @@ function createRotatePrompt(uiRoot: HTMLElement): void {
   const sprite = document.createElement('div');
   sprite.className = 'rotate-prompt__gio';
   sprite.style.backgroundImage = `url("${assetUrl(gio.file)}")`;
-  sprite.style.setProperty('--sheet-width', `${gio.frameWidth * gio.frameCount}px`);
-  sprite.style.setProperty('--frame-height', `${gio.frameHeight}px`);
-  sprite.style.setProperty('--frame-width', `${gio.frameWidth}px`);
+  sprite.style.setProperty('--sheet-width', `${gio.width}px`);
+  sprite.style.setProperty('--sheet-height', `${gio.height}px`);
+  sprite.style.setProperty('--frame-height', `${gio.frame_height}px`);
+  sprite.style.setProperty('--frame-width', `${gio.frame_width}px`);
 
   const message = document.createElement('p');
   message.className = 'panel';
@@ -59,7 +60,6 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   initSettings(appRoot);
   createToolbar(uiRoot);
   createCookingWindow(uiRoot);
-  createPondMenu(uiRoot);
   createChestWindow(uiRoot);
   createSettings(uiRoot);
   createPhone(uiRoot);

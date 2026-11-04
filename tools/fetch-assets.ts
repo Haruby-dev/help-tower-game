@@ -131,7 +131,16 @@ function copyLocal(id: string, entry: LocalEntry, meta: SpriteMeta): void {
     throw new Error(`${id} is ${image.width}x${image.height}, expected ${entry.width}x${entry.height}`);
   }
   savePng(entry.file, image);
-  meta[id] = { footY: { default: lowestRow(image, 0, 0, image.width, image.height) } };
+  const footY: Record<string, number> = { default: lowestRow(image, 0, 0, image.width, image.height) };
+  // แผ่นหลายทิศ เช่น จีโอนั่ง ทิศใต้เท้าอยู่สูงกว่าทิศอื่น จึงวัดแยกแถว
+  if (entry.rows && entry.frame_width && entry.frame_height) {
+    const { frame_width: width, frame_height: height } = entry;
+    entry.rows.forEach((direction, row) => {
+      const lows = Array.from({ length: Math.floor(image.width / width) }, (_, index) => lowestRow(image, index * width, row * height, width, height));
+      footY[direction] = median(lows);
+    });
+  }
+  meta[id] = { footY };
   console.log(`${id}: copied`);
 }
 

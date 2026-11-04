@@ -8,6 +8,7 @@ import { formatClock } from './hud';
 import { createInventoryPage } from './inventory';
 import { artUrl, stickerIcon } from './pixelArt';
 import { createWalletPage } from './wallet';
+import { revealWhenReady } from './preload';
 
 interface PhoneApp {
   id: string;
@@ -253,7 +254,7 @@ export function createPhone(uiRoot: HTMLElement): void {
   const grid = element('div', 'phone-apps');
   const gioWidget = element('div', 'widget-gio');
   const gio = element('div', 'widget-gio__sprite');
-  gio.style.backgroundImage = `url("${artUrl('gio_stand')}")`;
+  gio.style.backgroundImage = `url("${artUrl('gio_sit')}")`;
   gioWidget.append(gio, element('small', undefined, t('phone.gio')));
   const tasks = createTasksWidget();
   main.append(date.root, grid, tasks);
@@ -316,6 +317,7 @@ export function createPhone(uiRoot: HTMLElement): void {
     }
     pageHolder.replaceChildren(page);
     content.hidden = false;
+    revealWhenReady(content);
     phone.dataset.app = app.id;
     if (app.big) setFold('unfolded');
   }
@@ -338,6 +340,7 @@ export function createPhone(uiRoot: HTMLElement): void {
     closeApp();
     setFold('folded');
     phone.dataset.side = 'front';
+    revealWhenReady(backdrop);
     gameState.setWindowOpen(PHONE_WINDOW, true);
   };
   const closePhone = (): void => {

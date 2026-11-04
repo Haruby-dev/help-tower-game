@@ -6,7 +6,7 @@ import { finishBath } from '../../src/systems/bath';
 import { chestData, openChest, rollChestTier } from '../../src/systems/chests';
 import { canCook, matchRecipe, startCooking } from '../../src/systems/cooking';
 import { countOf } from '../../src/systems/farm';
-import { biteCandidates, chestChance, finishCast, fishTable, makeBait, rollCatch, spendFishingTime } from '../../src/systems/fishing';
+import { biteCandidates, chestChance, chosenBait, finishCast, fishTable, makeBait, rollCatch, spendFishingTime } from '../../src/systems/fishing';
 import { newWorld } from '../../src/systems/gauges';
 import { parseSaveFile, SAVE_VERSION } from '../../src/systems/save';
 import { sleep } from '../../src/systems/time';
@@ -228,5 +228,23 @@ describe('bath and saves', () => {
     expect(parsed?.world.cosmetics.owned.clips).toEqual([]);
     expect(countOf(parsed!.world.bag, 'ing_egg')).toBe(2);
     expect(countOf(parsed!.world.bag, 'bait_corn')).toBe(5);
+  });
+});
+
+describe('auto-fish and the bait strip (her decision 4 Nov 2026)', () => {
+  it('waits 1.5 times longer and catches about 65% of bites', () => {
+    expect(balance.fishing.autoWaitMultiplier).toBe(1.5);
+    expect(balance.fishing.autoCatchChance).toBe(0.65);
+  });
+
+  it('uses the chosen bait while it lasts, then the first bait still in the bag', () => {
+    const bag = [
+      { item: 'bait_corn', count: 0 },
+      { item: 'bait_cloud_lettuce', count: 2 },
+    ].filter((stack) => stack.count > 0);
+    expect(chosenBait(bag, 'cloud_lettuce')).toBe('cloud_lettuce');
+    expect(chosenBait(bag, 'corn')).toBe('cloud_lettuce');
+    expect(chosenBait(bag, null)).toBe('cloud_lettuce');
+    expect(chosenBait([], 'corn')).toBeNull();
   });
 });

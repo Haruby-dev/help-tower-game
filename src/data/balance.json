@@ -71,12 +71,13 @@
   "gio": {
     "sitMinMs": 2000,
     "sitMaxMs": 5000,
-    "hopSpeed": 44,
-    "hopsPerSecond": 2.5,
-    "hopsPerTrip": 3,
-    "hopArcPx": 7,
-    "hopTakeOffShare": 0.16,
-    "hopLandingShare": 0.16,
+    "walkSpeed": 28,
+    "walkFps": 8,
+    "walkMinMs": 1400,
+    "walkMaxMs": 2600,
+    "sitFps": 8,
+    "blinkEveryMinMs": 2500,
+    "blinkEveryMaxMs": 5000,
     "wanderRadius": 96,
     "keepAwayDistance": 56
   },
@@ -110,7 +111,8 @@
       "produce_tomato": 2,
       "produce_garlic": 2,
       "produce_rice": 2
-    }
+    },
+    "seedDropChance": 0.1
   },
   "cooking": {
     "reachPx": 60,
@@ -210,8 +212,13 @@
     "waitMaxMs": 5000,
     "biteWindowMs": 1000,
     "autoTapMs": 350,
+    "autoWaitMultiplier": 1.5,
+    "autoCatchChance": 0.65,
+    "rebaitDelayMs": 900,
     "nibbleRepeatsMin": 1,
     "nibbleRepeatsMax": 2,
+    "nibbleGapMs": 450,
+    "biteLeadMs": 300,
     "castFps": 8,
     "waitFps": 3,
     "bobberIdleFps": 4,

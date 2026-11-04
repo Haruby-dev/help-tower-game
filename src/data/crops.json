@@ -7,7 +7,7 @@
     "firstYield": 3,
     "regrowYield": null,
     "sellPrice": 8,
-    "seedPrice": null
+    "seedPrice": 8
   },
   "chili": {
     "source": "start",
@@ -17,7 +17,7 @@
     "firstYield": 3,
     "regrowYield": 2,
     "sellPrice": 8,
-    "seedPrice": null
+    "seedPrice": 30
   },
   "basil": {
     "source": "start",
@@ -27,7 +27,7 @@
     "firstYield": 3,
     "regrowYield": 2,
     "sellPrice": 8,
-    "seedPrice": null
+    "seedPrice": 30
   },
   "tomato": {
     "source": "start",
@@ -37,7 +37,7 @@
     "firstYield": 3,
     "regrowYield": 2,
     "sellPrice": 10,
-    "seedPrice": null
+    "seedPrice": 35
   },
   "garlic": {
     "source": "start",
@@ -47,7 +47,7 @@
     "firstYield": 3,
     "regrowYield": null,
     "sellPrice": 8,
-    "seedPrice": null
+    "seedPrice": 8
   },
   "rice": {
     "source": "start",
@@ -57,7 +57,7 @@
     "firstYield": 3,
     "regrowYield": null,
     "sellPrice": 10,
-    "seedPrice": null
+    "seedPrice": 10
   },
   "carrot": {
     "source": "shop",

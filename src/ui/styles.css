@@ -154,7 +154,7 @@ canvas {
   height: calc(var(--frame-height) * 3);
   background-position: 0 0;
   background-repeat: no-repeat;
-  background-size: calc(var(--sheet-width) * 3) calc(var(--frame-height) * 3);
+  background-size: calc(var(--sheet-width) * 3) calc(var(--sheet-height) * 3);
   image-rendering: pixelated;
   transform: rotate(-14deg);
 }
@@ -194,20 +194,38 @@ canvas {
   height: calc(var(--px) * 72);
 }
 
-.portrait__disc {
+/* กรอบเหรียญ 46×46 กลางวงลูกปัด ห่างลูกปัด 2 พิกเซลตามที่ผู้ใช้ตรวจ */
+.portrait__frame,
+.portrait__inner {
   position: absolute;
-  top: calc(var(--px) * 12);
-  left: calc(var(--px) * 12);
+  top: calc(var(--px) * 13);
+  left: calc(var(--px) * 13);
+  width: calc(var(--px) * 46);
+  height: calc(var(--px) * 46);
+  image-rendering: pixelated;
 }
 
-.portrait__disc[hidden] {
+.portrait__inner {
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+
+.portrait__tint {
+  position: absolute;
+  inset: 0;
+}
+
+.portrait__tint[hidden] {
   display: none;
 }
 
+/* หน้าชิดล่าง สูงจากขอบล่างของกรอบ 6 พิกเซล */
 .portrait__face {
   position: absolute;
-  top: calc(var(--px) * 24);
-  left: calc(var(--px) * 16);
+  top: calc(var(--px) * 10);
+  left: calc(var(--px) * 3);
   width: calc(var(--px) * 41);
   height: calc(var(--px) * 30);
   image-rendering: pixelated;
@@ -401,33 +419,104 @@ canvas {
   from { transform: translate(-50%, calc(-100% + var(--px) * 3)); }
 }
 
+/* ปุ่มกระทำปุ่มเดียว 48×48 อยู่ซ้ายปุ่มวิ่ง ขอบล่างตรงกัน ห่าง 6 พิกเซล ป้ายชมพูทับขอบล่างของกรอบ 6 พิกเซล */
 #action-button {
   position: absolute;
-  right: calc(max(16px, env(safe-area-inset-right)) + max(84px, var(--px) * 68) + 8px);
+  right: max(16px, env(safe-area-inset-right));
   bottom: max(16px, env(safe-area-inset-bottom));
-  min-width: 88px;
-  min-height: 48px;
-  padding: 0 14px;
+  width: calc(var(--px) * 48);
+  height: calc(var(--px) * 48);
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
   border: 0;
-  font-size: 16px;
-  font-weight: 700;
+  background: none;
   cursor: pointer;
   pointer-events: auto;
+  touch-action: manipulation;
+}
+
+#action-button[data-with-run='true'] {
+  right: calc(max(16px, env(safe-area-inset-right)) + var(--px) * 70);
 }
 
 #action-button[hidden] {
   display: none;
 }
 
-/* พื้นที่กดใหญ่กว่าภาพเล็กน้อย นิ้วโป้งจะได้ไม่พลาด */
+.action-button__frame,
+.action-button__icon {
+  position: absolute;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.action-button__frame {
+  top: 0;
+  left: 0;
+  width: calc(var(--px) * 48);
+  height: calc(var(--px) * 48);
+}
+
+.action-button__frame--pressed,
+#action-button:active .action-button__frame {
+  visibility: hidden;
+}
+
+#action-button:active .action-button__frame--pressed {
+  visibility: visible;
+}
+
+.action-button__icon {
+  top: calc(var(--px) * var(--y));
+  left: calc(var(--px) * var(--x));
+  width: calc(var(--px) * var(--w));
+  height: calc(var(--px) * var(--h));
+}
+
+.action-button__label {
+  position: absolute;
+  top: calc(var(--px) * 42);
+  left: 50%;
+  padding: 0 calc(var(--px) * 4);
+  background: #f8789a;
+  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--outline), 0 calc(var(--px) * 1) 0 0 var(--outline), calc(var(--px) * -1) 0 0 0 var(--outline), calc(var(--px) * 1) 0 0 0 var(--outline);
+  color: #fff;
+  font-size: max(11px, calc(var(--px) * 7));
+  font-weight: 700;
+  line-height: max(14px, calc(var(--px) * 10));
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.action-button__key {
+  position: absolute;
+  top: calc(var(--px) * 3);
+  left: calc(var(--px) * 3);
+  display: grid;
+  place-items: center;
+  width: calc(var(--px) * 10);
+  height: calc(var(--px) * 10);
+  background: url('/assets/ui/hud_v2/key_badge.png') 0 0 / 100% 100%;
+  image-rendering: pixelated;
+  font-size: calc(var(--px) * 6);
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* ปุ่มวิ่งชุดเหรียญ 64×64 ไม่มีภาพเคลื่อนไหว */
 #run-button {
   position: absolute;
   right: max(16px, env(safe-area-inset-right));
   bottom: max(16px, env(safe-area-inset-bottom));
   display: grid;
   place-items: center;
-  width: max(84px, calc(var(--px) * 68));
-  height: max(84px, calc(var(--px) * 68));
+  width: calc(var(--px) * 64);
+  height: calc(var(--px) * 64);
+  min-width: 64px;
+  min-height: 64px;
   padding: 0;
   border: 0;
   background: none;
@@ -440,10 +529,6 @@ canvas {
   width: calc(var(--px) * 64);
   height: calc(var(--px) * 64);
   image-rendering: pixelated;
-}
-
-#run-button:active img {
-  transform: scale(1.06, 0.92);
 }
 
 #rest-curtain {
@@ -983,7 +1068,7 @@ canvas {
   width: calc(var(--px) * 56);
   height: calc(var(--px) * 56);
   background-repeat: no-repeat;
-  background-size: calc(var(--px) * 168) calc(var(--px) * 224);
+  background-size: calc(var(--px) * 448) calc(var(--px) * 224);
   image-rendering: pixelated;
 }
 
@@ -1801,21 +1886,36 @@ canvas {
   border-left: 1px solid #e6cfe6;
 }
 
-/* แถบเครื่องมือชุดจริง */
+/* แถบเครื่องมือชุดเหรียญ ถาด 230×48 ช่อง 42×37 ห้าช่อง ไอคอนขนาดจริงวางกลางช่อง */
 #toolbar {
-  gap: calc(var(--px) * 3);
-  padding: calc(var(--px) * 5) calc(var(--px) * 6);
-  border: calc(var(--px) * 1) solid transparent;
-  border-image: url('/assets/ui/toolbar/tool_tray.png') 6 fill / calc(var(--px) * 6) stretch;
+  gap: calc(var(--px) * 2);
+  width: calc(var(--px) * 230);
+  height: calc(var(--px) * 48);
+  padding: calc(var(--px) * 5) calc(var(--px) * 6) calc(var(--px) * 6);
+  border: 0;
+  border-image: none;
+  background: url('/assets/ui/hud_v2/tool_tray_5slots.png') 0 0 / 100% 100%;
+  image-rendering: pixelated;
 }
 
-.tool-slot {
-  border-image: url('/assets/ui/toolbar/tool_slot.png') 5 fill / calc(var(--px) * 5) stretch;
+#toolbar .tool-slot {
+  width: calc(var(--px) * 42);
+  height: calc(var(--px) * 37);
+  border: 0;
+  border-image: none;
+  background: url('/assets/ui/hud_v2/tool_slot.png') 0 0 / 100% 100%;
+  image-rendering: pixelated;
 }
 
-.tool-slot.is-selected {
-  border-image-source: url('/assets/ui/toolbar/tool_slot_selected.png');
-  transform: translateY(calc(var(--px) * -3));
+#toolbar .tool-slot.is-selected {
+  background-image: url('/assets/ui/hud_v2/tool_slot_selected.png');
+}
+
+.tool-slot img,
+.bait-slot img {
+  width: calc(var(--px) * var(--w));
+  height: calc(var(--px) * var(--h));
+  image-rendering: pixelated;
 }
 
 .tool-slot__key {
@@ -1824,9 +1924,9 @@ canvas {
   left: calc(var(--px) * -3);
   display: grid;
   place-items: center;
-  width: calc(var(--px) * 9);
-  height: calc(var(--px) * 9);
-  background: url('/assets/ui/toolbar/key_badge.png') 0 0 / 100% 100%;
+  width: calc(var(--px) * 10);
+  height: calc(var(--px) * 10);
+  background: url('/assets/ui/hud_v2/key_badge.png') 0 0 / 100% 100%;
   image-rendering: pixelated;
   font-size: calc(var(--px) * 6);
   font-weight: 700;
@@ -3153,4 +3253,63 @@ canvas {
 
 #chest-take {
   width: 100%;
+}
+
+/* แถบเหยื่อเด้งเหนือช่องคันเบ็ด ช่องละชนิด เหยื่อที่หมดเป็นสีจาง */
+#bait-strip {
+  position: absolute;
+  bottom: calc(max(6px, env(safe-area-inset-bottom)) + var(--px) * 50);
+  left: calc(50% + var(--px) * 93);
+  display: flex;
+  gap: calc(var(--px) * 2);
+  padding: 0;
+  border: calc(var(--px) * 6) solid transparent;
+  border-image: url('/assets/ui/hud_v2/tool_tray_9slice.png') 8 fill / calc(var(--px) * 8) stretch;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+#bait-strip[hidden] {
+  display: none;
+}
+
+.bait-slot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(var(--px) * 42);
+  height: calc(var(--px) * 37);
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: url('/assets/ui/hud_v2/tool_slot.png') 0 0 / 100% 100%;
+  image-rendering: pixelated;
+  cursor: pointer;
+}
+
+.bait-slot.is-selected {
+  background-image: url('/assets/ui/hud_v2/tool_slot_selected.png');
+}
+
+.bait-slot:disabled {
+  cursor: default;
+}
+
+.bait-slot:disabled img {
+  opacity: 0.35;
+  filter: grayscale(1);
+}
+
+.bait-slot b {
+  position: absolute;
+  right: calc(var(--px) * 3);
+  bottom: calc(var(--px) * 1);
+  font-size: max(10px, calc(var(--px) * 6));
+  line-height: 1;
+  text-shadow: 1px 0 #fff, -1px 0 #fff, 0 1px #fff, 0 -1px #fff;
+}
+
+.settings-row[hidden] {
+  display: none;
 }

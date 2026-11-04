@@ -5,7 +5,7 @@ import { gameState, type GaugeValues, type World } from '../core/state';
 import balance from '../data/balance.json';
 import lines from '../data/lines.json';
 import { beadFills, isAlert, isDirty, isPulsing, moodOf, type Mood } from '../systems/mood';
-import { artUrl, bubbleImage, drawSpeechBubble, pixelDisc, type NineSlice } from './pixelArt';
+import { artUrl, bubbleImage, drawSpeechBubble, type NineSlice } from './pixelArt';
 
 const REST_MESSAGE: Record<RestCause, TextKey> = {
   sleep: 'rest.sleep',
@@ -15,15 +15,14 @@ const REST_MESSAGE: Record<RestCause, TextKey> = {
 
 const GAUGES = ['fullness', 'happiness', 'cleanliness'] as const;
 const MOODS: Mood[] = ['happy', 'normal', 'tired', 'faint'];
-const OUTLINE = '#5c304c';
-const MOOD_BACKGROUND: Record<Mood, string> = {
-  happy: '#ffdce8',
+/** สีพื้นในกรอบตามอารมณ์ ร่าเริงใช้สีชมพูของกรอบเอง */
+const MOOD_BACKGROUND: Record<Mood, string | null> = {
+  happy: null,
   normal: '#fff6f0',
   tired: '#f1eeee',
   faint: '#e2eaf6',
 };
 /** ขนาดเป็นพิกเซลเกม ลูกปัดวางบนจุดเต็มพิกเซลทุกเม็ด */
-const DISC_SIZE = 48;
 const BEAD_ORBIT = 29;
 const BEAD_AREA = 72;
 const ARC_START_DEG = -128;
@@ -32,6 +31,7 @@ const GAUGE_GAP_DEG = 7;
 const BUBBLE_PADDING = 10;
 const BUBBLE_BODY_HEIGHT = 13;
 const POP_MS = 1000;
+const ACTION_FRAME = 48;
 
 const pad = (value: number): string => String(value).padStart(2, '0');
 
@@ -45,19 +45,23 @@ function createPortrait(uiRoot: HTMLElement): void {
   const portrait = document.createElement('div');
   portrait.id = 'portrait';
 
-  const discs = Object.fromEntries(
-    MOODS.map((mood) => {
-      const disc = pixelDisc(DISC_SIZE, MOOD_BACKGROUND[mood], OUTLINE);
-      disc.className = 'portrait__disc';
-      disc.dataset.mood = mood;
-      portrait.append(disc);
-      return [mood, disc];
-    }),
-  ) as Record<Mood, HTMLCanvasElement>;
-
+  // กรอบเหรียญ 46×46 ขนาดและตำแหน่งเดียวกับกรอบเดิม หน้าถูกตัดด้วยหน้ากากวงใน ไม่ทับลูกปัดเกจ
+  const frame = document.createElement('img');
+  frame.className = 'portrait__frame';
+  frame.alt = '';
+  frame.src = artUrl('ui_portrait_frame');
+  const inner = document.createElement('div');
+  inner.className = 'portrait__inner';
+  const mask = `url("${artUrl('ui_portrait_mask')}")`;
+  inner.style.setProperty('mask-image', mask);
+  inner.style.setProperty('-webkit-mask-image', mask);
+  const tint = document.createElement('div');
+  tint.className = 'portrait__tint';
   const face = document.createElement('img');
   face.className = 'portrait__face';
   face.alt = '';
+  inner.append(tint, face);
+  portrait.append(frame, inner);
   const effects = document.createElement('div');
   effects.className = 'portrait__effects';
   effects.setAttribute('aria-hidden', 'true');
@@ -66,7 +70,7 @@ function createPortrait(uiRoot: HTMLElement): void {
     piece.className = `fx fx--${name}`;
     effects.append(piece);
   }
-  portrait.append(face, effects);
+  portrait.append(effects);
 
   const center = BEAD_AREA / 2;
   const beads = GAUGES.map((gauge, gaugeIndex) =>
@@ -109,7 +113,9 @@ function createPortrait(uiRoot: HTMLElement): void {
     if (portrait.dataset.mood !== mood) {
       portrait.dataset.mood = mood;
       face.src = artUrl(`portrait_girl_${mood}`);
-      for (const candidate of MOODS) discs[candidate].hidden = candidate !== mood;
+      const background = MOOD_BACKGROUND[mood];
+      tint.hidden = background === null;
+      if (background) tint.style.background = background;
     }
     portrait.classList.toggle('portrait--dirty', isDirty(world.gauges.cleanliness));
     setBeads(world.gauges);
@@ -197,19 +203,55 @@ function createLowGaugeBubble(uiRoot: HTMLElement): void {
   });
 }
 
+/** ไอคอนวางกลางกรอบ 48×48 ปัดเศษขึ้นแบบภาพตัวอย่างที่ฝั่งวางแผนทำ */
+function centredIcon(icon: HTMLImageElement, id: string): void {
+  const entry = registry[id];
+  if (entry?.type !== 'local') return;
+  icon.src = artUrl(id);
+  icon.style.setProperty('--w', String(entry.width));
+  icon.style.setProperty('--h', String(entry.height));
+  icon.style.setProperty('--x', String(Math.ceil((ACTION_FRAME - entry.width) / 2)));
+  icon.style.setProperty('--y', String(Math.ceil((ACTION_FRAME - entry.height) / 2)));
+}
+
+/** ปุ่มกระทำปุ่มเดียวข้างปุ่มวิ่ง ไอคอนเปลี่ยนตามจุดที่ยืนและของที่ถือ ป้ายชมพูใต้ปุ่ม ไม่มีอะไรทำก็ซ่อน */
 function createActionControls(uiRoot: HTMLElement): void {
   const isTouch = window.matchMedia('(pointer: coarse)').matches;
   const button = document.createElement('button');
   button.id = 'action-button';
   button.type = 'button';
-  button.className = 'panel';
   button.hidden = true;
+  button.dataset.withRun = String(isTouch);
+  const frame = document.createElement('img');
+  frame.className = 'action-button__frame';
+  frame.alt = '';
+  frame.src = artUrl('ui_action_frame');
+  const pressed = document.createElement('img');
+  pressed.className = 'action-button__frame action-button__frame--pressed';
+  pressed.alt = '';
+  pressed.src = artUrl('ui_action_frame_pressed');
+  const icon = document.createElement('img');
+  icon.className = 'action-button__icon';
+  icon.alt = '';
+  const label = document.createElement('span');
+  label.className = 'action-button__label';
+  button.append(frame, pressed, icon, label);
+  if (!isTouch) {
+    const key = document.createElement('span');
+    key.className = 'action-button__key';
+    key.textContent = 'E';
+    button.append(key);
+  }
   button.addEventListener('click', () => eventBus.emit('action-pressed', undefined));
   uiRoot.append(button);
 
   eventBus.on('action-changed', (action) => {
     button.hidden = action === null;
-    if (action) button.textContent = isTouch ? t(action) : `E · ${t(action)}`;
+    if (!action) return;
+    button.dataset.icon = action.icon;
+    centredIcon(icon, `ui_action_icon_${action.icon}`);
+    label.textContent = t(action.label);
+    button.setAttribute('aria-label', t(action.label));
   });
 }
 
@@ -224,7 +266,6 @@ function createRunToggle(uiRoot: HTMLElement): void {
   const image = document.createElement('img');
   image.alt = '';
   image.src = artUrl('ui_run_button_off');
-  new Image().src = artUrl('ui_run_button_on');
   button.append(image);
   const setHeld = (held: boolean): void => {
     gameState.setRunHeld(held);

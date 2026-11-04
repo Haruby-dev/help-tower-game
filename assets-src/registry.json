@@ -1,36 +1,76 @@
 {
-  "gio_idle": {
-    "type": "character",
-    "pixellabId": "de4a7f28-028c-4d22-95dc-c75969e124b8",
-    "animation": "gio_idle",
-    "group": "8327e033-2523-47eb-9a88-01fec6235050",
-    "directions": {
-      "south": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/animations/23ffacae-7aea-4dbd-aee1-334c631b6cee/south/{i}.png?t=1793426421130"
-    },
-    "frameCount": 8,
-    "frameWidth": 56,
-    "frameHeight": 56,
-    "frameRate": 8,
-    "file": "characters/gio_idle.png"
+  "gio_sit": {
+    "type": "local",
+    "width": 448,
+    "height": 224,
+    "source": "public/assets/characters/gio_v2/gio_sit.png",
+    "file": "characters/gio_v2/gio_sit.png",
+    "jade_tone": false,
+    "frame_width": 56,
+    "frame_height": 56,
+    "frames": 8,
+    "rows": [
+      "south",
+      "east",
+      "north",
+      "west"
+    ],
+    "name_th": "จีโอ v2 นั่ง",
+    "note": "PixelLab dd58cae2 gio_idle 5d28faf1 ผู้ใช้อนุมัติ 4 พ.ย. 2026"
   },
-  "gio_stand": {
-    "type": "character",
-    "pixellabId": "de4a7f28-028c-4d22-95dc-c75969e124b8",
-    "animation": "gio_stand",
-    "directions": {
-      "south": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/animations/23ffacae-7aea-4dbd-aee1-334c631b6cee/south/0.png?t=1793426421130",
-      "east": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/rotations/east.png?t=1793426286",
-      "north": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/rotations/north.png?t=1793426286",
-      "west": "https://backblaze.pixellab.ai/file/pixellab-characters/11ed640e-6aad-4cd1-9d9a-d5e3b8b80299/de4a7f28-028c-4d22-95dc-c75969e124b8/rotations/west.png?t=1793426286"
-    },
-    "frameCount": 1,
-    "frameWidth": 56,
-    "frameHeight": 56,
-    "squash_stretch": {
-      "rows": 2,
-      "cutShare": 0.62
-    },
-    "file": "characters/gio_stand.png"
+  "gio_sit_blink": {
+    "type": "local",
+    "width": 448,
+    "height": 224,
+    "source": "public/assets/characters/gio_v2/gio_sit_blink.png",
+    "file": "characters/gio_v2/gio_sit_blink.png",
+    "jade_tone": false,
+    "frame_width": 56,
+    "frame_height": 56,
+    "frames": 8,
+    "rows": [
+      "south",
+      "east",
+      "north",
+      "west"
+    ],
+    "note": "วาดมือ เฟรม 3–5 หลับตา ทิศเหนือไม่เปลี่ยน"
+  },
+  "gio_walk_south": {
+    "type": "local",
+    "width": 480,
+    "height": 76,
+    "source": "public/assets/characters/gio_v2/gio_walk_south.png",
+    "file": "characters/gio_v2/gio_walk_south.png",
+    "jade_tone": false,
+    "frame_width": 60,
+    "frame_height": 76,
+    "frames": 8,
+    "note": "เดินสี่ขา c3bb7039"
+  },
+  "gio_walk_north": {
+    "type": "local",
+    "width": 480,
+    "height": 76,
+    "source": "public/assets/characters/gio_v2/gio_walk_north.png",
+    "file": "characters/gio_v2/gio_walk_north.png",
+    "jade_tone": false,
+    "frame_width": 60,
+    "frame_height": 76,
+    "frames": 8,
+    "note": "เดินสี่ขา c3bb7039"
+  },
+  "gio_walk_east": {
+    "type": "local",
+    "width": 608,
+    "height": 68,
+    "source": "public/assets/characters/gio_v2/gio_walk_east.png",
+    "file": "characters/gio_v2/gio_walk_east.png",
+    "jade_tone": false,
+    "frame_width": 76,
+    "frame_height": 68,
+    "frames": 8,
+    "note": "เดินสี่ขา c3bb7039 ทิศตะวันตกกลับด้าน"
   },
   "player_girl_stand": {
     "type": "character",
@@ -3836,19 +3876,21 @@
     "type": "local",
     "width": 64,
     "height": 64,
-    "source": "assets-src/art_2026-11-02/ui/run_button_off.png",
-    "file": "ui/run_button_off.png",
+    "source": "public/assets/ui/hud_v2/run_button_off.png",
+    "file": "ui/hud_v2/run_button_off.png",
     "jade_tone": false,
-    "lazy": true
+    "lazy": true,
+    "note": "ชุดเหรียญ 4 พ.ย. 2026"
   },
   "ui_run_button_on": {
     "type": "local",
     "width": 64,
     "height": 64,
-    "source": "assets-src/art_2026-11-02/ui/run_button_on.png",
-    "file": "ui/run_button_on.png",
+    "source": "public/assets/ui/hud_v2/run_button_on.png",
+    "file": "ui/hud_v2/run_button_on.png",
     "jade_tone": false,
-    "lazy": true
+    "lazy": true,
+    "note": "ชุดเหรียญ 4 พ.ย. 2026"
   },
   "ui_joystick_knob_paw": {
     "type": "local",
@@ -7593,5 +7635,180 @@
     "frame_width": 88,
     "frame_height": 88,
     "frames": 9
+  },
+  "ui_action_frame": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/ui/hud_v2/action_button_frame.png",
+    "file": "ui/hud_v2/action_button_frame.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_action_frame_pressed": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/ui/hud_v2/action_button_frame_pressed.png",
+    "file": "ui/hud_v2/action_button_frame_pressed.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_action_icon_fish": {
+    "type": "local",
+    "width": 28,
+    "height": 28,
+    "source": "public/assets/ui/hud_v2/icon_fish.png",
+    "file": "ui/hud_v2/icon_fish.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_action_icon_bath": {
+    "type": "local",
+    "width": 28,
+    "height": 28,
+    "source": "public/assets/ui/hud_v2/icon_bath.png",
+    "file": "ui/hud_v2/icon_bath.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_action_icon_water": {
+    "type": "local",
+    "width": 26,
+    "height": 21,
+    "source": "public/assets/ui/hud_v2/icon_water.png",
+    "file": "ui/hud_v2/icon_water.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_action_icon_till": {
+    "type": "local",
+    "width": 27,
+    "height": 32,
+    "source": "public/assets/ui/hud_v2/icon_till.png",
+    "file": "ui/hud_v2/icon_till.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_action_icon_plant": {
+    "type": "local",
+    "width": 23,
+    "height": 26,
+    "source": "public/assets/ui/hud_v2/icon_plant.png",
+    "file": "ui/hud_v2/icon_plant.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_action_icon_harvest": {
+    "type": "local",
+    "width": 22,
+    "height": 30,
+    "source": "public/assets/ui/hud_v2/icon_harvest.png",
+    "file": "ui/hud_v2/icon_harvest.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_action_icon_cook": {
+    "type": "local",
+    "width": 29,
+    "height": 23,
+    "source": "public/assets/ui/hud_v2/icon_cook.png",
+    "file": "ui/hud_v2/icon_cook.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_action_icon_sleep": {
+    "type": "local",
+    "width": 28,
+    "height": 24,
+    "source": "public/assets/ui/hud_v2/icon_sleep.png",
+    "file": "ui/hud_v2/icon_sleep.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_action_icon_chest": {
+    "type": "local",
+    "width": 24,
+    "height": 22,
+    "source": "public/assets/ui/hud_v2/icon_chest.png",
+    "file": "ui/hud_v2/icon_chest.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_tool_tray_5": {
+    "type": "local",
+    "width": 230,
+    "height": 48,
+    "source": "public/assets/ui/hud_v2/tool_tray_5slots.png",
+    "file": "ui/hud_v2/tool_tray_5slots.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_tool_slot_v2": {
+    "type": "local",
+    "width": 42,
+    "height": 37,
+    "source": "public/assets/ui/hud_v2/tool_slot.png",
+    "file": "ui/hud_v2/tool_slot.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_tool_slot_v2_selected": {
+    "type": "local",
+    "width": 42,
+    "height": 37,
+    "source": "public/assets/ui/hud_v2/tool_slot_selected.png",
+    "file": "ui/hud_v2/tool_slot_selected.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_key_badge_v2": {
+    "type": "local",
+    "width": 10,
+    "height": 10,
+    "source": "public/assets/ui/hud_v2/key_badge.png",
+    "file": "ui/hud_v2/key_badge.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_portrait_frame": {
+    "type": "local",
+    "width": 46,
+    "height": 46,
+    "source": "public/assets/ui/hud_v2/portrait_frame_empty.png",
+    "file": "ui/hud_v2/portrait_frame_empty.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_portrait_mask": {
+    "type": "local",
+    "width": 46,
+    "height": 46,
+    "source": "public/assets/ui/hud_v2/portrait_frame_mask.png",
+    "file": "ui/hud_v2/portrait_frame_mask.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "หน้ากากวงในของกรอบรูปหน้า ทำจาก portrait_frame_inner_mask.png"
+  },
+  "tool_rod": {
+    "type": "local",
+    "width": 28,
+    "height": 28,
+    "source": "public/assets/ui/hud_v2/icon_fish.png",
+    "file": "ui/hud_v2/icon_fish.png",
+    "jade_tone": false,
+    "lazy": true,
+    "name_th": "คันไม้ไผ่",
+    "note": "ไอคอนคันเบ็ดชุดเดียวกับปุ่มกระทำ"
+  },
+  "ui_tool_tray_9slice": {
+    "type": "local",
+    "width": 20,
+    "height": 20,
+    "source": "public/assets/ui/hud_v2/tool_tray_9slice.png",
+    "file": "ui/hud_v2/tool_tray_9slice.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "กรอบแถบเหยื่อ ตัด 9 ส่วน"
   }
 }

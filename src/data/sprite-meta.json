@@ -1,15 +1,35 @@
 {
-  "gio_idle": {
+  "gio_sit": {
     "footY": {
-      "south": 48
+      "default": 216,
+      "south": 45,
+      "east": 49,
+      "north": 49,
+      "west": 48
     }
   },
-  "gio_stand": {
+  "gio_sit_blink": {
     "footY": {
-      "south": 48,
-      "east": 52,
-      "north": 52,
-      "west": 52
+      "default": 216,
+      "south": 45,
+      "east": 49,
+      "north": 49,
+      "west": 48
+    }
+  },
+  "gio_walk_south": {
+    "footY": {
+      "default": 65
+    }
+  },
+  "gio_walk_north": {
+    "footY": {
+      "default": 64
+    }
+  },
+  "gio_walk_east": {
+    "footY": {
+      "default": 58
     }
   },
   "player_girl_stand": {
@@ -3514,6 +3534,101 @@
   "anim_wash_south": {
     "footY": {
       "default": 76
+    }
+  },
+  "ui_action_frame": {
+    "footY": {
+      "default": 48
+    }
+  },
+  "ui_action_frame_pressed": {
+    "footY": {
+      "default": 48
+    }
+  },
+  "ui_action_icon_fish": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "ui_action_icon_bath": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "ui_action_icon_water": {
+    "footY": {
+      "default": 21
+    }
+  },
+  "ui_action_icon_till": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "ui_action_icon_plant": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "ui_action_icon_harvest": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "ui_action_icon_cook": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "ui_action_icon_sleep": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "ui_action_icon_chest": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "ui_tool_tray_5": {
+    "footY": {
+      "default": 48
+    }
+  },
+  "ui_tool_slot_v2": {
+    "footY": {
+      "default": 37
+    }
+  },
+  "ui_tool_slot_v2_selected": {
+    "footY": {
+      "default": 37
+    }
+  },
+  "ui_key_badge_v2": {
+    "footY": {
+      "default": 10
+    }
+  },
+  "ui_portrait_frame": {
+    "footY": {
+      "default": 46
+    }
+  },
+  "ui_portrait_mask": {
+    "footY": {
+      "default": 42
+    }
+  },
+  "tool_rod": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "ui_tool_tray_9slice": {
+    "footY": {
+      "default": 20
     }
   }
 }

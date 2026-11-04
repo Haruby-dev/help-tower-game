@@ -1,5 +1,5 @@
 import type { TextKey } from './i18n';
-import type { Point, Tool, World } from './state';
+import type { ContextAction, Point, Tool, World } from './state';
 import type { Viewport } from './viewport';
 
 export type RestCause = 'sleep' | 'passed_out' | 'faint';
@@ -13,21 +13,16 @@ export interface GameEvents {
   'game-started': World;
   'player-moved': Point;
   'rest-finished': { cause: RestCause; day: number };
-  'action-changed': TextKey | null;
+  'action-changed': ContextAction | null;
   'action-pressed': undefined;
   notice: TextKey;
   'tool-changed': Tool;
   'dig-requested': { plot: number; crop: string };
   'dig-confirmed': number;
   /** key ของบทพูดตัวเอกใน lines.json */
-  'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait';
+  'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut';
   'cook-open': undefined;
   'book-open': undefined;
-  /** ยืนริมบ่อแล้วกด เปิดหน้าเลือกเหยื่อหรืออาบน้ำ */
-  'pond-open': undefined;
-  /** id ของเหยื่อใน baits.json */
-  'fish-cast': string;
-  'bath-start': undefined;
   /** ไอเท็มหีบในกระเป๋าที่จะเปิด */
   'chest-open': string;
 }

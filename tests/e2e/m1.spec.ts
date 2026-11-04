@@ -253,7 +253,7 @@ test('the player cannot walk through Gio', async ({ page, isMobile }) => {
   expect(x).toBeLessThan(gio.x);
 });
 
-test('Gio hops around near the seat without leaving play', async ({ page }) => {
+test('Gio v2 walks on four legs near the seat, sits back down, and stays in play', async ({ page }) => {
   await openGame(page);
   const readGio = (): Promise<{ x: number; y: number; texture: string }> =>
     page.evaluate(() => {
@@ -265,15 +265,15 @@ test('Gio hops around near the seat without leaving play', async ({ page }) => {
 
   await page.waitForFunction(
     () => {
-      const scene = window.__game!.scene.getScene('Base') as unknown as { gio: { hopping: boolean } };
-      if (scene.gio.hopping) document.documentElement.dataset.gioHopped = 'yes';
-      return document.documentElement.dataset.gioHopped === 'yes';
+      const scene = window.__game!.scene.getScene('Base') as unknown as { gio: { walking: boolean } };
+      if (scene.gio.walking) document.documentElement.dataset.gioWalked = 'yes';
+      return document.documentElement.dataset.gioWalked === 'yes';
     },
     undefined,
     { timeout: 90_000, polling: 50 },
   );
-  expect((await readGio()).texture).toBe('gio_stand');
-  await expect.poll(async () => (await readGio()).texture, { timeout: 30_000 }).toBe('gio_idle');
+  expect((await readGio()).texture).toMatch(/^gio_walk_(south|north|east)$/);
+  await expect.poll(async () => (await readGio()).texture, { timeout: 30_000 }).toMatch(/^gio_sit/);
   const gio = await readGio();
   expect(Math.hypot(gio.x - 11.2 * TILE, gio.y - 11.35 * TILE)).toBeLessThan(200);
 });

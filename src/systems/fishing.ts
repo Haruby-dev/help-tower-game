@@ -76,6 +76,13 @@ export const catchItem = (caught: Catch): string => (caught.kind === 'fish' ? fi
 
 export const baitsInBag = (bag: BagStack[]): string[] => Object.entries(baits).filter(([, bait]) => countOf(bag, bait.item) > 0).map(([id]) => id);
 
+/** เหยื่อที่จะใช้จริง: ที่เลือกไว้ถ้ายังมี ไม่งั้นเหยื่อแรกที่ยังเหลือ */
+export function chosenBait(bag: BagStack[], selected: string | null): string | null {
+  const item = selected ? baits[selected]?.item : undefined;
+  if (selected && item && countOf(bag, item) > 0) return selected;
+  return baitsInBag(bag)[0] ?? null;
+}
+
 /** ตกปลาครั้งหนึ่งรวม 30 นาทีตาม GDD ช่วงรอปลากินนาฬิกาจริงไปแล้ว จึงเดินเวลาเฉพาะส่วนที่ขาด · สุขเพิ่มทุกครั้งที่ตก */
 export function spendFishingTime(world: World, castHour: number): World {
   const fishingHours = rules.minutes / MINUTES_PER_HOUR;

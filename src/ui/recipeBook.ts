@@ -7,6 +7,7 @@ import type { Recipe } from '../data/schema';
 import { recipes } from '../systems/cooking';
 import { itemName } from './inventory';
 import { artUrl } from './pixelArt';
+import { revealWhenReady } from './preload';
 
 type Category = Recipe['category'];
 const TABS: { id: Category; label: TextKey }[] = [
@@ -329,6 +330,7 @@ export function createRecipeBook(uiRoot: HTMLElement): void {
   eventBus.on('book-open', () => {
     render();
     backdrop.hidden = false;
+    revealWhenReady(backdrop);
     gameState.setWindowOpen(WINDOW, true);
   });
   // หน้าที่เปิดอยู่เปลี่ยนตามความจริง เช่น ได้ดาวใหม่

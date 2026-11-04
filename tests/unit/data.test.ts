@@ -14,7 +14,6 @@ describe('project data', () => {
       JSON.parse(readFileSync(join(projectRoot, 'assets-src/registry.json'), 'utf8')),
     );
     expect(registry.gio_hop).toBeUndefined();
-    expect(Object.keys((registry.gio_stand as { directions: object }).directions)).toEqual(['south', 'east', 'north', 'west']);
   });
 
   it('lists every file from the 1 Nov art update with the same tone and currency', () => {
