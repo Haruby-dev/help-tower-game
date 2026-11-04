@@ -240,7 +240,7 @@
     }
   },
   "bath": {
-    "minutes": 30,
+    "minutes": 15,
     "cleanlinessGain": 60,
     "fps": 8
   },

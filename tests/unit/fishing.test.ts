@@ -6,7 +6,7 @@ import { finishBath } from '../../src/systems/bath';
 import { chestData, openChest, rollChestTier } from '../../src/systems/chests';
 import { canCook, matchRecipe, startCooking } from '../../src/systems/cooking';
 import { countOf } from '../../src/systems/farm';
-import { biteCandidates, chestChance, chosenBait, finishCast, fishTable, makeBait, rollCatch, spendFishingTime } from '../../src/systems/fishing';
+import { autoHooks, biteCandidates, chestChance, chosenBait, finishCast, fishTable, makeBait, rollCatch, spendFishingTime } from '../../src/systems/fishing';
 import { newWorld } from '../../src/systems/gauges';
 import { parseSaveFile, SAVE_VERSION } from '../../src/systems/save';
 import { sleep } from '../../src/systems/time';
@@ -203,9 +203,10 @@ describe('weather', () => {
 describe('bath and saves', () => {
   it('gives cleanliness 60 for a full bath and part of it when cut short', () => {
     const dirty = world({ gauges: { fullness: 80, happiness: 80, cleanliness: 20, homesickness: 0 } });
-    expect(finishBath(dirty, 30).gauges.cleanliness).toBe(80);
-    expect(finishBath(dirty, 15).gauges.cleanliness).toBe(50);
-    expect(finishBath(world(), 30).gauges.cleanliness).toBe(100);
+    expect(balance.bath.minutes).toBe(15);
+    expect(finishBath(dirty, 15).gauges.cleanliness).toBe(80);
+    expect(finishBath(dirty, 7.5).gauges.cleanliness).toBe(50);
+    expect(finishBath(world(), 15).gauges.cleanliness).toBe(100);
   });
 
   it('turns a version 5 save into version 6 with fishing, weather and the starter bait', () => {
@@ -235,6 +236,16 @@ describe('auto-fish and the bait strip (her decision 4 Nov 2026)', () => {
   it('waits 1.5 times longer and catches about 65% of bites', () => {
     expect(balance.fishing.autoWaitMultiplier).toBe(1.5);
     expect(balance.fishing.autoCatchChance).toBe(0.65);
+  });
+
+  it('really hooks about 65% of bites over many tries', () => {
+    for (const seed of [1, 42, Date.now()]) {
+      const rng = createRng(seed);
+      let hooked = 0;
+      for (let i = 0; i < 20000; i += 1) if (autoHooks(rng)) hooked += 1;
+      expect(hooked / 20000).toBeGreaterThan(0.62);
+      expect(hooked / 20000).toBeLessThan(0.68);
+    }
   });
 
   it('uses the chosen bait while it lasts, then the first bait still in the bag', () => {

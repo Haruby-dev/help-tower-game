@@ -12,7 +12,7 @@ import { Player, type GardenMove } from '../entities/Player';
 import { Plot } from '../entities/Plot';
 import { FishingRig } from '../entities/FishingRig';
 import { finishBath } from '../systems/bath';
-import { baits, catchItem, chosenBait, finishCast, rollCatch, type Catch } from '../systems/fishing';
+import { autoHooks, baits, catchItem, chosenBait, finishCast, rollCatch, type Catch } from '../systems/fishing';
 import { countOf, seedItem } from '../systems/farm';
 import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, isWithered, yieldOf, type FarmAction } from '../systems/farm';
 import { MYSTERY, collectDish, isCooked } from '../systems/cooking';
@@ -474,12 +474,14 @@ export class BaseScene extends Phaser.Scene {
   /** ขึ้น "!" ให้แตะภายในราว 1 วินาที ตั้งค่าตกปลาอัตโนมัติไว้จะดึงให้เอง แต่ติดแค่ราว 65% */
   private startBite(trip: FishingTrip): void {
     if (this.fishing !== trip) return;
-    const { biteWindowMs, autoTapMs, autoCatchChance } = balance.fishing;
+    const { biteWindowMs, autoTapMs } = balance.fishing;
     trip.phase = 'bite';
     this.rig.bite();
     this.rig.showMark(this.player.feetX, this.player.feetY);
-    trip.timer = this.time.delayedCall(biteWindowMs, () => this.finishFishing(false));
-    if (gameState.autoFish) this.time.delayedCall(autoTapMs, () => this.finishFishing(this.fishRng.next() < autoCatchChance));
+    // ตกปลาอัตโนมัติตั้งนาฬิกาเดียว เดิมมีสองนาฬิกาแข่งกัน ถ้าเครื่องกระตุก นาฬิกา "ไม่ทัน" อาจดังก่อนจนพลาดทุกครั้ง
+    trip.timer = gameState.autoFish
+      ? this.time.delayedCall(autoTapMs, () => this.finishFishing(autoHooks(this.fishRng)))
+      : this.time.delayedCall(biteWindowMs, () => this.finishFishing(false));
   }
 
   /** ดึงทันได้ของและเสียเหยื่อ ไม่ทันปลาหลุดแต่เหยื่อยังอยู่ ทั้งสองแบบใช้เวลาครบ 30 นาที */

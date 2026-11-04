@@ -65,6 +65,9 @@ function pickWeighted(ids: string[], rng: Rng): string {
 
 export type Catch = { kind: 'fish'; fish: string } | { kind: 'chest'; tier: ChestTier };
 
+/** ตกปลาอัตโนมัติดึงติดหรือไม่ สุ่มครั้งเดียวต่อครั้งที่ปลากิน */
+export const autoHooks = (rng: Rng): boolean => rng.next() < rules.autoCatchChance;
+
 /** หีบมาแทนปลาในครั้งนั้น */
 export function rollCatch(world: World, bait: string, hour: number, rng: Rng): Catch | null {
   if (rng.next() < chestChance(world, hour)) return { kind: 'chest', tier: rollChestTier(rng) };
