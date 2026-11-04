@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { PNG } from 'pngjs';
 import type { z } from 'zod';
 import {
   balanceSchema,
@@ -32,6 +33,24 @@ function readJson(path: string): unknown {
 function checkSchema(path: string, schema: z.ZodType, problems: string[]): void {
   const result = schema.safeParse(readJson(path));
   if (!result.success) problems.push(`${path}: ${result.error.message}`);
+}
+
+/** ภาพตัวเอกสาวทุกชิ้น ท่าเดิน ท่ายืน ท่าทำงาน และหน้าในแถบบน */
+const GIRL_ART = /^(player_girl_(walk|stand)|anim_[a-z]+_(south|east|north)|portrait_girl_[a-z]+)$/;
+const OLD_SKIN = 0xf9bfab;
+/** ภาพผิวเดิมมีสีนี้ราว 5–20% ของพิกเซลทึบ ภาพผิวสว่างไม่มีเลย */
+const OLD_SKIN_MAX_SHARE = 0.01;
+
+function oldSkinShare(path: string): number {
+  const { data } = PNG.sync.read(readFileSync(path));
+  let opaque = 0;
+  let old = 0;
+  for (let i = 0; i < data.length; i += 4) {
+    if ((data[i + 3] ?? 0) < 128) continue;
+    opaque += 1;
+    if ((((data[i] ?? 0) << 16) | ((data[i + 1] ?? 0) << 8) | (data[i + 2] ?? 0)) === OLD_SKIN) old += 1;
+  }
+  return opaque > 0 ? old / opaque : 0;
 }
 
 function listCodeFiles(directory: string): string[] {
@@ -130,6 +149,15 @@ export function checkProject(): string[] {
       (entry.kind === 'cosmetic' ? cosmetics[entry.item] !== undefined : entry.item.startsWith('ing_') ? translations[`ingredient.${entry.item.slice(4)}.name`] : translations[`item.${entry.item}.name`]);
     if (!named) problems.push(`src/data/chests.json: ${entry.item} has no name`);
     if (entry.min > entry.max) problems.push(`src/data/chests.json: ${entry.item} min is above max`);
+  }
+
+  // ผู้ใช้เลือกตัวเอกผิวสว่าง 4 พ.ย. 2026 ถ้าภาพไหนกลับเป็นผิวเดิม แปลว่าการดึงภาพเขียนทับ
+  for (const [id, entry] of Object.entries(registry)) {
+    if (!GIRL_ART.test(id) || entry.type === 'not_used' || entry.type === 'placeholder') continue;
+    const path = join(projectRoot, 'public/assets', entry.file);
+    if (existsSync(path) && oldSkinShare(path) > OLD_SKIN_MAX_SHARE) {
+      problems.push(`public/assets/${entry.file}: ${id} has the old skin colour #${OLD_SKIN.toString(16)}, the fair skin was overwritten`);
+    }
   }
 
   for (const file of listCodeFiles(join(projectRoot, 'src'))) {

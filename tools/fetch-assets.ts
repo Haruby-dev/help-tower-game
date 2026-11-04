@@ -27,8 +27,16 @@ async function downloadPng(url: string): Promise<PNG> {
   return PNG.sync.read(await downloadBytes(url));
 }
 
+/** ไฟล์เดิมที่พิกเซลเหมือนกันทุกจุดไม่เขียนทับ ไฟล์ที่ฝั่งวางแผนบีบอัดมาเล็กกว่าจะได้ไม่เปลี่ยนใน git */
+function samePixels(target: string, png: PNG): boolean {
+  if (!existsSync(target)) return false;
+  const old = PNG.sync.read(readFileSync(target));
+  return old.width === png.width && old.height === png.height && old.data.equals(png.data);
+}
+
 function savePng(file: string, png: PNG): void {
   const target = join(projectRoot, 'public/assets', file);
+  if (samePixels(target, png)) return;
   mkdirSync(dirname(target), { recursive: true });
   writeFileSync(target, PNG.sync.write(png));
 }
@@ -45,6 +53,20 @@ function lowestRow(png: PNG, left: number, top: number, width: number, height: n
 
 function median(values: number[]): number {
   return [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)] ?? 0;
+}
+
+/** ตัวเอกผิวสว่างที่ผู้ใช้อนุมัติ 4 พ.ย. 2026 ฝั่งวางแผนสลับสีบนแผ่นที่สร้างเสร็จแล้ว ภาพใน PixelLab ยังเป็นผิวเดิม */
+const FAIR_SKIN_DIR = 'assets-src/skin_fair_1104';
+
+/** ใช้แผ่นผิวสว่างแทนแผ่นที่เพิ่งสร้าง จุดเท้ายังวัดจากแผ่นที่สร้าง เพราะสลับแค่สี ไม่ได้ย้ายพิกเซล */
+function fairSkinSheet(id: string, processed: PNG): PNG | null {
+  const path = join(projectRoot, FAIR_SKIN_DIR, `${id}.png`);
+  if (!existsSync(path)) return null;
+  const fair = PNG.sync.read(readFileSync(path));
+  if (fair.width !== processed.width || fair.height !== processed.height) {
+    throw new Error(`${FAIR_SKIN_DIR}/${id}.png is ${fair.width}x${fair.height}, expected ${processed.width}x${processed.height}`);
+  }
+  return fair;
 }
 
 async function fetchCharacter(id: string, entry: CharacterEntry, meta: SpriteMeta): Promise<void> {
@@ -85,12 +107,10 @@ async function fetchCharacter(id: string, entry: CharacterEntry, meta: SpriteMet
   for (const [direction, fix] of Object.entries(entry.steady_rows ?? {})) {
     steadyWalkRow(sheet, directions.findIndex(([name]) => name === direction), entry.frameWidth, entry.frameHeight, entry.frameCount, fix);
   }
-  savePng(
-    entry.file,
-    entry.squash_stretch
-      ? buildHopSheet(sheet, entry.frameWidth, entry.frameHeight, directions.length, entry.squash_stretch)
-      : sheet,
-  );
+  const processed = entry.squash_stretch
+    ? buildHopSheet(sheet, entry.frameWidth, entry.frameHeight, directions.length, entry.squash_stretch)
+    : sheet;
+  savePng(entry.file, fairSkinSheet(id, processed) ?? processed);
   meta[id] = { footY };
   console.log(`${id}: saved ${directions.length} directions, ${entry.frameCount} frames each`);
 }
