@@ -4,7 +4,20 @@ import { t, type TextKey } from '../core/i18n';
 import { gameState, type BagStack } from '../core/state';
 import balance from '../data/balance.json';
 import type { Recipe } from '../data/schema';
-import { canCook, canUseCampfire, haveFor, isIngredient, isRawProduce, minutesFor, recipes, starsFor, startCooking, startExperiment } from '../systems/cooking';
+import {
+  batchIngredients,
+  batchMinutes,
+  canCook,
+  canUseCampfire,
+  haveFor,
+  isIngredient,
+  isRawProduce,
+  maxBatch,
+  recipes,
+  starsFor,
+  startCooking,
+  startExperiment,
+} from '../systems/cooking';
 import { fishGroupOf, isFish } from '../systems/fishing';
 import { itemImage, itemName } from './inventory';
 import { artUrl } from './pixelArt';
@@ -100,6 +113,8 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
   let tab: Tab = 'savory';
   let selected: string | null = null;
   let mix: Record<string, number> = {};
+  /** จำนวนจานของเมนูที่เลือก กลับเป็น 1 ทุกครั้งที่เปลี่ยนเมนูหรือเปิดหน้าต่างใหม่ */
+  let batch = 1;
 
   const hide = (): void => {
     backdrop.hidden = true;
@@ -133,6 +148,7 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     text.append(element('b', '', t(`dish.${id}.name` as TextKey)), element('small', '', t(ready ? 'cook.ready' : 'cook.missing')));
     card.append(icon, text);
     card.addEventListener('click', () => {
+      if (selected !== id) batch = 1;
       selected = id;
       render();
     });
@@ -143,31 +159,64 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     const recipe = recipes[id]!;
     const { bag, gauges } = gameState.world;
     const detail = element('div', 'cook-detail');
+    // ทำได้มากสุดเท่าชุดวัตถุดิบครบในกระเป๋า ของไม่ครบยังแสดง 1 จาน
+    const most = Math.max(1, maxBatch(bag, recipe));
+    batch = Math.min(Math.max(1, batch), most);
     const plates = element('div', 'cook-plates');
-    for (const [item, need] of Object.entries(recipe.ingredients)) {
+    for (const [item, need] of Object.entries(batchIngredients(recipe, batch))) {
       const have = haveFor(bag, item);
       plates.append(ingredientPlate(item, theme, `${have}/${need}`, have < need));
     }
     const facts = element('p', 'cook-facts');
     facts.append(
-      element('span', '', `${minutesFor(recipe)} ${t('cook.minutes')}`),
+      element('span', '', `${batchMinutes(recipe, batch)} ${t('cook.minutes')}`),
       element('span', 'cook-facts__stars', STAR.repeat(starsFor(gauges.happiness))),
     );
     const go = element('button', 'phone-tool cook-go', t('cook.start'));
     go.id = 'cook-go';
     go.type = 'button';
     go.disabled = !canCook(gameState.world, id);
-    go.addEventListener('click', () => apply(startCooking(gameState.world, id)));
+    go.addEventListener('click', () => apply(startCooking(gameState.world, id, batch)));
     detail.append(
       dishPicture(recipe, id, theme),
       element('h3', 'cook-detail__name', t(`dish.${id}.name` as TextKey)),
       facts,
       element('b', 'cook-label', t('book.ingredients')),
       plates,
-      go,
+      batchStepper(recipe, most, go),
     );
     if (gauges.happiness < balance.cooking.twoStarHappiness) detail.append(element('small', 'cook-tip', t('cook.star_tip')));
     return detail;
+  };
+
+  /** ปุ่ม "− n +" เลือกจำนวนจาน อยู่แถวเดียวกับปุ่มเริ่มทำ ใต้แถวบอกวัตถุดิบและเวลารวมทั้งรอบ จอมือถือจึงยังเห็นครบ */
+  const batchStepper = (recipe: Recipe, most: number, go: HTMLButtonElement): HTMLElement => {
+    const ready = !go.disabled;
+    const row = element('div', 'cook-batch');
+    const step = (text: string, label: TextKey, id: string, delta: number, disabled: boolean): HTMLButtonElement => {
+      const button = element('button', 'phone-tool cook-batch__step', text);
+      button.id = id;
+      button.type = 'button';
+      button.disabled = disabled;
+      button.setAttribute('aria-label', t(label));
+      button.addEventListener('click', () => {
+        batch = Math.min(Math.max(1, batch + delta), most);
+        render();
+      });
+      return button;
+    };
+    const count = element('b', 'cook-batch__count', String(batch));
+    count.id = 'cook-count';
+    const total = element('small', 'cook-batch__total', `${t('cook.batch_total')} ${ingredientText(batchIngredients(recipe, batch))} · ${batchMinutes(recipe, batch)} ${t('cook.minutes')}`);
+    total.id = 'cook-batch-total';
+    row.append(
+      step('−', 'cook.batch_less', 'cook-less', -1, !ready || batch <= 1),
+      count,
+      step('+', 'cook.batch_more', 'cook-more', 1, !ready || batch >= most),
+      go,
+      total,
+    );
+    return row;
   };
 
   const renderRecipes = (category: Theme): void => {
@@ -281,6 +330,7 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
   });
   eventBus.on('cook-open', () => {
     mix = {};
+    batch = 1;
     render();
     backdrop.hidden = false;
     revealWhenReady(backdrop);

@@ -73,6 +73,8 @@ export interface CookingSlot {
   recipe: string;
   stars: number;
   minutesLeft: number;
+  /** ทำเมนูเดียวกันหลายจานในรอบเดียว ดาวเท่ากันทั้งรอบ */
+  count: number;
 }
 
 export interface Cooking {

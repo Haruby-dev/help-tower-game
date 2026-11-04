@@ -423,7 +423,7 @@ canvas {
 #action-button {
   position: absolute;
   right: max(16px, env(safe-area-inset-right));
-  bottom: max(16px, env(safe-area-inset-bottom));
+  bottom: max(16px, env(safe-area-inset-bottom), calc(var(--px) * 9));
   width: calc(var(--px) * 48);
   height: calc(var(--px) * 48);
   min-width: 44px;
@@ -474,20 +474,39 @@ canvas {
   height: calc(var(--px) * var(--h));
 }
 
+/* ป้ายทรงแคปซูล ปลายมนเต็มแบบขั้นพิกเซล ขอบม่วง 1 พิกเซล ตัวหนังสืออยู่บนรูปทรงจึงไม่ถูกตัด */
 .action-button__label {
   position: absolute;
   top: calc(var(--px) * 42);
   left: 50%;
-  padding: 0 calc(var(--px) * 4);
-  background: #f8789a;
-  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--outline), 0 calc(var(--px) * 1) 0 0 var(--outline), calc(var(--px) * -1) 0 0 0 var(--outline), calc(var(--px) * 1) 0 0 0 var(--outline);
+  isolation: isolate;
+  height: calc(var(--px) * 11);
+  padding: 0 calc(var(--px) * 6);
   color: #fff;
   font-size: max(11px, calc(var(--px) * 7));
   font-weight: 700;
-  line-height: max(14px, calc(var(--px) * 10));
+  line-height: calc(var(--px) * 11);
   white-space: nowrap;
   transform: translateX(-50%);
   pointer-events: none;
+}
+
+.action-button__label::before,
+.action-button__label::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.action-button__label::before {
+  background: var(--outline);
+  clip-path: polygon(calc(var(--px) * 4) 0, calc(var(--px) * 4) calc(var(--px) * 1), calc(var(--px) * 2) calc(var(--px) * 1), calc(var(--px) * 2) calc(var(--px) * 2), calc(var(--px) * 1) calc(var(--px) * 2), calc(var(--px) * 1) calc(var(--px) * 3), calc(var(--px) * 1) calc(var(--px) * 3), calc(var(--px) * 1) calc(var(--px) * 4), 0 calc(var(--px) * 4), 0 calc(var(--px) * 5), 0 calc(var(--px) * 5), 0 calc(var(--px) * 6), 0 calc(var(--px) * 6), 0 calc(var(--px) * 7), calc(var(--px) * 1) calc(var(--px) * 7), calc(var(--px) * 1) calc(var(--px) * 8), calc(var(--px) * 1) calc(var(--px) * 8), calc(var(--px) * 1) calc(var(--px) * 9), calc(var(--px) * 2) calc(var(--px) * 9), calc(var(--px) * 2) calc(var(--px) * 10), calc(var(--px) * 4) calc(var(--px) * 10), calc(var(--px) * 4) calc(var(--px) * 11), calc(100% - var(--px) * 4) calc(var(--px) * 11), calc(100% - var(--px) * 4) calc(var(--px) * 10), calc(100% - var(--px) * 2) calc(var(--px) * 10), calc(100% - var(--px) * 2) calc(var(--px) * 9), calc(100% - var(--px) * 1) calc(var(--px) * 9), calc(100% - var(--px) * 1) calc(var(--px) * 8), calc(100% - var(--px) * 1) calc(var(--px) * 8), calc(100% - var(--px) * 1) calc(var(--px) * 7), 100% calc(var(--px) * 7), 100% calc(var(--px) * 6), 100% calc(var(--px) * 6), 100% calc(var(--px) * 5), 100% calc(var(--px) * 5), 100% calc(var(--px) * 4), calc(100% - var(--px) * 1) calc(var(--px) * 4), calc(100% - var(--px) * 1) calc(var(--px) * 3), calc(100% - var(--px) * 1) calc(var(--px) * 3), calc(100% - var(--px) * 1) calc(var(--px) * 2), calc(100% - var(--px) * 2) calc(var(--px) * 2), calc(100% - var(--px) * 2) calc(var(--px) * 1), calc(100% - var(--px) * 4) calc(var(--px) * 1), calc(100% - var(--px) * 4) 0);
+}
+
+.action-button__label::after {
+  background: #f8789a;
+  clip-path: polygon(calc(var(--px) * 4) calc(var(--px) * 1), calc(var(--px) * 4) calc(var(--px) * 2), calc(var(--px) * 2) calc(var(--px) * 2), calc(var(--px) * 2) calc(var(--px) * 3), calc(var(--px) * 2) calc(var(--px) * 3), calc(var(--px) * 2) calc(var(--px) * 4), calc(var(--px) * 1) calc(var(--px) * 4), calc(var(--px) * 1) calc(var(--px) * 5), calc(var(--px) * 1) calc(var(--px) * 5), calc(var(--px) * 1) calc(var(--px) * 6), calc(var(--px) * 1) calc(var(--px) * 6), calc(var(--px) * 1) calc(var(--px) * 7), calc(var(--px) * 2) calc(var(--px) * 7), calc(var(--px) * 2) calc(var(--px) * 8), calc(var(--px) * 2) calc(var(--px) * 8), calc(var(--px) * 2) calc(var(--px) * 9), calc(var(--px) * 4) calc(var(--px) * 9), calc(var(--px) * 4) calc(var(--px) * 10), calc(100% - var(--px) * 4) calc(var(--px) * 10), calc(100% - var(--px) * 4) calc(var(--px) * 9), calc(100% - var(--px) * 2) calc(var(--px) * 9), calc(100% - var(--px) * 2) calc(var(--px) * 8), calc(100% - var(--px) * 2) calc(var(--px) * 8), calc(100% - var(--px) * 2) calc(var(--px) * 7), calc(100% - var(--px) * 1) calc(var(--px) * 7), calc(100% - var(--px) * 1) calc(var(--px) * 6), calc(100% - var(--px) * 1) calc(var(--px) * 6), calc(100% - var(--px) * 1) calc(var(--px) * 5), calc(100% - var(--px) * 1) calc(var(--px) * 5), calc(100% - var(--px) * 1) calc(var(--px) * 4), calc(100% - var(--px) * 2) calc(var(--px) * 4), calc(100% - var(--px) * 2) calc(var(--px) * 3), calc(100% - var(--px) * 2) calc(var(--px) * 3), calc(100% - var(--px) * 2) calc(var(--px) * 2), calc(100% - var(--px) * 4) calc(var(--px) * 2), calc(100% - var(--px) * 4) calc(var(--px) * 1));
 }
 
 .action-button__key {
@@ -510,7 +529,7 @@ canvas {
 #run-button {
   position: absolute;
   right: max(16px, env(safe-area-inset-right));
-  bottom: max(16px, env(safe-area-inset-bottom));
+  bottom: max(16px, env(safe-area-inset-bottom), calc(var(--px) * 9));
   display: grid;
   place-items: center;
   width: calc(var(--px) * 64);
@@ -3312,4 +3331,37 @@ canvas {
 
 .settings-row[hidden] {
   display: none;
+}
+
+/* ทำหลายจาน: ปุ่ม − n + สีเดียวกับปุ่มอื่นในหน้าต่าง ข้าง ๆ บอกของที่ใช้และเวลารวม */
+.cook-batch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: calc(var(--px) * 2);
+  color: var(--book-text);
+}
+
+.cook-batch__step {
+  min-width: 44px;
+  font-size: max(14px, calc(var(--px) * 9));
+}
+
+.cook-batch__count {
+  min-width: calc(var(--px) * 12);
+  text-align: center;
+  font-size: max(13px, calc(var(--px) * 8));
+}
+
+.cook-batch .cook-go {
+  min-width: 0;
+  margin: 1px 1px 1px calc(var(--px) * 4);
+}
+
+.cook-batch__total {
+  flex-basis: 100%;
+  text-align: center;
+  font-size: max(10px, calc(var(--px) * 6));
+  font-weight: 700;
 }

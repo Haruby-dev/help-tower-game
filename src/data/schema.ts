@@ -232,7 +232,9 @@ export const saveFileSchema = z.strictObject({
     }),
     bag: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })),
     cooking: z.strictObject({
-      slot: z.strictObject({ recipe: z.string().min(1), stars: z.number().int().positive(), minutesLeft: z.number().nonnegative() }).nullable(),
+      slot: z
+        .strictObject({ recipe: z.string().min(1), stars: z.number().int().positive(), minutesLeft: z.number().nonnegative(), count: z.number().int().positive() })
+        .nullable(),
     }),
     recipes: z.strictObject({ known: z.array(z.string().min(1)), bestStars: z.record(z.string(), z.number().int().positive()) }),
     cosmetics: z.strictObject({

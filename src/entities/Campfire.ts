@@ -5,7 +5,7 @@ import { t } from '../core/i18n';
 import type { Rng } from '../core/rng';
 import type { CookingSlot } from '../core/state';
 import balance from '../data/balance.json';
-import { MYSTERY, isCooked, minutesFor, recipes } from '../systems/cooking';
+import { MYSTERY, batchMinutes, isCooked, recipes } from '../systems/cooking';
 
 const OVERHEAD_LIFT = 60;
 const RING_RADIUS = 7;
@@ -60,7 +60,7 @@ export class Campfire {
 
   private drawRing(slot: CookingSlot): void {
     const recipe = recipes[slot.recipe];
-    const total = recipe ? minutesFor(recipe) : Math.max(slot.minutesLeft, 1);
+    const total = recipe ? batchMinutes(recipe, slot.count) : Math.max(slot.minutesLeft, 1);
     const share = Phaser.Math.Clamp(1 - slot.minutesLeft / total, 0, 1);
     const centerY = this.y - OVERHEAD_LIFT;
     const start = -Math.PI / 2;

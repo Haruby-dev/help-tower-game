@@ -3,6 +3,9 @@ import type { World } from '../../src/core/state';
 import balance from '../../src/data/balance.json';
 import {
   MYSTERY,
+  batchIngredients,
+  batchMinutes,
+  maxBatch,
   canUseCampfire,
   collectDish,
   dishItem,
@@ -20,7 +23,7 @@ import {
 } from '../../src/systems/cooking';
 import { countOf } from '../../src/systems/farm';
 import { newWorld } from '../../src/systems/gauges';
-import { parseSaveFile } from '../../src/systems/save';
+import { parseSaveFile, SAVE_VERSION } from '../../src/systems/save';
 import { sleep, stepClock } from '../../src/systems/time';
 
 const KAPRAO = recipes.home_kaprao!;
@@ -171,5 +174,66 @@ describe('save', () => {
     expect(parsed?.world.recipes.known).toContain('home_kaprao');
     expect(parsed?.world.bag[0]).toEqual({ item: 'produce_rice', count: 5 });
     expect(parsed?.world.bag.some((stack) => stack.item === 'ing_pork')).toBe(true);
+  });
+});
+
+describe('batch cooking (her decision 4 Nov 2026)', () => {
+  const EGG = recipes.boiled_egg!;
+  const withEggs = (eggs: number, happiness = 50): World => ({
+    ...newWorld(),
+    bag: [{ item: 'ing_egg', count: eggs }],
+    gauges: { ...newWorld().gauges, happiness },
+  });
+
+  it('can make as many plates as full ingredient sets in the bag, no other cap', () => {
+    expect(maxBatch(withEggs(7).bag, EGG)).toBe(7);
+    expect(maxBatch(withEggs(0).bag, EGG)).toBe(0);
+    // ตัวที่น้อยที่สุดเป็นตัวกำหนด
+    const bag = [
+      { item: 'ing_pork', count: 5 },
+      ...Object.entries(KAPRAO.ingredients).filter(([item]) => item !== 'ing_pork').map(([item, need]) => ({ item, count: need * 9 })),
+    ];
+    expect(maxBatch(bag, KAPRAO)).toBe(Math.min(9, Math.floor(5 / KAPRAO.ingredients.ing_pork!)));
+  });
+
+  it('takes the recipe time × n with no discount', () => {
+    expect(batchMinutes(EGG, 4)).toBe(minutesFor(EGG) * 4);
+    const next = startCooking(withEggs(4), 'boiled_egg', 4)!;
+    expect(next.cooking.slot?.minutesLeft).toBe(minutesFor(EGG) * 4);
+  });
+
+  it('takes ingredients × n when cooking starts, and refuses more than the bag allows', () => {
+    expect(batchIngredients(KAPRAO, 3)).toEqual(Object.fromEntries(Object.entries(KAPRAO.ingredients).map(([item, need]) => [item, need * 3])));
+    const next = startCooking(withEggs(5), 'boiled_egg', 3)!;
+    expect(countOf(next.bag, 'ing_egg')).toBe(2);
+    expect(startCooking(withEggs(2), 'boiled_egg', 3)).toBeNull();
+    expect(startCooking(withEggs(2), 'boiled_egg', 0)).toBeNull();
+  });
+
+  it('gives the whole batch the same stars and collects every plate at once', () => {
+    const next = startCooking(withEggs(3, 80), 'boiled_egg', 3)!;
+    expect(next.cooking.slot).toMatchObject({ stars: 2, count: 3 });
+    const done = collectDish(cooked(next))!;
+    expect(countOf(done.bag, dishItem('boiled_egg', 2))).toBe(3);
+    expect(countOf(done.bag, dishItem('boiled_egg', 1))).toBe(0);
+    expect(done.cooking.slot).toBeNull();
+  });
+
+  it('keeps the batch at the campfire when the bag cannot hold every plate', () => {
+    const done = cooked(startCooking(withEggs(3), 'boiled_egg', 3)!);
+    const nearlyFull: World = {
+      ...done,
+      bag: [...Array.from({ length: 29 }, () => ({ item: 'seed_rice', count: 99 })), { item: dishItem('boiled_egg', 1), count: 98 }],
+    };
+    expect(collectDish(nearlyFull)).toBeNull();
+  });
+
+  it('turns a version 6 save into version 7, and a dish left at the campfire is 1 plate', () => {
+    const world = newWorld();
+    const v6 = { version: 6, savedAt: '2026-11-04T00:00:00.000Z', world: { ...world, cooking: { slot: { recipe: 'boiled_egg', stars: 1, minutesLeft: 5 } } } };
+    const parsed = parseSaveFile(v6);
+    expect(SAVE_VERSION).toBe(7);
+    expect(parsed?.world.cooking.slot).toEqual({ recipe: 'boiled_egg', stars: 1, minutesLeft: 5, count: 1 });
+    expect(parseSaveFile({ ...v6, world: { ...world, cooking: { slot: null } } })?.world.cooking.slot).toBeNull();
   });
 });

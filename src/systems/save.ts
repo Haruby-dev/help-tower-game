@@ -3,7 +3,7 @@ import { defaultCosmetics, emptyWallet, type World } from '../core/state';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 import { cookingStarterBag, firstWeather, fishingStarterBag, newFarm, newFishing, newRecipeBook, newSeed, starterBag } from './gauges';
 
-export const SAVE_VERSION = 6;
+export const SAVE_VERSION = 7;
 export const SLOT_COUNT = 3;
 
 const slotKey = (slot: number): string => `save-slot-${slot}`;
@@ -38,6 +38,12 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
         stash: {},
       },
     };
+  },
+  // เวอร์ชัน 7 ทำอาหารทีละหลายจาน อาหารที่ค้างที่กองไฟในเซฟเก่าคือ 1 จาน
+  6: (save) => {
+    const world = save.world as { cooking: { slot: object | null } };
+    const { slot } = world.cooking;
+    return { ...save, world: { ...world, cooking: { slot: slot ? { ...slot, count: 1 } : null } } };
   },
 };
 

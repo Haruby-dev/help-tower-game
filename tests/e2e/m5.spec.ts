@@ -198,3 +198,21 @@ test('shows the day weather on the phone and draws rain', async ({ page }) => {
   await expect(page.locator('#lock-screen')).toContainText('ฝนตก');
   await expect(page.locator('#lock-screen [data-weather-icon]')).toHaveAttribute('src', /weather_rain/);
 });
+
+test('the action label is a rounded pill that stays at least 4 game pixels above the bottom edge', async ({ page }) => {
+  await open(page);
+  await standOnDock(page);
+  const label = page.locator('.action-button__label');
+  await expect(label).toHaveText('อาบน้ำ');
+  const { bottom, screen, px, clip } = await label.evaluate((node) => {
+    const root = node.closest('[style*="--px"]') as HTMLElement;
+    return {
+      bottom: node.getBoundingClientRect().bottom,
+      screen: window.innerHeight,
+      px: parseFloat(getComputedStyle(root).getPropertyValue('--px')),
+      clip: getComputedStyle(node, '::after').clipPath,
+    };
+  });
+  expect(screen - bottom).toBeGreaterThanOrEqual(px * 4 - 0.5);
+  expect(clip).toContain('polygon');
+});

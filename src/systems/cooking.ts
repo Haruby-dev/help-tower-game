@@ -57,6 +57,18 @@ function takeFor(bag: BagStack[], item: string, count: number): BagStack[] | nul
   return left;
 }
 
+/** ทำได้มากสุดกี่จาน นับจากชุดวัตถุดิบครบที่มีในกระเป๋า ไม่มีเพดานอื่น */
+export function maxBatch(bag: BagStack[], recipe: Recipe): number {
+  return Math.min(...Object.entries(recipe.ingredients).map(([item, count]) => Math.floor(haveFor(bag, item) / count)));
+}
+
+/** วัตถุดิบที่ใช้ทั้งรอบ */
+export const batchIngredients = (recipe: Recipe, count: number): Record<string, number> =>
+  Object.fromEntries(Object.entries(recipe.ingredients).map(([item, need]) => [item, need * count]));
+
+/** เวลาทำทั้งรอบ คูณจำนวนจานตรง ๆ ไม่มีส่วนลด */
+export const batchMinutes = (recipe: Recipe, count: number): number => minutesFor(recipe) * count;
+
 export function hasIngredients(bag: BagStack[], recipe: Recipe): boolean {
   return Object.entries(recipe.ingredients).every(([item, count]) => haveFor(bag, item) >= count);
 }
@@ -88,11 +100,13 @@ function put(world: World, bag: BagStack[], slot: CookingSlot): World {
   return { ...world, bag, cooking: { slot } };
 }
 
-export function startCooking(world: World, id: string): World | null {
+/** หยิบวัตถุดิบ × จำนวนจานตอนเริ่ม สุ่มดาวครั้งเดียวทั้งรอบ */
+export function startCooking(world: World, id: string, count = 1): World | null {
   const recipe = recipes[id];
   if (!recipe || !world.recipes.known.includes(id) || !canCook(world, id)) return null;
-  const bag = takeAll(world.bag, recipe.ingredients);
-  return bag && put(world, bag, { recipe: id, stars: starsFor(world.gauges.happiness), minutesLeft: minutesFor(recipe) });
+  if (!Number.isInteger(count) || count < 1 || count > maxBatch(world.bag, recipe)) return null;
+  const bag = takeAll(world.bag, batchIngredients(recipe, count));
+  return bag && put(world, bag, { recipe: id, stars: starsFor(world.gauges.happiness), minutesLeft: batchMinutes(recipe, count), count });
 }
 
 /** ของที่ผสมต้องตรงสูตรทุกอย่าง และเป็นเมนูที่กองไฟทำได้ */
@@ -114,11 +128,11 @@ export function startExperiment(world: World, mix: Record<string, number>): Worl
   const bag = takeAll(world.bag, mix);
   if (!bag) return null;
   const id = matchRecipe(mix);
-  if (!id) return put(world, bag, { recipe: MYSTERY, stars: 1, minutesLeft: rules.mystery.minutes });
+  if (!id) return put(world, bag, { recipe: MYSTERY, stars: 1, minutesLeft: rules.mystery.minutes, count: 1 });
   const recipe = recipes[id]!;
   const known = world.recipes.known.includes(id) ? world.recipes.known : [...world.recipes.known, id];
   return {
-    ...put(world, bag, { recipe: id, stars: starsFor(world.gauges.happiness), minutesLeft: minutesFor(recipe) }),
+    ...put(world, bag, { recipe: id, stars: starsFor(world.gauges.happiness), minutesLeft: minutesFor(recipe), count: 1 }),
     recipes: { ...world.recipes, known },
   };
 }
@@ -136,11 +150,11 @@ export function finishOvernight(cooking: Cooking): Cooking {
 
 export const isCooked = (slot: CookingSlot | null): boolean => slot !== null && slot.minutesLeft <= 0;
 
-/** ตอบ null เมื่อยังไม่สุกหรือกระเป๋าเต็ม อาหารจึงยังรออยู่ที่กองไฟ ไม่หาย */
+/** เก็บทุกจานในรอบพร้อมกัน · ตอบ null เมื่อยังไม่สุกหรือกระเป๋าใส่ไม่พอ อาหารจึงยังรออยู่ที่กองไฟ ไม่หาย */
 export function collectDish(world: World): World | null {
   const { slot } = world.cooking;
   if (!slot || !isCooked(slot)) return null;
-  const bag = addToBag(world.bag, dishItem(slot.recipe, slot.stars), 1);
+  const bag = addToBag(world.bag, dishItem(slot.recipe, slot.stars), slot.count);
   if (!bag) return null;
   if (slot.recipe === MYSTERY) {
     const happiness = Math.max(gauges.min, world.gauges.happiness - rules.mystery.happinessPenalty);

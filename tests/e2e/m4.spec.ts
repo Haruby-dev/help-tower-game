@@ -3,7 +3,7 @@ import { expect, test, type Page } from '@playwright/test';
 interface CookWorld {
   bag: { item: string; count: number }[];
   gauges: { fullness: number; happiness: number };
-  cooking: { slot: { recipe: string; stars: number; minutesLeft: number } | null };
+  cooking: { slot: { recipe: string; stars: number; minutesLeft: number; count: number } | null };
   recipes: { known: string[]; bestStars: Record<string, number> };
 }
 interface TestState {
@@ -210,4 +210,42 @@ test('the pond is drawn from the map and the trees sway', async ({ page }) => {
   expect(info.floor).toBe(true);
   expect(info.canopies).toBe(info.trees);
   expect(info.trees).toBeGreaterThan(0);
+});
+
+test('cooks several plates of one recipe with the − n + stepper, then collects them all together', async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const s = (window as unknown as { __state: TestState }).__state;
+    const bag = [...s.world.bag.filter((stack) => stack.item !== 'ing_egg'), { item: 'ing_egg', count: 3 }];
+    s.setWorld({ ...s.world, bag, gauges: { ...s.world.gauges, happiness: 50 } });
+  });
+  await standAtFire(page);
+  const act = page.locator('#action-button');
+  await act.click();
+  await page.locator('[data-recipe="boiled_egg"]').click();
+  const count1 = page.locator('#cook-count');
+  await expect(count1).toHaveText('1');
+  await expect(page.locator('#cook-less')).toBeDisabled();
+  const minutes = Number((await page.locator('.cook-facts span').first().textContent())!.match(/\d+/)![0]);
+  await page.locator('#cook-more').click();
+  await page.locator('#cook-more').click();
+  await expect(count1).toHaveText('3');
+  // ไข่มี 3 ฟอง ทำได้มากสุด 3 จาน
+  await expect(page.locator('#cook-more')).toBeDisabled();
+  await expect(page.locator('[data-plate="ing_egg"]')).toContainText('3/3');
+  await expect(page.locator('#cook-batch-total')).toContainText(`${minutes * 3}`);
+  await expect(page.locator('.cook-facts span').first()).toContainText(`${minutes * 3}`);
+  await page.locator('#cook-go').click();
+  await expect(page.locator('#cook-window')).toBeHidden();
+  const slot = (await state(page)).cooking.slot!;
+  expect(slot.count).toBe(3);
+  // นาฬิกาเดินต่อหลังปิดหน้าต่าง เวลาที่เหลือจึงน้อยกว่าเวลารวมเล็กน้อย
+  expect(slot.minutesLeft).toBeLessThanOrEqual(minutes * 3);
+  expect(slot.minutesLeft).toBeGreaterThan(minutes * 2);
+  expect(await count(page, 'ing_egg')).toBe(0);
+
+  await finishCooking(page);
+  await expect(act).toContainText('เก็บ');
+  await act.click();
+  await expect.poll(() => count(page, 'dish_boiled_egg_1')).toBe(3);
 });
