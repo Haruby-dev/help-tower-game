@@ -9,6 +9,8 @@ const CELL_ALPHA = 0.5;
 const GRID_COLOR = 0xffffff;
 const GRID_ALPHA = 0.35;
 const MOVABLE_ALPHA = 0.22;
+/** นิ้วต้องขยับเกินเท่านี้ (พิกเซลเกม) จึงนับว่าลาก แตะเฉย ๆ นิ้วสั่นนิดหน่อยยังเป็นการหยิบ */
+const DRAG_START_PX = 6;
 
 export interface Rect {
   x: number;
@@ -47,6 +49,7 @@ export class Arranger {
   private selected: Item | null = null;
   private preview: Point | null = null;
   private before: Point | null = null;
+  private dragging: { offsetX: number; offsetY: number; startX: number; startY: number; moved: boolean } | null = null;
   active = false;
 
   constructor(
@@ -130,23 +133,65 @@ export class Arranger {
     this.overlay.setVisible(false).clear();
   }
 
-  /** แตะของเพื่อหยิบ แตะที่อื่นเพื่อลองวางของที่หยิบไว้ */
-  tap(worldX: number, worldY: number): void {
-    const hit = [...this.items.values()].find((item) => {
+  /** ของที่อยู่ใต้จุดนี้ (ภาพหรือฐาน) */
+  private itemAt(worldX: number, worldY: number): Item | undefined {
+    return [...this.items.values()].find((item) => {
       const rect = this.footprint(item, { x: item.image.x, y: item.image.y });
       const art = item.image.getBounds();
       return Phaser.Geom.Rectangle.Contains(art, worldX, worldY) || (worldX >= rect.x && worldX < rect.x + rect.width && worldY >= rect.y && worldY < rect.y + rect.height);
     });
-    if (!this.selected || (hit && hit !== this.selected && this.preview === null)) {
-      if (!hit) return;
-      this.selected = hit;
-      this.before = { x: hit.image.x, y: hit.image.y };
-      this.preview = null;
+  }
+
+  private showAt(item: Item, feet: Point): void {
+    item.image.setPosition(feet.x, feet.y);
+    if (!item.flat) item.image.setDepth(feet.y);
+  }
+
+  /**
+   * กดที่ของ: หยิบแล้วลากได้ (ผู้ใช้ขอ 5 พ.ย. 2026) · กดที่อื่นตอนหยิบของอยู่: ลองวางที่ช่องนั้น
+   * ปล่อยนิ้วหลังลาก ถ้าวางได้วางเลย ถ้าวางไม่ได้ของกลับที่เดิม
+   */
+  press(worldX: number, worldY: number): void {
+    const hit = this.itemAt(worldX, worldY);
+    if (hit && (!this.selected || this.selected === hit || this.preview === null)) {
+      if (this.selected && this.selected !== hit) this.cancel();
+      if (!this.selected) {
+        this.selected = hit;
+        this.before = { x: hit.image.x, y: hit.image.y };
+        this.preview = null;
+      }
+      this.dragging = { offsetX: hit.image.x - worldX, offsetY: hit.image.y - worldY, startX: worldX, startY: worldY, moved: false };
       return;
     }
+    if (!this.selected) return;
     this.preview = this.snap(this.selected, worldX, worldY);
-    this.selected.image.setPosition(this.preview.x, this.preview.y);
-    if (!this.selected.flat) this.selected.image.setDepth(this.preview.y);
+    this.showAt(this.selected, this.preview);
+  }
+
+  /** ลาก: ฐานชิดตารางตามนิ้ว โดยจุดที่จับของยังอยู่ใต้นิ้ว */
+  drag(worldX: number, worldY: number): void {
+    const item = this.selected;
+    if (!item || !this.dragging) return;
+    if (!this.dragging.moved && Math.hypot(worldX - this.dragging.startX, worldY - this.dragging.startY) < DRAG_START_PX) return;
+    const feetX = worldX + this.dragging.offsetX;
+    const feetY = worldY + this.dragging.offsetY;
+    const left = Math.round((feetX - (item.cols * CELL) / 2) / CELL) * CELL;
+    const bottom = Math.round(feetY / CELL) * CELL;
+    const next = { x: left + (item.cols * CELL) / 2, y: bottom };
+    if (next.x === item.image.x && next.y === item.image.y) return;
+    this.dragging.moved = true;
+    this.preview = next;
+    this.showAt(item, next);
+  }
+
+  /** ปล่อยนิ้ว: ถ้าลากมาแล้ว วางเลยเมื่อวางได้ ไม่งั้นกลับที่เดิม · แค่แตะของยังหยิบอยู่ให้แตะช่องต่อ */
+  release(player: Rect): { id: string; feet: Point } | null {
+    const dragging = this.dragging;
+    this.dragging = null;
+    if (!dragging?.moved) return null;
+    const placed = this.place(player);
+    if (!placed) this.cancel();
+    return placed;
   }
 
   /** วางของที่หยิบไว้ ตอบตำแหน่งที่วางได้ ถ้าวางไม่ได้ตอบ null */
@@ -168,6 +213,7 @@ export class Arranger {
   }
 
   cancel(): void {
+    this.dragging = null;
     if (this.selected && this.before) {
       this.selected.image.setPosition(this.before.x, this.before.y);
       if (!this.selected.flat) this.selected.image.setDepth(this.before.y);

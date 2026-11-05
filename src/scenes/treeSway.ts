@@ -71,14 +71,23 @@ interface SwayingTree {
 export class TreeSway {
   private readonly trees: SwayingTree[] = [];
 
-  add(scene: Phaser.Scene, tree: Phaser.GameObjects.Image, kind: number): void {
+  /** ตอบตัวลบพุ่มใบกับประกายของต้นนี้ ใช้ตอนต้นไม้หายไป (เช่นซื้อที่ดิน) */
+  add(scene: Phaser.Scene, tree: Phaser.GameObjects.Image, kind: number): { destroy(): void } {
     const canopy = scene.add.image(tree.x, tree.y, canopyKey(kind)).setOrigin(tree.originX, tree.originY).setDepth(tree.depth + 0.01);
     const twinkle = scene.add
       .image(tree.x, tree.y, twinkleKey(kind), 0)
       .setOrigin(tree.originX, tree.originY)
       .setDepth(tree.depth + 0.02)
       .setBlendMode(Phaser.BlendModes.ADD);
-    this.trees.push({ canopy, twinkle, x: tree.x, phase: this.trees.length * PHASE_STEP });
+    const entry = { canopy, twinkle, x: tree.x, phase: this.trees.length * PHASE_STEP };
+    this.trees.push(entry);
+    return {
+      destroy: () => {
+        canopy.destroy();
+        twinkle.destroy();
+        this.trees.splice(this.trees.indexOf(entry), 1);
+      },
+    };
   }
 
   update(time: number): void {

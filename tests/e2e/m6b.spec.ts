@@ -81,12 +81,14 @@ test('buys the first land at its sign: the weeds go, the fence area becomes 9 fa
 test('moves the campfire on the grid: red where it cannot go, green where it can, and the spot is kept in the save', async ({ page }) => {
   await open(page);
   await page.locator('#arrange-button').click();
+  // กล้องเลื่อนไปลานหน้าบ้านในเฟรมถัดไป รอก่อนแปลงตำแหน่งบนจอ
+  await page.waitForTimeout(400);
   await expect(page.locator('#arrange-panel')).toBeVisible();
   await expect(page.locator('#toolbar')).toBeHidden();
   expect(await page.evaluate(() => (window as unknown as { __state: TestState }).__state.clockRunning)).toBe(false);
   const fire = (await scene(page, (s) => s.arranger.positionOf('campfire')))!;
   await tapWorld(page, fire.x, fire.y - 8);
-  await expect(page.locator('#arrange-panel')).toContainText('แตะช่อง');
+  await expect(page.locator('#arrange-panel')).toContainText('ช่องที่อยากวาง');
   // ลานหน้าบ้านอยู่ช่อง 10–22 · 9–14 ช่องนอกโซนเป็นสีแดง
   await tapWorld(page, 15 * 32, 7 * 32);
   await expect(page.locator('#arrange-place')).toBeDisabled();
@@ -101,6 +103,53 @@ test('moves the campfire on the grid: red where it cannot go, green where it can
   // กองไฟใหม่ใช้ทำอาหารได้
   await page.evaluate(({ x, y }) => (window as unknown as { __state: TestState }).__state.movePlayer({ x, y: y + 20 }), placed);
   await expect(page.locator('#action-button')).toHaveAttribute('aria-label', /ทำอาหาร/);
+});
+
+test('drags the food tray to a green spot and it stays there; dropping on a red spot puts it back', async ({ page, browserName }) => {
+  // WebKit ของ Playwright ลากด้วยเมาส์ในโหมดจอสัมผัสไม่ได้ (แตะได้) บน iPhone จริงลากด้วยนิ้ว ต้องลองบนเครื่องจริง
+  test.skip(browserName === 'webkit', 'mouse drag is not delivered in WebKit touch emulation');
+  await open(page);
+  await page.locator('#arrange-button').click();
+  // กล้องเลื่อนไปลานหน้าบ้านในเฟรมถัดไป รอก่อนแปลงตำแหน่งบนจอ
+  await page.waitForTimeout(400);
+  const tray = (await scene(page, (s) => s.arranger.positionOf('food_tray_3')))!;
+  const view = await scene(page, (s) => ({ x: s.cameras.main.worldView.x, y: s.cameras.main.worldView.y, zoom: s.cameras.main.zoom }));
+  const box = (await page.locator('#game canvas').boundingBox())!;
+  const dpr = await page.evaluate(() => window.devicePixelRatio);
+  const screen = (x: number, y: number) => ({ x: box.x + ((x - view.x) * view.zoom) / dpr, y: box.y + ((y - view.y) * view.zoom) / dpr });
+  const drag = async (fromX: number, fromY: number, toX: number, toY: number): Promise<void> => {
+    const from = screen(fromX, fromY);
+    const to = screen(toX, toY);
+    await page.mouse.move(from.x, from.y);
+    await page.mouse.down();
+    await page.mouse.move((from.x + to.x) / 2, (from.y + to.y) / 2, { steps: 4 });
+    await page.mouse.move(to.x, to.y, { steps: 4 });
+    await page.mouse.up();
+  };
+  // ลากไปช่องว่างในลานหน้าบ้าน วางเลย
+  await drag(tray.x, tray.y - 6, 20 * 32, 14 * 32 - 6);
+  await expect.poll(async () => (await state(page)).placed.food_tray_3).toEqual({ x: 20 * 32, y: 14 * 32 });
+  // ลากไปทับกองไฟ วางไม่ได้ กลับที่เดิม
+  const fire = (await scene(page, (s) => s.arranger.positionOf('campfire')))!;
+  await drag(20 * 32, 14 * 32 - 6, fire.x, fire.y - 6);
+  // Phaser อ่านการแตะในเฟรมถัดไป จึงรอให้ของกลับที่เดิม
+  await expect.poll(() => scene(page, (s) => s.arranger.positionOf('food_tray_3'))).toEqual({ x: 20 * 32, y: 14 * 32 });
+  expect((await state(page)).placed.food_tray_3).toEqual({ x: 20 * 32, y: 14 * 32 });
+});
+
+test('the big tree inside the third land goes away when that land is bought', async ({ page }) => {
+  await open(page);
+  const trees = () => page.evaluate(() => (window as unknown as { __game: { scene: { getScene(k: string): { children: { list: { texture?: { key: string }; x: number; y: number; active: boolean }[] } } } } }).__game.scene.getScene('Base').children.list.filter((c) => c.texture?.key.startsWith('tree_big') && c.x > 12 * 32 && c.x < 16 * 32 && c.y > 3.5 * 32 && c.y < 9 * 32).length);
+  expect(await trees()).toBeGreaterThan(0);
+  await addCoins(page, 60000);
+  for (const x of [221, 349, 477]) {
+    await page.evaluate((px) => (window as unknown as { __state: TestState }).__state.movePlayer({ x: px, y: 290 }), x);
+    await expect(page.locator('#action-button')).toHaveAttribute('aria-label', 'ซื้อที่ดิน');
+    await page.locator('#action-button').click();
+    await page.locator('#land-yes').click();
+  }
+  expect((await state(page)).land.owned).toBe(3);
+  await expect.poll(trees).toBe(0);
 });
 
 test('the Gio album opens a photo for each treat flavour he has eaten', async ({ page }) => {

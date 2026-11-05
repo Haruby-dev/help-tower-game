@@ -129,7 +129,7 @@ export class BaseScene extends Phaser.Scene {
   /** ชั้นแปลงผักของที่ดิน land_1..3 แสดงชั้นเดียวตามจำนวนที่ซื้อแล้ว */
   private landLayers: Phaser.Tilemaps.TilemapLayer[] = [];
   /** ของที่หายไปเมื่อซื้อที่ดินแปลงนั้น: วัชพืช ตอไม้ หิน ป้าย ราคา และตัวกันเดิน */
-  private landClutter: Phaser.GameObjects.GameObject[][] = [];
+  private landClutter: { destroy(): void }[][] = [];
   private landSigns: { x: number; y: number }[] = [];
   private landShown = -1;
   /** โหมดจัดวางของบนตาราง */
@@ -253,9 +253,21 @@ export class BaseScene extends Phaser.Scene {
 
     this.input.keyboard!.on('keydown-E', () => this.useAction());
     this.input.keyboard!.on('keydown-SPACE', () => this.useAction());
+    this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+      if (this.arranger.active && pointer.isDown) this.arranger.drag(pointer.worldX, pointer.worldY);
+    });
+    // ปล่อยนิ้วนอกพื้นที่เกม (เช่นใต้แถบบน) ก็นับเป็นปล่อย ของจะได้ไม่ค้างกลางทาง
+    const dropArranged = (): void => {
+      if (!this.arranger.active) return;
+      const placed = this.arranger.release(this.playerRect());
+      if (placed) gameState.setWorld({ ...gameState.world, placed: { ...gameState.world.placed, [placed.id]: placed.feet } });
+      this.reportArrange();
+    };
+    this.input.on('pointerup', dropArranged);
+    this.input.on('pointerupoutside', dropArranged);
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       if (this.arranger.active) {
-        this.arranger.tap(pointer.worldX, pointer.worldY);
+        this.arranger.press(pointer.worldX, pointer.worldY);
         this.reportArrange();
         return;
       }
@@ -399,12 +411,15 @@ export class BaseScene extends Phaser.Scene {
         height: submerged ? Math.round(entry.height * submerged) : entry.height,
       });
     }
-    const treeKind = /^tree_big_(\d)$/.exec(id)?.[1];
-    if (treeKind !== undefined) this.treeSway.add(this, image, Number(treeKind));
-
-    // วัชพืช ตอไม้ และหินในรั้วที่ดินที่ยังไม่ซื้อ
-    const clutterLand = /^(weed_|stump_seat|rock_small_)/.test(id) ? landAt(x / TILE_PX, y / TILE_PX) : null;
+    // วัชพืช ตอไม้ หิน และต้นไม้ใหญ่ในรั้วที่ดินที่ยังไม่ซื้อ หายไปตอนซื้อ (ต้นไม้ใหญ่ผู้ใช้ตัดสิน 5 พ.ย. 2026)
+    const clutterLand = /^(weed_|stump_seat|rock_small_|tree_big_)/.test(id) ? landAt(x / TILE_PX, y / TILE_PX) : null;
     if (clutterLand !== null) this.landClutter[clutterLand]?.push(image);
+
+    const treeKind = /^tree_big_(\d)$/.exec(id)?.[1];
+    if (treeKind !== undefined) {
+      const sway = this.treeSway.add(this, image, Number(treeKind));
+      if (clutterLand !== null) this.landClutter[clutterLand]?.push(sway);
+    }
 
     const plot = this.property<number>(object, 'plot');
     if (plot !== undefined) {
@@ -423,8 +438,8 @@ export class BaseScene extends Phaser.Scene {
       this.landClutter[plot]?.push(price);
     }
 
-    // ต้นไม้ทำให้เกิดร่มเงาบนพื้นรอบต้น
-    if (id.startsWith('tree_big')) {
+    // ต้นไม้ทำให้เกิดร่มเงาบนพื้นรอบต้น · ต้นในที่ดินขายไม่มีร่มเงา เพราะหายไปตอนซื้อ และร่มเงาวาดครั้งเดียวตอนเปิดเกม
+    if (id.startsWith('tree_big') && clutterLand === null) {
       this.shadeAreas.push({
         x,
         y: y - TREE_SHADE.lift,
