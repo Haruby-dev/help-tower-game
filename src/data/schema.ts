@@ -131,9 +131,25 @@ export const balanceSchema = z.strictObject({
     /** ของเริ่มเกมชั่วคราวจนกว่าบทนำจะมาใน M9 */
     starterBag: z.record(z.string().min(1), z.number().int().positive()),
   }),
+  /** ระบบวางของบนตาราง: โซน (ช่องแผนที่) กับของที่ย้ายได้ ขนาดฐานเป็นจำนวนช่อง เท้าของอยู่กลางขอบล่างของฐาน */
+  placement: z.strictObject({
+    zones: z.record(z.string().regex(/^[a-z_]+$/), z.strictObject({ x: z.number(), y: z.number(), width: z.number().positive(), height: z.number().positive() })),
+    items: z.record(z.string().regex(/^[a-z0-9_]+$/), z.strictObject({ zone: z.string().min(1), cols: z.number().int().positive(), rows: z.number().int().positive() })),
+  }),
+  /** ปุ่มลับช่วงทดสอบ ต้องเอาออกก่อนปล่อยจริง */
+  test: z.strictObject({ stars: z.number().int().positive() }),
   land: z.strictObject({
-    /** ราคาชั่วคราวของที่ดิน 3 แปลง เรียงจากซ้ายไปขวา */
+    /** ราคาชั่วคราวของที่ดิน 3 แปลง เรียงจากซ้ายไปขวา ซื้อตามลำดับ */
     prices: z.array(z.number().int().positive()).length(3),
+    /** plots คือช่องแปลงผักเต็มช่อง (ช่องแผนที่) · area คือพื้นที่ในรั้ว (ช่อง ทศนิยมได้) ยังไม่ซื้อเดินเข้าไม่ได้ ซื้อแล้ววัชพืช ตอไม้ หินในนี้หายไป */
+    lands: z
+      .array(
+        z.strictObject({
+          plots: z.strictObject({ col: z.number().int(), row: z.number().int(), cols: z.number().int().positive(), rows: z.number().int().positive() }),
+          area: z.strictObject({ x: z.number(), y: z.number(), width: z.number().positive(), height: z.number().positive() }),
+        }),
+      )
+      .length(3),
   }),
   fishing: z.strictObject({
     minutes: z.number().positive(),
@@ -357,11 +373,17 @@ export const saveFileSchema = z.strictObject({
       specialWeek: z.number().int(),
       /** วันที่อ่านข่าววันนี้แล้ว จุดชมพูบนปุ่มข่าวหายไป */
       newsDay: z.number().int().nonnegative(),
+      /** แมวเลียรสที่จีโอเคยกินแล้ว เปิดรูปในอัลบั้ม */
+      album: z.array(z.string().min(1)),
       consignment: z.strictObject({ items: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })), returnDay: z.number().int().positive(), tier: z.number().int().nonnegative() }).nullable(),
       report: z
         .strictObject({ day: z.number().int().positive(), sold: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })), returned: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })), gross: z.number(), commission: z.number(), coins: z.number(), tier: z.number().int().nonnegative(), gift: z.strictObject({ item: z.string().min(1), count: z.number().int().positive() }).nullable() })
         .nullable(),
     }),
+    /** ที่ดินที่ซื้อแล้ว ซื้อตามลำดับจึงเก็บแค่จำนวน */
+    land: z.strictObject({ owned: z.number().int().min(0).max(3) }),
+    /** ตำแหน่งเท้า (พิกเซล) ของของที่ผู้เล่นย้ายแล้ว */
+    placed: z.record(z.string().min(1), z.strictObject({ x: z.number(), y: z.number() })),
   }),
 });
 
@@ -497,6 +519,7 @@ export const linesSchema = z.strictObject({
     fishEscaped: z.string().min(1),
     noBait: z.string().min(1),
     baitRanOut: z.string().min(1),
+    noMoney: z.string().min(1),
   }),
   gio: z.strictObject({
     greet: z.string().min(1),

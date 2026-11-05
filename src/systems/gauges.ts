@@ -62,6 +62,8 @@ export function newWorld(): World {
     toys: [],
     stash: {},
     gio: newGioCare(),
+    land: { owned: 0 },
+    placed: {},
   };
 }
 

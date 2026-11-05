@@ -1688,6 +1688,7 @@ canvas {
 }
 
 #seed-picker,
+#land-confirm,
 #dig-confirm {
   position: absolute;
   inset: 0;
@@ -1698,6 +1699,7 @@ canvas {
 }
 
 #seed-picker[hidden],
+#land-confirm[hidden],
 #dig-confirm[hidden] {
   display: none;
 }
@@ -4166,7 +4168,8 @@ canvas {
   display: none;
 }
 
-#ui[data-receipt='open'] :is(#toolbar, #action-button, #run-button, #joystick, #portrait, #phone-button, #money-pop, #settings-button, #fullscreen-button) {
+#ui[data-receipt='open'] :is(#toolbar, #action-button, #run-button, #joystick, #portrait, #phone-button, #money-pop, #settings-button, #fullscreen-button, #arrange-button),
+#ui[data-arrange='open'] :is(#toolbar, #action-button, #run-button, #joystick, #phone-button, #settings-button, #fullscreen-button, #arrange-button, #player-bubble) {
   visibility: hidden;
 }
 
@@ -4547,4 +4550,125 @@ canvas {
   min-width: 28px;
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+.dig-confirm__panel .land-confirm__price {
+  font-size: 16px;
+}
+
+/* ปุ่มจัดวางแถบบน ซ้ายของปุ่มตั้งค่า ไอคอนยังไม่มีภาพ ใช้กล่องสีพร้อมชื่อ */
+#arrange-button {
+  position: absolute;
+  top: max(4px, env(safe-area-inset-top));
+  right: calc(max(4px, env(safe-area-inset-right)) + max(56px, var(--px) * 50) + 6px + 44px + 4px);
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: #f8b4cc;
+  color: #5c304c;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 -2px 0 0 #5c304c, 0 2px 0 0 #5c304c, -2px 0 0 0 #5c304c, 2px 0 0 0 #5c304c;
+}
+
+#arrange-panel {
+  position: absolute;
+  left: 50%;
+  bottom: max(6px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  max-width: calc(100% - 24px);
+  padding: calc(var(--px) * 6) calc(var(--px) * 8);
+  border: calc(var(--px) * 2) solid transparent;
+  border-image: url('/assets/ui/phone/phone_frame.png') 13 fill / calc(var(--px) * 13) stretch;
+  transform: translateX(-50%);
+  color: #5c304c;
+  font-size: 13px;
+  pointer-events: auto;
+}
+
+#arrange-panel[hidden],
+#arrange-panel [hidden] {
+  display: none;
+}
+
+.arrange-panel__hint {
+  width: 100%;
+  margin: 0 0 2px;
+  text-align: center;
+  font-weight: 700;
+}
+
+#arrange-panel button {
+  min-width: 72px;
+  min-height: 44px;
+}
+
+/* อัลบั้มจีโอ กรอบรูปยังไม่มีภาพ ใช้กรอบพิกเซลสีแทน */
+.album-count {
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.album-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--px) * 6);
+}
+
+.album-card {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: calc(var(--px) * 4);
+  background: #fff6f0;
+  box-shadow: 0 calc(var(--px) * -1) 0 0 #5c304c, 0 calc(var(--px) * 1) 0 0 #5c304c, calc(var(--px) * -1) 0 0 0 #5c304c, calc(var(--px) * 1) 0 0 0 #5c304c;
+  font-size: 11px;
+}
+
+.album-photo {
+  display: block;
+  width: calc(var(--px) * var(--size));
+  height: calc(var(--px) * var(--size));
+  background-repeat: no-repeat;
+  background-size: calc(var(--px) * var(--size) * var(--frames)) calc(var(--px) * var(--size));
+  background-position: calc(var(--px) * var(--size) * var(--frame) * -1) 0;
+  image-rendering: pixelated;
+}
+
+.album-frame {
+  display: block;
+  background: #ffdce8;
+}
+
+.album-treat {
+  position: absolute;
+  top: calc(var(--px) * 2);
+  right: calc(var(--px) * 2);
+  width: calc(var(--px) * 32);
+  height: calc(var(--px) * 32);
+  image-rendering: pixelated;
+}
+
+.album-card.is-locked .album-photo,
+.album-card.is-locked .album-treat {
+  filter: brightness(0);
+  opacity: 0.35;
+}
+
+.settings-test span {
+  display: grid;
+}
+
+.settings-test small {
+  font-size: 10px;
+  color: #a05a7a;
 }

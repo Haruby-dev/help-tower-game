@@ -89,7 +89,7 @@ export interface RecipeBook {
 export type Tool = 'hoe' | 'can' | 'sickle' | 'seeds' | 'rod';
 
 /** ไอคอนบนปุ่มกระทำปุ่มเดียว เปลี่ยนตามจุดที่ยืนและของที่ถือ */
-export type ActionIcon = 'fish' | 'bath' | 'water' | 'till' | 'plant' | 'harvest' | 'cook' | 'sleep' | 'chest' | 'talk';
+export type ActionIcon = 'fish' | 'bath' | 'water' | 'till' | 'plant' | 'harvest' | 'cook' | 'sleep' | 'chest' | 'talk' | 'buy';
 
 export interface ContextAction {
   icon: ActionIcon;
@@ -127,6 +127,8 @@ export interface GioCare {
   specialWeek: number;
   /** วันที่อ่านข่าวแล้ว */
   newsDay: number;
+  /** แมวเลียรสที่จีโอเคยกินแล้ว รูปในอัลบั้มจีโอเปิดตามนี้ */
+  album: string[];
   /** tier คือช่วงความสุขตอนฝาก ใช้คิดค่าคอมตอนจีโอกลับ */
   consignment: { items: BagStack[]; returnDay: number; tier: number } | null;
   report: GioReport | null;
@@ -153,6 +155,10 @@ export interface World {
   toys: string[];
   stash: Record<string, number>;
   gio: GioCare;
+  /** ที่ดินที่ซื้อแล้ว (ซื้อตามลำดับ จึงเก็บแค่จำนวน) */
+  land: { owned: number };
+  /** ของที่ผู้เล่นย้ายแล้ว เก็บตำแหน่งเท้าเป็นพิกเซล ของที่ยังไม่ย้ายใช้ตำแหน่งบนแผนที่ */
+  placed: Record<string, Point>;
 }
 
 class GameState {

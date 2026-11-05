@@ -104,7 +104,7 @@ export function createSound(): void {
   });
 
   eventBus.on('player-says', (line) => {
-    if (line === 'bagFull' || line === 'noBait' || line === 'baitRanOut') uiSound('ui_error');
+    if (line === 'bagFull' || line === 'noBait' || line === 'baitRanOut' || line === 'noMoney') uiSound('ui_error');
     if (line === 'mysteryFood') sound.speak('voice_cook_fail');
   });
   eventBus.on('notice', (key) => {

@@ -87,9 +87,10 @@ function createAnimations(scene: Phaser.Scene): void {
 export class Gio {
   readonly body: Phaser.GameObjects.Zone;
   readonly sprite: Phaser.GameObjects.Sprite;
-  private readonly seatFeet: { x: number; y: number };
-  private readonly exitPoint: { x: number; y: number };
-  private readonly seatBox: { left: number; right: number; top: number; bottom: number } | null;
+  private seatFeet: { x: number; y: number };
+  private exitPoint: { x: number; y: number };
+  private seatBox: { left: number; right: number; top: number; bottom: number } | null;
+  private seatRim: Phaser.GameObjects.Image | null = null;
   private mode: Mode = 'seated';
   private facing: Direction4 = 'south';
   private waitMs = 0;
@@ -134,11 +135,27 @@ export class Gio {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => scene.events.off(Phaser.Scenes.Events.POST_UPDATE, this.syncSprite, this));
   }
 
+  /** ผู้เล่นย้ายตะกร้าในโหมดจัดวาง จีโอที่นั่งอยู่ย้ายไปนั่งในตะกร้าใหม่ ถ้าเดินเล่นอยู่จะกลับไปที่ตะกร้าใหม่เอง */
+  moveSeat(seat: GioSeat): void {
+    const { seatFeetRow, seatExitGap } = balance.gio;
+    this.seatFeet = { x: seat.x, y: seat.top + seatFeetRow };
+    this.exitPoint = { x: seat.x, y: seat.bottom + seatExitGap };
+    this.seatBox = { left: seat.x - seat.width / 2, right: seat.x + seat.width / 2, top: seat.top, bottom: seat.bottom };
+    this.seatRim?.setPosition(seat.x, seat.bottom).setDepth(this.seatFeet.y + 0.5);
+    if (this.mode === 'seated' || !this.present) {
+      this.physicsBody.reset(this.seatFeet.x, this.seatFeet.y - BODY_HEIGHT / 2);
+      this.syncSprite();
+    } else if (this.mode === 'walking' && this.homing && this.trip === null) {
+      // กำลังเดินกลับตะกร้าเดิม เปลี่ยนไปเดินกลับตะกร้าใหม่ (ไม่ต้องหลบตัวเอก เพราะกำลังกลับบ้าน)
+      this.goHome(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
+    }
+  }
+
   /** ขอบหน้าตะกร้าวาดทับตัวตอนนั่ง จีโอจึงดูนั่งอยู่ในตะกร้า ไม่ใช่ข้าง ๆ */
   private addSeatRim(seat: GioSeat): void {
     const { seatRimRow } = balance.gio;
     const height = seat.bottom - seat.top;
-    this.scene.add
+    this.seatRim = this.scene.add
       .image(seat.x, seat.bottom, SEAT_ID)
       .setOrigin(0.5, 1)
       .setCrop(0, seatRimRow, seat.width, height - seatRimRow)

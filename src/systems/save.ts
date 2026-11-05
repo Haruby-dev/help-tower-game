@@ -6,7 +6,7 @@ import balance from '../data/balance.json';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 import { cookingStarterBag, firstWeather, fishingStarterBag, newFarm, newFishing, newRecipeBook, newSeed, starterBag } from './gauges';
 
-export const SAVE_VERSION = 10;
+export const SAVE_VERSION = 11;
 /** ผู้ใช้ตัดสิน 4 พ.ย. 2026: ตัวเลขเหรียญทั้งเกมใหญ่ขึ้น 10 เท่า สัดส่วนเศรษฐกิจเท่าเดิม */
 export const COIN_SCALE = 10;
 const OLD_TREAT = 'gio_lick_treat';
@@ -85,6 +85,11 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
     const world = save.world as { gio: GioCare };
     const report = world.gio.report;
     return { ...save, world: { ...world, gio: { ...world.gio, newsDay: 0, report: report ? { ...report, gift: null, tier: tierOfCommission(report) } : null } } };
+  },
+  // เวอร์ชัน 11 เพิ่มที่ดิน ตำแหน่งของที่ย้าย และอัลบั้มจีโอ เซฟเก่ายังไม่ได้ซื้อที่ดินและไม่เคยย้ายของ
+  10: (save) => {
+    const world = save.world as { gio: GioCare };
+    return { ...save, world: { ...world, gio: { ...world.gio, album: [] }, land: { owned: 0 }, placed: {} } };
   },
 };
 

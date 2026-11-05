@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { PNG } from 'pngjs';
 import { createRng } from '../src/core/rng';
+import balance from '../src/data/balance.json';
 import { registrySchema, tilesetMetaSchema, type TilesetMeta } from '../src/data/schema';
 import { projectRoot } from './checks';
 import {
@@ -82,6 +83,27 @@ for (let y = 0; y < layout.heightTiles; y += 1) {
   }
 }
 
+/**
+ * ที่ดินซื้อตามลำดับ จึงมีแค่ 3 แบบ: ซื้อแล้ว 1, 2, 3 แปลง แต่ละแบบเป็นชั้นแผ่นดินแปลงผักทับพื้นเดิม (0 คือใช้พื้นเดิม)
+ * จุดมุมของช่องแปลงผักทุกช่องเป็นดินพรวน ขอบรอบนอกจึงเป็นแผ่นต่อหญ้า
+ */
+const landLayers = balance.land.lands.map((_, owned) => {
+  const soil = buildCorners(layout);
+  for (const { plots } of balance.land.lands.slice(0, owned + 1)) {
+    for (let y = plots.row; y <= plots.row + plots.rows; y += 1) {
+      for (let x = plots.col; x <= plots.col + plots.cols; x += 1) soil[y]![x] = 'soil';
+    }
+  }
+  const data: number[] = [];
+  for (let y = 0; y < layout.heightTiles; y += 1) {
+    for (let x = 0; x < layout.widthTiles; x += 1) {
+      const gid = gidFor(tileCorners(soil, x, y), x, y);
+      data.push(gid === ground[y * layout.widthTiles + x] ? 0 : gid);
+    }
+  }
+  return data;
+});
+
 const toPixels = (tile: number): number => Math.round(tile * TILE_SIZE);
 const rectToPixels = (rect: Rect): Rect => ({
   x: toPixels(rect.x),
@@ -91,7 +113,9 @@ const rectToPixels = (rect: Rect): Rect => ({
 });
 
 const clearAreas = [...layout.openings, ...layout.walkableOverWater].map(rectToPixels);
-const collision: Rect[] = [...blockedRects(corners, TILE_SIZE, clearAreas), ...layout.blockers.map(rectToPixels)];
+const collision: (Rect & { name?: string })[] = [...blockedRects(corners, TILE_SIZE, clearAreas), ...layout.blockers.map(rectToPixels)];
+/** ของที่ผู้เล่นย้ายได้ ตัวกันเดินมีชื่อ move_<id> ฉากจึงย้ายตามได้ */
+const movable = new Set(Object.keys(balance.placement.items));
 
 interface PointObject {
   name: string;
@@ -107,7 +131,7 @@ const objects: PointObject[] = layout.objects.map((object) => {
   const x = toPixels(object.x);
   const y = toPixels(object.y);
   const footprint = layout.footprints[object.id];
-  if (footprint) collision.push(footprintRect(footprint, x, y));
+  if (footprint) collision.push({ ...footprintRect(footprint, x, y), ...(movable.has(object.id) ? { name: `move_${object.id}` } : {}) });
   const properties: NonNullable<PointObject['properties']> = [];
   if (layout.flat.includes(object.id)) properties.push({ name: 'flat', type: 'bool', value: true });
   if (object.submerged) properties.push({ name: 'submerged', type: 'float', value: object.submerged });
@@ -178,7 +202,9 @@ const rectObject = (name: string, rect: Rect): object => ({
   visible: true,
   ...rect,
 });
-const rectObjects = collision.map((rect) => rectObject('', rect));
+/** ที่ดินที่ยังไม่ซื้อเดินเข้าไม่ได้ ชื่อ land_0..2 ฉากเอาออกเมื่อซื้อ */
+const landBlocks = balance.land.lands.map(({ area }, index) => ({ name: `land_${index}`, ...rectToPixels(area) }));
+const rectObjects = [...collision.map(({ name, ...rect }) => rectObject(name ?? '', rect)), ...landBlocks.map(({ name, ...rect }) => rectObject(name, rect))];
 const pointObject = (point: PointObject): object => ({
   id: nextObjectId++,
   type: '',
@@ -225,7 +251,7 @@ const tiledJson = {
   height: layout.heightTiles,
   tilewidth: TILE_SIZE,
   tileheight: TILE_SIZE,
-  nextlayerid: 7,
+  nextlayerid: 7 + landLayers.length,
   nextobjectid: nextObjectId,
   layers: [
     {
@@ -245,6 +271,18 @@ const tiledJson = {
     objectGroup(4, 'flowers', flowerObjects),
     objectGroup(5, 'effects', effectObjects),
     objectGroup(6, 'spawns', spawnObjects),
+    ...landLayers.map((data, index) => ({
+      id: 7 + index,
+      name: `land_${index + 1}`,
+      type: 'tilelayer',
+      width: layout.widthTiles,
+      height: layout.heightTiles,
+      opacity: 1,
+      visible: false,
+      x: 0,
+      y: 0,
+      data,
+    })),
   ],
   tilesets: tilesets.map((tileset) => ({
     firstgid: tileset.firstGid,
@@ -299,7 +337,7 @@ ${csv.join(',\n')}
 </data>
  </layer>
  <objectgroup id="2" name="collision">
-${tmxObjects(collision)}
+${tmxObjects([...collision, ...landBlocks])}
  </objectgroup>
  <objectgroup id="3" name="objects">
 ${tmxObjects(objects)}
@@ -313,6 +351,15 @@ ${tmxObjects(effects)}
  <objectgroup id="6" name="spawns">
 ${tmxObjects(spawns)}
  </objectgroup>
+${landLayers
+  .map(
+    (data, index) => ` <layer id="${7 + index}" name="land_${index + 1}" width="${layout.widthTiles}" height="${layout.heightTiles}" visible="0">
+  <data encoding="csv">
+${Array.from({ length: layout.heightTiles }, (_, y) => data.slice(y * layout.widthTiles, (y + 1) * layout.widthTiles).join(',')).join(',\n')}
+</data>
+ </layer>`,
+  )
+  .join('\n')}
 </map>
 `;
 writeFileSync(join(projectRoot, 'assets-src/maps/base.tmx'), tmx);

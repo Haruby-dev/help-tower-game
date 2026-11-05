@@ -31,8 +31,8 @@ export class Campfire {
 
   constructor(
     private readonly scene: Phaser.Scene,
-    readonly x: number,
-    readonly y: number,
+    public x: number,
+    public y: number,
     private readonly rng: Rng,
     private readonly resolution: () => number,
   ) {
@@ -95,6 +95,14 @@ export class Campfire {
       .setDepth(DEPTH + 1)
       .setResolution(this.resolution());
     this.scene.tweens.add({ targets: word, y: word.y - 8, alpha: 0, delay: 500, duration: 500, onComplete: () => word.destroy() });
+  }
+
+  /** ผู้เล่นย้ายกองไฟในโหมดจัดวาง วงแหวนกับอาหารที่เด้งย้ายตามในเฟรมถัดไป */
+  moveTo(x: number, y: number): void {
+    this.x = x;
+    this.y = y;
+    this.ring.clear();
+    this.clearDone();
   }
 
   private showDone(id: string): void {

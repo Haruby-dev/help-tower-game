@@ -24,6 +24,7 @@ export const newGioCare = (): GioCare => ({
   pettedDay: 0,
   specialWeek: -1,
   newsDay: 0,
+  album: [],
   consignment: null,
   report: null,
 });
@@ -188,6 +189,7 @@ export function giveTreat(world: World, item: string): TreatResult {
         treatDay: world.day,
         treatsToday: given + 1,
         specialWeek: special ? week : world.gio.specialWeek,
+        album: world.gio.album.includes(item) ? world.gio.album : [...world.gio.album, item],
       },
     },
     gain,

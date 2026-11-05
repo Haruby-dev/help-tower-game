@@ -28,6 +28,8 @@ import { TreeSway } from './treeSway';
 import { createCanopyMask, softEllipseTexture, type ShadeArea } from './sceneArt';
 import { formatMoney } from '../systems/economy';
 import { isGioAway, isTripLive } from '../systems/gio';
+import { landAt, nextLand, plotCell } from '../systems/land';
+import { Arranger, type Rect as ArrangeRect } from './arrange';
 
 type MoveKeys = Record<'up' | 'down' | 'left' | 'right' | 'w' | 'a' | 's' | 'd', Phaser.Input.Keyboard.Key>;
 
@@ -38,6 +40,7 @@ const DEPTH = {
   flowers: -7,
   pond: -9.5,
   plotMarker: -6,
+  arrange: 7980,
   weather: 7990,
   night: 8000,
   label: 9001,
@@ -58,6 +61,11 @@ const PLAYER_HEAD_PX = 66;
 const DOOR_TAP_LIFT = 24;
 const DOOR_TAP_RADIUS = 34;
 const TILE_MIDDLE = 16;
+/** ขนาดช่องแผนที่ ใช้แปลงตำแหน่งพิกเซลเป็นช่องตอนหาว่าของอยู่ในที่ดินแปลงไหน */
+const TILE_PX = 32;
+/** แสงเรืองกองไฟอยู่เหนือเท้ากองไฟเท่านี้ (ตามจุด glow_fire บนแผนที่เดิม) */
+const FIRE_GLOW_LIFT = 16;
+const ARRANGE_WINDOW = 'arrange';
 const TILL_HIT_FRAME = 6;
 const TILL_DIRT_PIECES = 2;
 const MINUTES_PER_HOUR = 60;
@@ -117,6 +125,18 @@ export class BaseScene extends Phaser.Scene {
   private door = { x: 0, y: 0 };
   private night!: Phaser.GameObjects.Rectangle;
   private plots: Plot[] = [];
+  private ground!: Phaser.Tilemaps.TilemapLayer;
+  /** ชั้นแปลงผักของที่ดิน land_1..3 แสดงชั้นเดียวตามจำนวนที่ซื้อแล้ว */
+  private landLayers: Phaser.Tilemaps.TilemapLayer[] = [];
+  /** ของที่หายไปเมื่อซื้อที่ดินแปลงนั้น: วัชพืช ตอไม้ หิน ป้าย ราคา และตัวกันเดิน */
+  private landClutter: Phaser.GameObjects.GameObject[][] = [];
+  private landSigns: { x: number; y: number }[] = [];
+  private landShown = -1;
+  /** โหมดจัดวางของบนตาราง */
+  private arranger!: Arranger;
+  private movableBlockers = new Map<string, Phaser.GameObjects.Zone>();
+  private placedApplied = false;
+  private obstacles!: Phaser.Physics.Arcade.StaticGroup;
   private plotMarker!: Phaser.GameObjects.Sprite;
   private queuedPlot: number | null = null;
   private campfire: Campfire | null = null;
@@ -148,6 +168,11 @@ export class BaseScene extends Phaser.Scene {
     const map = this.make.tilemap({ key: 'base_map' });
     const tilesets = map.tilesets.map((tileset) => map.addTilesetImage(tileset.name, tileset.name)!);
     const ground = map.createLayer('ground', tilesets)!.setDepth(DEPTH.ground);
+    this.ground = ground;
+    this.landShown = -1;
+    this.landClutter = balance.land.lands.map(() => []);
+    this.landSigns = [];
+    this.landLayers = balance.land.lands.map((_, index) => map.createLayer(`land_${index + 1}`, tilesets)!.setDepth(DEPTH.ground).setVisible(false));
     this.createPlots(ground);
 
     const worldWidth = map.widthInPixels;
@@ -155,11 +180,20 @@ export class BaseScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
 
     const obstacles = this.physics.add.staticGroup();
+    this.obstacles = obstacles;
+    this.movableBlockers = new Map();
+    this.placedApplied = false;
+    this.arranger = new Arranger(this, DEPTH.arrange, (rect, ignore) => this.blockedFor(rect, ignore));
     for (const rect of map.getObjectLayer('collision')!.objects) {
       const width = rect.width ?? 0;
       const height = rect.height ?? 0;
       const zone = this.add.zone((rect.x ?? 0) + width / 2, (rect.y ?? 0) + height / 2, width, height);
       obstacles.add(zone);
+      const moving = /^move_(.+)$/.exec(rect.name ?? '')?.[1];
+      if (moving) this.movableBlockers.set(moving, zone);
+      // ตัวกันเดินของที่ดินที่ยังไม่ซื้อ และหินในรั้ว หายไปพร้อมกันตอนซื้อ
+      const land = /^land_(\d)$/.exec(rect.name ?? '')?.[1] ?? landAt(zone.x / map.tileWidth, zone.y / map.tileHeight);
+      if (land !== null && land !== undefined) this.landClutter[Number(land)]?.push(zone);
     }
 
     for (const object of map.getObjectLayer('flowers')!.objects) {
@@ -220,6 +254,11 @@ export class BaseScene extends Phaser.Scene {
     this.input.keyboard!.on('keydown-E', () => this.useAction());
     this.input.keyboard!.on('keydown-SPACE', () => this.useAction());
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (this.arranger.active) {
+        this.arranger.tap(pointer.worldX, pointer.worldY);
+        this.reportArrange();
+        return;
+      }
       // ระหว่างตกปลา แตะตรงไหนก็ได้คือดึงเบ็ด
       if (this.fishing) {
         if (this.fishing.phase === 'bite') this.finishFishing(true);
@@ -249,6 +288,11 @@ export class BaseScene extends Phaser.Scene {
     const stopViewport = eventBus.on('viewport-changed', (viewport) => this.applyViewport(viewport));
     const stopLighting = eventBus.on('lighting-changed', (enabled) => this.applyLighting(enabled));
     const stopTreat = eventBus.on('gio-treat', (taste) => this.gio.eatTreat(taste));
+    const stopArrange = eventBus.on('arrange-toggle', () => this.setArranging(!this.arranger.active));
+    const stopArrangeCommand = eventBus.on('arrange-command', (command) => this.arrangeCommand(command));
+    const stopRestart = eventBus.on('game-started', () => {
+      this.placedApplied = false;
+    });
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.stopCookLoop();
       stopAction();
@@ -258,6 +302,9 @@ export class BaseScene extends Phaser.Scene {
       stopViewport();
       stopLighting();
       stopTreat();
+      stopArrange();
+      stopArrangeCommand();
+      stopRestart();
     });
   }
 
@@ -272,7 +319,9 @@ export class BaseScene extends Phaser.Scene {
     if (this.cookLoop && !this.player.isCooking) this.stopCookLoop();
     this.gio.update(deltaMs, this.player.feetX, this.player.feetY, !gameState.clockRunning);
     if (gameState.started) this.openReceiptWhenNear();
-    this.followPlayer();
+    if (gameState.started) this.followPlaced();
+    if (this.arranger.active) this.arranger.draw(this.playerRect());
+    else this.followPlayer();
     gameState.trackPlayer({ x: this.player.body.x, y: this.player.body.y });
     const camera = this.cameras.main;
     const screenScale = camera.zoom / window.devicePixelRatio;
@@ -321,10 +370,22 @@ export class BaseScene extends Phaser.Scene {
     const flat = this.property<boolean>(object, 'flat') ?? false;
     const originY = entry.type === 'placeholder' ? 1 : footY(id) / entry.height;
     const image = this.add.image(x, y, id).setOrigin(0.5, originY).setDepth(flat ? DEPTH.flat : y);
-    if (id === 'gio_seat') {
-      const top = y - originY * entry.height;
-      this.gioSeat = { x, top, bottom: top + entry.height, width: entry.width };
-    }
+    const seatAt = (feetX: number, feetY: number): GioSeat => {
+      const top = feetY - originY * entry.height;
+      return { x: feetX, top, bottom: top + entry.height, width: entry.width };
+    };
+    if (id === 'gio_seat') this.gioSeat = seatAt(x, y);
+    // ของหน้าบ้านย้ายได้ในโหมดจัดวาง กองไฟพาแสงเรืองไปด้วย ตะกร้าพาจีโอไปด้วย
+    this.arranger.register(id, image, this.movableBlockers.get(id) ?? null, flat, (feet) => {
+      if (id === 'campfire') {
+        this.campfire?.moveTo(feet.x, feet.y);
+        if (this.glows.fire) Object.assign(this.glows.fire, { x: feet.x, y: feet.y - FIRE_GLOW_LIFT });
+      }
+      if (id === 'gio_seat') {
+        this.gioSeat = seatAt(feet.x, feet.y);
+        this.gio?.moveSeat(this.gioSeat);
+      }
+    });
 
     const submerged = this.property<number>(object, 'submerged');
     if (submerged) image.setCrop(0, 0, entry.width, Math.round(entry.height * submerged));
@@ -341,8 +402,14 @@ export class BaseScene extends Phaser.Scene {
     const treeKind = /^tree_big_(\d)$/.exec(id)?.[1];
     if (treeKind !== undefined) this.treeSway.add(this, image, Number(treeKind));
 
+    // วัชพืช ตอไม้ และหินในรั้วที่ดินที่ยังไม่ซื้อ
+    const clutterLand = /^(weed_|stump_seat|rock_small_)/.test(id) ? landAt(x / TILE_PX, y / TILE_PX) : null;
+    if (clutterLand !== null) this.landClutter[clutterLand]?.push(image);
+
     const plot = this.property<number>(object, 'plot');
     if (plot !== undefined) {
+      this.landSigns[plot] = { x, y };
+      this.landClutter[plot]?.push(image);
       const price = this.add
         .text(x, y - PRICE_LIFT_PX, formatMoney(balance.land.prices[plot]!), {
           fontFamily: 'Mali',
@@ -353,6 +420,7 @@ export class BaseScene extends Phaser.Scene {
         .setOrigin(0.5)
         .setDepth(y + 1);
       this.labels.push(price);
+      this.landClutter[plot]?.push(price);
     }
 
     // ต้นไม้ทำให้เกิดร่มเงาบนพื้นรอบต้น
@@ -425,6 +493,7 @@ export class BaseScene extends Phaser.Scene {
 
   /** ทุกท่าล็อกการเดิน กดปุ่มเดิมอีกครั้งเพื่อหยุด · ท่าทำสวนสั้นจึงทำจนจบเอง */
   private useAction(): void {
+    if (this.arranger.active) return;
     if (this.fishing) {
       if (this.fishing.phase === 'bite') this.finishFishing(true);
       else if (this.fishing.phase !== 'reel') this.cancelFishing();
@@ -439,7 +508,8 @@ export class BaseScene extends Phaser.Scene {
       return;
     }
     const plot = this.targetPlot();
-    if (plot !== null && this.farmActionAt(plot)) this.useFarm(plot);
+    if (this.landSignWins()) eventBus.emit('land-requested', this.nearLandSign()!);
+    else if (plot !== null && this.farmActionAt(plot)) this.useFarm(plot);
     else if (this.campfireAction()) this.useCampfire();
     else if (this.nearGio()) eventBus.emit('gio-talk', undefined);
     else if (this.pondSpot()) {
@@ -721,14 +791,109 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private createPlots(ground: Phaser.Tilemaps.TilemapLayer): void {
-    const { plotOrigin, cols, rows } = balance.farm;
-    this.plots = Array.from({ length: cols * rows }, (_, index) => {
-      const tile = ground.getTileAt(plotOrigin.col + (index % cols), plotOrigin.row + Math.floor(index / cols));
-      if (!tile) throw new Error(`map has no soil for plot ${index}`);
-      const plot = new Plot(this, tile, DEPTH.flat);
-      return plot;
-    });
+    const { cols, rows } = balance.farm;
+    this.plots = [];
+    for (let index = 0; index < cols * rows; index += 1) this.addPlot(ground, index);
     this.plotMarker = this.add.sprite(0, 0, 'plot_cursor').setDepth(DEPTH.plotMarker).setVisible(false).play('plot_cursor_loop');
+  }
+
+  private addPlot(ground: Phaser.Tilemaps.TilemapLayer, index: number): void {
+    const cell = plotCell(index);
+    const tile = cell ? ground.getTileAt(cell.col, cell.row) : null;
+    if (!tile) throw new Error(`map has no tile for plot ${index}`);
+    this.plots[index] = new Plot(this, tile, DEPTH.flat);
+  }
+
+  /** ตัวเอกกินพื้นที่เท่าตัวชนของเธอ ห้ามวางของทับ */
+  private playerRect(): ArrangeRect {
+    const body = this.player.body.body as Phaser.Physics.Arcade.Body;
+    return { x: body.x, y: body.y, width: body.width, height: body.height };
+  }
+
+  /** ช่องนี้ชนตัวกันเดินอื่นไหม ไม่นับตัวกันเดินของชิ้นที่กำลังย้าย ประตูบ้านต้องว่างเสมอ */
+  private blockedFor(rect: ArrangeRect, ignore: Phaser.GameObjects.Zone | null): boolean {
+    if (rect.x <= this.door.x && this.door.x < rect.x + rect.width && rect.y <= this.door.y && this.door.y < rect.y + rect.height) return true;
+    return this.obstacles.getChildren().some((child) => {
+      if (child === ignore) return false;
+      const zone = child as Phaser.GameObjects.Zone;
+      const left = zone.x - zone.width / 2;
+      const top = zone.y - zone.height / 2;
+      return left < rect.x + rect.width && rect.x < left + zone.width && top < rect.y + rect.height && rect.y < top + zone.height;
+    });
+  }
+
+  /** ตำแหน่งที่เคยย้ายไว้ในเซฟ ใช้ครั้งเดียวต่อการเริ่มเกม */
+  private followPlaced(): void {
+    if (this.placedApplied) return;
+    this.placedApplied = true;
+    for (const [id, feet] of Object.entries(gameState.world.placed)) this.arranger.apply(id, feet);
+  }
+
+  private reportArrange(): void {
+    eventBus.emit('arrange-changed', this.arranger.state(this.playerRect()));
+  }
+
+  /** เข้าโหมดจัดวาง: นาฬิกาหยุด กล้องเลื่อนไปที่ลานหน้าบ้าน · ออก: กลับไปตามตัวเอก */
+  private setArranging(on: boolean): void {
+    if (on === this.arranger.active) return;
+    if (on) {
+      if (!gameState.started || this.player.busy || this.fishing || this.bath) return;
+      this.arranger.enter();
+      gameState.setWindowOpen(ARRANGE_WINDOW, true);
+      const center = this.arranger.zoneCenter();
+      if (center) this.cameras.main.centerOn(center.x, center.y);
+    } else {
+      this.arranger.exit();
+      gameState.setWindowOpen(ARRANGE_WINDOW, false);
+    }
+    this.reportArrange();
+  }
+
+  private arrangeCommand(command: 'place' | 'cancel' | 'done'): void {
+    if (!this.arranger.active) return;
+    if (command === 'done') {
+      this.setArranging(false);
+      return;
+    }
+    if (command === 'cancel') this.arranger.cancel();
+    else {
+      const placed = this.arranger.place(this.playerRect());
+      if (placed) gameState.setWorld({ ...gameState.world, placed: { ...gameState.world.placed, [placed.id]: placed.feet } });
+    }
+    this.reportArrange();
+  }
+
+  /** ที่ดินที่ซื้อแล้ว: ชั้นแปลงผักแสดง ของรกในรั้วหาย เดินเข้าได้ และมีแปลงผักเพิ่มตามเซฟ */
+  private followLand(): void {
+    const owned = gameState.world.land.owned;
+    if (owned !== this.landShown) {
+      this.landShown = owned;
+      this.landLayers.forEach((layer, index) => layer.setVisible(index === owned - 1));
+      for (let land = 0; land < owned; land += 1) {
+        for (const piece of this.landClutter[land] ?? []) piece.destroy();
+        this.landClutter[land] = [];
+      }
+    }
+    for (let index = this.plots.length; index < gameState.world.farm.plots.length; index += 1) this.addPlot(this.ground, index);
+  }
+
+  /** ยืนใกล้ป้ายของที่ดินแปลงถัดไปจึงกดซื้อได้ ซื้อตามลำดับ */
+  private nearLandSign(): number | null {
+    if (!gameState.clockRunning || this.player.busy) return null;
+    const land = nextLand(gameState.world);
+    const sign = land === null ? undefined : this.landSigns[land];
+    if (land === null || !sign) return null;
+    return Phaser.Math.Distance.Between(this.player.feetX, this.player.feetY, sign.x, sign.y) < balance.interact.reachPx ? land : null;
+  }
+
+  /** ป้ายขายที่อยู่เหนือแปลงผักพอดี ถ้ายืนใกล้ป้ายมากกว่าแปลง ปุ่มกระทำเป็นซื้อที่ดิน */
+  private landSignWins(): boolean {
+    const land = this.nearLandSign();
+    if (land === null) return false;
+    const sign = this.landSigns[land]!;
+    const plot = this.targetPlot();
+    const toSign = Phaser.Math.Distance.Between(this.player.feetX, this.player.feetY, sign.x, sign.y);
+    return plot === null || !this.farmActionAt(plot) || toSign < this.distanceToPlot(plot);
   }
 
   private distanceToPlot(index: number): number {
@@ -756,6 +921,7 @@ export class BaseScene extends Phaser.Scene {
 
   private updateFarm(): void {
     if (!gameState.started) return;
+    this.followLand();
     const { plots } = gameState.world.farm;
     this.plots.forEach((plot, index) => plot.sync(plots[index]!));
     const target = gameState.clockRunning && !this.fishing && !this.bath && !this.player.isCooking ? this.targetPlot() : null;
@@ -779,6 +945,7 @@ export class BaseScene extends Phaser.Scene {
     }
     if (this.bath) return { icon: 'bath', label: 'action.stop' };
     if (this.player.isCooking) return { icon: 'cook', label: 'action.stop' };
+    if (this.landSignWins()) return { icon: 'buy', label: 'action.buy_land' };
     if (farm) return { icon: FARM_ICON[farm], label: ACTION_LABEL[farm] };
     const fire = this.campfireAction();
     if (fire) return { icon: 'cook', label: fire };

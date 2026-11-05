@@ -66,6 +66,50 @@
       5000,
       15000,
       40000
+    ],
+    "lands": [
+      {
+        "plots": {
+          "col": 5,
+          "row": 4,
+          "cols": 3,
+          "rows": 3
+        },
+        "area": {
+          "x": 4,
+          "y": 3.5,
+          "width": 4,
+          "height": 5.3
+        }
+      },
+      {
+        "plots": {
+          "col": 8,
+          "row": 4,
+          "cols": 4,
+          "rows": 3
+        },
+        "area": {
+          "x": 8,
+          "y": 3.5,
+          "width": 4,
+          "height": 5.3
+        }
+      },
+      {
+        "plots": {
+          "col": 12,
+          "row": 4,
+          "cols": 3,
+          "rows": 3
+        },
+        "area": {
+          "x": 12,
+          "y": 3.5,
+          "width": 4,
+          "height": 5.3
+        }
+      }
     ]
   },
   "gio": {
@@ -339,5 +383,35 @@
       "cloudy": 0.1
     },
     "firstDay": "sunny"
+  },
+  "placement": {
+    "zones": {
+      "frontyard": {
+        "x": 10,
+        "y": 9,
+        "width": 13,
+        "height": 6
+      }
+    },
+    "items": {
+      "campfire": {
+        "zone": "frontyard",
+        "cols": 2,
+        "rows": 1
+      },
+      "food_tray_3": {
+        "zone": "frontyard",
+        "cols": 2,
+        "rows": 1
+      },
+      "gio_seat": {
+        "zone": "frontyard",
+        "cols": 2,
+        "rows": 1
+      }
+    }
+  },
+  "test": {
+    "stars": 100
   }
 }

@@ -9,6 +9,7 @@ import { createInventoryPage } from './inventory';
 import { artUrl, stickerIcon } from './pixelArt';
 import { createShopPage } from './shop';
 import { createWalletPage } from './wallet';
+import { createAlbumPage } from './album';
 import { revealWhenReady } from './preload';
 
 interface PhoneApp {
@@ -27,7 +28,7 @@ const APPS: PhoneApp[] = [
   { id: 'inventory', name: 'app.inventory', icon: 'ui_app_bag', place: 'grid', big: true, page: createInventoryPage },
   { id: 'shop', name: 'app.shop', icon: 'ui_app_shop', place: 'grid', big: true, page: createShopPage },
   { id: 'recipes', name: 'app.recipes', icon: 'ui_app_recipe', place: 'grid', opens: 'book-open' },
-  { id: 'album', name: 'app.album', icon: 'ui_app_album', place: 'grid' },
+  { id: 'album', name: 'app.album', icon: 'ui_app_album', place: 'grid', page: createAlbumPage },
   { id: 'pets', name: 'app.pets', icon: 'ui_app_pets', place: 'grid' },
   { id: 'gate', name: 'app.gate', icon: 'ui_app_gate', place: 'grid' },
   { id: 'outfit', name: 'app.outfit', icon: 'ui_app_outfit', place: 'grid' },

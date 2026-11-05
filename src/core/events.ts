@@ -20,7 +20,7 @@ export interface GameEvents {
   'dig-requested': { plot: number; crop: string };
   'dig-confirmed': number;
   /** key ของบทพูดตัวเอกใน lines.json */
-  'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut';
+  'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut' | 'noMoney';
   'cook-open': undefined;
   'book-open': undefined;
   /** ไอเท็มหีบในกระเป๋าที่จะเปิด */
@@ -31,6 +31,16 @@ export interface GameEvents {
   'gio-treat': 'like' | 'love' | 'special';
   /** หน้าต่างเต็มเปิดหรือปิด (เฉพาะตอนที่เปลี่ยนจริง) ใช้เล่นเสียงเปิดปิด */
   'window-changed': { name: string; open: boolean };
+  /** กดซื้อที่ป้ายขายที่ (เลขที่ดิน 0–2) */
+  'land-requested': number;
+  /** ซื้อที่ดินสำเร็จ ฉากเคลียร์วัชพืชและเปิดแปลงผักใหม่ */
+  'land-bought': number;
+  /** ปุ่มจัดวางด้านบน เข้าหรือออกจากโหมดจัดวาง */
+  'arrange-toggle': undefined;
+  /** ปุ่มในแถบจัดวาง */
+  'arrange-command': 'place' | 'cancel' | 'done';
+  /** สถานะโหมดจัดวาง ให้แถบล่างแสดงปุ่มให้ตรง */
+  'arrange-changed': { active: boolean; selected: string | null; valid: boolean };
 }
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

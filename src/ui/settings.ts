@@ -1,4 +1,6 @@
 import { sound, type SoundGroup } from '../core/audio';
+import balance from '../data/balance.json';
+import { applyTransaction } from '../systems/economy';
 import { t } from '../core/i18n';
 import { gameState } from '../core/state';
 import { isHomeScreenApp } from '../core/viewport';
@@ -258,6 +260,27 @@ function createVolumeRow(group: SoundGroup, labelKey: (typeof VOLUME_ROWS)[numbe
   return row;
 }
 
+/** ปุ่มลับช่วงทดสอบ ให้ดาวน้ำตาลไว้ลองของพรีเมียม ต้องเอาออกก่อนปล่อยจริง (CLAUDE.md หัวข้อลานเล่นมอนสเตอร์) */
+function createTestStarsRow(): HTMLElement {
+  const row = document.createElement('div');
+  row.className = 'settings-row settings-test';
+  const label = document.createElement('span');
+  const name = Object.assign(document.createElement('b'), { textContent: t('settings.test_stars') });
+  const note = Object.assign(document.createElement('small'), { textContent: t('settings.test_stars_note') });
+  label.append(name, note);
+  const button = document.createElement('button');
+  button.id = 'test-stars';
+  button.type = 'button';
+  button.className = 'settings-button';
+  button.textContent = `+${balance.test.stars} ★`;
+  button.addEventListener('click', () => {
+    if (!gameState.started) return;
+    gameState.setWorld(applyTransaction(gameState.world, 'stars', balance.test.stars, 'wallet.test_stars', 'wallet.category_test'));
+  });
+  row.append(label, button);
+  return row;
+}
+
 let appRootForPage: HTMLElement | null = null;
 
 /** อ่านค่าที่จำไว้ตั้งแต่เปิดเกม ไม่ต้องรอเปิดหน้าตั้งค่า */
@@ -302,6 +325,7 @@ function createSettingsPage(): HTMLElement {
   page.append(title, ...volumes, row, createAutoFishRow(rebait.sync), rebait.row, createZoomRow(), createSaveRow());
   const fullscreen = appRootForPage ? createFullscreenRow(appRootForPage) : null;
   if (fullscreen) page.append(fullscreen);
+  page.append(createTestStarsRow());
   return page;
 }
 
