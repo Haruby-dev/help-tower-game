@@ -2,8 +2,9 @@ import { registry } from '../core/assets';
 import { eventBus } from '../core/events';
 import { t } from '../core/i18n';
 import { createRng } from '../core/rng';
+import { audioSettings, sound, type SoundHandle } from '../core/audio';
 import { gameState } from '../core/state';
-import { cosmeticTable, openChest, type Reward } from '../systems/chests';
+import { chestTierOfItem, cosmeticTable, openChest, type Reward } from '../systems/chests';
 import { itemImage, itemName } from './inventory';
 import { artUrl } from './pixelArt';
 import { setMoney } from './money';
@@ -87,12 +88,19 @@ export function createChestWindow(uiRoot: HTMLElement): void {
   uiRoot.append(backdrop);
 
   let timers: number[] = [];
+  let sounds: SoundHandle[] = [];
   const later = (ms: number, run: () => void): void => {
     timers.push(window.setTimeout(run, ms));
   };
+  const play = (key: string): void => {
+    sounds.push(sound.play(key));
+  };
+  // ปิดก่อนจบ (ปุ่มรับของ) เสียงที่รออยู่กับเสียงที่ดังอยู่หยุดพร้อมนาฬิกา
   const close = (): void => {
     timers.forEach((timer) => window.clearTimeout(timer));
     timers = [];
+    sounds.forEach((handle) => handle.stop());
+    sounds = [];
     backdrop.hidden = true;
     gameState.setWindowOpen(WINDOW, false);
   };
@@ -113,13 +121,20 @@ export function createChestWindow(uiRoot: HTMLElement): void {
     chest.classList.add('is-shaking');
     backdrop.hidden = false;
     gameState.setWindowOpen(WINDOW, true);
+    play('chest_shake');
     later(SHAKE_MS, () => {
       chest.classList.remove('is-shaking');
       burst.classList.add('is-playing');
+      play(chestTierOfItem(item) === 'golden' ? 'chest_open_golden' : 'chest_open');
     });
     const burstMs = (BURST_FRAMES / BURST_FPS) * 1000;
+    // ของแต่ละชิ้นเด้งพร้อมเสียงป๊อปที่สูงขึ้นทีละขั้น ชิ้นที่ 6 ขึ้นไปใช้เสียงสุดท้าย
+    const pops = audioSettings.chestItems;
     result.rewards.forEach((reward, index) => {
-      later(SHAKE_MS + burstMs + index * ITEM_GAP_MS, () => list.append(rewardRow(reward)));
+      later(SHAKE_MS + burstMs + index * ITEM_GAP_MS, () => {
+        list.append(rewardRow(reward));
+        play(pops[Math.min(index, pops.length - 1)]!);
+      });
     });
   });
 }

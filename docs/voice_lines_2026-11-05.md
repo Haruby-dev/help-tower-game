@@ -44,3 +44,6 @@ Trigger notes from the audio side:
 - Lines 2 (hungry) and 10 (faint) overlap the old SFX ideas `warn_hungry` (stomach growl) and `faint`: for now the voice is used; a soft SFX can be added later if she wants.
 - Eat rapid presses: if eat is pressed again within 1.5 s, alternate `eat_rapid_1/2` ("งั่ม") instead of "หม่ำแล้วนะ". This is the one exception to the "same line not within 3 s" rule.
 - Lines 9 (Gio pet) and 13 (coins) wait for M6 systems.
+
+## DECISION 2026-11-05 18:20 (her, after testing in game)
+Too many voice lines. The heroine now has ONLY one sound: a short "งั่ม" (eat_rapid_1 / eat_rapid_2, alternating) when eating or drinking. All other lines (incl. "หม่ำแล้วนะ" and drink) are removed from the game. The recordings stay in art-src/audio_src/voice_draft + her_voice for possible later use. Future direction if voice comes back: short non-verbal sounds ("ฮึบ", "อ่า~", "อ๊ะ!"), very few moments.

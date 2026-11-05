@@ -19,6 +19,8 @@ export class Player {
   private posing = false;
   /** ท่าเก่าที่ถูกยกเลิกไปแล้วจะไม่เรียกท่ารอต่อ */
   private poseToken = 0;
+  /** เรียกทุกครั้งที่ท่าเดินเปลี่ยนเฟรม ส่งเลขเฟรมในท่า (0–7) ใช้เล่นเสียงเท้า */
+  onWalkFrame: ((index: number) => void) | null = null;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     this.body = scene.add.zone(x, y, BODY_WIDTH, BODY_HEIGHT).setName('player_body');
@@ -26,6 +28,9 @@ export class Player {
     this.physicsBody.setCollideWorldBounds(true);
 
     this.sprite = scene.add.sprite(x, y, STAND_ID).setName('player');
+    this.sprite.on(Phaser.Animations.Events.ANIMATION_UPDATE, (animation: Phaser.Animations.Animation, frame: Phaser.Animations.AnimationFrame) => {
+      if (animation.key.startsWith(`${WALK_ID}_`)) this.onWalkFrame?.(animation.frames.indexOf(frame));
+    });
     this.showStanding();
     this.syncSprite();
   }

@@ -1,4 +1,4 @@
-import { sound, type SoundGroup } from '../core/audio';
+import { audioSettings, sound, type SoundGroup } from '../core/audio';
 import balance from '../data/balance.json';
 import { applyTransaction } from '../systems/economy';
 import { t } from '../core/i18n';
@@ -224,15 +224,19 @@ async function toggleFullscreen(appRoot: HTMLElement): Promise<void> {
   await orientation.lock?.('landscape').catch(() => undefined);
 }
 
-const VOLUME_ROWS: { group: SoundGroup; label: 'settings.volume_music' | 'settings.volume_sfx' | 'settings.volume_voice' }[] = [
+const VOLUME_ROWS: {
+  group: SoundGroup;
+  label: 'settings.volume_music' | 'settings.volume_sfx' | 'settings.volume_voice' | 'settings.volume_ambience';
+}[] = [
   { group: 'bgm', label: 'settings.volume_music' },
   { group: 'sfx', label: 'settings.volume_sfx' },
   { group: 'voice', label: 'settings.volume_voice' },
+  { group: 'amb', label: 'settings.volume_ambience' },
 ];
 const PERCENT = 100;
 const VOLUME_STEP = 5;
 
-/** แถบเลื่อนระดับเสียง เพลง เอฟเฟกต์ เสียงพูด จำค่าไว้ในเครื่อง */
+/** แถบเลื่อนระดับเสียง เพลง เอฟเฟกต์ เสียงพูด เสียงบรรยากาศ จำค่าไว้ในเครื่อง */
 function createVolumeRow(group: SoundGroup, labelKey: (typeof VOLUME_ROWS)[number]['label']): HTMLElement {
   const row = document.createElement('label');
   row.className = 'settings-row settings-volume';
@@ -251,10 +255,10 @@ function createVolumeRow(group: SoundGroup, labelKey: (typeof VOLUME_ROWS)[numbe
     sound.setVolume(group, Number(slider.value) / PERCENT);
     value.textContent = slider.value;
   });
-  // ปล่อยนิ้วแล้วเล่นเสียงตัวอย่างของกลุ่มนั้น จะได้รู้ว่าดังแค่ไหน
+  // ปล่อยนิ้วแล้วเล่นเสียงตัวอย่างของกลุ่มนั้น จะได้รู้ว่าดังแค่ไหน · เสียงบรรยากาศวนอยู่แล้วในเกม จึงไม่มีเสียงตัวอย่าง
   slider.addEventListener('change', () => {
     if (group === 'sfx') sound.play('ui_tap');
-    if (group === 'voice') sound.speak('voice_yay', { force: true });
+    if (group === 'voice') sound.say(audioSettings.voiceTakes[0]!);
   });
   row.append(label, slider, value);
   return row;

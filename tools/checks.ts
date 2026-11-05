@@ -94,8 +94,18 @@ export function checkProject(): string[] {
       if (!existsSync(join(projectRoot, file))) problems.push(`${file}: missing`);
     }
   }
-  for (const key of Object.keys(audioSchema.parse(readJson('src/data/audio.json')).music)) {
+  const audio = audioSchema.parse(readJson('src/data/audio.json'));
+  for (const key of Object.keys(audio.music)) {
     if (audioIndex[key] !== 'bgm') problems.push(`src/data/audio.json: music ${key} is not a bgm key in _audio_index.json`);
+  }
+  // ชื่อเสียงทุกตัวที่ audio.json อ้างต้องมีในรายการ และอยู่กลุ่มที่ถูกต้อง
+  const wanted: [string, string][] = [
+    ...audio.voiceTakes.map((key): [string, string] => [key, 'voice']),
+    ...[...audio.bath.splashes, ...audio.steps.keys, ...audio.chestItems].map((key): [string, string] => [key, 'sfx']),
+    ...[audio.ambience.day, audio.ambience.night, audio.ambience.rain].map((key): [string, string] => [key, 'amb']),
+  ];
+  for (const [key, group] of wanted) {
+    if (audioIndex[key] !== group) problems.push(`src/data/audio.json: ${key} is not a ${group} key in _audio_index.json`);
   }
 
   const registry = registrySchema.parse(readJson('assets-src/registry.json'));

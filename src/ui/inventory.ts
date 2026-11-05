@@ -185,7 +185,7 @@ export function createInventoryPage(): HTMLElement {
       eat.addEventListener('click', () => {
         const next = eatItem(gameState.world, item);
         if (next) {
-          eatVoice(item);
+          eatVoice();
           gameState.setWorld(next);
         } else uiSound('ui_error');
         render();

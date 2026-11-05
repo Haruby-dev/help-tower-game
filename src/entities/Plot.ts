@@ -52,8 +52,10 @@ export class Plot {
       .play('fx_sparkle_idle');
   }
 
-  sync(state: PlotState): void {
-    if (state === this.shown) return;
+  /** ตอบ true เมื่อต้นนี้เพิ่งพร้อมเก็บ (ประกายเพิ่งขึ้น) ไม่นับตอนสร้างแปลงครั้งแรก */
+  sync(state: PlotState): boolean {
+    if (state === this.shown) return false;
+    const wasReady = this.shown === null ? null : isReady(this.shown);
     this.shown = state;
     const bed = bedTexture(state);
     this.bed.setVisible(bed !== null);
@@ -68,6 +70,7 @@ export class Plot {
       this.plant.setVisible(false);
     }
     this.setReadyBounce(isReady(state));
+    return wasReady === false && isReady(state);
   }
 
   private setReadyBounce(ready: boolean): void {

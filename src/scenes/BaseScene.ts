@@ -93,6 +93,8 @@ interface FishingTrip {
 interface BathTrip {
   startHour: number;
   effect: Phaser.Time.TimerEvent;
+  /** เลิกฟังเฟรมท่าอาบน้ำ (เสียงวักน้ำกับน้ำกระเซ็น) */
+  stopSounds: () => void;
 }
 
 /** ไล่ความมืดระหว่างจุดเวลาใน display.json */
@@ -125,6 +127,8 @@ export class BaseScene extends Phaser.Scene {
   private door = { x: 0, y: 0 };
   private night!: Phaser.GameObjects.Rectangle;
   private plots: Plot[] = [];
+  private grownSoundAt = -Infinity;
+  private stepTake = 0;
   private ground!: Phaser.Tilemaps.TilemapLayer;
   /** ชั้นแปลงผักของที่ดิน land_1..3 แสดงชั้นเดียวตามจำนวนที่ซื้อแล้ว */
   private landLayers: Phaser.Tilemaps.TilemapLayer[] = [];
@@ -220,6 +224,7 @@ export class BaseScene extends Phaser.Scene {
       .sort((a, b) => tripStep(a.name) - tripStep(b.name))
       .map((point) => ({ x: point.x ?? 0, y: point.y ?? 0 }));
     this.player = new Player(this, playerSpawn.x, playerSpawn.y);
+    this.player.onWalkFrame = (index) => this.footstep(index);
     this.gio = new Gio(this, gioSpawn, this.gioSeat, createRng(Date.now()), { route: tripRoute, burrow: spawn('gio_burrow') });
 
     this.physics.add.collider(this.player.body, obstacles);
@@ -630,10 +635,6 @@ export class BaseScene extends Phaser.Scene {
     this.rig.bite();
     this.rig.showMark(this.player.feetX, this.player.feetY);
     sound.play('fish_alert');
-    // เสียงพูดตามหลังเสียง "!" ไม่ทับกัน
-    this.time.delayedCall(audioSettings.voice.biteAfterAlertMs, () => {
-      if (this.fishing === trip && trip.phase === 'bite') sound.speak('voice_fish_bite');
-    });
     // ตกปลาอัตโนมัติตั้งนาฬิกาเดียว เดิมมีสองนาฬิกาแข่งกัน ถ้าเครื่องกระตุก นาฬิกา "ไม่ทัน" อาจดังก่อนจนพลาดทุกครั้ง
     trip.timer = gameState.autoFish
       ? this.time.delayedCall(autoTapMs, () => this.finishFishing(autoHooks(this.fishRng)))
@@ -658,12 +659,10 @@ export class BaseScene extends Phaser.Scene {
       this.player.endPose();
       if (!caught) {
         sound.play('fish_escape');
-        sound.speak('voice_fish_miss');
         eventBus.emit('player-says', 'fishEscaped');
       } else if (!result.stored) eventBus.emit('player-says', 'bagFull');
       else {
         sound.play('fish_catch');
-        this.time.delayedCall(audioSettings.voice.yayAfterCatchMs, () => sound.speak('voice_yay'));
         this.showCatch(trip.spot, caught, firstTime);
       }
       if (caught && !result.stored) return;
@@ -714,11 +713,34 @@ export class BaseScene extends Phaser.Scene {
     this.rig.drawLine({ x: corner.x + (this.player.flipped ? FRAME_LAST_PX - tip[0] : tip[0]), y: corner.y + tip[1] }, this.player.feetY);
   }
 
+  /** เสียงเท้าตอนเท้าแตะพื้นในท่าเดิน (เฟรมใน audio.json) วิ่งแล้วท่าเร็วขึ้น เสียงจึงถี่ขึ้นเอง */
+  private footstep(index: number): void {
+    const { frames, keys } = audioSettings.steps;
+    if (!frames.includes(index)) return;
+    sound.play(keys[this.stepTake % keys.length]!);
+    this.stepTake += 1;
+  }
+
   /** อาบน้ำที่บ่อหันไหนก็ใช้ท่าทิศใต้ มีฟองกับประกายลอยรอบตัว */
   private startBath(): void {
     if (!this.pondSpot() || this.bath || this.fishing) return;
     this.player.startPose('south', 'anim_wash');
-    if (audioSettings.voice.bath === 'start') sound.speak('voice_bath');
+    // เสียงตามภาพ: เฟรมมือวักน้ำมีเสียงวัก เฟรมน้ำโดนหน้ามีเสียงกระเซ็น 1 → 2 → 3 → 4 วนไปทุกรอบ
+    const { scoopFrame, splashFrame, splashes } = audioSettings.bath;
+    let splash = 0;
+    const onFrame = (animation: Phaser.Animations.Animation, frame: Phaser.Animations.AnimationFrame): void => {
+      if (!animation.key.startsWith('anim_wash_')) return;
+      const index = Number(frame.textureFrame);
+      if (index === scoopFrame) sound.play('bath_scoop');
+      if (index === splashFrame) {
+        sound.play(splashes[splash % splashes.length]!);
+        splash += 1;
+      }
+    };
+    this.player.sprite.on(Phaser.Animations.Events.ANIMATION_UPDATE, onFrame);
+    const stopSounds = (): void => {
+      this.player.sprite.off(Phaser.Animations.Events.ANIMATION_UPDATE, onFrame);
+    };
     const effect = this.time.addEvent({
       delay: BATH_BUBBLE_MS,
       loop: true,
@@ -729,15 +751,16 @@ export class BaseScene extends Phaser.Scene {
         else bathBubble(this, x, y);
       },
     });
-    this.bath = { startHour: gameState.world.hour, effect };
+    this.bath = { startHour: gameState.world.hour, effect, stopSounds };
   }
 
   private endBath(): void {
     if (!this.bath) return;
     const minutes = (gameState.world.hour - this.bath.startHour) * MINUTES_PER_HOUR;
     this.bath.effect.remove();
+    this.bath.stopSounds();
     this.bath = null;
-    if (audioSettings.voice.bath === 'end') sound.speak('voice_bath');
+    sound.play('bath_sparkle');
     gameState.setWorld(finishBath(gameState.world, minutes));
     this.player.endPose();
   }
@@ -764,10 +787,9 @@ export class BaseScene extends Phaser.Scene {
     }
     if (!cooking) this.player.finishCooking();
     if (finished) {
-      // อาหารเด้งขึ้นเหนือกองไฟพร้อมเสียง แล้วตัวเอกพูดตามหลัง
+      // อาหารเด้งขึ้นเหนือกองไฟพร้อมเสียง
       this.stopCookLoop();
       sound.play('cook_done');
-      this.time.delayedCall(audioSettings.voice.cookDoneDelayMs, () => sound.speak('voice_cook_done'));
     }
   }
 
@@ -938,7 +960,15 @@ export class BaseScene extends Phaser.Scene {
     if (!gameState.started) return;
     this.followLand();
     const { plots } = gameState.world.farm;
-    this.plots.forEach((plot, index) => plot.sync(plots[index]!));
+    let grown = false;
+    this.plots.forEach((plot, index) => {
+      if (plot.sync(plots[index]!)) grown = true;
+    });
+    // พืชพร้อมเก็บพร้อมกันหลายแปลง (เช่นเช้าหลังนอน) ดังครั้งเดียว และไม่เกินครั้งละ 2 วินาที
+    if (grown && this.time.now - this.grownSoundAt >= audioSettings.farmGrownGapMs) {
+      this.grownSoundAt = this.time.now;
+      sound.play('farm_grown');
+    }
     const target = gameState.clockRunning && !this.fishing && !this.bath && !this.player.isCooking ? this.targetPlot() : null;
     const action = target !== null ? this.farmActionAt(target) : null;
     if (target !== null && action) {
@@ -1014,7 +1044,6 @@ export class BaseScene extends Phaser.Scene {
             plot.wake();
             sparkle(this, plot.centerX, plot.centerY - TILE_MIDDLE);
           }
-          if (action === 'harvest' && crop) sound.speak('voice_yay');
           if (action === 'harvest' && crop) this.showHarvest(plot, crop, amount, countOf(next.bag, seedItem(crop)) > seedsBefore);
         }
         const queued = this.queuedPlot;

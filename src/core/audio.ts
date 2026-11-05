@@ -2,26 +2,25 @@ import audioIndexJson from '../../public/assets/audio/_audio_index.json';
 import audioJson from '../data/audio.json';
 import { audioSchema, soundGroupSchema } from '../data/schema';
 import { assetUrl } from './assets';
-import { createRng } from './rng';
 
-export type SoundGroup = 'bgm' | 'sfx' | 'voice';
+export type SoundGroup = 'bgm' | 'sfx' | 'voice' | 'amb';
 
 const settings = audioSchema.parse(audioJson);
 /**
- * รายการเสียงจากฝั่งเสียง กลุ่มที่เกมยังไม่รู้จัก (เช่นเสียงบรรยากาศที่เพิ่มมาใหม่) ข้ามไปก่อน ห้ามทำให้เกมเปิดไม่ขึ้น
+ * รายการเสียงจากฝั่งเสียง กลุ่มที่เกมยังไม่รู้จักข้ามไปก่อน ห้ามทำให้เกมเปิดไม่ขึ้น
  * npm run validate ยังตรวจทุกชื่อตามปกติ
  */
 const soundIndex = Object.fromEntries(
   Object.entries(audioIndexJson as Record<string, string>).filter((entry): entry is [string, SoundGroup] => soundGroupSchema.safeParse(entry[1]).success),
 );
-const GROUPS: SoundGroup[] = ['bgm', 'sfx', 'voice'];
+const GROUPS: SoundGroup[] = ['bgm', 'sfx', 'voice', 'amb'];
 const MS = 1000;
 /** เสียงสั้นที่โหลดไม่ทันเกินเท่านี้ไม่เล่น เสียงที่ดังช้าฟังเหมือนบั๊ก */
 const LATE_LIMIT_MS = 400;
 const LOG_LIMIT = 80;
 const PRELOAD_TOGETHER = 4;
-/** เสียงพูดเริ่มลดเพลงเร็ว ๆ ไม่ให้กลบเสียงพูดคำแรก */
-const DUCK_IN_MS = 80;
+/** ตัวเอกเหลือเสียงพูดแค่ "งั่ม" (ผู้ใช้ตัดสิน 5 พ.ย. 2026) ไฟล์เสียงพูดอื่นยังอยู่ แต่ไม่โหลด */
+const VOICE_KEYS = new Set(settings.voiceTakes);
 
 export interface SoundHandle {
   stop(fadeMs?: number): void;
@@ -31,6 +30,11 @@ interface Playing {
   key: string;
   source: AudioBufferSourceNode;
   gain: GainNode;
+}
+
+interface AmbienceLoop {
+  playing: Playing | null;
+  level: number;
 }
 
 const NO_SOUND: SoundHandle = { stop: () => undefined };
@@ -59,23 +63,24 @@ function preferredFormat(): 'ogg' | 'm4a' {
   return probe.canPlayType('audio/ogg; codecs="vorbis"') === '' ? 'm4a' : 'ogg';
 }
 
+/** เสียงที่ใช้ในเกมจริง: เสียงพูดเหลือแค่ "งั่ม" */
+const inUse = (key: string): boolean => soundIndex[key] !== undefined && (soundIndex[key] !== 'voice' || VOICE_KEYS.has(key));
+
 /**
  * ตัวจัดการเสียงเดียวทั้งเกม ใช้ Web Audio ตรง ๆ เพื่อให้เพลงเล่นครั้งแรกจาก 0 แล้ววนจากจุดวนถึงท้ายไฟล์โดยไม่มีรอยต่อ
- * เสียงแบ่ง 3 กลุ่ม (เพลง เอฟเฟกต์ เสียงพูด) ปรับระดับแยกกันได้ และจำไว้ในเครื่อง
+ * เสียงแบ่ง 4 กลุ่ม (เพลง เอฟเฟกต์ เสียงพูด เสียงบรรยากาศ) ปรับระดับแยกกันได้ และจำไว้ในเครื่อง
  */
 class SoundEngine {
   private ctx: AudioContext | null = null;
   private readonly gains = new Map<SoundGroup, GainNode>();
-  private duck: GainNode | null = null;
   private readonly buffers = new Map<string, Promise<AudioBuffer | null>>();
   private format: 'ogg' | 'm4a' = 'ogg';
   private readonly volumes: Record<SoundGroup, number> = { ...settings.defaultVolume };
   private music: Playing | null = null;
   private wantedMusic: string | null = null;
   private voice: Playing | null = null;
-  private readonly voiceAt = new Map<string, number>();
   private voiceToken = 0;
-  private readonly rng = createRng(Date.now());
+  private readonly ambience = new Map<string, AmbienceLoop>();
   private unlocked = false;
   /** เสียงที่สั่งเล่นล่าสุด ใช้ในการทดสอบ */
   readonly log: string[] = [];
@@ -94,8 +99,6 @@ class SoundEngine {
       gain.connect(ctx.destination);
       this.gains.set(group, gain);
     }
-    this.duck = ctx.createGain();
-    this.duck.connect(this.gains.get('bgm')!);
     // มือถือเปิดเสียงได้ต้องรอผู้เล่นแตะครั้งแรก
     const unlock = (): void => this.unlock();
     for (const type of ['pointerdown', 'touchend', 'click', 'keydown']) document.addEventListener(type, unlock, { capture: true, passive: true });
@@ -148,7 +151,7 @@ class SoundEngine {
     const cached = this.buffers.get(key);
     if (cached) return cached;
     const ctx = this.ctx;
-    if (!ctx || !soundIndex[key]) return Promise.resolve(null);
+    if (!ctx || !inUse(key)) return Promise.resolve(null);
     const decode = async (format: 'ogg' | 'm4a'): Promise<AudioBuffer> => {
       const response = await fetch(this.url(key, format));
       if (!response.ok) throw new Error(`${key}.${format}: ${response.status}`);
@@ -161,9 +164,9 @@ class SoundEngine {
     return loading;
   }
 
-  /** เพลงโหลดเมื่อจะใช้ (ไฟล์ใหญ่ ถอดแล้วกินหน่วยความจำ) เสียงสั้นโหลดล่วงหน้าทั้งหมด */
+  /** เพลงกับเสียงบรรยากาศโหลดเมื่อจะใช้ (ไฟล์ยาว ถอดแล้วกินหน่วยความจำ) เสียงสั้นโหลดล่วงหน้าทั้งหมด */
   preloadShort(): void {
-    const keys = Object.keys(soundIndex).filter((key) => soundIndex[key] !== 'bgm');
+    const keys = Object.keys(soundIndex).filter((key) => inUse(key) && soundIndex[key] !== 'bgm' && soundIndex[key] !== 'amb');
     const next = (): void => {
       const key = keys.shift();
       if (key) void this.load(key).finally(next);
@@ -181,7 +184,8 @@ class SoundEngine {
     if (this.log.length > LOG_LIMIT) this.log.shift();
   }
 
-  private start(key: string, buffer: AudioBuffer, output: AudioNode, loop: { from: number } | null, fadeInMs = 0): Playing {
+  /** level คือระดับที่ค่อย ๆ ขึ้นไปถึงใน fadeInMs (ไม่ใส่ fade ดังทันที) */
+  private start(key: string, buffer: AudioBuffer, output: AudioNode, loop: { from: number } | null, fadeInMs = 0, level = 1): Playing {
     const ctx = this.ctx!;
     const gain = ctx.createGain();
     const source = ctx.createBufferSource();
@@ -192,22 +196,26 @@ class SoundEngine {
       source.loopStart = loop.from;
       source.loopEnd = buffer.duration;
     }
-    gain.gain.setValueAtTime(fadeInMs > 0 ? 0 : 1, ctx.currentTime);
-    if (fadeInMs > 0) gain.gain.linearRampToValueAtTime(1, ctx.currentTime + fadeInMs / MS);
+    gain.gain.setValueAtTime(fadeInMs > 0 ? 0 : level, ctx.currentTime);
+    if (fadeInMs > 0) gain.gain.linearRampToValueAtTime(level, ctx.currentTime + fadeInMs / MS);
     source.connect(gain).connect(output);
     source.start();
     this.remember(key);
     return { key, source, gain };
   }
 
-  private fadeOut(playing: Playing, fadeMs: number): void {
+  private rampTo(playing: Playing, level: number, fadeMs: number): void {
     const ctx = this.ctx!;
     const now = ctx.currentTime;
     playing.gain.gain.cancelScheduledValues(now);
     playing.gain.gain.setValueAtTime(playing.gain.gain.value, now);
-    playing.gain.gain.linearRampToValueAtTime(0, now + fadeMs / MS);
+    playing.gain.gain.linearRampToValueAtTime(level, now + fadeMs / MS);
+  }
+
+  private fadeOut(playing: Playing, fadeMs: number): void {
+    this.rampTo(playing, 0, fadeMs);
     try {
-      playing.source.stop(now + fadeMs / MS + 0.02);
+      playing.source.stop(this.ctx!.currentTime + fadeMs / MS + 0.02);
     } catch {
       // หยุดไปแล้ว
     }
@@ -227,13 +235,13 @@ class SoundEngine {
     const loopFrom = settings.music[key]?.loopStart ?? 0;
     void this.load(key).then((buffer) => {
       if (!buffer || this.wantedMusic !== key || this.music?.key === key) return;
-      this.music = this.start(key, buffer, this.duck!, { from: loopFrom }, previous ? fadeMs : settings.titleFadeMs);
+      this.music = this.start(key, buffer, this.gains.get('bgm')!, { from: loopFrom }, previous ? fadeMs : settings.titleFadeMs);
     });
   }
 
   /** เอฟเฟกต์เสียง loop ใช้กับเสียงที่วนจนกว่าจะสั่งหยุด เช่นเสียงผัดตอนทำอาหาร */
   play(key: string, options: { loop?: boolean } = {}): SoundHandle {
-    if (!this.ctx || !soundIndex[key]) return NO_SOUND;
+    if (!this.ctx || !inUse(key)) return NO_SOUND;
     const asked = performance.now();
     let playing: Playing | null = null;
     let stopped = false;
@@ -251,35 +259,18 @@ class SoundEngine {
     };
   }
 
-  /** ชื่อบทพูดที่มีหลายเทค (_1 _2) สุ่มเทค ถ้ามีไฟล์เดียวใช้ชื่อนั้นเลย */
-  takeOf(line: string): string {
-    if (soundIndex[line]) return line;
-    const takes = Object.keys(soundIndex).filter((key) => key.startsWith(`${line}_`) && /_\d+$/.test(key));
-    return takes[Math.floor(this.rng.next() * takes.length)] ?? line;
-  }
-
-  /**
-   * เสียงพูดตัวเอก: พูดได้ทีละบท บทใหม่หยุดบทเก่า บทเดิมไม่พูดซ้ำภายในราว 3 วินาที (ยกเว้น force)
-   * ระหว่างพูดเพลงเบาลงแล้วค่อยกลับ
-   */
-  speak(line: string, options: { force?: boolean; take?: string } = {}): void {
-    if (!this.ctx) return;
-    const now = performance.now();
-    const last = this.voiceAt.get(line);
-    if (!options.force && last !== undefined && now - last < settings.voice.repeatGuardMs) return;
-    this.voiceAt.set(line, now);
-    const key = options.take ?? this.takeOf(line);
+  /** เสียงพูดตัวเอก: ได้ทีละเสียง เสียงใหม่หยุดเสียงเก่าก่อน */
+  say(key: string): void {
+    if (!this.ctx || !inUse(key)) return;
+    const asked = performance.now();
     this.stopVoice();
     const token = ++this.voiceToken;
     void this.load(key).then((buffer) => {
-      if (!buffer || token !== this.voiceToken || performance.now() - now > LATE_LIMIT_MS) return;
+      if (!buffer || token !== this.voiceToken || performance.now() - asked > LATE_LIMIT_MS) return;
       const playing = this.start(key, buffer, this.gains.get('voice')!, null);
       this.voice = playing;
-      this.duckMusic(true);
       playing.source.addEventListener('ended', () => {
-        if (this.voice !== playing) return;
-        this.voice = null;
-        this.duckMusic(false);
+        if (this.voice === playing) this.voice = null;
       });
     });
   }
@@ -291,18 +282,37 @@ class SoundEngine {
     this.fadeOut(playing, 0);
   }
 
-  get voicePlaying(): boolean {
-    return this.voice !== null;
+  /**
+   * เสียงบรรยากาศที่วนอยู่: ส่งชื่อเสียงกับระดับที่ต้องการ ตัวที่ไม่อยู่ในรายการค่อย ๆ หายไป ตัวใหม่ค่อย ๆ ดังขึ้น
+   * ไม่ถูกเสียงอื่นกด และเล่นต่อตอนเปิดเมนูหรือโทรศัพท์
+   */
+  setAmbience(levels: Record<string, number>, fadeMs: number): void {
+    if (!this.ctx) return;
+    for (const [key, loop] of [...this.ambience]) {
+      if ((levels[key] ?? 0) > 0) continue;
+      if (loop.playing) this.fadeOut(loop.playing, fadeMs);
+      this.ambience.delete(key);
+    }
+    for (const [key, level] of Object.entries(levels)) {
+      if (level <= 0 || !inUse(key)) continue;
+      const current = this.ambience.get(key);
+      if (current) {
+        if (current.level !== level && current.playing) this.rampTo(current.playing, level, fadeMs);
+        current.level = level;
+        continue;
+      }
+      const loop: AmbienceLoop = { playing: null, level };
+      this.ambience.set(key, loop);
+      void this.load(key).then((buffer) => {
+        if (!buffer || this.ambience.get(key) !== loop) return;
+        loop.playing = this.start(key, buffer, this.gains.get('amb')!, { from: 0 }, fadeMs, loop.level);
+      });
+    }
   }
 
-  private duckMusic(down: boolean): void {
-    const ctx = this.ctx;
-    const duck = this.duck;
-    if (!ctx || !duck) return;
-    const now = ctx.currentTime;
-    duck.gain.cancelScheduledValues(now);
-    duck.gain.setValueAtTime(duck.gain.value, now);
-    duck.gain.linearRampToValueAtTime(down ? settings.duckTo : 1, now + (down ? DUCK_IN_MS : settings.duckRestoreMs) / MS);
+  /** ระดับเสียงบรรยากาศที่ต้องการตอนนี้ ใช้ในการทดสอบ */
+  get ambienceLevels(): Record<string, number> {
+    return Object.fromEntries([...this.ambience].map(([key, loop]) => [key, loop.level]));
   }
 }
 

@@ -4,6 +4,15 @@ All files are DRAFTS she approved by ear; this pass is so she can test them IN T
 Files: `public/assets/audio/{bgm,sfx,voice}/<id>.ogg` + `<id>.m4a` (same name; load both URLs per key — Phaser picks the one the browser can play; iPhone Safari needs .m4a). Index of all 51 keys: `public/assets/audio/_audio_index.json` (key -> group).
 Sources / READMEs (timings, loudness, licences): `art-src/audio_src/*_draft/README*.txt`, `docs/audio_list.md`, `docs/audio_licences.md`, `docs/voice_lines_2026-11-05.md`.
 
+## UPDATE 2026-11-05 18:20 (her decision after the in-game test) — REPLACES section 4
+- All sounds are good in game. Keep everything as is EXCEPT the heroine voice.
+- She wants almost NO talking. The ONLY voice left: **"งั่ม"** = `voice/eat_rapid_1` and `voice/eat_rapid_2`.
+  Play them ALTERNATELY (1, 2, 1, 2 …) every time she eats OR drinks an item. Stop the previous one before starting the next.
+- Remove every other voice trigger: eat ("หม่ำแล้วนะ"), drink, hungry, tired, yay, cook_done, cook_fail, fish_bite, fish_miss, faint, wake, bath, gio_pet, coins.
+  Do not load those files any more (keep the files in the repo; she may want some back later).
+- The Voice volume slider stays (it controls the "งั่ม" sound). Music ducking for voice is no longer needed.
+- The "polish" test (reverb/EQ re-mix) was rejected: keep the current files.
+
 ## 1. Volumes and settings
 - Three groups with their own volume: **Music** (bgm), **SFX** (sfx), **Voice** (voice). Defaults: Music 0.65, SFX 1.0, Voice 1.0 (she wants music BELOW sfx).
 - Add three sliders in Settings (phone settings app if that is where settings live). Save in the existing save/settings store.

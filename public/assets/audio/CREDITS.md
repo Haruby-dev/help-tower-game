@@ -1,6 +1,6 @@
 # Audio credits — Floor & Flavor
 
-All game audio is CC0 or own work (her voice, music composed for this game). Every file in bgm/, sfx/ and voice/ ships as .ogg and .m4a with the same name. Source: docs/audio_licences.md (copied here so the credits ship with the game).
+All game audio is CC0 or own work (her voice, music composed for this game). Every file in bgm/, sfx/, voice/ and amb/ ships as .ogg and .m4a with the same name. Source: docs/audio_licences.md (copied here so the credits ship with the game).
 
 | file / use | source | author | licence | proof |
 |---|---|---|---|---|
@@ -20,6 +20,16 @@ All game audio is CC0 or own work (her voice, music composed for this game). Eve
 | sfx drink (DRAFT) | her own voice recording (11-05), cleaned/edited by Claude | her | own work | art-src/audio_src/her_voice/ + sfx_cook_draft/README_drink.txt |
 | sfx eat / eat_rapid_1 / eat_rapid_2 (DRAFT) | her own voice recordings (11-05), cleaned/edited by Claude + "Pop 5" (javapimp #439186, CC0) | her (the game's art director) | own work (+ CC0 pop) | art-src/audio_src/her_voice/ + sfx_cook_draft/README_eat.txt |
 | sfx cook_loop (DRAFT) | Freesound via Openverse: "frying pan frying a steak" (brunobegot #441944), "pan fry1" (Vital_Sounds #534484), "Pop 5"/"Pop 1" (javapimp #439186/#439184), "PepperMill44" (ahill86 #206164); edited/mixed by Claude | see source | CC0 1.0 | art-src/audio_src/openverse/*/CREDITS.txt + sfx_cook_draft/README.txt |
+| sfx bath_scoop / bath_splash_1..4 / bath_sparkle (DRAFT) | Freesound via Openverse: "water splashes big hand slaps spray and wave.flac" (kyles #637974), "Water Slapping (fast)" (adviseme333 #679390), "Gently Splashing Water" (magnesium1 #235188), "Mein bottle pling" (skylarjulian #521332) + code bubbles; edited by Claude | see source | CC0 1.0 | art-src/audio_src/openverse/bath/CREDITS.txt + openverse/done/CREDITS.txt + sfx_bath_draft/README_bath.txt |
+| sfx rain_start (DRAFT) | Freesound via Openverse: "Raindrops hitting the ground" (olsonbock623 #442295), "Light rain under canopy with raindrops" (Cinetony #620488); edited by Claude | see source | CC0 1.0 | art-src/audio_src/openverse/rain/CREDITS.txt + sfx_rain_draft/README_rain_start.txt |
+| sfx step_grass_1..5 (DRAFT) | Freesound via Openverse: "FOLEY_Footsteps_Grass_001.wav" (conleec #149233); cut/edited by Claude | conleec | CC0 1.0 | art-src/audio_src/openverse/step/CREDITS.txt + sfx_step_draft/README_step_grass.txt |
+| sfx farm_grown (DRAFT) | Freesound via Openverse: "anime.wav" (1urker #457306); trimmed/edited by Claude | 1urker | CC0 1.0 | art-src/audio_src/openverse/done/CREDITS.txt + sfx_farm_draft/README_farm_grown.txt |
+| sfx warn_hungry (DRAFT) | Freesound via Openverse: "Long intense stomach growl 1" (SamanthaCastleberry #696396); cut/pitched by Claude | SamanthaCastleberry | CC0 1.0 | art-src/audio_src/openverse/hungry/CREDITS.txt + sfx_gauge_draft/README_warn_hungry.txt |
+| sfx warn_generic (DRAFT) | synthesised in code by Claude (no samples) | — | own work | art-src/audio_src/sfx_gauge_draft/README_warn_generic.txt |
+| sfx chest_shake / chest_open / chest_item_1..5 (DRAFT) | Freesound via Openverse: "Rattling drawer box" (draftcraft #434333), "Opening Antique Trunk - More Latches.wav" (rodincoil #271377), "Glimmer.wav" (opticaillusions #521873), "Pop 5" (javapimp #439186); edited by Claude | see source | CC0 1.0 | art-src/audio_src/openverse/{chest,done,gum}/CREDITS.txt + sfx_chest_draft/README_chest.txt |
+| sfx chest_open_golden (DRAFT) | chest_open sources + "handleCoins" (Kenney RPG Audio) + "Crystal Twinkle" (LaurenPonder, Freesound via Openverse); mixed by Claude | Kenney / see source | CC0 1.0 | art-src/audio_src/kenney/ + openverse/done/CREDITS.txt + sfx_chest_draft/README_chest.txt |
+| amb_rain (DRAFT) | rubberduck "loop_rain" (OpenGameArt "40 CC0 water / splash / slime SFX"), looped/levelled by Claude | rubberduck | CC0 1.0 | art-src/audio_src/oga_water_rubberduck/SOURCE.txt + amb_final/README_amb_rain.txt |
+| amb_day_birds / amb_night_crickets (DRAFT) | Freesound via Openverse: "birds_ambience" (studiogreenhill #726349), "Crickets Night 2" (PhilllChabbb #245834); looped/levelled by Claude | see source | CC0 1.0 | art-src/audio_src/openverse/amb/CREDITS.txt + amb_final/README_amb_birds_crickets.txt |
 Reference track `bgm12.mp3` (sent by her, unknown author) was only measured for tempo/key/tone balance. No audio or melody from it is used.
 
 BigSoundBank (CC0) downloads 11-04/05 (0202,0314,2507,0492,1341,0203,1796,0143,1676): art-src/audio_src/bigsoundbank/SOURCE.txt — tried for cooking, not used in the chosen draft.

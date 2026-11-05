@@ -258,29 +258,33 @@ export const balanceSchema = z.strictObject({
 /** ร้านค้าระบบ ขายทุกวันกับสุ่มวันนี้ ราคาเมล็ดอ่านจาก crops.json ราคาสูตร = ราคาอาหาร × ตัวคูณ */
 const volume = z.number().min(0).max(1);
 export const audioSchema = z.strictObject({
-  defaultVolume: z.strictObject({ bgm: volume, sfx: volume, voice: volume }),
+  defaultVolume: z.strictObject({ bgm: volume, sfx: volume, voice: volume, amb: volume }),
   music: z.record(z.string().regex(/^bgm_[a-z_]+$/), z.strictObject({ loopStart: z.number().nonnegative() })),
   dayMusicFromHour: z.number(),
   nightMusicFromHour: z.number(),
   dayNightFadeMs: z.number().nonnegative(),
   titleFadeMs: z.number().nonnegative(),
-  duckTo: volume,
-  duckRestoreMs: z.number().nonnegative(),
   farmFrames: z.strictObject({ till: z.number().int(), plant: z.number().int(), water: z.number().int(), harvest: z.number().int() }),
   castFrames: z.strictObject({ east: z.number().int(), south: z.number().int(), north: z.number().int() }),
   cookLoopFadeMs: z.number().nonnegative(),
-  voice: z.strictObject({
-    repeatGuardMs: z.number().nonnegative(),
-    eatRapidMs: z.number().nonnegative(),
-    cookDoneDelayMs: z.number().nonnegative(),
-    yayAfterCatchMs: z.number().nonnegative(),
-    biteAfterAlertMs: z.number().nonnegative(),
-    warningEveryGameHours: z.number().positive(),
-    bath: z.enum(['start', 'end']),
+  /** เสียงพูดที่เหลืออยู่ ("งั่ม") เล่นสลับกันตามลำดับ */
+  voiceTakes: z.array(z.string().regex(/^[a-z0-9_]+$/)).min(1),
+  warningEveryGameHours: z.number().positive(),
+  bath: z.strictObject({ scoopFrame: z.number().int(), splashFrame: z.number().int(), splashes: z.array(z.string().regex(/^[a-z0-9_]+$/)).min(1) }),
+  steps: z.strictObject({ frames: z.array(z.number().int().nonnegative()).min(1), keys: z.array(z.string().regex(/^[a-z0-9_]+$/)).min(1) }),
+  farmGrownGapMs: z.number().nonnegative(),
+  chestItems: z.array(z.string().regex(/^[a-z0-9_]+$/)).min(1),
+  ambience: z.strictObject({
+    day: z.string().regex(/^[a-z0-9_]+$/),
+    night: z.string().regex(/^[a-z0-9_]+$/),
+    rain: z.string().regex(/^[a-z0-9_]+$/),
+    rainFadeMs: z.number().nonnegative(),
+    rainLoopAfterStartMs: z.number().nonnegative(),
+    underRain: volume,
   }),
   uiTapDedupeMs: z.number().nonnegative(),
 });
-export const soundGroupSchema = z.enum(['bgm', 'sfx', 'voice']);
+export const soundGroupSchema = z.enum(['bgm', 'sfx', 'voice', 'amb']);
 export const audioIndexSchema = z.record(z.string().regex(/^[a-z0-9_]+$/), soundGroupSchema);
 
 export const shopSchema = z.strictObject({

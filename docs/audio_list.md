@@ -14,9 +14,9 @@ Covers what exists now (M0–M5). Later milestones (M6–M9) get added when she 
 ## AMB (background ambience, loops, under the music)
 | id | where | pri | status |
 |---|---|---|---|
-| amb_day_birds | farm, daytime | B | todo |
-| amb_night_crickets | farm, night | B | todo |
-| amb_rain | rain weather | A | todo |
+| amb_day_birds | farm, daytime | B | DRAFT approved 11-05 21:31 (amb_final, studiogreenhill birds) — wiring pending (batch 2 item 11) |
+| amb_night_crickets | farm, night | B | DRAFT approved 11-05 21:31 (amb_final, PhilllChabbb crickets) — wiring pending (batch 2 item 11) |
+| amb_rain | rain weather | A | DRAFT approved 11-05 20:46 (art-src/audio_src/amb_final, rubberduck loop_rain, -3 dB) — in public/assets/audio/amb, wiring pending (batch 2 item 10) |
 | amb_pond | near the pond (soft water) | C | todo |
 | amb_campfire | near the campfire (crackle) | B | todo |
 
@@ -33,12 +33,12 @@ Covers what exists now (M0–M5). Later milestones (M6–M9) get added when she 
 ## SFX — farm
 | id | event | pri | status |
 |---|---|---|---|
-| step_grass | footsteps (soft, quiet) | B | todo |
+| step_grass (_1.._5) | footsteps (soft, quiet) | B | DRAFT approved 11-05 19:28 (art-src/audio_src/sfx_step_draft) — in public/assets/audio, code wiring pending (batch 2 item 5) |
 | farm_till | hoe into soil | A | DRAFT L1 approved 11-04, play at frame 6 (art-src/audio_src/sfx_farm_draft) |
 | farm_plant | drop seed / pat soil | A | DRAFT sandy brush x2 approved 11-04, play at frame 4 |
 | farm_water | watering can pour | A | DRAFT splash+3 bubbles approved 11-04, play at frame 5 (art-src/audio_src/sfx_farm_draft) |
 | farm_harvest | pull crop (pop) | A | DRAFT sand burst+bubble approved 11-04, play at frame 7 |
-| farm_grown | crop finished growing (small sparkle) | C | todo |
+| farm_grown | crop finished growing (small sparkle) | C | DRAFT approved 11-05 19:41 (sfx_farm_draft/farm_grown.wav) — in public/assets/audio, code wiring pending (batch 2 item 6) |
 
 ## SFX — cooking / eating
 | id | event | pri | status |
@@ -64,23 +64,24 @@ Covers what exists now (M0–M5). Later milestones (M6–M9) get added when she 
 ## SFX — bath / weather
 | id | event | pri | status |
 |---|---|---|---|
-| bath_splash | wash at the pond | B | todo |
-| bath_bubbles | bubbles | C | todo |
-| bath_sparkle | clean! sparkle chime | B | todo |
-| rain_start | rain begins (soft) | C | todo |
+| bath_scoop + bath_splash_1..4 | wash at the pond (frame 4 scoop / frame 6 splash every loop) | B | DRAFT approved 11-05 18:45 (art-src/audio_src/sfx_bath_draft, README_bath.txt) — in public/assets/audio, code wiring pending (batch 2 item 2) |
+| bath_bubbles | bubbles | C | not needed — bubbles are inside bath_sparkle; particles stay silent |
+| bath_sparkle | clean! sparkle chime (end of bath) | B | DRAFT approved 11-05 18:45 (sfx_bath_draft) — code wiring pending |
+| rain_start | rain begins (soft) | C | DRAFT approved 11-05 19:06 (art-src/audio_src/sfx_rain_draft) — in public/assets/audio, code wiring pending (batch 2 item 4) |
 
 ## SFX — chests
 | id | event | pri | status |
 |---|---|---|---|
-| chest_shake | rattle (0.4 s) | A | todo |
-| chest_open | burst open | A | todo |
-| chest_item | item pops out (1 per item) | A | todo |
+| chest_shake | rattle (0.4 s) | A | DRAFT approved 11-05 20:35 (art-src/audio_src/sfx_chest_draft) — wiring pending (batch 2 item 9) |
+| chest_open | burst open | A | DRAFT approved 11-05 20:35 (sfx_chest_draft) — wiring pending |
+| chest_open_golden | burst open, golden chest only (coins + shimmer) | B | DRAFT approved 11-05 20:38 (sfx_chest_draft) — wiring pending |
+| chest_item_1..5 | item pops out (1 per item, rising) | A | DRAFT approved 11-05 20:35 (sfx_chest_draft) — wiring pending |
 
 ## SFX — gauges / status
 | id | event | pri | status |
 |---|---|---|---|
-| warn_hungry | hunger low (cute stomach growl) | B | todo |
-| warn_generic | clean / happy gauge low (soft blip) | B | todo |
+| warn_hungry | hunger low (cute stomach growl) | B | DRAFT approved 11-05 20:11 (art-src/audio_src/sfx_gauge_draft) — in public/assets/audio, code wiring pending (batch 2 item 7) |
+| warn_generic | clean / happy gauge low (soft blip) | B | DRAFT approved 11-05 20:19 (sfx_gauge_draft, synthesised) — in public/assets/audio, code wiring pending (batch 2 item 8) |
 | faint | player faints (soft thud / swirl) | B | todo |
 
 Note: default volume — music below SFX (suggest music 0.6–0.7, sfx 1.0) + player sliders (her request 11-04).
@@ -88,6 +89,7 @@ Note: default volume — music below SFX (suggest music 0.6–0.7, sfx 1.0) + pl
 Totals: 3 BGM, 5 AMB, 35 SFX (43). A = 25, B = 14, C = 4.
 
 ## Heroine voice (her own voice; list = docs/voice_lines_2026-11-05.md)
+**11-05 18:20 DECISION: only "งั่ม" (eat_rapid_1/2 alternating) for eat AND drink is used in game. All rows below except eat_rapid are OFF (files kept).**
 | id | line | status |
 |---|---|---|
 | voice_hungry_1/2 | "หิวจัง…" | DRAFT chosen 11-05 (art-src/audio_src/voice_draft) |
