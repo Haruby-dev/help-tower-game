@@ -163,3 +163,19 @@ test('fertilizer twinkles on a tilled plot and cooking can pick 3-star strawberr
   expect(cooking.bag.find((stack) => stack.item === 'produce_strawberry@3')).toBeUndefined();
   expect(cooking.bag.find((stack) => stack.item === 'produce_strawberry')?.count).toBe(2);
 });
+
+test('the test spawn button in settings puts the chosen item, stars and count in the bag', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'a quick desktop check is enough for a test-only button');
+  await open(page);
+  await page.locator('#settings-button').click();
+  await page.locator('#test-spawn-item').selectOption('produce_strawberry');
+  await page.locator('#test-spawn-stars').selectOption('3');
+  await page.locator('#test-spawn-count').selectOption('5');
+  await page.locator('#test-spawn').click();
+  await page.locator('#test-spawn-item').selectOption('dish_baked_potato_1');
+  await page.locator('#test-spawn-stars').selectOption('2');
+  await page.locator('#test-spawn').click();
+  const bag = (await world(page)).bag;
+  expect(bag.find((stack) => stack.item === 'produce_strawberry@3')?.count).toBe(5);
+  expect(bag.find((stack) => stack.item === 'dish_baked_potato_2')?.count).toBe(5);
+});

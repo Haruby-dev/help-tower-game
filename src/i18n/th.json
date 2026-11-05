@@ -430,5 +430,8 @@
   "monster.wingwing.clear": "ปีกเราสีสดขึ้นเพราะเธอ… ขอบคุณ",
   "monster.tubpong.clear": "ไม่ต้องลุกไปไหนก็มีของอร่อยกิน… ชีวิตดีจริง ๆ อ๊บ",
   "monster.jaotungtong.clear": "เขาข้าเป็นประกายอีกครั้ง เจ้าคู่ควรกับทุ่งทองของข้า",
-  "monster.puefaotung.clear": "ของง่ายที่สุด ถ้าทำด้วยใจ ก็อร่อยที่สุด ไปเถิด ทุ่งนี้เป็นของเจ้าแล้ว"
+  "monster.puefaotung.clear": "ของง่ายที่สุด ถ้าทำด้วยใจ ก็อร่อยที่สุด ไปเถิด ทุ่งนี้เป็นของเจ้าแล้ว",
+  "settings.test_spawn": "เสกของ",
+  "settings.test_spawn_go": "เสก",
+  "settings.test_spawn_got": "เสกแล้ว"
 }

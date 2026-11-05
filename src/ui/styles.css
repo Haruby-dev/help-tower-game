@@ -4763,3 +4763,21 @@ canvas {
 #ui[data-arrange='open'] :is(#world-bubbles, #monster-tags) {
   visibility: hidden;
 }
+
+/* ปุ่มลับเสกของ (ทดสอบ) ช่องเลือกทึบขอบชมพูแบบปุ่มตั้งค่า */
+.settings-spawn__controls {
+  flex-wrap: wrap;
+}
+
+.settings-select {
+  min-height: 44px;
+  max-width: 160px;
+  margin: 1px;
+  border: 0;
+  background: #fff;
+  color: var(--outline);
+  font-family: Mali, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--pink), 0 calc(var(--px) * 1) 0 0 var(--pink), calc(var(--px) * -1) 0 0 0 var(--pink), calc(var(--px) * 1) 0 0 0 var(--pink);
+}

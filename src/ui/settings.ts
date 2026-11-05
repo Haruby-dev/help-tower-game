@@ -8,6 +8,15 @@ import { isHomeScreenApp } from '../core/viewport';
 import display from '../data/display.json';
 import { stickerIcon } from './pixelArt';
 import { createSaveRow } from './saves';
+import { itemName } from './inventory';
+import { uiSound } from './sound';
+import ingredientsJson from '../data/ingredients.json';
+import shopJson from '../data/shop.json';
+import chestsJson from '../data/chests.json';
+import { dishItem, recipes } from '../systems/cooking';
+import { addToBag, crops, produceItem, seedItem } from '../systems/farm';
+import { baits, fishItem, fishTable } from '../systems/fishing';
+import { carriesStars, withStars } from '../systems/stars';
 
 const STORAGE_KEY = 'lighting-enabled';
 const ZOOM_STORAGE_KEY = 'zoom-step';
@@ -304,6 +313,72 @@ function createTestMonsterRow(): HTMLElement {
   return row;
 }
 
+/** ของที่เสกได้ เรียงตามหมวด: ผัก เมล็ด ปุ๋ย อาหาร วัตถุดิบ ปลา เหยื่อ แมวเลีย หีบ */
+function spawnableItems(): string[] {
+  return [
+    ...Object.keys(crops).map(produceItem),
+    ...Object.keys(crops).map(seedItem),
+    ...Object.keys(balance.fertilizer.tiers),
+    ...Object.keys(recipes).map((recipe) => dishItem(recipe, 1)),
+    ...Object.keys(ingredientsJson).map((id) => `ing_${id}`),
+    ...Object.keys(fishTable).map(fishItem),
+    ...Object.values(baits).map((bait) => bait.item),
+    ...shopJson.treats.map((treat) => treat.item),
+    ...Object.values(chestsJson.tiers).map((tier) => tier.item),
+  ];
+}
+
+const SPAWN_COUNTS = [1, 5, 10, 99];
+
+/** ปุ่มลับช่วงทดสอบ เสกของเข้ากระเป๋า เลือกของ ดาว (ผักและอาหาร) และจำนวน ต้องเอาออกก่อนปล่อยจริง */
+function createTestSpawnRow(): HTMLElement {
+  const row = document.createElement('div');
+  row.className = 'settings-row settings-test settings-spawn';
+  const label = document.createElement('span');
+  label.append(
+    Object.assign(document.createElement('b'), { textContent: t('settings.test_spawn') }),
+    Object.assign(document.createElement('small'), { textContent: t('settings.test_stars_note') }),
+  );
+  const choose = (id: string, values: { value: string; text: string }[]): HTMLSelectElement => {
+    const select = document.createElement('select');
+    select.id = id;
+    select.className = 'settings-select';
+    for (const { value, text } of values) select.append(Object.assign(document.createElement('option'), { value, textContent: text }));
+    return select;
+  };
+  const item = choose(
+    'test-spawn-item',
+    spawnableItems().map((value) => ({ value, text: itemName(value) })),
+  );
+  const stars = choose('test-spawn-stars', [1, 2, 3].map((value) => ({ value: String(value), text: `${value} ★` })));
+  const count = choose('test-spawn-count', SPAWN_COUNTS.map((value) => ({ value: String(value), text: `×${value}` })));
+  const button = document.createElement('button');
+  button.id = 'test-spawn';
+  button.type = 'button';
+  button.className = 'settings-button';
+  button.textContent = t('settings.test_spawn_go');
+  button.addEventListener('click', () => {
+    if (!gameState.started) return;
+    const level = Number(stars.value);
+    // ผักใส่ดาวต่อท้ายรหัส อาหารเก็บดาวในรหัสของตัวเอง ของอื่นไม่มีดาว
+    const base = item.value;
+    const target = base.startsWith('dish_') ? dishItem(base.slice('dish_'.length, base.lastIndexOf('_')), level) : carriesStars(base) ? withStars(base, level) : base;
+    const bag = addToBag(gameState.world.bag, target, Number(count.value));
+    if (!bag) {
+      eventBus.emit('player-says', 'bagFull');
+      return;
+    }
+    gameState.setWorld({ ...gameState.world, bag });
+    uiSound('ui_coin');
+    eventBus.emit('notice-text', `${t('settings.test_spawn_got')} ${itemName(target)} ${level > 1 && target !== base ? `${level} ★ ` : ''}×${count.value}`);
+  });
+  const controls = document.createElement('div');
+  controls.className = 'settings-choices settings-spawn__controls';
+  controls.append(item, stars, count, button);
+  row.append(label, controls);
+  return row;
+}
+
 let appRootForPage: HTMLElement | null = null;
 
 /** อ่านค่าที่จำไว้ตั้งแต่เปิดเกม ไม่ต้องรอเปิดหน้าตั้งค่า */
@@ -348,7 +423,7 @@ function createSettingsPage(): HTMLElement {
   page.append(title, ...volumes, row, createAutoFishRow(rebait.sync), rebait.row, createZoomRow(), createSaveRow());
   const fullscreen = appRootForPage ? createFullscreenRow(appRootForPage) : null;
   if (fullscreen) page.append(fullscreen);
-  page.append(createTestStarsRow(), createTestMonsterRow());
+  page.append(createTestStarsRow(), createTestMonsterRow(), createTestSpawnRow());
   return page;
 }
 
