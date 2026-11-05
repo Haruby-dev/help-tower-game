@@ -1,5 +1,11 @@
 import { defineConfig, devices } from '@playwright/test';
 
+/**
+ * ในเครื่องให้ Chromium วาดเกมด้วยการ์ดจอ (เดิมใช้ซอฟต์แวร์ได้ราว 9 ภาพต่อวินาที ใช้การ์ดจอได้ 60) เทสต์จึงเร็วขึ้นมาก
+ * เครื่องของ GitHub ไม่มีการ์ดจอ จึงไม่ใส่ · WebKit ใช้การ์ดจออยู่แล้ว
+ */
+const gpu = process.env.CI ? {} : { launchOptions: { args: ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist'] } };
+
 export default defineConfig({
   testDir: 'tests/e2e',
   fullyParallel: true,
@@ -21,11 +27,11 @@ export default defineConfig({
   projects: [
     {
       name: 'desktop',
-      use: { ...devices['Desktop Chrome'], viewport: { width: 1920, height: 1080 } },
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1920, height: 1080 }, ...gpu },
     },
     {
       name: 'mobile-landscape',
-      use: { ...devices['Pixel 7 landscape'] },
+      use: { ...devices['Pixel 7 landscape'], ...gpu },
     },
     {
       name: 'iphone-landscape',
