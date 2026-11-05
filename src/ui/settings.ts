@@ -1,3 +1,4 @@
+import { sound, type SoundGroup } from '../core/audio';
 import { t } from '../core/i18n';
 import { gameState } from '../core/state';
 import { isHomeScreenApp } from '../core/viewport';
@@ -221,6 +222,42 @@ async function toggleFullscreen(appRoot: HTMLElement): Promise<void> {
   await orientation.lock?.('landscape').catch(() => undefined);
 }
 
+const VOLUME_ROWS: { group: SoundGroup; label: 'settings.volume_music' | 'settings.volume_sfx' | 'settings.volume_voice' }[] = [
+  { group: 'bgm', label: 'settings.volume_music' },
+  { group: 'sfx', label: 'settings.volume_sfx' },
+  { group: 'voice', label: 'settings.volume_voice' },
+];
+const PERCENT = 100;
+const VOLUME_STEP = 5;
+
+/** แถบเลื่อนระดับเสียง เพลง เอฟเฟกต์ เสียงพูด จำค่าไว้ในเครื่อง */
+function createVolumeRow(group: SoundGroup, labelKey: (typeof VOLUME_ROWS)[number]['label']): HTMLElement {
+  const row = document.createElement('label');
+  row.className = 'settings-row settings-volume';
+  const label = Object.assign(document.createElement('span'), { textContent: t(labelKey) });
+  const slider = document.createElement('input');
+  slider.type = 'range';
+  slider.min = '0';
+  slider.max = String(PERCENT);
+  slider.step = String(VOLUME_STEP);
+  slider.id = `volume-${group}`;
+  slider.className = 'settings-slider';
+  slider.value = String(Math.round(sound.volume(group) * PERCENT));
+  slider.setAttribute('aria-label', t(labelKey));
+  const value = Object.assign(document.createElement('b'), { className: 'settings-volume__value', textContent: slider.value });
+  slider.addEventListener('input', () => {
+    sound.setVolume(group, Number(slider.value) / PERCENT);
+    value.textContent = slider.value;
+  });
+  // ปล่อยนิ้วแล้วเล่นเสียงตัวอย่างของกลุ่มนั้น จะได้รู้ว่าดังแค่ไหน
+  slider.addEventListener('change', () => {
+    if (group === 'sfx') sound.play('ui_tap');
+    if (group === 'voice') sound.speak('voice_yay', { force: true });
+  });
+  row.append(label, slider, value);
+  return row;
+}
+
 let appRootForPage: HTMLElement | null = null;
 
 /** อ่านค่าที่จำไว้ตั้งแต่เปิดเกม ไม่ต้องรอเปิดหน้าตั้งค่า */
@@ -261,7 +298,8 @@ function createSettingsPage(): HTMLElement {
   row.append(label, toggle);
 
   const rebait = createAutoRebaitRow();
-  page.append(title, row, createAutoFishRow(rebait.sync), rebait.row, createZoomRow(), createSaveRow());
+  const volumes = VOLUME_ROWS.map(({ group, label: key }) => createVolumeRow(group, key));
+  page.append(title, ...volumes, row, createAutoFishRow(rebait.sync), rebait.row, createZoomRow(), createSaveRow());
   const fullscreen = appRootForPage ? createFullscreenRow(appRootForPage) : null;
   if (fullscreen) page.append(fullscreen);
   return page;

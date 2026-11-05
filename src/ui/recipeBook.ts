@@ -8,6 +8,7 @@ import { recipes } from '../systems/cooking';
 import { itemName } from './inventory';
 import { artUrl } from './pixelArt';
 import { revealWhenReady } from './preload';
+import { uiSound } from './sound';
 
 type Category = Recipe['category'];
 const TABS: { id: Category; label: TextKey }[] = [
@@ -137,6 +138,7 @@ export function createRecipeBook(uiRoot: HTMLElement): void {
   };
 
   const go = (id: string): void => {
+    if (id !== current) uiSound('ui_page');
     current = id;
     render();
   };

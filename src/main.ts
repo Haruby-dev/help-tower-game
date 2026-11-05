@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { t } from './core/i18n';
 import { eventBus } from './core/events';
+import { sound } from './core/audio';
 import { gameState } from './core/state';
 import { computeViewport, homeScreenAppSize, isHomeScreenApp, type Viewport } from './core/viewport';
 import display from './data/display.json';
@@ -87,6 +88,7 @@ if (params.has('test')) {
   (window as unknown as { __game: Phaser.Game; __state: typeof gameState }).__game = game;
   (window as unknown as { __state: typeof gameState }).__state = gameState;
   (window as unknown as { __changeMoney: typeof changeMoney }).__changeMoney = changeMoney;
+  (window as unknown as { __sound: typeof sound }).__sound = sound;
 }
 // การทดสอบที่ไม่ได้สนใจเซฟข้ามหน้าเลือกช่อง
 if (params.has('test') && !params.has('saves')) gameState.startGame(1, newWorld());

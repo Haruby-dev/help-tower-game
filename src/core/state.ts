@@ -237,8 +237,10 @@ class GameState {
   }
 
   setWindowOpen(name: string, open: boolean): void {
+    if (this.openWindows.has(name) === open) return;
     if (open) this.openWindows.add(name);
     else this.openWindows.delete(name);
+    eventBus.emit('window-changed', { name, open });
   }
 
   setAction(action: ContextAction | null): void {

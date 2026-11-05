@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { footY, registry } from '../core/assets';
+import { audioSettings, sound, type SoundHandle } from '../core/audio';
 import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
 import { createRng } from '../core/rng';
@@ -120,6 +121,8 @@ export class BaseScene extends Phaser.Scene {
   private queuedPlot: number | null = null;
   private campfire: Campfire | null = null;
   private cookingShown: boolean | null = null;
+  /** เสียงผัดวนระหว่างยืนทำอาหารที่กองไฟ */
+  private cookLoop: SoundHandle | null = null;
   private pond: Pond | null = null;
   private treeSway = new TreeSway();
   private pondObjects: PondObject[] = [];
@@ -247,6 +250,7 @@ export class BaseScene extends Phaser.Scene {
     const stopLighting = eventBus.on('lighting-changed', (enabled) => this.applyLighting(enabled));
     const stopTreat = eventBus.on('gio-treat', (taste) => this.gio.eatTreat(taste));
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.stopCookLoop();
       stopAction();
       stopDig();
       stopMoved();
@@ -265,6 +269,7 @@ export class BaseScene extends Phaser.Scene {
     this.followPond();
     this.player.update(input, running);
     if (gameState.started) this.updateGioTrip();
+    if (this.cookLoop && !this.player.isCooking) this.stopCookLoop();
     this.gio.update(deltaMs, this.player.feetX, this.player.feetY, !gameState.clockRunning);
     if (gameState.started) this.openReceiptWhenNear();
     this.followPlayer();
@@ -504,7 +509,15 @@ export class BaseScene extends Phaser.Scene {
     }
     const trip: FishingTrip = { phase: 'cast', bait, spot, castHour: gameState.world.hour, timer: null };
     this.fishing = trip;
-    this.player.startPose(spot.facing, 'anim_fish', () => this.landBobber(trip));
+    const castFrame = (sheet: string): number => audioSettings.castFrames[sheet as keyof typeof audioSettings.castFrames];
+    this.player.startPose(
+      spot.facing,
+      'anim_fish',
+      () => this.landBobber(trip),
+      (frame, sheet) => {
+        if (frame === castFrame(sheet)) sound.play('fish_cast');
+      },
+    );
   }
 
   /** ตกปลาอัตโนมัติรอนานกว่าตกเอง 1.5 เท่า */
@@ -512,6 +525,7 @@ export class BaseScene extends Phaser.Scene {
     if (this.fishing !== trip) return;
     const { waitMinMs, waitMaxMs, nibbleRepeatsMin, nibbleRepeatsMax, nibbleGapMs, biteLeadMs, autoWaitMultiplier } = balance.fishing;
     splash(this, trip.spot.x, trip.spot.y);
+    sound.play('fish_plop');
     this.rig.show(trip.spot);
     trip.phase = 'wait';
     const wait = this.fishRng.between(waitMinMs, waitMaxMs) * (gameState.autoFish ? autoWaitMultiplier : 1);
@@ -519,7 +533,7 @@ export class BaseScene extends Phaser.Scene {
       if (this.fishing !== trip) return;
       trip.phase = 'nibble';
       const times = nibbleRepeatsMin + Math.floor(this.fishRng.next() * (nibbleRepeatsMax - nibbleRepeatsMin + 1));
-      this.rig.nibble(times, nibbleGapMs, biteLeadMs, () => this.startBite(trip));
+      this.rig.nibble(times, nibbleGapMs, biteLeadMs, () => this.startBite(trip), () => sound.play('fish_nibble'));
     });
   }
 
@@ -530,6 +544,11 @@ export class BaseScene extends Phaser.Scene {
     trip.phase = 'bite';
     this.rig.bite();
     this.rig.showMark(this.player.feetX, this.player.feetY);
+    sound.play('fish_alert');
+    // เสียงพูดตามหลังเสียง "!" ไม่ทับกัน
+    this.time.delayedCall(audioSettings.voice.biteAfterAlertMs, () => {
+      if (this.fishing === trip && trip.phase === 'bite') sound.speak('voice_fish_bite');
+    });
     // ตกปลาอัตโนมัติตั้งนาฬิกาเดียว เดิมมีสองนาฬิกาแข่งกัน ถ้าเครื่องกระตุก นาฬิกา "ไม่ทัน" อาจดังก่อนจนพลาดทุกครั้ง
     trip.timer = gameState.autoFish
       ? this.time.delayedCall(autoTapMs, () => this.finishFishing(autoHooks(this.fishRng)))
@@ -547,13 +566,21 @@ export class BaseScene extends Phaser.Scene {
     const firstTime = caught?.kind === 'fish' && !world.fishing.caught[caught.fish];
     const result = finishCast(world, trip.castHour, trip.bait, caught);
     gameState.setWorld(result.world);
+    sound.play('fish_reel');
     this.rig.reel(() => {
       if (this.fishing !== trip) return;
       this.fishing = null;
       this.player.endPose();
-      if (!caught) eventBus.emit('player-says', 'fishEscaped');
-      else if (!result.stored) eventBus.emit('player-says', 'bagFull');
-      else this.showCatch(trip.spot, caught, firstTime);
+      if (!caught) {
+        sound.play('fish_escape');
+        sound.speak('voice_fish_miss');
+        eventBus.emit('player-says', 'fishEscaped');
+      } else if (!result.stored) eventBus.emit('player-says', 'bagFull');
+      else {
+        sound.play('fish_catch');
+        this.time.delayedCall(audioSettings.voice.yayAfterCatchMs, () => sound.speak('voice_yay'));
+        this.showCatch(trip.spot, caught, firstTime);
+      }
       if (caught && !result.stored) return;
       if (gameState.autoFish && gameState.autoRebait) this.rebait(trip.bait);
     });
@@ -606,6 +633,7 @@ export class BaseScene extends Phaser.Scene {
   private startBath(): void {
     if (!this.pondSpot() || this.bath || this.fishing) return;
     this.player.startPose('south', 'anim_wash');
+    if (audioSettings.voice.bath === 'start') sound.speak('voice_bath');
     const effect = this.time.addEvent({
       delay: BATH_BUBBLE_MS,
       loop: true,
@@ -624,6 +652,7 @@ export class BaseScene extends Phaser.Scene {
     const minutes = (gameState.world.hour - this.bath.startHour) * MINUTES_PER_HOUR;
     this.bath.effect.remove();
     this.bath = null;
+    if (audioSettings.voice.bath === 'end') sound.speak('voice_bath');
     gameState.setWorld(finishBath(gameState.world, minutes));
     this.player.endPose();
   }
@@ -634,9 +663,33 @@ export class BaseScene extends Phaser.Scene {
     const cooking = slot !== null && !isCooked(slot);
     if (cooking === this.cookingShown) return;
     const started = cooking && this.cookingShown === false;
+    const finished = !cooking && this.cookingShown === true && isCooked(slot);
     this.cookingShown = cooking;
-    if (started && this.campfire && this.campfireInReach()) this.player.startCooking({ x: this.campfire.x, y: this.campfire.y });
+    if (started && this.campfire && this.campfireInReach()) {
+      this.player.startCooking(
+        { x: this.campfire.x, y: this.campfire.y },
+        {
+          onStart: () => sound.play('cook_start'),
+          onLoop: () => {
+            this.stopCookLoop();
+            this.cookLoop = sound.play('cook_loop', { loop: true });
+          },
+        },
+      );
+    }
     if (!cooking) this.player.finishCooking();
+    if (finished) {
+      // อาหารเด้งขึ้นเหนือกองไฟพร้อมเสียง แล้วตัวเอกพูดตามหลัง
+      this.stopCookLoop();
+      sound.play('cook_done');
+      this.time.delayedCall(audioSettings.voice.cookDoneDelayMs, () => sound.speak('voice_cook_done'));
+    }
+  }
+
+  /** ลุกจากกองไฟหรืออาหารสุกแล้ว เสียงผัดค่อย ๆ หยุด */
+  private stopCookLoop(): void {
+    this.cookLoop?.stop(audioSettings.cookLoopFadeMs);
+    this.cookLoop = null;
   }
 
   private campfireInReach(): boolean {
@@ -761,7 +814,10 @@ export class BaseScene extends Phaser.Scene {
     this.player.playGardenMove(
       move,
       { x: plot.centerX, y: plot.centerY },
-      (frame) => this.playMoveEffect(move, frame, plot),
+      (frame) => {
+        this.playMoveEffect(move, frame, plot);
+        if (frame === audioSettings.farmFrames[move]) sound.play(`farm_${move}`);
+      },
       () => {
         const before = gameState.world.farm.plots[index]!;
         const amount = yieldOf(before);
@@ -776,6 +832,7 @@ export class BaseScene extends Phaser.Scene {
             plot.wake();
             sparkle(this, plot.centerX, plot.centerY - TILE_MIDDLE);
           }
+          if (action === 'harvest' && crop) sound.speak('voice_yay');
           if (action === 'harvest' && crop) this.showHarvest(plot, crop, amount, countOf(next.bag, seedItem(crop)) > seedsBefore);
         }
         const queued = this.queuedPlot;

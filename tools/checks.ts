@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
 import type { z } from 'zod';
 import {
+  audioIndexSchema,
+  audioSchema,
   balanceSchema,
   baitsSchema,
   chestsSchema,
@@ -77,10 +79,24 @@ export function checkProject(): string[] {
   checkSchema('src/data/chests.json', chestsSchema, problems);
   checkSchema('src/data/cosmetics.json', cosmeticsSchema, problems);
   checkSchema('src/data/shop.json', shopSchema, problems);
+  checkSchema('src/data/audio.json', audioSchema, problems);
+  checkSchema('public/assets/audio/_audio_index.json', audioIndexSchema, problems);
   checkSchema('src/data/sprite-meta.json', spriteMetaSchema, problems);
   checkSchema('src/i18n/th.json', translationsSchema, problems);
   checkSchema('assets-src/registry.json', registrySchema, problems);
   if (problems.length > 0) return problems;
+
+  // เสียงทุกตัวในรายการมีทั้ง .ogg และ .m4a (iPhone ใช้ .m4a) และเพลงทุกเพลงมีจุดวน
+  const audioIndex = audioIndexSchema.parse(readJson('public/assets/audio/_audio_index.json'));
+  for (const [key, group] of Object.entries(audioIndex)) {
+    for (const ext of ['ogg', 'm4a']) {
+      const file = `public/assets/audio/${group}/${key}.${ext}`;
+      if (!existsSync(join(projectRoot, file))) problems.push(`${file}: missing`);
+    }
+  }
+  for (const key of Object.keys(audioSchema.parse(readJson('src/data/audio.json')).music)) {
+    if (audioIndex[key] !== 'bgm') problems.push(`src/data/audio.json: music ${key} is not a bgm key in _audio_index.json`);
+  }
 
   const registry = registrySchema.parse(readJson('assets-src/registry.json'));
   const spriteMeta = spriteMetaSchema.parse(readJson('src/data/sprite-meta.json'));

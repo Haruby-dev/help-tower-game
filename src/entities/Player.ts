@@ -70,7 +70,7 @@ export class Player {
   }
 
   /** ท่าตกปลาหรืออาบน้ำ เล่นท่าเริ่มครั้งเดียวแล้ววนท่ารอจนกว่าจะเรียก endPose · ทิศตะวันตกกลับด้านจากตะวันออก */
-  startPose(facing: Direction4, base: string, onLoop?: () => void): void {
+  startPose(facing: Direction4, base: string, onLoop?: () => void, onFrame?: (frame: number, sheet: string) => void): void {
     this.cooking = false;
     this.posing = true;
     this.facing = facing;
@@ -80,8 +80,13 @@ export class Player {
     this.sprite.anims.timeScale = 1;
     const intro = `${base}_${sheet}_intro`;
     const token = ++this.poseToken;
+    const update = (animation: Phaser.Animations.Animation, frame: Phaser.Animations.AnimationFrame): void => {
+      if (animation.key === intro && token === this.poseToken) onFrame?.(Number(frame.textureFrame), sheet);
+    };
+    if (onFrame) this.sprite.on(Phaser.Animations.Events.ANIMATION_UPDATE, update);
     this.sprite.play(intro);
     this.sprite.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}${intro}`, () => {
+      this.sprite.off(Phaser.Animations.Events.ANIMATION_UPDATE, update);
       if (!this.posing || token !== this.poseToken) return;
       this.sprite.play(`${base}_${sheet}_loop`);
       onLoop?.();
@@ -136,14 +141,17 @@ export class Player {
   }
 
   /** หันหน้าเข้ากองไฟ ย่อตัวแล้ววนท่าทำอาหาร เดินออกเมื่อไหร่ก็ได้ */
-  startCooking(toward: { x: number; y: number }): void {
+  startCooking(toward: { x: number; y: number }, hooks: { onStart?: () => void; onLoop?: () => void } = {}): void {
     if (this.acting) return;
     const sheet = this.faceToward(toward);
     this.cooking = true;
     this.sprite.anims.timeScale = 1;
     this.sprite.play(`anim_cook_${sheet}_intro`);
+    hooks.onStart?.();
     this.sprite.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}anim_cook_${sheet}_intro`, () => {
-      if (this.cooking) this.sprite.play(`anim_cook_${sheet}_loop`);
+      if (!this.cooking) return;
+      this.sprite.play(`anim_cook_${sheet}_loop`);
+      hooks.onLoop?.();
     });
   }
 

@@ -70,10 +70,11 @@ export class FishingRig {
   }
 
   /** ปลาตอด 1–2 ครั้งก่อนขึ้น "!" จังหวะเท่ากันทุกครั้ง: ตอด · พัก · ตอด · พัก แล้วทุ่นจม */
-  nibble(times: number, gapMs: number, leadMs: number, onDone: () => void): void {
+  nibble(times: number, gapMs: number, leadMs: number, onDone: () => void, onEach?: () => void): void {
     let left = times;
     const once = (): void => {
       this.play('nibble', 'fx_bobber_nibble_once');
+      onEach?.();
       this.bobber.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}fx_bobber_nibble_once`, () => {
         left -= 1;
         this.play('idle', 'fx_bobber_idle_loop');

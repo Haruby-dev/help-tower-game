@@ -1,0 +1,27 @@
+{
+  "defaultVolume": { "bgm": 0.65, "sfx": 1, "voice": 1 },
+  "music": {
+    "bgm_title": { "loopStart": 32 },
+    "bgm_farm_day": { "loopStart": 12.5 },
+    "bgm_farm_night": { "loopStart": 6.32 }
+  },
+  "dayMusicFromHour": 6,
+  "nightMusicFromHour": 18,
+  "dayNightFadeMs": 3000,
+  "titleFadeMs": 1000,
+  "duckTo": 0.7,
+  "duckRestoreMs": 400,
+  "farmFrames": { "till": 6, "plant": 4, "water": 5, "harvest": 7 },
+  "castFrames": { "east": 6, "south": 5, "north": 4 },
+  "cookLoopFadeMs": 150,
+  "voice": {
+    "repeatGuardMs": 3000,
+    "eatRapidMs": 1500,
+    "cookDoneDelayMs": 900,
+    "yayAfterCatchMs": 300,
+    "biteAfterAlertMs": 250,
+    "warningEveryGameHours": 1,
+    "bath": "start"
+  },
+  "uiTapDedupeMs": 60
+}

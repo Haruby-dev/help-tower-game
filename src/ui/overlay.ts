@@ -13,6 +13,7 @@ import { createRecipeBook } from './recipeBook';
 import { createUpdateCheck } from './update';
 import { createSaves } from './saves';
 import { createSettings, initSettings } from './settings';
+import { createSound } from './sound';
 import { createToolbar } from './toolbar';
 import { createGioWindows } from './gio';
 
@@ -68,6 +69,7 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   createSaves(uiRoot);
   createRecipeBook(uiRoot);
   createUpdateCheck(uiRoot);
+  createSound();
 }
 
 export function updateRotationRequired(appRoot: HTMLElement): void {

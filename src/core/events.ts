@@ -29,6 +29,8 @@ export interface GameEvents {
   'gio-talk': undefined;
   /** ให้แมวเลียสำเร็จ จีโอเล่นท่าเลียพร้อมหัวใจตามรส */
   'gio-treat': 'like' | 'love' | 'special';
+  /** หน้าต่างเต็มเปิดหรือปิด (เฉพาะตอนที่เปลี่ยนจริง) ใช้เล่นเสียงเปิดปิด */
+  'window-changed': { name: string; open: boolean };
 }
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

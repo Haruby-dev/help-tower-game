@@ -4490,3 +4490,61 @@ canvas {
   image-rendering: pixelated;
   cursor: pointer;
 }
+
+/* แถบเลื่อนระดับเสียง ทรงพิกเซลเหลี่ยม ทึบ ไม่มีมุมมน */
+.settings-volume {
+  flex-wrap: nowrap;
+  min-height: 44px;
+}
+
+.settings-volume > span {
+  min-width: 84px;
+}
+
+.settings-slider {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.settings-slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border: 2px solid #5c304c;
+  background: #ffdce8;
+}
+
+.settings-slider::-moz-range-track {
+  height: 4px;
+  border: 2px solid #5c304c;
+  background: #ffdce8;
+}
+
+.settings-slider::-webkit-slider-thumb {
+  width: 18px;
+  height: 22px;
+  margin-top: -9px;
+  border: 2px solid #5c304c;
+  border-radius: 0;
+  background: #f8b4cc;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.settings-slider::-moz-range-thumb {
+  width: 14px;
+  height: 18px;
+  border: 2px solid #5c304c;
+  border-radius: 0;
+  background: #f8b4cc;
+}
+
+.settings-volume__value {
+  min-width: 28px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
