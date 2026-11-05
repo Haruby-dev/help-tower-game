@@ -26,7 +26,7 @@ import {
   type Reaction,
 } from '../systems/monsters';
 import { servingsOnTray } from '../systems/tray';
-import { foodArtKey, type MonsterArt } from './monsterArt';
+import { foodMoundKey, type MonsterArt } from './monsterArt';
 import type { TrayView } from './trayView';
 
 type Point = { x: number; y: number };
@@ -331,7 +331,8 @@ export class Visits {
       gameState.setWorld(result.world);
       if (result.taken === 0) continue;
       const recipe = parseDish(take.item).recipe;
-      monster.addToTower(foodArtKey(this.scene, recipe, recipes[recipe]?.icon), result.taken);
+      // หอคอยใช้กองอาหารเล็กบนจานบางแบบเดิม (ผู้ใช้เลือก 6 พ.ย. 2026) ภาพอาหารจิ๋วใช้บนจานถาด
+      monster.addToTower(foodMoundKey(this.scene, recipe, recipes[recipe]?.icon), result.taken);
       monster.hearts(take.reaction === 'neutral' ? 0 : 1);
       if (take.reaction === 'favourite' || take.reaction === 'signature') monster.sparkles();
       if (take.reaction === 'favourite') this.say(run, 'favourite', true);

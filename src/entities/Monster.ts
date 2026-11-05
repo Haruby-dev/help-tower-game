@@ -9,9 +9,12 @@ type Point = { x: number; y: number };
 
 const ARRIVE_PX = 1.5;
 const FX_DEPTH_LIFT = 100;
-/** หอคอยอาหารเหนือหัว: จานแล้วอาหารสลับกัน แต่ละชั้นสูงตามภาพอาหารจริง ขอบจานกับอาหารซ้อนกัน 1 พิกเซล */
-const PLATE_HEIGHT_PX = 4;
-const LAYER_OVERLAP_PX = 1;
+/**
+ * หอคอยอาหารเหนือหัว: จานขาวบาง ๆ กับกองอาหารเล็ก ชั้นละ 4 พิกเซล โยกไปมา
+ * ผู้ใช้เลือกแบบจานบางเดิม (6 พ.ย. 2026) แทนภาพอาหารจิ๋วที่ซ้อนแล้วดูแข็ง · ภาพอาหารจิ๋วใช้บนจานถาดเท่านั้น
+ */
+const TOWER_STEP_PX = 4;
+const TOWER_FOOD_LIFT = 3;
 const TOWER_GAP_PX = 2;
 /** ฟองความคิด: มุมซ้ายของฟองห่างกลางตัวเท่านี้ จุดลากซ้ายล่างอยู่เหนือหัว ไอคอนอาหารกลางที่ (13, 13) ของฟอง */
 const THOUGHT_LEFT_PX = -3;
@@ -360,15 +363,13 @@ export class Monster {
     const y = Math.round(this.position.y);
     this.sprite.setPosition(x, y).setDepth(y);
     const base = y - this.art.height - TOWER_GAP_PX;
-    let plateY = base;
     this.tower.forEach((layer, index) => {
       const wobble = Math.max(-TOWER_WOBBLE_MAX, Math.min(TOWER_WOBBLE_MAX, Math.round(Math.sin(time / TOWER_WOBBLE_MS + index * 0.9) * index * 0.5)));
-      const foodY = plateY - PLATE_HEIGHT_PX + LAYER_OVERLAP_PX;
+      const plateY = base - index * TOWER_STEP_PX;
       layer.plate.setPosition(x + wobble, plateY).setDepth(y + 1 + index * 0.01);
-      layer.food.setPosition(x + wobble, foodY).setDepth(y + 1.005 + index * 0.01);
-      plateY = foodY - layer.food.height + LAYER_OVERLAP_PX;
+      layer.food.setPosition(x + wobble, plateY - TOWER_FOOD_LIFT + 1).setDepth(y + 1.005 + index * 0.01);
     });
-    this.towerHeight = base - plateY;
+    this.towerHeight = this.tower.length > 0 ? this.tower.length * TOWER_STEP_PX + TOWER_FOOD_LIFT : 0;
     this.syncThought(x, time);
   }
 
