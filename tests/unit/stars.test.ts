@@ -190,8 +190,8 @@ describe('save version 12', () => {
     const { tray: _tray, monsters: _monsters, ...world } = newWorld();
     const old = { ...world, farm: { plots: world.farm.plots.map(({ fertilizer: _fertilizer, ...plot }) => plot) }, bag: [{ item: 'produce_tomato', count: 3 }] };
     const parsed = parseSaveFile({ version: 11, savedAt: 'x', world: old })!;
-    expect(SAVE_VERSION).toBe(12);
-    expect(parsed.version).toBe(12);
+    expect(SAVE_VERSION).toBe(13);
+    expect(parsed.version).toBe(13);
     expect(parsed.world.farm.plots.every((plot) => plot.fertilizer === 0)).toBe(true);
     expect(parsed.world.tray).toEqual({ level: 0, plates: [null, null, null] });
     expect(parsed.world.monsters).toEqual({ affection: {}, plannedDay: 0, arrivals: [] });

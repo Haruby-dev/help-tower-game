@@ -8241,5 +8241,173 @@
     "frame_height": 40,
     "frames": 4,
     "note": "กิน ทิศใต้ 4 เฟรม พัก อ้าปาก เคี้ยว ขยิบตา"
+  },
+  "monster_popcorn_hungry_stand": {
+    "type": "local",
+    "width": 160,
+    "height": 40,
+    "source": "public/assets/monsters/popcorn/popcorn_hungry_stand.png",
+    "file": "monsters/popcorn/popcorn_hungry_stand.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 4,
+    "note": "ป๊อปคอร์นตอนหิว ยืน 4 เฟรม ใต้ ตะวันออก เหนือ ตะวันตก (docs/popcorn_art_2026-11-05.md)"
+  },
+  "monster_popcorn_hungry_walk": {
+    "type": "local",
+    "width": 240,
+    "height": 160,
+    "source": "public/assets/monsters/popcorn/popcorn_hungry_walk.png",
+    "file": "monsters/popcorn/popcorn_hungry_walk.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 24,
+    "rows": [
+      "south",
+      "east",
+      "north",
+      "west"
+    ],
+    "note": "เดินกระโดด 4 แถว ใต้ ตะวันออก เหนือ ตะวันตก แถวละ 6 เฟรม 110 ms ตัวลอย 0 2 1 0 2 1 พิกเซล"
+  },
+  "monster_popcorn_hungry_eat": {
+    "type": "local",
+    "width": 240,
+    "height": 40,
+    "source": "public/assets/monsters/popcorn/popcorn_hungry_eat.png",
+    "file": "monsters/popcorn/popcorn_hungry_eat.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 6,
+    "note": "กิน ทิศใต้ 6 เฟรม 150 ms"
+  },
+  "monster_popcorn_sweet_stand": {
+    "type": "local",
+    "width": 160,
+    "height": 40,
+    "source": "public/assets/monsters/popcorn/popcorn_sweet_stand.png",
+    "file": "monsters/popcorn/popcorn_sweet_stand.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 4,
+    "note": "ป๊อปคอร์นตอนหวาน ยืน 4 เฟรม ใต้ ตะวันออก เหนือ ตะวันตก (docs/popcorn_art_2026-11-05.md)"
+  },
+  "monster_popcorn_sweet_walk": {
+    "type": "local",
+    "width": 240,
+    "height": 160,
+    "source": "public/assets/monsters/popcorn/popcorn_sweet_walk.png",
+    "file": "monsters/popcorn/popcorn_sweet_walk.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 24,
+    "rows": [
+      "south",
+      "east",
+      "north",
+      "west"
+    ],
+    "note": "เดินกระโดด 4 แถว ใต้ ตะวันออก เหนือ ตะวันตก แถวละ 6 เฟรม 110 ms ตัวลอย 0 2 1 0 2 1 พิกเซล"
+  },
+  "monster_popcorn_sweet_eat": {
+    "type": "local",
+    "width": 240,
+    "height": 40,
+    "source": "public/assets/monsters/popcorn/popcorn_sweet_eat.png",
+    "file": "monsters/popcorn/popcorn_sweet_eat.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 6,
+    "note": "กิน ทิศใต้ 6 เฟรม 150 ms"
+  },
+  "monster_mookmik_hungry_stand": {
+    "type": "local",
+    "width": 160,
+    "height": 40,
+    "source": "public/assets/monsters/mookmik/mookmik_hungry_stand.png",
+    "file": "monsters/mookmik/mookmik_hungry_stand.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 4,
+    "note": "มุกมิกตอนหิว ยืน 4 เฟรม ใต้ ตะวันออก เหนือ ตะวันตก (docs/mukmik_art_2026-11-06.md)"
+  },
+  "monster_mookmik_hungry_walk": {
+    "type": "local",
+    "width": 240,
+    "height": 160,
+    "source": "public/assets/monsters/mookmik/mookmik_hungry_walk.png",
+    "file": "monsters/mookmik/mookmik_hungry_walk.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 24,
+    "rows": [
+      "south",
+      "east",
+      "north",
+      "west"
+    ],
+    "note": "กระโดด (hop) 4 แถว ใต้ ตะวันออก เหนือ ตะวันตก แถวละ 6 เฟรม 110 ms"
+  },
+  "monster_mookmik_hungry_eat": {
+    "type": "local",
+    "width": 320,
+    "height": 40,
+    "source": "public/assets/monsters/mookmik/mookmik_hungry_eat.png",
+    "file": "monsters/mookmik/mookmik_hungry_eat.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 8,
+    "note": "กิน ทิศใต้ 8 เฟรม 150 ms"
+  },
+  "monster_mookmik_sweet_stand": {
+    "type": "local",
+    "width": 160,
+    "height": 40,
+    "source": "public/assets/monsters/mookmik/mookmik_sweet_stand.png",
+    "file": "monsters/mookmik/mookmik_sweet_stand.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 4,
+    "note": "มุกมิกตอนหวาน ยืน 4 เฟรม ใต้ ตะวันออก เหนือ ตะวันตก (docs/mukmik_art_2026-11-06.md)"
+  },
+  "monster_mookmik_sweet_walk": {
+    "type": "local",
+    "width": 240,
+    "height": 160,
+    "source": "public/assets/monsters/mookmik/mookmik_sweet_walk.png",
+    "file": "monsters/mookmik/mookmik_sweet_walk.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 24,
+    "rows": [
+      "south",
+      "east",
+      "north",
+      "west"
+    ],
+    "note": "กระโดด (hop) 4 แถว ใต้ ตะวันออก เหนือ ตะวันตก แถวละ 6 เฟรม 110 ms"
+  },
+  "monster_mookmik_sweet_eat": {
+    "type": "local",
+    "width": 320,
+    "height": 40,
+    "source": "public/assets/monsters/mookmik/mookmik_sweet_eat.png",
+    "file": "monsters/mookmik/mookmik_sweet_eat.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 8,
+    "note": "กิน ทิศใต้ 8 เฟรม 150 ms"
   }
 }

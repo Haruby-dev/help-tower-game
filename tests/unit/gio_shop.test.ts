@@ -241,12 +241,14 @@ describe('Gio receipt, gift and news', () => {
     expect(gifts / 400).toBeLessThan(0.28);
   });
 
-  it('shows the news dot until the news is read today, the check after the pat, and counts treats in the bag', () => {
+  it('shows the news dot while there is unread news (M7b), the check after the pat, and counts treats in the bag', () => {
     const world: World = { ...newWorld(), bag: [{ item: 'treat_tuna', count: 2 }, { item: 'treat_special', count: 1 }] };
-    expect(hasUnreadNews(world)).toBe(true);
-    const read = readNews(world);
+    expect(hasUnreadNews(world)).toBe(false);
+    const withTip: World = { ...world, gio: { ...world.gio, tips: [{ monster: 'puinun', kind: 'favourite', day: 1, read: false }] } };
+    expect(hasUnreadNews(withTip)).toBe(true);
+    const read = readNews(withTip);
     expect(hasUnreadNews(read)).toBe(false);
-    expect(hasUnreadNews({ ...read, day: 2 })).toBe(true);
+    expect(hasUnreadNews({ ...read, day: 2 })).toBe(false);
     expect(pettedToday(world)).toBe(false);
     expect(pettedToday(petGio(world)!)).toBe(true);
     expect(treatsInBag(world)).toBe(3);
@@ -259,7 +261,7 @@ describe('save version 10', () => {
     const { newsDay: _news, ...oldGio } = world.gio;
     const report = { day: 2, sold: [{ item: 'produce_tomato', count: 1 }], returned: [], gross: 1000, commission: 300, coins: 700 };
     const parsed = parseSaveFile({ version: 9, savedAt: '2026-11-05T00:00:00.000Z', world: { ...world, gio: { ...oldGio, report } } })!;
-    expect(parsed.version).toBe(12);
+    expect(parsed.version).toBe(13);
     expect(parsed.world.gio.newsDay).toBe(0);
     expect(parsed.world.gio.report).toMatchObject({ gift: null, tier: 2 });
   });
@@ -271,7 +273,7 @@ describe('save version 9', () => {
     const { gio: _gio, ...rest } = world;
     const v8 = { version: 8, savedAt: '2026-11-04T00:00:00.000Z', world: { ...rest, stash: { gio_lick_treat: 2, other: 1 } } };
     const parsed = parseSaveFile(v8)!;
-    expect(SAVE_VERSION).toBe(12);
+    expect(SAVE_VERSION).toBe(13);
     expect(parsed.world.gio.happiness).toBe(balance.gioCare.startHappiness);
     expect(parsed.world.gio.consignment).toBeNull();
     expect(countOf(parsed.world.bag, 'treat_special')).toBe(2);

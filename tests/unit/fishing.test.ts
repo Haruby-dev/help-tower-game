@@ -222,8 +222,8 @@ describe('bath and saves', () => {
       },
     };
     const parsed = parseSaveFile(v5);
-    expect(SAVE_VERSION).toBe(12);
-    expect(parsed?.version).toBe(12);
+    expect(SAVE_VERSION).toBe(13);
+    expect(parsed?.version).toBe(13);
     expect(parsed?.world.weather).toBe('sunny');
     expect(parsed?.world.fishing).toEqual({ rods: ['bamboo'], caught: {} });
     expect(parsed?.world.cosmetics.owned.clips).toEqual([]);

@@ -88,7 +88,8 @@ test('Gio stays home all day when nothing is consigned, where she can talk, give
   await expect(page.locator('#gio-window')).toBeVisible();
   const clock = (await state(page)).hour;
   await expect(page.locator('[data-gio-action="treat"]')).toContainText('×2');
-  await expect(page.locator('[data-gio-action="news"] .gio-talk__dot')).toHaveCount(1);
+  // ข่าวมาพร้อมการเร่ขาย (M7b) ยังไม่ได้ฝากของจึงยังไม่มีข่าวใหม่
+  await expect(page.locator('[data-gio-action="news"] .gio-talk__dot')).toHaveCount(0);
   // มีรสเดียวให้ทันที จีโอนั่งเลียพร้อมหัวใจ
   await page.locator('[data-gio-action="treat"]').click();
   await expect(page.locator('#gio-line')).toContainText('อร่อย');
@@ -101,6 +102,8 @@ test('Gio stays home all day when nothing is consigned, where she can talk, give
   await page.locator('[data-gio-action="pet"]').click();
   await expect(page.locator('#gio-line')).toContainText('ลูบไปแล้ว');
   await page.locator('[data-gio-action="news"]').click();
+  await expect(page.locator('#gio-news')).toContainText('ยังไม่มีข่าว');
+  await page.locator('.gio-talk__news-back').click();
   await expect(page.locator('[data-gio-action="news"] .gio-talk__dot')).toHaveCount(0);
   expect((await state(page)).hour).toBe(clock);
   // แมวเลียหมดแล้วปุ่มเป็นสีเทา กดไม่ได้

@@ -211,7 +211,21 @@
         "count": 1
       }
     ],
-    "bigDayCoins": 5000
+    "bigDayCoins": 5000,
+    "newsByTier": [
+      {
+        "count": 2,
+        "everyDays": 1
+      },
+      {
+        "count": 1,
+        "everyDays": 1
+      },
+      {
+        "count": 1,
+        "everyDays": 2
+      }
+    ]
   },
   "farm": {
     "plotOrigin": {
@@ -518,7 +532,23 @@
     "labelReachPx": 90,
     "bubbleMs": 1800,
     "maxBubbles": 3,
-    "motesPerSecond": 4
+    "motesPerSecond": 4,
+    "setBonus": 1.5,
+    "runSpeedMultiplier": 1.8,
+    "yardSpots": [
+      [
+        -24,
+        46
+      ],
+      [
+        36,
+        58
+      ],
+      [
+        86,
+        40
+      ]
+    ]
   },
   "tray": {
     "reachPx": 48,

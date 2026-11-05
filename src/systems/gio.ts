@@ -8,6 +8,7 @@ import { applyTransaction } from './economy';
 import { addToBag, countOf, cropOfItem, crops, takeFromBag } from './farm';
 import { fishOfItem, fishTable, isFish } from './fishing';
 import { starsOf } from './stars';
+import { readTips, unreadTips } from './news';
 
 const care = balance.gioCare;
 const shop = shopJson as ShopData;
@@ -26,6 +27,9 @@ export const newGioCare = (): GioCare => ({
   specialWeek: -1,
   newsDay: 0,
   album: [],
+  tips: [],
+  tipsReportDay: 0,
+  lastTipDay: 0,
   consignment: null,
   report: null,
 });
@@ -219,10 +223,13 @@ export const withFirstGift = (world: World): World =>
 /** ผ่านไป 1 วันความสุขลดลง */
 export const gioMorning = (gio: GioCare): GioCare => ({ ...gio, happiness: clampHappiness(gio.happiness - care.dailyDecay) });
 
-/** อ่านข่าววันนี้แล้ว จุดชมพูบนปุ่มข่าวหายไปจนถึงพรุ่งนี้ */
-export const readNews = (world: World): World => (world.gio.newsDay === world.day ? world : { ...world, gio: { ...world.gio, newsDay: world.day } });
+/** อ่านข่าวแล้ว ข่าวใหม่ทุกข้อนับว่าอ่านแล้ว จุดชมพูบนปุ่มข่าวหายไปจนกว่าจีโอจะได้ข่าวใหม่ */
+export const readNews = (world: World): World => {
+  const read = readTips(world);
+  return read.gio.newsDay === world.day ? read : { ...read, gio: { ...read.gio, newsDay: world.day } };
+};
 
-export const hasUnreadNews = (world: World): boolean => world.gio.newsDay !== world.day;
+export const hasUnreadNews = (world: World): boolean => unreadTips(world) > 0;
 
 export const pettedToday = (world: World): boolean => world.gio.pettedDay === world.day;
 

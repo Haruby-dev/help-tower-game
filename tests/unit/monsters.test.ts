@@ -11,9 +11,11 @@ import {
   cleanMultiplier,
   dishPoints,
   dueArrivals,
+  eatPlaceFor,
   eligibleMonsters,
   feed,
   isCleared,
+  newVisitMemo,
   planVisit,
   planVisits,
   settleVisits,
@@ -112,25 +114,28 @@ describe('visitors', () => {
     expect(visitorCount(100)).toBe(6);
   });
 
-  it('only comes from monsters with art that are not cleared yet', () => {
-    expect(eligibleMonsters(newWorld())).toEqual([PUINUN]);
-    expect(eligibleMonsters(withPoints(newWorld(), 30, true))).toEqual([]);
+  it('only comes from monsters with art that are not cleared yet (Puinun, Popcorn, Mukmik so far)', () => {
+    expect(eligibleMonsters(newWorld())).toEqual([PUINUN, 'popcorn', 'mookmik']);
+    expect(eligibleMonsters(withPoints(newWorld(), 30, true))).toEqual(['popcorn', 'mookmik']);
   });
 
-  it('plans tomorrow\'s visit when Gio comes back, once, between 12:00 and 20:00', () => {
+  it('plans tomorrow\'s visit when Gio comes back, once, spread between 12:00 and 20:00', () => {
     const report = { day: 3, sold: [{ item: 'produce_tomato', count: 9 }], returned: [], gross: 0, commission: 0, coins: 0, gift: null, tier: 0 };
     const world: World = { ...newWorld(), day: 3, hour: 18, gio: { ...newWorld().gio, report } };
     const planned = planVisits(world);
     expect(planned.monsters.plannedDay).toBe(4);
-    // ขาย 9 ชิ้นได้ 3 ตัว แต่มีภาพแค่ปุยนุ่น จึงมาตัวเดียว
-    expect(planned.monsters.arrivals).toHaveLength(1);
-    const arrival = planned.monsters.arrivals[0]!;
-    expect(arrival).toMatchObject({ monster: PUINUN, day: 4, done: false });
-    expect(arrival.hour).toBeGreaterThanOrEqual(12);
-    expect(arrival.hour).toBeLessThan(20);
+    // ขาย 9 ชิ้นได้ 3 ตัว ต่างตัวกัน
+    const arrivals = planned.monsters.arrivals;
+    expect(arrivals).toHaveLength(3);
+    expect(new Set(arrivals.map((arrival) => arrival.monster)).size).toBe(3);
+    for (const arrival of arrivals) {
+      expect(arrival).toMatchObject({ day: 4, done: false });
+      expect(arrival.hour).toBeGreaterThanOrEqual(12);
+      expect(arrival.hour).toBeLessThan(20);
+    }
     expect(planVisits(planned)).toBe(planned);
     expect(dueArrivals(planned)).toEqual([]);
-    expect(dueArrivals({ ...planned, day: 4, hour: 20 })).toHaveLength(1);
+    expect(dueArrivals({ ...planned, day: 4, hour: 20 })).toHaveLength(3);
   });
 
   it('runs the plan from the clock when Gio\'s summary is created', () => {
@@ -142,7 +147,11 @@ describe('visitors', () => {
   it('summons a monster now for testing', () => {
     const summoned = summonNow({ ...newWorld(), hour: 9 })!;
     expect(dueArrivals(summoned)).toEqual([{ monster: PUINUN, day: 1, hour: 9, done: false }]);
-    expect(summonNow(withPoints(newWorld(), 30, true))).toBeNull();
+    const allCleared: World = {
+      ...newWorld(),
+      monsters: { ...newWorld().monsters, affection: Object.fromEntries(Object.entries(monsters).map(([id, monster]) => [id, { points: monster.points, signature: true }])) },
+    };
+    expect(summonNow(allCleared)).toBeNull();
   });
 });
 
@@ -197,24 +206,52 @@ describe('tray and taking', () => {
 
   it('removes what it takes from the plate and credits affection per serving with variety', () => {
     const world = withTray(plain(), [{ item: dishItem('strawberry_skewer', 1), count: 3 }, null, null]);
-    const eaten: Record<string, number> = {};
-    const result = takePlate(world, PUINUN, { plate: 0, item: dishItem('strawberry_skewer', 1), count: 3, reaction: 'favourite' }, eaten);
+    const memo = newVisitMemo();
+    const result = takePlate(world, PUINUN, { plate: 0, item: dishItem('strawberry_skewer', 1), count: 3, reaction: 'favourite' }, memo);
     expect(result.taken).toBe(3);
     expect(result.world.tray.plates[0]).toBeNull();
     const base = rules.rankBase.F * 3;
     expect(result.gains.map((gain) => Number(gain.toFixed(4)))).toEqual([base, base * 0.6, base * 0.3].map((gain) => Number(gain.toFixed(4))));
-    expect(eaten.strawberry_skewer).toBe(3);
+    expect(memo.eaten.strawberry_skewer).toBe(3);
+  });
+
+  it('gives the set bonus once when the favourite food and favourite drink are both eaten in one visit', () => {
+    const world = withTray(plain(), [{ item: dishItem('strawberry_skewer', 1), count: 3 }, { item: dishItem('strawberry_juice', 1), count: 3 }, null]);
+    const plan = planVisit(world, PUINUN, fixed(0.99));
+    // หอคอยอาหารเว้นที่ให้น้ำ 1 แก้ว
+    expect(plan.takes.map((take) => [take.plate, take.count])).toEqual([[0, 3], [1, 1]]);
+    const memo = newVisitMemo();
+    const food = takePlate(world, PUINUN, plan.takes[0]!, memo);
+    expect(food.setBonus).toBe(0);
+    const drink = takePlate(food.world, PUINUN, plan.takes[1]!, memo);
+    const firstFood = food.gains[0]!;
+    const juice = drink.gains[0]!;
+    expect(drink.set).toBe(true);
+    expect(drink.setBonus).toBeCloseTo((rules.setBonus - 1) * (firstFood + juice));
+    expect(takePlate(drink.world, PUINUN, { plate: 1, item: dishItem('strawberry_juice', 1), count: 1, reaction: 'favourite' }, memo).setBonus).toBe(0);
+  });
+
+  it('counts the favourite drink as a favourite (×3, drink base)', () => {
+    expect(tasteOf(PUINUN, 'strawberry_juice')).toBe('favourite');
+    expect(dishPoints(PUINUN, 'strawberry_juice', 1, 0, 50)).toBeCloseTo(rules.rankBase.F * rules.drinkBaseShare * 3);
+  });
+
+  it('eats by affection: grabs and runs home when wary, near the burrow when warm, in the front yard when close', () => {
+    expect(eatPlaceFor(plain(), PUINUN)).toBe('burrow');
+    expect(eatPlaceFor(withPoints(plain(), 30 * 0.5), PUINUN)).toBe('nearBurrow');
+    expect(eatPlaceFor(withPoints(plain(), 30 * 0.85), PUINUN)).toBe('yard');
   });
 
   it('lets a monster that missed its visit (slept, fainted) eat from the tray without being seen', () => {
     const report = { day: 1, sold: [], returned: [], gross: 0, commission: 0, coins: 0, gift: null, tier: 0 };
     const start: World = withTray({ ...plain(), hour: 10, gio: { ...newWorld().gio, report } }, [{ item: dishItem('strawberry_skewer', 1), count: 4 }, null, null]);
     const planned = planVisits(start);
+    const guest = planned.monsters.arrivals[0]!.monster;
     const visitDay: World = { ...planned, day: 2, hour: 10 };
     const next = sleep(visitDay);
     expect(next.day).toBe(3);
     expect(next.monsters.arrivals).toEqual([]);
-    expect(next.monsters.affection[PUINUN]!.points).toBeGreaterThan(0);
+    expect(next.monsters.affection[guest]!.points).toBeGreaterThan(0);
     expect(next.tray.plates[0]?.count ?? 0).toBeLessThan(4);
     expect(settleVisits(next)).toBe(next);
   });

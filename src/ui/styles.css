@@ -4781,3 +4781,46 @@ canvas {
   font-weight: 700;
   box-shadow: 0 calc(var(--px) * -1) 0 0 var(--pink), 0 calc(var(--px) * 1) 0 0 var(--pink), calc(var(--px) * -1) 0 0 0 var(--pink), calc(var(--px) * 1) 0 0 0 var(--pink);
 }
+
+/* ---------- M7b หน้าข่าวจีโอ: รายการข่าวแทนปุ่ม 4 ปุ่ม เลื่อนดูได้ ---------- */
+.gio-talk__menu--news {
+  display: flex;
+  align-items: stretch;
+  gap: calc(var(--px) * 4);
+}
+
+.gio-talk__news {
+  flex: 1;
+  min-width: 0;
+  max-height: calc(var(--px) * 78);
+  overflow-y: auto;
+  padding: calc(var(--px) * 2) calc(var(--px) * 4);
+  background: #fff6f0;
+  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--pink), 0 calc(var(--px) * 1) 0 0 var(--pink), calc(var(--px) * -1) 0 0 0 var(--pink), calc(var(--px) * 1) 0 0 0 var(--pink);
+}
+
+.gio-talk__tip {
+  margin: 0 0 calc(var(--px) * 3);
+  color: var(--outline);
+  font-size: max(10px, calc(var(--px) * 6));
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.gio-talk__new {
+  margin-right: calc(var(--px) * 2);
+  padding: 0 calc(var(--px) * 2);
+  background: #f06892;
+  color: #fff;
+}
+
+.gio-talk__news-back {
+  flex: none;
+  align-self: flex-start;
+}
+
+/* จุดชมพูในใบสรุปยอดอยู่ท้ายบรรทัด ไม่ลอยแบบในปุ่ม */
+.receipt__dot {
+  position: static;
+  flex: none;
+}

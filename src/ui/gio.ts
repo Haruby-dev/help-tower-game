@@ -28,6 +28,8 @@ import {
 import { cornerBadge, itemImage, itemName } from './inventory';
 import { artUrl } from './pixelArt';
 import { revealWhenReady } from './preload';
+import { tipText, unreadTips } from '../systems/news';
+import { monsterTable } from '../systems/monsters';
 import { coinIcon, setMoney } from './money';
 
 const lines = linesJson.gio;
@@ -145,6 +147,8 @@ export function createGioWindows(uiRoot: HTMLElement): void {
 
   let line = lines.greet;
   let treatPicker = false;
+  /** หน้าข่าว: รายการข่าวที่รู้แล้วแทนปุ่ม 4 ปุ่ม */
+  let newsView = false;
   let picked: BagStack[] = [];
   let tab: ConsignTab = 'all';
 
@@ -222,6 +226,42 @@ export function createGioWindows(uiRoot: HTMLElement): void {
     return [...slots, back];
   };
 
+  /** ข่าวที่รู้แล้วทั้งหมด ใหม่สุดอยู่บน ข่าวที่เพิ่งได้มีป้าย "ใหม่" (จำไว้ตอนเปิดหน้าข่าว เพราะเปิดแล้วนับว่าอ่าน) */
+  let freshTips = new Set<number>();
+  const newsList = (): HTMLElement[] => {
+    const tips = gameState.world.gio.tips.map((tip, index) => ({ tip, index })).reverse();
+    const list = element('div', 'gio-talk__news');
+    list.id = 'gio-news';
+    if (tips.length === 0) list.append(element('p', 'gio-talk__tip', t('news.empty')));
+    for (const { tip, index } of tips) {
+      const row = element('p', 'gio-talk__tip');
+      row.dataset.tipMonster = tip.monster;
+      row.dataset.tipKind = tip.kind;
+      if (freshTips.has(index)) row.append(element('b', 'gio-talk__new', t('news.new')));
+      row.append(element('span', '', tipText(tip)));
+      list.append(row);
+    }
+    const back = element('button', 'gio-talk__treat gio-talk__treat--back gio-talk__news-back', '←');
+    back.type = 'button';
+    back.setAttribute('aria-label', t('ui.back'));
+    back.addEventListener('click', () => {
+      newsView = false;
+      line = lines.greet;
+      renderTalk();
+    });
+    return [list, back];
+  };
+
+  const openNews = (): void => {
+    const world = gameState.world;
+    freshTips = new Set(world.gio.tips.flatMap((tip, index) => (tip.read ? [] : [index])));
+    const first = world.gio.tips.find((tip) => !tip.read);
+    line = first ? tipText(first) : world.gio.tips.length > 0 ? t('news.title') : lines.news;
+    gameState.setWorld(readNews(world));
+    newsView = true;
+    renderTalk();
+  };
+
   function renderTalk(): void {
     if (gameState.world.gio.report) {
       closeTalk();
@@ -240,9 +280,11 @@ export function createGioWindows(uiRoot: HTMLElement): void {
     close.append(art('ui_gio_talk_close_btn', 'gio-talk__close-art'));
     close.addEventListener('click', closeTalk);
 
-    const menu = element('div', `gio-talk__menu${treatPicker ? ' gio-talk__menu--treats' : ''}`);
+    const menu = element('div', `gio-talk__menu${treatPicker ? ' gio-talk__menu--treats' : ''}${newsView ? ' gio-talk__menu--news' : ''}`);
     if (treatPicker) {
       menu.append(...treatChoices());
+    } else if (newsView) {
+      menu.append(...newsList());
     } else {
       const treats = treatsInBag(world);
       const treat = choice('treat', 'ui_gio_talk_icon_treat_12', t('gio.treat'), () => {
@@ -263,11 +305,7 @@ export function createGioWindows(uiRoot: HTMLElement): void {
         renderTalk();
       });
       if (pettedToday(world)) pet.append(art('ui_gio_talk_check_done', 'gio-talk__check'));
-      const news = choice('news', 'ui_gio_talk_icon_news_12', t('gio.news'), () => {
-        gameState.setWorld(readNews(gameState.world));
-        line = lines.news;
-        renderTalk();
-      });
+      const news = choice('news', 'ui_gio_talk_icon_news_12', t('gio.news'), openNews);
       if (hasUnreadNews(world)) news.append(element('i', 'gio-talk__dot'));
       menu.append(
         choice('consign', 'ui_gio_talk_icon_sell_12', t('gio.consign'), () => {
@@ -363,6 +401,22 @@ export function createGioWindows(uiRoot: HTMLElement): void {
     for (const stack of report.returned) {
       const note = element('p', 'receipt__note');
       note.append(miniIcon(stack.item), element('span', '', `${t('report.returned')} ${itemName(stack.item)} ×${stack.count}`));
+      extras.push(note);
+    }
+    // แขกพรุ่งนี้ (ตามที่วางแผนไว้จริง ตัวที่ยังไม่มีภาพไม่นับ) และข่าวใหม่พร้อมจุดชมพูแบบปุ่มข่าว
+    const world = gameState.world;
+    const visitors = world.monsters.arrivals.filter((arrival) => arrival.day === report.day + 1 && monsterTable[arrival.monster]).length;
+    if (visitors > 0) {
+      const note = element('p', 'receipt__note');
+      note.id = 'report-visitors';
+      note.append(element('span', '', `${t('report.visitors_a')}${visitors}${t('report.visitors_b')}`));
+      extras.push(note);
+    }
+    const fresh = unreadTips(world);
+    if (fresh > 0) {
+      const note = element('p', 'receipt__note');
+      note.id = 'report-news';
+      note.append(element('span', '', `${t('report.news_a')}${fresh}${t('report.news_b')}`), element('i', 'gio-talk__dot receipt__dot'));
       extras.push(note);
     }
 
@@ -530,6 +584,7 @@ export function createGioWindows(uiRoot: HTMLElement): void {
 
   function openTalk(): void {
     treatPicker = false;
+    newsView = false;
     if (gameState.world.gio.report) {
       openReceipt();
       return;

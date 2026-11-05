@@ -250,6 +250,8 @@ export const balanceSchema = z.strictObject({
     /** ได้รับตั้งแต่เท่านี้ จีโอพูดบทขายดีสุด ๆ (ค่าชั่วคราว) */
     bigDayCoins: z.number().int().nonnegative(),
     giftPool: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })).min(1),
+    /** ข่าวที่ได้ตอนจีโอกลับจากเร่ขาย ตามช่วงความสุขตอนฝาก (GDD: 2 ข้อ · 1 ข้อ · 1 ข้อทุก 2 วัน) */
+    newsByTier: z.array(z.strictObject({ count: z.number().int().nonnegative(), everyDays: z.number().int().positive() })).min(1),
   }),
   /** ดาวผักและอาหาร ตาม docs/star_system_2026-11-05.md · rolls คือโอกาส 1/2/3 ดาวตามระดับปุ๋ย (1 = ไม่ใส่ปุ๋ย) */
   stars: z.strictObject({
@@ -298,6 +300,12 @@ export const balanceSchema = z.strictObject({
     bubbleMs: z.number().positive(),
     maxBubbles: z.number().int().positive(),
     motesPerSecond: z.number().nonnegative(),
+    /** หยิบเมนูโปรดกับเครื่องดื่มโปรดในการมาครั้งเดียว ความชอบของคู่นั้นคูณเท่านี้ (ค่าชั่วคราว) */
+    setBonus: z.number().min(1),
+    /** ตัวที่ยังระแวงคว้าอาหารแล้ววิ่งกลับโพรง ใช้ท่าเดินเร็วขึ้นเท่านี้ */
+    runSpeedMultiplier: z.number().min(1),
+    /** ตัวที่สนิทนั่งกินที่ลานหน้าบ้าน ห่างจากเท้าถาดเท่านี้ (พิกเซล) ถาดย้ายที่ก็ตามไป */
+    yardSpots: z.array(z.tuple([z.number(), z.number()])).min(1),
   }),
   /** ถาดอาหาร 3 · 6 · 10 จาน plates คือกลางจานในภาพถาด (นับจากมุมซ้ายบน) เรียงตามที่มอนสเตอร์เดินดู */
   tray: z.strictObject({
@@ -367,6 +375,8 @@ export const monstersSchema = z.record(
     points: z.number().positive(),
     personality: z.enum(['shy', 'cheerful', 'proud', 'lazy', 'elder']),
     favourite: tasteListSchema,
+    /** เครื่องดื่มโปรด ×3 เท่าเมนูโปรด หยิบคู่กับเมนูโปรดในครั้งเดียวได้โบนัสเซ็ต "เข้ากันสุดๆ!" */
+    favouriteDrink: z.string().regex(/^[a-z_]+$/),
     likes: tasteListSchema,
     dislikes: tasteListSchema,
     /** เมนูประจำใจ ขอเมื่อความชอบถึง 90% ต้องได้จึงไปถึง 100% */
@@ -501,6 +511,11 @@ export const saveFileSchema = z.strictObject({
       newsDay: z.number().int().nonnegative(),
       /** แมวเลียรสที่จีโอเคยกินแล้ว เปิดรูปในอัลบั้ม */
       album: z.array(z.string().min(1)),
+      /** ข่าวมอนสเตอร์ที่จีโอเล่าแล้ว (เมนูโปรด เครื่องดื่มโปรด เมนูประจำใจ) */
+      tips: z.array(z.strictObject({ monster: z.string().min(1), kind: z.enum(['favourite', 'drink', 'signature']), day: z.number().int().positive(), read: z.boolean() })),
+      /** สรุปยอดวันล่าสุดที่ให้ข่าวไปแล้ว และวันล่าสุดที่ได้ข่าวจริง (ช่วงความสุขต่ำได้ข่าวทุก 2 วัน) */
+      tipsReportDay: z.number().int().nonnegative(),
+      lastTipDay: z.number().int().nonnegative(),
       consignment: z.strictObject({ items: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })), returnDay: z.number().int().positive(), tier: z.number().int().nonnegative() }).nullable(),
       report: z
         .strictObject({ day: z.number().int().positive(), sold: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })), returned: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })), gross: z.number(), commission: z.number(), coins: z.number(), tier: z.number().int().nonnegative(), gift: z.strictObject({ item: z.string().min(1), count: z.number().int().positive() }).nullable() })

@@ -7,6 +7,7 @@
     "favourite": [
       "strawberry_skewer"
     ],
+    "favouriteDrink": "strawberry_juice",
     "likes": [
       "grilled_corn",
       "warm_honey_milk"
@@ -49,6 +50,7 @@
     "favourite": [
       "boiled_egg"
     ],
+    "favouriteDrink": "basil_tea",
     "likes": [
       "scallion_omelet",
       "honey_pancake"
@@ -60,7 +62,26 @@
       "recipe": "grilled_corn",
       "stars": 1
     },
-    "art": null
+    "art": {
+      "sheet": "monster_popcorn",
+      "frame": 40,
+      "walkMs": 110,
+      "eatMs": 150,
+      "eatFrames": [
+        0,
+        1,
+        2,
+        1,
+        2,
+        3,
+        4,
+        5,
+        4,
+        0
+      ],
+      "hungryEye": "#c2364a",
+      "height": 30
+    }
   },
   "mookmik": {
     "floor": 3,
@@ -70,6 +91,7 @@
     "favourite": [
       "tomato_soup"
     ],
+    "favouriteDrink": "tomato_juice",
     "likes": [
       "potato_carrot_stew",
       "honey_apple_grill"
@@ -81,7 +103,24 @@
       "recipe": "scallion_omelet",
       "stars": 1
     },
-    "art": null
+    "art": {
+      "sheet": "monster_mookmik",
+      "frame": 40,
+      "walkMs": 110,
+      "eatMs": 150,
+      "eatFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "hungryEye": "#c2364a",
+      "height": 36
+    }
   },
   "toomtia": {
     "floor": 4,
@@ -91,6 +130,7 @@
     "favourite": [
       "baked_potato"
     ],
+    "favouriteDrink": "warm_honey_milk",
     "likes": [
       "fish_congee",
       "potato_carrot_stew"
@@ -112,6 +152,7 @@
     "favourite": [
       "grilled_fish"
     ],
+    "favouriteDrink": "tomato_juice",
     "likes": [
       "home_kaprao",
       "boiled_egg"
@@ -133,6 +174,7 @@
     "favourite": [
       "fish_congee"
     ],
+    "favouriteDrink": "basil_tea",
     "likes": [
       "tomato_soup",
       "warm_honey_milk"
@@ -154,6 +196,7 @@
     "favourite": [
       "warm_honey_milk"
     ],
+    "favouriteDrink": "strawberry_juice",
     "likes": [
       "strawberry_skewer",
       "honey_pancake"
@@ -175,6 +218,7 @@
     "favourite": [
       "scallion_omelet"
     ],
+    "favouriteDrink": "basil_tea",
     "likes": [
       "baked_potato",
       "corn_egg_fried_rice"
@@ -196,6 +240,7 @@
     "favourite": [
       "honey_pancake"
     ],
+    "favouriteDrink": "strawberry_juice",
     "likes": [
       "honey_apple_grill",
       "strawberry_milk_pudding"
@@ -217,6 +262,7 @@
     "favourite": [
       "strawberry_milk_pudding"
     ],
+    "favouriteDrink": "basil_tea",
     "likes": [
       "home_kaprao",
       "fish_congee"

@@ -14,6 +14,7 @@ interface M7World {
   monsters: { affection: Record<string, { points: number; signature: boolean }>; plannedDay: number; arrivals: { monster: string; day: number; hour: number; done: boolean }[] };
   recipes: { known: string[]; bestStars: Record<string, number> };
   gauges: { fullness: number; happiness: number; cleanliness: number; homesickness: number };
+  gio: { report: unknown };
 }
 interface TestState {
   world: M7World;
@@ -75,18 +76,19 @@ test('puts dishes on the tray in the tray window: one menu per plate, the same m
   await shot(page, '02_tray_in_world');
 });
 
-test('Puinun comes out of the burrow, takes a favourite tower, eats near the burrow, and her affection rises', async ({ page }, info) => {
+test('Puinun (warm, 50%) comes out of the burrow, takes a favourite tower, eats near the burrow, and her affection rises', async ({ page }, info) => {
   test.skip(info.project.name !== 'desktop', 'one full visit on desktop is enough; the mobile projects check the tray window');
   await open(page);
   await page.evaluate(() => (window as unknown as Win).__visitSpeed(3));
   await patch(
     page,
-    `(w) => ({ ...w, hour: 13, gauges: { ...w.gauges, cleanliness: 50 }, tray: { level: 0, plates: [{ item: 'dish_grilled_fish_1', count: 2 }, { item: 'dish_strawberry_skewer_1', count: 6 }, { item: 'dish_boiled_egg_1', count: 2 }] } })`,
+    `(w) => ({ ...w, hour: 13, gauges: { ...w.gauges, cleanliness: 50 }, monsters: { ...w.monsters, affection: { puinun: { points: 15, signature: false } } }, tray: { level: 0, plates: [{ item: 'dish_grilled_fish_1', count: 2 }, { item: 'dish_strawberry_skewer_1', count: 6 }, { item: 'dish_boiled_egg_1', count: 2 }] } })`,
   );
   await standAtTray(page);
   await patch(page, `(w) => ({ ...w, monsters: { ...w.monsters, arrivals: [{ monster: 'puinun', day: w.day, hour: w.hour, done: false }] } })`);
   await expect.poll(() => visitsActive(page)).toBe(1);
-  await expect.poll(() => monsterTexture(page)).toContain('monster_puinun_hungry');
+  // ความชอบ 50% ตาเปลี่ยนไปครึ่งทางแล้ว (ภาพช่วงกลาง)
+  await expect.poll(() => monsterTexture(page)).toContain('monster_puinun_eye');
   await page.waitForTimeout(1500);
   await shot(page, '03_puinun_out');
   // หยิบเมนูโปรดเป็นหอคอย 3–5 ที่ ไม่แตะปลาย่าง (ไม่ชอบ) รวมไม่เกิน 5 ที่
@@ -99,7 +101,7 @@ test('Puinun comes out of the burrow, takes a favourite tower, eats near the bur
   expect(taken).toBeGreaterThanOrEqual(3);
   expect(taken).toBeLessThanOrEqual(5);
   expect(after.tray.plates[0]).toEqual({ item: 'dish_grilled_fish_1', count: 2 });
-  expect(after.monsters.affection.puinun!.points).toBeGreaterThan(0);
+  expect(after.monsters.affection.puinun!.points).toBeGreaterThan(15);
   // ไปนั่งกินใกล้โพรง ตาค่อย ๆ เปลี่ยน แล้วกลับเข้าโพรงหายไป
   await page.evaluate(() => (window as unknown as Win).__state.movePlayer({ x: 960, y: 330 }));
   await page.waitForTimeout(4000);
@@ -178,4 +180,82 @@ test('the test spawn button in settings puts the chosen item, stars and count in
   const bag = (await world(page)).bag;
   expect(bag.find((stack) => stack.item === 'produce_strawberry@3')?.count).toBe(5);
   expect(bag.find((stack) => stack.item === 'dish_baked_potato_2')?.count).toBe(5);
+});
+
+const textures = (page: Page): Promise<string[]> =>
+  page.evaluate(() => {
+    const scene = (window as unknown as Win).__game.scene.getScene('Base') as { visits: { runs: Map<string, { monster: { sprite: { texture: { key: string } } } }> } };
+    return [...scene.visits.runs.values()].map((run) => run.monster.sprite.texture.key);
+  });
+
+test('M7b: a wary Popcorn grabs her boiled egg tower and runs straight back into the burrow without sitting to eat', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'one full visit on desktop is enough');
+  await open(page);
+  await page.evaluate(() => (window as unknown as Win).__visitSpeed(3));
+  await patch(page, `(w) => ({ ...w, hour: 13, tray: { level: 0, plates: [{ item: 'dish_boiled_egg_1', count: 5 }, null, null] } })`);
+  await page.evaluate(() => (window as unknown as Win).__state.movePlayer({ x: 700, y: 420 }));
+  await patch(page, `(w) => ({ ...w, monsters: { ...w.monsters, arrivals: [{ monster: 'popcorn', day: w.day, hour: w.hour, done: false }] } })`);
+  await expect.poll(() => monsterTexture(page)).toContain('monster_popcorn_hungry');
+  const seen = new Set<string>();
+  await expect
+    .poll(
+      async () => {
+        for (const key of await textures(page)) seen.add(key);
+        return visitsActive(page);
+      },
+      { timeout: 90_000, intervals: [200] },
+    )
+    .toBe(0);
+  expect([...seen].some((key) => key.includes('_eat'))).toBe(false);
+  const after = await world(page);
+  expect(after.monsters.affection.popcorn!.points).toBeGreaterThan(0);
+  expect(after.tray.plates[0]?.count ?? 0).toBeLessThanOrEqual(2);
+});
+
+test('M7b: Puinun takes her favourite food and favourite drink together and says "เข้ากันสุดๆ!"', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'one full visit on desktop is enough');
+  await open(page);
+  await page.evaluate(() => (window as unknown as Win).__visitSpeed(3));
+  await patch(
+    page,
+    `(w) => ({ ...w, hour: 13, monsters: { ...w.monsters, affection: { puinun: { points: 15, signature: false } } }, tray: { level: 0, plates: [{ item: 'dish_strawberry_skewer_1', count: 3 }, { item: 'dish_strawberry_juice_1', count: 2 }, null] } })`,
+  );
+  await page.evaluate(() => (window as unknown as Win).__state.movePlayer({ x: 700, y: 420 }));
+  await patch(page, `(w) => ({ ...w, monsters: { ...w.monsters, arrivals: [{ monster: 'puinun', day: w.day, hour: w.hour, done: false }] } })`);
+  await expect(page.locator('.world-bubble', { hasText: 'เข้ากันสุดๆ!' })).toBeVisible({ timeout: 60_000 });
+  await shot(page, '12_set');
+  const after = await world(page);
+  expect(after.tray.plates[1]?.count).toBe(1);
+});
+
+test('M7b: Gio comes back with news: the summary shows tomorrow\'s visitors and new tips, and the news page lists them', async ({ page }) => {
+  await open(page);
+  await patch(page, `(w) => ({ ...w, hour: 19, gio: { ...w.gio, happiness: 90 }, bag: [{ item: 'produce_scallion', count: 9 }] })`);
+  const where = await page.evaluate(() => {
+    const g = ((window as unknown as Win).__game.scene.getScene('Base') as { gio: { feetX: number; feetY: number } }).gio;
+    return { x: g.feetX, y: g.feetY };
+  });
+  await page.evaluate(({ x, y }) => (window as unknown as Win).__state.movePlayer({ x: x + 26, y }), where);
+  await page.locator('#action-button').click();
+  await page.locator('[data-gio-action="consign"]').click();
+  await page.locator('.consign-slot[data-item="produce_scallion"]').click({ delay: 600 });
+  await page.locator('#consign-go').click();
+  await page.locator('[data-gio-action="close"]').click();
+  await patch(page, `(w) => ({ ...w, day: 2, hour: 18.2 })`);
+  await expect.poll(async () => (await world(page)).gio.report !== null).toBe(true);
+  // ยืนใกล้จีโออยู่แล้ว ใบสรุปยอดเปิดเอง · ขาย 9 ชิ้น พรุ่งนี้มา 1 + 9 ÷ 4 = 3 ตัว · ความสุข 70 ขึ้นไปได้ข่าว 2 ข้อ
+  await expect(page.locator('#gio-report')).toBeVisible();
+  await expect(page.locator('#report-visitors')).toContainText('พรุ่งนี้มอนสเตอร์มาเยี่ยม 3 ตัว');
+  await expect(page.locator('#report-news')).toContainText('มีข่าวใหม่ 2 ข้อ');
+  await shot(page, '13_summary');
+  await page.locator('.gio-report__ok').click();
+  await page.locator('#action-button').click();
+  await expect(page.locator('[data-gio-action="news"] .gio-talk__dot')).toHaveCount(1);
+  await page.locator('[data-gio-action="news"]').click();
+  await expect(page.locator('#gio-news .gio-talk__tip')).toHaveCount(2);
+  await expect(page.locator('#gio-news .gio-talk__new')).toHaveCount(2);
+  await expect(page.locator('#gio-line')).toContainText('ได้ยินว่า');
+  await shot(page, '14_news');
+  await page.locator('.gio-talk__news-back').click();
+  await expect(page.locator('[data-gio-action="news"] .gio-talk__dot')).toHaveCount(0);
 });

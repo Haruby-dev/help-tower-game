@@ -165,6 +165,7 @@ export function checkProject(): string[] {
   for (const [id, monster] of Object.entries(monstersSchema.parse(readJson('src/data/monsters.json')))) {
     for (const key of [`monster.${id}.name`, `monster.${id}.clear`]) if (!translations[key]) problems.push(`src/i18n/th.json: monster ${id} has no ${key}`);
     const menus = [...monster.favourite, ...monster.likes, ...monster.dislikes, monster.signature.recipe];
+    if (recipesData[monster.favouriteDrink]?.category !== 'drink') problems.push(`src/data/monsters.json: ${id} favourite drink ${monster.favouriteDrink} is not a drink`);
     for (const recipe of menus) if (!recipesData[recipe]) problems.push(`src/data/monsters.json: ${id} uses unknown recipe ${recipe}`);
     const signature = recipesData[monster.signature.recipe];
     const highest = monster.zone === 1 ? 'D' : 'SSS';

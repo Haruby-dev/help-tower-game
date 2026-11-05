@@ -39,7 +39,7 @@ export function tasteOf(id: string, recipe: string): Taste {
   const rank = recipes[recipe]?.rank;
   const minimum = rules.minRankByZone[monster.zone - 1] ?? 'F';
   if (!rank || RANKS.indexOf(rank) < RANKS.indexOf(minimum)) return 'belowRank';
-  if (monster.favourite.includes(recipe)) return 'favourite';
+  if (monster.favourite.includes(recipe) || monster.favouriteDrink === recipe) return 'favourite';
   if (monster.likes.includes(recipe)) return 'like';
   return 'neutral';
 }
@@ -122,6 +122,19 @@ export function feed(world: World, id: string, item: string, eatenBefore: number
   const gained = dishPoints(id, recipe, stars, eatenBefore, world.gauges.cleanliness);
   const points = Math.min(cap, affection.points + gained);
   return { world: put({ ...affection, points }), points: points - affection.points, signature: false, cleared: false };
+}
+
+const isDrink = (recipe: string): boolean => recipes[recipe]?.category === 'drink';
+
+/** เพิ่มความชอบโดยไม่เกินเพดาน (90% ก่อนได้เมนูประจำใจ) ใช้กับโบนัสเซ็ต */
+function addPoints(world: World, id: string, amount: number): { world: World; added: number } {
+  const affection = affectionOf(world, id);
+  const required = requiredPoints(id);
+  if (isCleared(world, id) || amount <= 0) return { world, added: 0 };
+  const cap = affection.signature ? required : required * rules.signatureAt;
+  const points = Math.min(cap, affection.points + amount);
+  const next = { ...world, monsters: { ...world.monsters, affection: { ...world.monsters.affection, [id]: { ...affection, points } } } };
+  return { world: next, added: points - affection.points };
 }
 
 /** แขกที่มาได้: อยู่ในโซนที่ปลดแล้ว ยังไม่ครบ 100% และมีภาพแล้ว (ตัวที่ยังไม่มีภาพรอจนกว่าฝั่งวางแผนส่งมา) */
@@ -229,10 +242,19 @@ export function planVisit(world: World, id: string, rng: Rng): VisitPlan {
     takes.push({ plate: signaturePlate.index, item: signaturePlate.item, count: 1, reaction: 'signature' });
     appetite -= 1;
   }
-  for (const entry of favourites) {
-    const count = Math.min(appetite, tower, entry.count);
+  // มีทั้งเมนูโปรดและเครื่องดื่มโปรด: อาหารเป็นหอคอยแต่เว้นที่ไว้ 1 แก้วให้ครบเซ็ต "เข้ากันสุดๆ!"
+  const food = favourites.filter((entry) => !isDrink(parseDish(entry.item).recipe));
+  const drink = favourites.filter((entry) => isDrink(parseDish(entry.item).recipe));
+  const pairing = food.length > 0 && drink.length > 0;
+  for (const entry of food) {
+    const count = Math.min(appetite - (pairing ? 1 : 0), tower, entry.count);
     if (count > 0) takes.push({ plate: entry.index, item: entry.item, count, reaction: 'favourite' });
-    appetite -= count;
+    appetite -= Math.max(0, count);
+  }
+  for (const entry of drink) {
+    const count = Math.min(appetite, pairing ? 1 : tower, entry.count);
+    if (count > 0) takes.push({ plate: entry.index, item: entry.item, count, reaction: 'favourite' });
+    appetite -= Math.max(0, count);
   }
   for (const taste of ['like', 'neutral'] as const) {
     for (const entry of byTaste.get(taste) ?? []) {
@@ -244,29 +266,64 @@ export function planVisit(world: World, id: string, rng: Rng): VisitPlan {
   return { takes, pouts, asks: asking && !signaturePlate ? signatureOf(id).recipe : null };
 }
 
+/** สิ่งที่จำไว้ระหว่างการมาครั้งหนึ่ง: จานที่กินต่อเมนู (ความหลากหลาย) และความชอบจากเมนูโปรดกับเครื่องดื่มโปรดที่ใช้คิดโบนัสเซ็ต */
+export interface VisitMemo {
+  eaten: Record<string, number>;
+  favouriteFood: number | null;
+  favouriteDrink: number | null;
+  set: boolean;
+}
+
+export const newVisitMemo = (): VisitMemo => ({ eaten: {}, favouriteFood: null, favouriteDrink: null, set: false });
+
 export interface Taken {
   world: World;
   /** ความชอบที่ได้ต่อที่ ตามลำดับที่กิน */
   gains: number[];
   taken: number;
   cleared: boolean;
+  /** จานนี้ทำให้ครบเซ็ตเมนูโปรดกับเครื่องดื่มโปรด (ครั้งแรกของการมาครั้งนี้) ขึ้นคำว่า "เข้ากันสุดๆ!" แม้ความชอบชนเพดานแล้ว */
+  set: boolean;
+  /** ความชอบที่ได้เพิ่มจากโบนัสเซ็ต (ชนเพดาน 90% อาจเป็น 0) */
+  setBonus: number;
 }
 
-/** หยิบจากจานแล้วกินทีละที่ ความชอบเข้าทันที (ภาพค่อย ๆ เล่นตามทีหลัง) · eaten นับจานต่อเมนูในการมาครั้งนี้ */
-export function takePlate(world: World, id: string, take: PlateTake, eaten: Record<string, number>): Taken {
+/** หยิบจากจานแล้วกินทีละที่ ความชอบเข้าทันที (ภาพค่อย ๆ เล่นตามทีหลัง) · ครบเซ็ตครั้งแรกได้โบนัส (setBonus − 1) × ความชอบของคู่นั้น */
+export function takePlate(world: World, id: string, take: PlateTake, memo: VisitMemo): Taken {
   const removed = removeFromPlate(world.tray, take.plate, take.item, take.count);
   let next: World = { ...world, tray: removed.tray };
   const gains: number[] = [];
   let cleared = false;
   const recipe = parseDish(take.item).recipe;
   for (let serving = 0; serving < removed.taken; serving += 1) {
-    const fed = feed(next, id, take.item, eaten[recipe] ?? 0);
+    const fed = feed(next, id, take.item, memo.eaten[recipe] ?? 0);
     next = fed.world;
     gains.push(fed.points);
     cleared ||= fed.cleared;
-    eaten[recipe] = (eaten[recipe] ?? 0) + 1;
+    memo.eaten[recipe] = (memo.eaten[recipe] ?? 0) + 1;
+    if (take.reaction === 'favourite') {
+      if (isDrink(recipe)) memo.favouriteDrink ??= fed.points;
+      else memo.favouriteFood ??= fed.points;
+    }
   }
-  return { world: next, gains, taken: removed.taken, cleared };
+  let setBonus = 0;
+  let set = false;
+  if (!memo.set && memo.favouriteFood !== null && memo.favouriteDrink !== null) {
+    memo.set = true;
+    set = true;
+    const added = addPoints(next, id, (rules.setBonus - 1) * (memo.favouriteFood + memo.favouriteDrink));
+    next = added.world;
+    setBonus = added.added;
+  }
+  return { world: next, gains, taken: removed.taken, cleared, set, setBonus };
+}
+
+/** ที่กินตามความชอบตอนมาถึง: ยังระแวงคว้าแล้ววิ่งกลับโพรง · กลางนั่งกินใกล้โพรง · สนิทนั่งกินที่ลานหน้าบ้าน (ร้านยังไม่เปิด) */
+export type EatPlace = 'burrow' | 'nearBurrow' | 'yard';
+export function eatPlaceFor(world: World, id: string): EatPlace {
+  const tier = tierOf(world, id);
+  if (tier === 'hungry') return 'burrow';
+  return tier === 'warm' ? 'nearBurrow' : 'yard';
 }
 
 /** แขกที่ไม่ได้มาให้เห็น (เป็นลมข้ามเวลา นอนก่อน หรือเลยเวลา) กินจากถาดเองโดยไม่มีภาพ */
@@ -279,9 +336,9 @@ export function settleVisits(world: World): World {
     if (arrival.done || !stale(arrival)) return;
     next = markArrived(next, arrivalKey(arrival));
     if (isCleared(next, arrival.monster)) return;
-    const eaten: Record<string, number> = {};
+    const memo = newVisitMemo();
     for (const take of planVisit(next, arrival.monster, createRng(world.seed + arrival.day * SETTLE_MIX + index)).takes) {
-      next = takePlate(next, arrival.monster, take, eaten).world;
+      next = takePlate(next, arrival.monster, take, memo).world;
     }
   });
   // แขกของวันก่อน ๆ ไม่ต้องเก็บไว้แล้ว

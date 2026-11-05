@@ -3848,5 +3848,81 @@
     "footY": {
       "default": 38
     }
+  },
+  "monster_popcorn_hungry_stand": {
+    "footY": {
+      "default": 34
+    }
+  },
+  "monster_popcorn_hungry_walk": {
+    "footY": {
+      "default": 153,
+      "south": 33,
+      "east": 32,
+      "north": 33,
+      "west": 32
+    }
+  },
+  "monster_popcorn_hungry_eat": {
+    "footY": {
+      "default": 33
+    }
+  },
+  "monster_popcorn_sweet_stand": {
+    "footY": {
+      "default": 34
+    }
+  },
+  "monster_popcorn_sweet_walk": {
+    "footY": {
+      "default": 153,
+      "south": 33,
+      "east": 32,
+      "north": 33,
+      "west": 32
+    }
+  },
+  "monster_popcorn_sweet_eat": {
+    "footY": {
+      "default": 33
+    }
+  },
+  "monster_mookmik_hungry_stand": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "monster_mookmik_hungry_walk": {
+    "footY": {
+      "default": 158,
+      "south": 38,
+      "east": 37,
+      "north": 38,
+      "west": 37
+    }
+  },
+  "monster_mookmik_hungry_eat": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "monster_mookmik_sweet_stand": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "monster_mookmik_sweet_walk": {
+    "footY": {
+      "default": 158,
+      "south": 38,
+      "east": 37,
+      "north": 38,
+      "west": 37
+    }
+  },
+  "monster_mookmik_sweet_eat": {
+    "footY": {
+      "default": 38
+    }
   }
 }

@@ -41,6 +41,8 @@ const SPARKLE_SPOTS: [number, number][] = [
  */
 export class Monster {
   readonly sprite: Phaser.GameObjects.Sprite;
+  /** วิ่งกลับโพรงใช้ท่าเดินเร่งความเร็ว (ฉากตั้งค่า) */
+  speedMultiplier = 1;
   private route: Point[] = [];
   private facing: Facing = 'south';
   private kind: SheetKind = 'stand';
@@ -67,7 +69,7 @@ export class Monster {
     this.percent = percent;
     this.level = eyeLevel(percent, cleared);
     this.sprite = scene.add.sprite(at.x, at.y, sheetKey(art, this.level, 'stand'), 0).setName(`monster_${id}`);
-    this.sprite.setOrigin(0.5, footY(sheetKey(art, 0, 'stand')) / art.frame);
+    this.placeFeet('stand');
     this.sprite.on(Phaser.Animations.Events.ANIMATION_COMPLETE, (animation: Phaser.Animations.Animation) => {
       if (animation.key.endsWith('_once')) {
         this.eatingNow = false;
@@ -123,6 +125,7 @@ export class Monster {
     this.kind = 'eat';
     this.eatingNow = true;
     this.sprite.setFlipX(false);
+    this.placeFeet('eat');
     this.sprite.play(`${sheetKey(this.art, this.level, 'eat')}_once`);
   }
 
@@ -232,7 +235,7 @@ export class Monster {
   private step(deltaMs: number): void {
     const point = this.route[0];
     if (!point) return;
-    const speed = balance.monsters.walkSpeed;
+    const speed = balance.monsters.walkSpeed * this.speedMultiplier;
     const remaining = Math.hypot(point.x - this.position.x, point.y - this.position.y);
     const move = (speed * deltaMs) / 1000;
     if (remaining <= ARRIVE_PX || remaining <= move) {
@@ -264,8 +267,18 @@ export class Monster {
     const key = `${sheetKey(this.art, this.level, 'walk')}_${this.facing}`;
     const progress = keepFrame ? this.sprite.anims.getProgress() : 0;
     this.sprite.setFlipX(false);
+    this.placeFeet('walk');
     this.sprite.play(key, true);
     if (keepFrame) this.sprite.anims.setProgress(progress);
+  }
+
+  /**
+   * วางภาพด้วยจุดเท้าของแผ่นนั้น ท่ายืนกับท่าเดินใช้เส้นเท้าของท่ายืน (ท่ากระโดดตั้งใจให้ตัวลอย) ท่ากินใช้เส้นเท้าของแผ่นกิน
+   * ภาพช่วงกลางที่สร้างตอนเล่นใช้จุดเท้าของภาพหิวต้นฉบับ
+   */
+  private placeFeet(kind: SheetKind): void {
+    const sheet = sheetKey(this.art, 0, kind === 'eat' ? 'eat' : 'stand');
+    this.sprite.setOrigin(0.5, footY(sheet) / this.art.frame);
   }
 
   private showStand(): void {
@@ -273,6 +286,7 @@ export class Monster {
     this.eatingNow = false;
     this.sprite.stop();
     this.sprite.setFlipX(false);
+    this.placeFeet('stand');
     this.sprite.setTexture(sheetKey(this.art, this.level, 'stand'), DIRECTIONS.indexOf(this.facing));
   }
 

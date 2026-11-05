@@ -13,13 +13,16 @@ import {
   affectionPercent,
   arrivalKey,
   dueArrivals,
+  eatPlaceFor,
   isCleared,
+  newVisitMemo,
   markArrived,
   monsterTable,
   planVisit,
   requiredPoints,
   takePlate,
   tierOf,
+  type EatPlace,
   type Reaction,
 } from '../systems/monsters';
 import { servingsOnTray } from '../systems/tray';
@@ -63,6 +66,8 @@ interface Meal {
   gain: number;
   reaction: Reaction;
   cleared: boolean;
+  /** จานนี้ทำให้ครบเซ็ตเมนูโปรดกับเครื่องดื่มโปรด */
+  set: boolean;
 }
 
 interface Run {
@@ -76,7 +81,8 @@ interface Run {
   /** ความชอบที่แสดงอยู่ ภาพค่อย ๆ ตามความจริงทีละจานตอนกิน */
   shownPoints: number;
   shownCleared: boolean;
-  spot: number | null;
+  /** ที่นั่งกินที่จองไว้ เช่น nearBurrow:0 หรือ yard:1 */
+  spot: string | null;
 }
 
 export interface VisitPlaces {
@@ -96,7 +102,7 @@ export type ToScreen = (x: number, y: number) => Point;
 export class Visits {
   private runs = new Map<string, Run>();
   private trayOwner: Run | null = null;
-  private spotsTaken = new Set<number>();
+  private spotsTaken = new Set<string>();
   private readonly talkRng = createRng(Date.now() + 7);
   private tagShown = new Set<string>();
 
@@ -117,7 +123,7 @@ export class Visits {
     const paused = !gameState.clockRunning;
     const step = deltaMs * visitTestHooks.speed;
     for (const run of [...this.runs.values()]) {
-      run.monster.sprite.anims.timeScale = visitTestHooks.speed;
+      run.monster.sprite.anims.timeScale = visitTestHooks.speed * run.monster.speedMultiplier;
       run.monster.update(step, paused, time);
       if (!paused) this.advance(run, step);
       if (run.done) this.remove(run);
@@ -234,19 +240,26 @@ export class Visits {
     return { approach: { x: right + APPROACH_GAP_PX, y }, plates, y };
   }
 
-  private eatSpot(run: Run): Point {
-    const spots = this.places.eatSpots.length > 0 ? this.places.eatSpots : FALLBACK_EAT.map((offset) => ({ x: this.places.burrow.x + offset.x, y: this.places.burrow.y + offset.y }));
-    const free = spots.findIndex((_, index) => !this.spotsTaken.has(index));
-    run.spot = free >= 0 ? free : 0;
+  /** ที่นั่งกิน: ใกล้โพรงใช้จุด monster_eat_* บนแผนที่ · ลานหน้าบ้านอยู่รอบถาด ถาดย้ายที่ก็ตามไป */
+  private eatSpot(run: Run, place: Exclude<EatPlace, 'burrow'>): Point {
+    const view = this.tray();
+    const spots =
+      place === 'yard' && view
+        ? rules.yardSpots.map(([dx, dy]) => ({ x: view.bounds.centerX + dx, y: view.bounds.bottom + dy }))
+        : this.places.eatSpots.length > 0
+          ? this.places.eatSpots
+          : FALLBACK_EAT.map((offset) => ({ x: this.places.burrow.x + offset.x, y: this.places.burrow.y + offset.y }));
+    const free = spots.findIndex((_, index) => !this.spotsTaken.has(`${place}:${index}`));
+    const index = free >= 0 ? free : 0;
+    run.spot = `${place}:${index}`;
     this.spotsTaken.add(run.spot);
-    return spots[run.spot]!;
+    return spots[index]!;
   }
 
-  private *goHome(run: Run, from: 'tray' | 'spot'): Generator<Wait, void, void> {
+  /** กลับเข้าโพรง: จากลาน (ถาดหรือลานหน้าบ้าน) เดินย้อนทางเดิม จากที่นั่งใกล้โพรงเดินเข้าจุดแรกนอกโพรงแล้วมุดเข้าไป */
+  private *goHome(run: Run, from: 'yard' | 'nearBurrow'): Generator<Wait, void, void> {
     const { route, burrow } = this.places;
-    const back = [...route].reverse();
-    // จากถาดเดินย้อนทางเดิม จากที่กินเดินเข้าจุดแรกนอกโพรงแล้วมุดเข้าไป
-    const path = from === 'tray' ? [...back, burrow] : [route[0] ?? burrow, burrow];
+    const path = from === 'yard' ? [...[...route].reverse(), burrow] : [route[0] ?? burrow, burrow];
     yield* this.walk(run, path);
     if (VANISH_SPARKLE) run.monster.sparkles();
   }
@@ -275,7 +288,7 @@ export class Visits {
     const front = this.trayFront();
     if (!front || isCleared(gameState.world, id)) {
       this.trayOwner = null;
-      yield* this.goHome(run, 'tray');
+      yield* this.goHome(run, 'yard');
       return;
     }
     if (servingsOnTray(gameState.world.tray) === 0) {
@@ -283,14 +296,16 @@ export class Visits {
       this.say(run, 'emptyTray', true);
       yield { kind: 'ms', left: rules.thinkMs };
       this.trayOwner = null;
-      yield* this.goHome(run, 'tray');
+      yield* this.goHome(run, 'yard');
       return;
     }
 
     const world: World = gameState.world;
     const plan = planVisit(world, id, createRng(world.seed + world.day * PLAN_MIX + run.seed));
+    // ที่กินตัดสินจากความชอบตอนมาถึง ก่อนได้ความชอบจากรอบนี้
+    const place = eatPlaceFor(world, id);
     this.say(run, 'browse');
-    const eaten: Record<string, number> = {};
+    const memo = newVisitMemo();
     const meals: Meal[] = [];
     for (const { index, x } of front.plates) {
       if (!gameState.world.tray.plates[index]) continue;
@@ -311,7 +326,7 @@ export class Visits {
       }
       const take = plan.takes.find((entry) => entry.plate === index);
       if (!take) continue;
-      const result = takePlate(gameState.world, id, take, eaten);
+      const result = takePlate(gameState.world, id, take, memo);
       gameState.setWorld(result.world);
       if (result.taken === 0) continue;
       const recipe = parseDish(take.item).recipe;
@@ -320,7 +335,17 @@ export class Visits {
       if (take.reaction === 'favourite' || take.reaction === 'signature') monster.sparkles();
       if (take.reaction === 'favourite') this.say(run, 'favourite', true);
       else if (take.reaction === 'like') this.say(run, 'like');
-      result.gains.forEach((gain, at) => meals.push({ item: take.item, gain, reaction: take.reaction, cleared: result.cleared && at === result.gains.length - 1 }));
+      result.gains.forEach((gain, at) => {
+        const last = at === result.gains.length - 1;
+        meals.push({ item: take.item, gain: gain + (last ? result.setBonus : 0), reaction: take.reaction, cleared: result.cleared && last, set: result.set && last });
+      });
+      if (result.set) {
+        // ครบเซ็ตเมนูโปรดกับเครื่องดื่มโปรด
+        this.speak(run, t('monster.set'));
+        monster.hearts(2);
+        monster.sparkles();
+        yield { kind: 'ms', left: rules.bubbleMs / 2 };
+      }
       yield { kind: 'ms', left: rules.eatGapMs };
     }
     if (plan.asks) {
@@ -330,13 +355,20 @@ export class Visits {
     this.trayOwner = null;
     if (meals.length === 0) {
       this.say(run, 'done');
-      yield* this.goHome(run, 'tray');
+      yield* this.goHome(run, 'yard');
       return;
     }
 
-    // ไปนั่งกินใกล้โพรง (ร้านยังไม่เปิด) ทีละที่ ตาค่อย ๆ หวานขึ้นตามความชอบที่ได้
-    const spot = this.eatSpot(run);
-    yield* this.walk(run, [...[...this.places.route].reverse().slice(0, -1), spot]);
+    // ยังระแวง: คว้าอาหารแล้ววิ่งกลับไปกินในโพรง
+    if (place === 'burrow') {
+      this.say(run, 'eat', true);
+      monster.speedMultiplier = rules.runSpeedMultiplier;
+      yield* this.goHome(run, 'yard');
+      return;
+    }
+    // กลาง: นั่งกินใกล้โพรง · สนิท: นั่งกินที่ลานหน้าบ้านใกล้ถาด (ร้านยังไม่เปิด) ทีละที่ ตาค่อย ๆ หวานขึ้นตามความชอบที่ได้
+    const spot = this.eatSpot(run, place);
+    yield* this.walk(run, place === 'yard' ? [spot] : [...[...this.places.route].reverse().slice(0, -1), spot]);
     monster.stand('south');
     this.say(run, 'eat');
     for (const meal of meals) {
@@ -345,6 +377,7 @@ export class Visits {
       monster.removeFromTower();
       this.showAffection(run, meal);
       if (HEARTS[meal.reaction] > 0) monster.hearts(HEARTS[meal.reaction]);
+      if (meal.set) monster.sparkles();
       if (meal.cleared) {
         monster.sparkles();
         this.speak(run, t(`monster.${id}.clear` as TextKey));
@@ -357,7 +390,7 @@ export class Visits {
     yield { kind: 'ms', left: rules.eatGapMs };
     if (run.spot !== null) this.spotsTaken.delete(run.spot);
     run.spot = null;
-    yield* this.goHome(run, 'spot');
+    yield* this.goHome(run, place);
   }
 }
 

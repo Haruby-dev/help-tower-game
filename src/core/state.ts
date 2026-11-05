@@ -149,6 +149,16 @@ export interface GioReport {
   tier: number;
 }
 
+export type TipKind = 'favourite' | 'drink' | 'signature';
+
+/** ข่าวหนึ่งข้อที่จีโอเล่า */
+export interface Tip {
+  monster: string;
+  kind: TipKind;
+  day: number;
+  read: boolean;
+}
+
 /** ความสุขจีโอ แมวเลียวันนี้ ลูบหัว และของที่ฝากขาย */
 export interface GioCare {
   happiness: number;
@@ -160,6 +170,9 @@ export interface GioCare {
   newsDay: number;
   /** แมวเลียรสที่จีโอเคยกินแล้ว รูปในอัลบั้มจีโอเปิดตามนี้ */
   album: string[];
+  tips: Tip[];
+  tipsReportDay: number;
+  lastTipDay: number;
   /** tier คือช่วงความสุขตอนฝาก ใช้คิดค่าคอมตอนจีโอกลับ */
   consignment: { items: BagStack[]; returnDay: number; tier: number } | null;
   report: GioReport | null;

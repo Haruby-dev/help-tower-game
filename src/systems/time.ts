@@ -5,6 +5,7 @@ import { finishOvernight, tickCooking } from './cooking';
 import { growFarm } from './farm';
 import { gioMorning, settleGio } from './gio';
 import { planVisits, settleVisits } from './monsters';
+import { gainTips } from './news';
 import { rainOnFarm, weatherFor } from './weather';
 import { decayAwake, recoverFromFaint, shouldFaint, sleepUntilMorning } from './gauges';
 
@@ -32,8 +33,8 @@ function nextMorning(world: World, restful: boolean): World {
 
 export type StepResult = { world: World; cause: RestCause | null };
 
-/** จีโอกลับมาพร้อมยอดขาย → วางแผนแขกพรุ่งนี้ · แขกที่เลยเวลาแล้วยังไม่ได้มาให้เห็น กินจากถาดเอง */
-const settle = (world: World): World => settleVisits(planVisits(settleGio(world)));
+/** จีโอกลับมาพร้อมยอดขายและข่าว → วางแผนแขกพรุ่งนี้ · แขกที่เลยเวลาแล้วยังไม่ได้มาให้เห็น กินจากถาดเอง */
+const settle = (world: World): World => settleVisits(planVisits(gainTips(settleGio(world))));
 
 /** คำนวณอย่างเดียว ไม่แตะ GameState จึงทดสอบตัวเลขแยกได้ */
 export function stepClock(world: World, deltaMs: number): StepResult {

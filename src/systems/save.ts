@@ -8,7 +8,7 @@ import balance from '../data/balance.json';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 import { cookingStarterBag, firstWeather, fishingStarterBag, newFarm, newFishing, newRecipeBook, newSeed, starterBag } from './gauges';
 
-export const SAVE_VERSION = 12;
+export const SAVE_VERSION = 13;
 /** ผู้ใช้ตัดสิน 4 พ.ย. 2026: ตัวเลขเหรียญทั้งเกมใหญ่ขึ้น 10 เท่า สัดส่วนเศรษฐกิจเท่าเดิม */
 export const COIN_SCALE = 10;
 const OLD_TREAT = 'gio_lick_treat';
@@ -100,6 +100,11 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
       ...save,
       world: { ...world, farm: { plots: world.farm.plots.map((plot) => ({ ...plot, fertilizer: 0 })) }, tray: newTray(), monsters: newMonsters() },
     };
+  },
+  // เวอร์ชัน 13 จีโอเล่าข่าวมอนสเตอร์ เซฟเก่ายังไม่รู้ข่าวไหนเลย · สรุปยอดที่ค้างอยู่ไม่ได้ข่าวย้อนหลัง
+  12: (save) => {
+    const world = save.world as { gio: GioCare & { report: { day: number } | null } };
+    return { ...save, world: { ...world, gio: { ...world.gio, tips: [], tipsReportDay: world.gio.report?.day ?? 0, lastTipDay: 0 } } };
   },
 };
 
