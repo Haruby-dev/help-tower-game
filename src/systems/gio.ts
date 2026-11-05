@@ -7,6 +7,7 @@ import { createRng } from '../core/rng';
 import { applyTransaction } from './economy';
 import { addToBag, countOf, cropOfItem, crops, takeFromBag } from './farm';
 import { fishOfItem, fishTable, isFish } from './fishing';
+import { starsOf } from './stars';
 
 const care = balance.gioCare;
 const shop = shopJson as ShopData;
@@ -56,7 +57,12 @@ export const tasteOf = (item: string): TreatTaste | null => shop.treats.find((tr
 
 /** ราคาที่จีโอขายได้ต่อชิ้นก่อนหักค่าคอม ของที่ขายไม่ได้ตอบ null · อาหาร 2 ดาว ×1.2 · 3 ดาว ×1.5 */
 export function saleValue(item: string): number | null {
-  if (isRawProduce(item)) return crops[cropOfItem(item)]?.sellPrice ?? null;
+  if (isRawProduce(item)) {
+    const price = crops[cropOfItem(item)]?.sellPrice;
+    // ผักดาวสูงขายแพงขึ้นเหมือนอาหาร (ค่าที่ฝั่งโค้ดเติม GDD ไม่ระบุ)
+    const multiplier = balance.stars.priceMultiplier[Math.min(Math.max(starsOf(item) ?? 1, 1), 3) - 1]!;
+    return price === undefined ? null : Math.round(price * multiplier);
+  }
   if (isFish(item)) return fishTable[fishOfItem(item)]?.price ?? null;
   if (isDish(item)) {
     const { recipe, stars } = parseDish(item);

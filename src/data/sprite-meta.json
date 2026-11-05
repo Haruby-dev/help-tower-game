@@ -3753,7 +3753,7 @@
   },
   "shop_item_kitchen_pots_pans": {
     "footY": {
-      "default": 28
+      "default": 32
     }
   },
   "shop_item_recipe_scroll_savory": {
@@ -3764,6 +3764,89 @@
   "shop_item_recipe_scroll_sweet": {
     "footY": {
       "default": 29
+    }
+  },
+  "star_badge_1": {
+    "footY": {
+      "default": 9
+    }
+  },
+  "star_badge_2": {
+    "footY": {
+      "default": 9
+    }
+  },
+  "star_badge_3": {
+    "footY": {
+      "default": 9
+    }
+  },
+  "fertilizer_2": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "shop_item_fertilizer_2": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "fertilizer_3": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "shop_item_fertilizer_3": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "fx_fert2_twinkle": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "fx_fert3_twinkle": {
+    "footY": {
+      "default": 9
+    }
+  },
+  "monster_puinun_hungry_stand": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "monster_puinun_hungry_walk": {
+    "footY": {
+      "default": 159,
+      "south": 38,
+      "east": 38,
+      "north": 38,
+      "west": 38
+    }
+  },
+  "monster_puinun_hungry_eat": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "monster_puinun_sweet_stand": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "monster_puinun_sweet_walk": {
+    "footY": {
+      "default": 159,
+      "south": 38,
+      "east": 38,
+      "north": 38,
+      "west": 38
+    }
+  },
+  "monster_puinun_sweet_eat": {
+    "footY": {
+      "default": 38
     }
   }
 }

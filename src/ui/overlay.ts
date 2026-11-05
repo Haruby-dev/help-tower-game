@@ -18,6 +18,8 @@ import { createLandConfirm } from './land';
 import { createArrange } from './arrange';
 import { createToolbar } from './toolbar';
 import { createGioWindows } from './gio';
+import { createTrayWindow } from './tray';
+import { createWorldBubbles } from './bubbles';
 
 function createRotatePrompt(uiRoot: HTMLElement): void {
   const gio = registry.gio_sit;
@@ -65,6 +67,8 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   createToolbar(uiRoot);
   createCookingWindow(uiRoot);
   createGioWindows(uiRoot);
+  createTrayWindow(uiRoot);
+  createWorldBubbles(uiRoot);
   createChestWindow(uiRoot);
   createSettings(uiRoot);
   createPhone(uiRoot);

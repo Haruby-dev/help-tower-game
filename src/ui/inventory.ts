@@ -5,7 +5,8 @@ import { gameState, type BagStack } from '../core/state';
 import balance from '../data/balance.json';
 import { MYSTERY, eatItem, fullnessOf, isDish, isIngredient, parseDish, recipes } from '../systems/cooking';
 import { cosmeticTable, isChest } from '../systems/chests';
-import { crops, cropOfItem, isSeed } from '../systems/farm';
+import { crops, cropOfItem, isFertilizer, isSeed } from '../systems/farm';
+import { baseItem, starsOf } from '../systems/stars';
 import { fishOfItem, isBait, isFish, makeBait } from '../systems/fishing';
 import { artUrl } from './pixelArt';
 import { isTreat } from '../systems/gio';
@@ -34,11 +35,11 @@ interface CollectionItem {
 }
 
 const isProduce = (item: string): boolean => item.startsWith('produce_');
-const isKnownCrop = (item: string): boolean => crops[cropOfItem(item)] !== undefined;
+const isKnownCrop = (item: string): boolean => (isSeed(item) || isProduce(item)) && crops[cropOfItem(item)] !== undefined;
 
-const STAR = '★';
 const flavourKey = (item: string): TextKey => {
   if (isSeed(item)) return 'bag.flavour_seed';
+  if (isFertilizer(item)) return 'bag.flavour_fertilizer';
   if (isFish(item)) return 'bag.flavour_fish';
   if (isBait(item)) return 'bag.flavour_bait';
   if (isChest(item)) return 'bag.flavour_chest';
@@ -47,10 +48,11 @@ const flavourKey = (item: string): TextKey => {
   return isIngredient(item) ? 'bag.flavour_ingredient' : 'bag.flavour_produce';
 };
 
+/** ปุ๋ยอยู่แท็บเมล็ด เพราะใช้กับแปลงผักผ่านช่องถุงเมล็ดเหมือนกัน */
 const inTab = (item: string, tab: BagTab): boolean => {
-  if (tab === 'seeds') return isSeed(item);
+  if (tab === 'seeds') return isSeed(item) || isFertilizer(item);
   if (tab === 'produce') return isProduce(item);
-  if (tab === 'goods') return !isSeed(item) && !isProduce(item);
+  if (tab === 'goods') return !isSeed(item) && !isFertilizer(item) && !isProduce(item);
   return true;
 };
 
@@ -63,7 +65,7 @@ export const itemName = (item: string): string => {
   if (isIngredient(item)) return t(`ingredient.${item.slice('ing_'.length)}.name` as TextKey) ?? item;
   if (isFish(item)) return t(`fish.${fishOfItem(item)}.name` as TextKey) ?? item;
   if (cosmeticTable[item]) return t(`cosmetic.${item}.name` as TextKey) ?? item;
-  if (!isKnownCrop(item)) return t(`item.${item}.name` as TextKey) ?? item;
+  if (!isKnownCrop(item)) return t(`item.${baseItem(item)}.name` as TextKey) ?? item;
   const crop = t(`crop.${cropOfItem(item)}.name` as TextKey);
   return isSeed(item) ? `${t('bag.seed_prefix')}${crop}` : crop;
 };
@@ -87,6 +89,31 @@ function artFor(item: string, sparkly: boolean): string | null {
   const crop = cropOfItem(item);
   if (isSeed(item)) return `seed_${crop}`;
   return sparkly ? `icon_${crop}` : `icon_bag_${crop}`;
+}
+
+/** ป้ายดาวสีทอง (ภาพ 1–3 ดาว) ใส่ตัวเลขดาวหรือรหัสของที่มีดาว */
+export function starBadge(of: number | string): HTMLElement {
+  const stars = Math.min(3, Math.max(1, typeof of === 'number' ? of : starsOf(of) ?? 1));
+  const id = `star_badge_${stars}`;
+  const entry = registry[id];
+  const image = document.createElement('img');
+  image.className = 'pixel-img star-badge';
+  image.alt = '';
+  image.dataset.stars = String(stars);
+  image.src = artUrl(id);
+  if (entry?.type === 'local') {
+    image.style.width = `calc(var(--px) * ${entry.width})`;
+    image.style.height = `calc(var(--px) * ${entry.height})`;
+  }
+  return image;
+}
+
+/** ของที่มีดาว (ผักจากแปลงและอาหาร) มีป้ายดาวที่มุมซ้ายล่างของช่อง ห่างขอบ 1 พิกเซล */
+export function cornerBadge(slot: HTMLElement, item: string): void {
+  if (starsOf(item) === null) return;
+  const badge = starBadge(item);
+  badge.classList.add('star-badge--corner');
+  slot.append(badge);
 }
 
 /** ไม่มีภาพใช้กล่องสีแทนตามกฎทะเบียน ขนาดเป็นจำนวนเท่าของจุดพิกเซลเสมอ */
@@ -121,6 +148,7 @@ function slotButton(stack: BagStack | undefined, selected: boolean, onPick: () =
   const count = document.createElement('b');
   count.textContent = String(stack.count);
   slot.append(itemImage(stack.item, false), count);
+  cornerBadge(slot, stack.item);
   slot.addEventListener('click', onPick);
   return slot;
 }
@@ -159,8 +187,8 @@ export function createInventoryPage(): HTMLElement {
     }
     const item = picked;
     const count = bag.filter((stack) => stack.item === item).reduce((sum, stack) => sum + stack.count, 0);
-    const stars = isDish(item) ? ` ${STAR.repeat(parseDish(item).stars)}` : '';
-    const name = Object.assign(document.createElement('b'), { textContent: `${itemName(item)}${stars}` });
+    const name = Object.assign(document.createElement('b'), { textContent: itemName(item) });
+    if (starsOf(item) !== null) name.append(' ', starBadge(item));
     const amount = Object.assign(document.createElement('span'), { className: 'bag-detail__count', textContent: `×${count}` });
     const flavour = Object.assign(document.createElement('small'), {
       textContent: t(flavourKey(item)),

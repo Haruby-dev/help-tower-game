@@ -10,6 +10,12 @@ const POP_MS = 260;
 const POP_LIFT_PX = 6;
 const WAKE_STRETCH = 1.3;
 const WAKE_MS = 320;
+/** ประกายปุ๋ยตามภาพตัวอย่าง: 1 จังหวะ 110 ms · ระดับ 2 เฟรมละ 3 จังหวะ วน 8 ช่อง (4 เฟรมแล้วพักเท่ากัน) · ระดับ 3 เฟรมละ 2 จังหวะ วน 7 ช่อง (5 เฟรมแล้วพัก) */
+const TWINKLE_TICK_MS = 110;
+const TWINKLES: Record<number, { key: string; frames: number; ticksPerFrame: number; slots: number; spots: [number, number][] }> = {
+  2: { key: 'fx_fert2_twinkle', frames: 4, ticksPerFrame: 3, slots: 8, spots: [[4, 14], [24, 4]] },
+  3: { key: 'fx_fert3_twinkle', frames: 5, ticksPerFrame: 2, slots: 7, spots: [[2, 8], [22, 18], [14, 0], [21, 10]] },
+};
 
 /** แปลงว่างเห็นแปลงพรวน ต้นที่รดน้ำแล้วมีรอยดินชื้นใต้ต้น ต้นอื่นเห็นแค่กองดินของตัวเอง */
 function bedTexture(state: PlotState): string | null {
@@ -29,6 +35,11 @@ export class Plot {
   private readonly readyMark: Phaser.GameObjects.Sprite;
   private bounce: Phaser.Tweens.Tween | null = null;
   private shown: PlotState | null = null;
+  private readonly left: number;
+  private readonly top: number;
+  /** ประกายบนแปลงที่ใส่ปุ๋ย จนกว่าจะเก็บเกี่ยว แต่ละจุดเริ่มคนละจังหวะ จึงไม่กะพริบพร้อมกัน */
+  private twinkles: { sprite: Phaser.GameObjects.Sprite; offset: number }[] = [];
+  private twinkleTier = 0;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -38,6 +49,8 @@ export class Plot {
     this.centerX = tile.getCenterX();
     this.centerY = tile.getCenterY();
     this.bottom = tile.getBottom();
+    this.left = tile.getLeft();
+    this.top = tile.getTop();
     this.bed = scene.add.image(this.centerX, this.centerY, 'soil_tilled').setDepth(depth).setVisible(false);
     this.plant = scene.add.sprite(this.centerX, this.bottom, '__DEFAULT').setOrigin(0.5, 1).setDepth(this.bottom).setVisible(false);
     this.sleepMark = scene.add
@@ -70,6 +83,7 @@ export class Plot {
       this.plant.setVisible(false);
     }
     this.setReadyBounce(isReady(state));
+    this.setTwinkles(state.fertilizer ?? 0);
     return wasReady === false && isReady(state);
   }
 
@@ -87,6 +101,29 @@ export class Plot {
       repeat: -1,
       ease: 'Stepped',
     });
+  }
+
+  private setTwinkles(tier: number): void {
+    if (tier === this.twinkleTier) return;
+    this.twinkleTier = tier;
+    for (const twinkle of this.twinkles) twinkle.sprite.destroy();
+    const kind = TWINKLES[tier];
+    this.twinkles = (kind?.spots ?? []).map(([x, y]) => ({
+      sprite: this.scene.add.sprite(this.left + x, this.top + y, kind!.key, 0).setOrigin(0).setDepth(this.bottom + 0.5).setVisible(false),
+      offset: Math.floor(Math.random() * kind!.slots * kind!.ticksPerFrame),
+    }));
+  }
+
+  /** ฉากเรียกทุกเฟรม เปลี่ยนเฟรมประกายตามจังหวะ */
+  tick(time: number): void {
+    const kind = TWINKLES[this.twinkleTier];
+    if (!kind) return;
+    const tick = Math.floor(time / TWINKLE_TICK_MS);
+    for (const { sprite, offset } of this.twinkles) {
+      const slot = Math.floor((tick + offset) / kind.ticksPerFrame) % kind.slots;
+      sprite.setVisible(slot < kind.frames);
+      if (slot < kind.frames) sprite.setFrame(slot);
+    }
   }
 
   /** ต้นอ่อนเด้งขึ้นมาตอนปลูกเสร็จ */

@@ -3,7 +3,7 @@ import { t, type TextKey } from '../core/i18n';
 import { gameState, type Tool } from '../core/state';
 import { registry } from '../core/assets';
 import { cosmeticTable } from '../systems/chests';
-import { countOf, cropOfItem, isSeed, seedItem } from '../systems/farm';
+import { countOf, cropOfItem, isFertilizer, isSeed, sowItem } from '../systems/farm';
 import { baits, chosenBait } from '../systems/fishing';
 import { itemImage, itemName } from './inventory';
 import { artUrl } from './pixelArt';
@@ -91,6 +91,7 @@ function createBaitStrip(uiRoot: HTMLElement): { show(open: boolean): void; refr
 }
 const PICKER_WINDOW = 'seed-picker';
 const CONFIRM_WINDOW = 'dig-confirm';
+const FERTILIZE_WINDOW = 'fertilize-confirm';
 
 function createSeedPicker(uiRoot: HTMLElement): () => void {
   const backdrop = document.createElement('div');
@@ -111,7 +112,8 @@ function createSeedPicker(uiRoot: HTMLElement): () => void {
 
   return () => {
     panel.replaceChildren();
-    const seeds = gameState.world.bag.filter((stack) => isSeed(stack.item));
+    // ปุ๋ยเลือกจากหน้าเดียวกับเมล็ด ใส่แปลงด้วยช่องถุงเมล็ด
+    const seeds = gameState.world.bag.filter((stack) => isSeed(stack.item) || isFertilizer(stack.item));
     if (seeds.length === 0) {
       panel.append(Object.assign(document.createElement('p'), { textContent: t('bag.no_seeds') }));
     }
@@ -119,10 +121,11 @@ function createSeedPicker(uiRoot: HTMLElement): () => void {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'seed-choice';
-      button.dataset.seed = cropOfItem(stack.item);
+      const choice = isFertilizer(stack.item) ? stack.item : cropOfItem(stack.item);
+      button.dataset.seed = choice;
       button.append(itemImage(stack.item, false), Object.assign(document.createElement('small'), { textContent: `${itemName(stack.item)} ×${stack.count}` }));
       button.addEventListener('click', () => {
-        gameState.setSelectedSeed(cropOfItem(stack.item));
+        gameState.setSelectedSeed(choice);
         close();
       });
       panel.append(button);
@@ -171,12 +174,54 @@ function createDigConfirm(uiRoot: HTMLElement): void {
   no.addEventListener('click', close);
 }
 
+/** ปุ๋ยระดับสูงกว่าจะแทนปุ๋ยเดิมในแปลง ถามก่อน ใช้หน้าตาเดียวกับหน้าถามขุดทิ้ง */
+function createFertilizeConfirm(uiRoot: HTMLElement): void {
+  const backdrop = document.createElement('div');
+  backdrop.id = 'fertilize-confirm';
+  backdrop.className = 'dig-confirm';
+  backdrop.hidden = true;
+  const panel = document.createElement('div');
+  panel.className = 'dig-confirm__panel';
+  const text = document.createElement('p');
+  const yes = document.createElement('button');
+  yes.id = 'fertilize-yes';
+  yes.type = 'button';
+  yes.className = 'phone-tool';
+  yes.textContent = t('fertilize.yes');
+  const no = document.createElement('button');
+  no.id = 'fertilize-no';
+  no.type = 'button';
+  no.className = 'phone-tool';
+  no.textContent = t('fertilize.no');
+  panel.append(text, yes, no);
+  backdrop.append(panel);
+  uiRoot.append(backdrop);
+
+  let target = -1;
+  const close = (): void => {
+    backdrop.hidden = true;
+    gameState.setWindowOpen(FERTILIZE_WINDOW, false);
+  };
+  eventBus.on('fertilize-requested', ({ plot, item }) => {
+    target = plot;
+    text.textContent = `${t('fertilize.question')}${itemName(item)}${t('fertilize.question_end')}`;
+    backdrop.hidden = false;
+    gameState.setWindowOpen(FERTILIZE_WINDOW, true);
+  });
+  yes.addEventListener('click', () => {
+    close();
+    eventBus.emit('fertilize-confirmed', target);
+  });
+  no.addEventListener('click', close);
+}
+
 /** แถบเครื่องมือกลางล่าง ปุ่ม 1–5 บนคอม แตะได้บนมือถือ ถุงเมล็ดเปิดหน้าเลือกเมล็ด คันเบ็ดเปิดแถบเหยื่อ */
 export function createToolbar(uiRoot: HTMLElement): void {
   const bar = document.createElement('div');
   bar.id = 'toolbar';
   const openPicker = createSeedPicker(uiRoot);
   createDigConfirm(uiRoot);
+  createFertilizeConfirm(uiRoot);
   const baitStrip = createBaitStrip(uiRoot);
   let stripOpen = false;
 
@@ -221,9 +266,9 @@ export function createToolbar(uiRoot: HTMLElement): void {
   /** ช่องเมล็ดแสดงถุงของเมล็ดที่เลือกพร้อมจำนวน */
   const showSeed = (): void => {
     const seed = gameState.selectedSeed;
-    if (seedIcon) setNativeIcon(seedIcon, seed ? `seed_${seed}` : 'tool_seed_bag');
+    if (seedIcon) setNativeIcon(seedIcon, seed ? sowItem(seed) : 'tool_seed_bag');
     pill.hidden = seed === null || !gameState.started;
-    if (seed && gameState.started) pill.textContent = String(countOf(gameState.world.bag, seedItem(seed)));
+    if (seed && gameState.started) pill.textContent = String(countOf(gameState.world.bag, sowItem(seed)));
   };
   const show = (): void => {
     baitStrip.refresh();

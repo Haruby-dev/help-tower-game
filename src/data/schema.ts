@@ -100,7 +100,6 @@ export const balanceSchema = z.strictObject({
   interact: z.strictObject({ reachPx: z.number().positive() }),
   cooking: z.strictObject({
     reachPx: z.number().positive(),
-    twoStarHappiness: z.number(),
     rawFullness: z.number(),
     ranks: z.record(z.string().min(1), z.strictObject({ minutes: z.number().positive(), fullness: z.number(), equipment: z.string().min(1) })),
     drink: z.strictObject({ minutes: z.number().positive(), fullness: z.number() }),
@@ -252,6 +251,61 @@ export const balanceSchema = z.strictObject({
     bigDayCoins: z.number().int().nonnegative(),
     giftPool: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() })).min(1),
   }),
+  /** ดาวผักและอาหาร ตาม docs/star_system_2026-11-05.md · rolls คือโอกาส 1/2/3 ดาวตามระดับปุ๋ย (1 = ไม่ใส่ปุ๋ย) */
+  stars: z.strictObject({
+    max: z.number().int().positive(),
+    rolls: z.record(z.string().regex(/^[1-3]$/), z.array(z.number().min(0).max(1)).length(3)),
+    skillShift: z.number().min(0).max(1),
+    happyBonusFrom: z.number(),
+    happyBonusChance: z.number().min(0).max(1),
+    /** ราคาขายผักตามดาว เหมือนอาหาร (ค่าที่ฝั่งโค้ดเติม รอผู้ใช้ยืนยัน) */
+    priceMultiplier: z.array(z.number().positive()).length(3),
+  }),
+  /** รหัสปุ๋ยในกระเป๋ากับระดับของมัน */
+  fertilizer: z.strictObject({ tiers: z.record(z.string().regex(/^fertilizer_[a-z0-9_]+$/), z.number().int().min(2).max(3)) }),
+  /** มอนสเตอร์มาเยี่ยมและสูตรความชอบ ตาม GDD · rankBase เป็นค่าชั่วคราว (GDD ไม่ได้ระบุ) ปรับใน M10 */
+  monsters: z.strictObject({
+    rankBase: z.record(z.string().min(1), z.number().positive()),
+    drinkBaseShare: z.number().positive(),
+    taste: z.strictObject({ favourite: z.number(), like: z.number(), neutral: z.number(), dislike: z.number() }),
+    variety: z.array(z.number().nonnegative()).min(1),
+    starMultiplier: z.array(z.number().positive()).length(3),
+    clean: z.strictObject({ goodFrom: z.number(), good: z.number(), badAtOrBelow: z.number(), bad: z.number() }),
+    signatureAt: z.number().min(0).max(1),
+    minRankByZone: z.array(z.string().min(1)).min(1),
+    unlockedZones: z.number().int().positive(),
+    visitorsBase: z.number().int().nonnegative(),
+    soldPerVisitor: z.number().int().positive(),
+    maxVisitors: z.number().int().positive(),
+    visitFromHour: z.number(),
+    visitToHour: z.number(),
+    /** แขกที่ยังไม่ได้มาถึงชั่วโมงนี้ (เช่น เป็นลมข้ามไป) กินจากถาดเองโดยไม่เห็นภาพ */
+    settleAfterHour: z.number(),
+    appetiteMin: z.number().int().positive(),
+    appetiteMax: z.number().int().positive(),
+    towerMin: z.number().int().positive(),
+    towerMax: z.number().int().positive(),
+    warmFrom: z.number(),
+    closeFrom: z.number(),
+    talkChance: z.number().min(0).max(1),
+    clearStars: z.number().int().nonnegative(),
+    walkSpeed: z.number().positive(),
+    browseMs: z.number().positive(),
+    thinkMs: z.number().positive(),
+    eatGapMs: z.number().nonnegative(),
+    eyeSteps: z.number().int().min(2),
+    labelReachPx: z.number().positive(),
+    bubbleMs: z.number().positive(),
+    maxBubbles: z.number().int().positive(),
+    motesPerSecond: z.number().nonnegative(),
+  }),
+  /** ถาดอาหาร 3 · 6 · 10 จาน plates คือกลางจานในภาพถาด (นับจากมุมซ้ายบน) เรียงตามที่มอนสเตอร์เดินดู */
+  tray: z.strictObject({
+    reachPx: z.number().positive(),
+    levels: z.array(z.strictObject({ id: z.string().min(1), plates: z.array(z.tuple([z.number().int(), z.number().int()])).min(1) })).min(1),
+    stackStepPx: z.number().int().positive(),
+    stackShownMax: z.number().int().positive(),
+  }),
 });
 
 
@@ -294,8 +348,73 @@ export const shopSchema = z.strictObject({
   randomSeeds: z.number().int().nonnegative(),
   randomRecipes: z.number().int().nonnegative(),
   recipePriceMultiplier: z.number().positive(),
+  /** ปุ๋ย: daily ขายทุกวัน · random ขายเฉพาะบางวันตาม chance (ราคาชั่วคราว ปรับใน M10) */
+  fertilizers: z
+    .array(z.strictObject({ item: z.string().regex(/^fertilizer_[a-z0-9_]+$/), price: z.number().int().positive(), tab: z.enum(['daily', 'random']), chance: z.number().min(0).max(1) }))
+    .min(1),
 });
 export type ShopData = z.infer<typeof shopSchema>;
+
+const tasteListSchema = z.array(z.string().regex(/^[a-z_]+$/));
+
+/** มอนสเตอร์ประจำชั้น เพิ่มตัวใหม่ได้โดยแก้แค่ monsters.json th.json และ dialogue.json · art null คือยังไม่มีภาพ ยังไม่มาเยี่ยม */
+export const monstersSchema = z.record(
+  z.string().regex(/^[a-z_]+$/),
+  z.strictObject({
+    floor: z.number().int().positive(),
+    zone: z.number().int().positive(),
+    /** คะแนนที่ต้องการให้ชอบครบ 100% */
+    points: z.number().positive(),
+    personality: z.enum(['shy', 'cheerful', 'proud', 'lazy', 'elder']),
+    favourite: tasteListSchema,
+    likes: tasteListSchema,
+    dislikes: tasteListSchema,
+    /** เมนูประจำใจ ขอเมื่อความชอบถึง 90% ต้องได้จึงไปถึง 100% */
+    signature: z.strictObject({ recipe: z.string().regex(/^[a-z_]+$/), stars: z.number().int().min(1).max(3) }),
+    art: z
+      .strictObject({
+        /** รหัสภาพในทะเบียน มีต่อท้าย _hungry_ / _sweet_ กับ stand walk eat */
+        sheet: z.string().regex(/^[a-z0-9_]+$/),
+        frame: z.number().int().positive(),
+        walkMs: z.number().positive(),
+        eatMs: z.number().positive(),
+        /** ลำดับเฟรมท่ากิน (ทิศใต้) */
+        eatFrames: z.array(z.number().int().nonnegative()).min(1),
+        /** สีตาตอนหิวในภาพ ช่วงกลางค่อย ๆ เปลี่ยนเป็นสีตาตอนหวานที่ตำแหน่งเดียวกัน */
+        hungryEye: z.string().regex(/^#[0-9a-f]{6}$/),
+        /** ความสูงตัวที่มองเห็น ใช้วางฟองคำพูดและหอคอยอาหารเหนือหัว */
+        height: z.number().int().positive(),
+      })
+      .nullable(),
+  }),
+);
+export type MonsterData = z.infer<typeof monstersSchema>;
+
+const tierLines = z.array(z.string().min(1)).min(1).optional();
+const linesByTierSchema = z.strictObject({ hungry: tierLines, warm: tierLines, close: tierLines, any: tierLines });
+
+/** ฟองคำพูด (ร่างจาก docs/dialogue_zone1_draft.json) ตัวละคร → จังหวะ → ระดับความชอบ แก้บทได้โดยไม่แตะโค้ด */
+export const dialogueSchema = z.strictObject({
+  _note: z.string().optional(),
+  monsters: z.record(
+    z.string().regex(/^[a-z_]+$/),
+    z.strictObject({
+      name: z.string().min(1),
+      voice: z.string().min(1),
+      appear: linesByTierSchema,
+      browse: linesByTierSchema,
+      dislike: linesByTierSchema,
+      like: linesByTierSchema,
+      favourite: linesByTierSchema,
+      eat: linesByTierSchema,
+      done: linesByTierSchema,
+      emptyTray: linesByTierSchema,
+    }),
+  ),
+  pets: z.record(z.string().regex(/^[a-z_]+$/), z.record(z.string().min(1), z.array(z.string().min(1)))),
+  gio: z.record(z.string().min(1), z.array(z.string().min(1))),
+});
+export type Dialogue = z.infer<typeof dialogueSchema>;
 
 export const weatherSchema = z.enum(['sunny', 'rain', 'cloudy']);
 
@@ -335,6 +454,8 @@ export const saveFileSchema = z.strictObject({
           crop: z
             .strictObject({ id: z.string().min(1), daysGrown: z.number().int().nonnegative(), harvests: z.number().int().nonnegative() })
             .nullable(),
+          /** ระดับปุ๋ยที่ใส่ไว้ 0 คือไม่ใส่ หมดตอนเก็บเกี่ยว */
+          fertilizer: z.number().int().min(0).max(3),
         }),
       ),
     }),
@@ -389,6 +510,17 @@ export const saveFileSchema = z.strictObject({
     land: z.strictObject({ owned: z.number().int().min(0).max(3) }),
     /** ตำแหน่งเท้า (พิกเซล) ของของที่ผู้เล่นย้ายแล้ว */
     placed: z.record(z.string().min(1), z.strictObject({ x: z.number(), y: z.number() })),
+    /** ถาดอาหาร: ระดับ (0 = 3 จาน) กับจานแต่ละใบ ใบละ 1 เมนู เมนูเดิมซ้อนในจานเดิม */
+    tray: z.strictObject({
+      level: z.number().int().nonnegative(),
+      plates: z.array(z.strictObject({ item: z.string().min(1), count: z.number().int().positive() }).nullable()),
+    }),
+    /** ความชอบของมอนสเตอร์แต่ละตัว และแขกที่จะมาเยี่ยม */
+    monsters: z.strictObject({
+      affection: z.record(z.string().min(1), z.strictObject({ points: z.number().nonnegative(), signature: z.boolean() })),
+      plannedDay: z.number().int().nonnegative(),
+      arrivals: z.array(z.strictObject({ monster: z.string().min(1), day: z.number().int().positive(), hour: z.number(), done: z.boolean() })),
+    }),
   }),
 });
 

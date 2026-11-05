@@ -167,7 +167,7 @@ describe('cooking with fish', () => {
       { item: 'ing_salt', count: 1 },
     ];
     expect(canCook(world({ bag }), 'grilled_fish')).toBe(true);
-    const next = startCooking(world({ bag }), 'grilled_fish')!;
+    const next = startCooking(world({ bag }), 'grilled_fish', 1, {}, { next: () => 0.99, between: (min: number) => min })!;
     expect(countOf(next.bag, 'fish_pond_tilapia')).toBe(0);
     expect(canCook(world({ bag: [{ item: 'fish_golden_carp', count: 1 }, { item: 'ing_salt', count: 1 }] }), 'grilled_fish')).toBe(false);
     expect(matchRecipe({ fish_silver_minnow: 1, ing_salt: 1 })).toBe('grilled_fish');
@@ -191,7 +191,7 @@ describe('weather', () => {
   });
 
   it('waters every tilled plot when it rains in the morning', () => {
-    const farm = { plots: [{ tilled: true, watered: false, crop: null }, { tilled: false, watered: false, crop: null }] };
+    const farm = { plots: [{ tilled: true, watered: false, crop: null, fertilizer: 0 }, { tilled: false, watered: false, crop: null, fertilizer: 0 }] };
     expect(rainOnFarm(farm).plots.map((plot) => plot.watered)).toEqual([true, false]);
     const rainy = world({ seed: 2, farm });
     const morning = sleep(rainy);
@@ -222,8 +222,8 @@ describe('bath and saves', () => {
       },
     };
     const parsed = parseSaveFile(v5);
-    expect(SAVE_VERSION).toBe(11);
-    expect(parsed?.version).toBe(11);
+    expect(SAVE_VERSION).toBe(12);
+    expect(parsed?.version).toBe(12);
     expect(parsed?.world.weather).toBe('sunny');
     expect(parsed?.world.fishing).toEqual({ rods: ['bamboo'], caught: {} });
     expect(parsed?.world.cosmetics.owned.clips).toEqual([]);

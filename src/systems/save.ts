@@ -2,11 +2,13 @@ import { get, set } from 'idb-keyval';
 import { defaultCosmetics, emptyWallet, type BagStack, type GioCare, type Wallet, type World } from '../core/state';
 import { addToBag } from './farm';
 import { newGioCare } from './gio';
+import { newMonsters } from './monsters';
+import { newTray } from './tray';
 import balance from '../data/balance.json';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 import { cookingStarterBag, firstWeather, fishingStarterBag, newFarm, newFishing, newRecipeBook, newSeed, starterBag } from './gauges';
 
-export const SAVE_VERSION = 11;
+export const SAVE_VERSION = 12;
 /** ผู้ใช้ตัดสิน 4 พ.ย. 2026: ตัวเลขเหรียญทั้งเกมใหญ่ขึ้น 10 เท่า สัดส่วนเศรษฐกิจเท่าเดิม */
 export const COIN_SCALE = 10;
 const OLD_TREAT = 'gio_lick_treat';
@@ -90,6 +92,14 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
   10: (save) => {
     const world = save.world as { gio: GioCare };
     return { ...save, world: { ...world, gio: { ...world.gio, album: [] }, land: { owned: 0 }, placed: {} } };
+  },
+  // เวอร์ชัน 12 ผักมีดาว แปลงใส่ปุ๋ยได้ ถาดอาหาร และความชอบมอนสเตอร์ · ผักเดิมในกระเป๋าใช้รหัสเดิมซึ่งคือ 1 ดาว แปลงเดิมยังไม่มีปุ๋ย
+  11: (save) => {
+    const world = save.world as { farm: { plots: object[] } };
+    return {
+      ...save,
+      world: { ...world, farm: { plots: world.farm.plots.map((plot) => ({ ...plot, fertilizer: 0 })) }, tray: newTray(), monsters: newMonsters() },
+    };
   },
 };
 

@@ -47,11 +47,15 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
   await expect(page.locator('#cook-window')).toBeHidden();
   expect((await state(page)).cooking.slot?.recipe).toBe('home_kaprao');
   expect(await count(page, 'ing_pork')).toBe(0);
+  // ระบบดาว 5 พ.ย. 2026: ผัก 1 ดาวได้อาหาร 1 ดาว เกจสุขมีโอกาส 10% ได้เพิ่ม 1 ดาว
+  const stars = (await state(page)).cooking.slot!.stars;
+  expect([1, 2]).toContain(stars);
+  const dish = `dish_home_kaprao_${stars}`;
 
   await finishCooking(page);
   await expect(act).toHaveAttribute('aria-label', /เก็บ/);
   await act.click();
-  await expect.poll(() => count(page, 'dish_home_kaprao_2')).toBe(1);
+  await expect.poll(() => count(page, dish)).toBe(1);
 
   await page.evaluate(() => {
     const s = (window as unknown as { __state: TestState }).__state;
@@ -60,9 +64,9 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
   await page.locator('#phone-button').click();
   await page.locator('#lock-open').click();
   await page.locator('[data-app="inventory"]').click();
-  await page.locator('[data-item="dish_home_kaprao_2"]').click();
+  await page.locator(`[data-item="${dish}"]`).click();
   await page.locator('#bag-eat').click();
-  expect(await count(page, 'dish_home_kaprao_2')).toBe(0);
+  expect(await count(page, dish)).toBe(0);
   expect((await state(page)).gauges.fullness).toBeGreaterThanOrEqual(49);
 
   await page.locator('#phone-back').click();
@@ -70,7 +74,7 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
   const book = page.locator('.book-page');
   await expect(book).toHaveAttribute('data-recipe', 'home_kaprao');
   await expect(book).toHaveAttribute('data-theme', 'savory');
-  await expect(page.locator('.book-stars')).toHaveAttribute('data-stars', '2');
+  await expect(page.locator('.book-stars')).toHaveAttribute('data-stars', String(stars));
   await expect(page.locator('.book-note')).toContainText('เหมือนสูตรที่บ้าน');
   await expect(page.locator('.book-steam')).toHaveCount(1);
   await page.locator('#book-next').click();

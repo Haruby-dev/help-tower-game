@@ -18,7 +18,6 @@ import {
   recipes,
   startCooking,
   startExperiment,
-  starsFor,
   tickCooking,
 } from '../../src/systems/cooking';
 import { countOf } from '../../src/systems/farm';
@@ -27,6 +26,9 @@ import { parseSaveFile } from '../../src/systems/save';
 import { sleep, stepClock } from '../../src/systems/time';
 
 const KAPRAO = recipes.home_kaprao!;
+/** ไม่ได้ดาวโบนัสเกจสุข (สุ่มได้ค่าสูงสุดเสมอ) และได้แน่ ๆ (สุ่มได้ 0) */
+const NO_BONUS = { next: () => 0.99, between: (min: number) => min };
+const BONUS = { next: () => 0, between: (min: number) => min };
 const HOUR_MS = 45_000;
 
 const cooked = (world: World): World => ({ ...world, cooking: { slot: { ...world.cooking.slot!, minutesLeft: 0 } } });
@@ -62,24 +64,25 @@ describe('recipe data', () => {
   });
 });
 
-describe('stars', () => {
-  it('gives 1 star normally and 2 from happiness 70, never 3 yet', () => {
-    expect(starsFor(69.9)).toBe(1);
-    expect(starsFor(70)).toBe(2);
-    expect(starsFor(100)).toBe(2);
+describe('stars (star system 5 Nov 2026)', () => {
+  it('gives 1 star from 1-star ingredients, and +1 only on the 10% happy roll', () => {
+    expect(startCooking(newWorld(), 'home_kaprao', 1, {}, NO_BONUS)!.cooking.slot!.stars).toBe(1);
+    expect(startCooking(newWorld(), 'home_kaprao', 1, {}, BONUS)!.cooking.slot!.stars).toBe(2);
+    const sad: World = { ...newWorld(), gauges: { ...newWorld().gauges, happiness: 69 } };
+    expect(startCooking(sad, 'home_kaprao', 1, {}, BONUS)!.cooking.slot!.stars).toBe(1);
   });
 });
 
 describe('cooking', () => {
   it('makes the home kaprao, uses the ingredients, and it can be eaten', () => {
     const start = newWorld();
-    const cooking = startCooking(start, 'home_kaprao')!;
+    const cooking = startCooking(start, 'home_kaprao', 1, {}, NO_BONUS)!;
     expect(countOf(cooking.bag, 'ing_pork')).toBe(countOf(start.bag, 'ing_pork') - 1);
     expect(collectDish(cooking)).toBeNull();
     const done = collectDish(cooked(cooking))!;
-    const item = dishItem('home_kaprao', 2);
+    const item = dishItem('home_kaprao', 1);
     expect(countOf(done.bag, item)).toBe(1);
-    expect(done.recipes.bestStars.home_kaprao).toBe(2);
+    expect(done.recipes.bestStars.home_kaprao).toBe(1);
     expect(done.cooking.slot).toBeNull();
 
     const hungry: World = { ...done, gauges: { ...done.gauges, fullness: 40 } };
@@ -89,7 +92,7 @@ describe('cooking', () => {
   });
 
   it('counts down on the clock while the player does other things', () => {
-    const cooking = startCooking(newWorld(), 'home_kaprao')!;
+    const cooking = startCooking(newWorld(), 'home_kaprao', 1, {}, NO_BONUS)!;
     const half = stepClock(cooking, HOUR_MS / 4).world;
     expect(half.cooking.slot?.minutesLeft).toBeCloseTo(10);
     expect(isCooked(stepClock(half, HOUR_MS / 2).world.cooking.slot)).toBe(true);
@@ -97,18 +100,18 @@ describe('cooking', () => {
   });
 
   it('finishes overnight', () => {
-    expect(isCooked(sleep(startCooking(newWorld(), 'boiled_egg')!).cooking.slot)).toBe(true);
+    expect(isCooked(sleep(startCooking(newWorld(), 'boiled_egg', 1, {}, NO_BONUS)!).cooking.slot)).toBe(true);
   });
 
   it('refuses a second dish, an unknown recipe, and missing ingredients', () => {
-    const busy = startCooking(newWorld(), 'boiled_egg')!;
-    expect(startCooking(busy, 'home_kaprao')).toBeNull();
-    expect(startCooking(newWorld(), 'tomato_soup')).toBeNull();
-    expect(startCooking({ ...newWorld(), bag: [] }, 'boiled_egg')).toBeNull();
+    const busy = startCooking(newWorld(), 'boiled_egg', 1, {}, NO_BONUS)!;
+    expect(startCooking(busy, 'home_kaprao', 1, {}, NO_BONUS)).toBeNull();
+    expect(startCooking(newWorld(), 'tomato_soup', 1, {}, NO_BONUS)).toBeNull();
+    expect(startCooking({ ...newWorld(), bag: [] }, 'boiled_egg', 1, {}, NO_BONUS)).toBeNull();
   });
 
   it('keeps the dish at the campfire when the bag is full', () => {
-    const done = cooked(startCooking(newWorld(), 'boiled_egg')!);
+    const done = cooked(startCooking(newWorld(), 'boiled_egg', 1, {}, NO_BONUS)!);
     const full: World = { ...done, bag: Array.from({ length: 30 }, () => ({ item: 'seed_rice', count: 99 })) };
     expect(collectDish(full)).toBeNull();
     expect(full.cooking.slot).not.toBeNull();
@@ -119,7 +122,7 @@ describe('experimenting', () => {
   it('unlocks a recipe when the mix matches exactly', () => {
     const mix = { produce_tomato: 2, produce_garlic: 1, ing_salt: 1 };
     expect(matchRecipe(mix)).toBe('tomato_soup');
-    const next = startExperiment(newWorld(), mix)!;
+    const next = startExperiment(newWorld(), mix, NO_BONUS)!;
     expect(next.recipes.known).toContain('tomato_soup');
     expect(next.cooking.slot?.recipe).toBe('tomato_soup');
   });
@@ -127,7 +130,7 @@ describe('experimenting', () => {
   it('makes mystery food from a wrong mix: ingredients gone, happiness −5, fullness +5', () => {
     const start = newWorld();
     const mix = { produce_chili: 2 };
-    const next = startExperiment(start, mix)!;
+    const next = startExperiment(start, mix, NO_BONUS)!;
     expect(next.cooking.slot?.recipe).toBe(MYSTERY);
     expect(countOf(next.bag, 'produce_chili')).toBe(countOf(start.bag, 'produce_chili') - 2);
     const done = collectDish(cooked(next))!;
@@ -143,8 +146,8 @@ describe('experimenting', () => {
   });
 
   it('refuses an empty mix or what is not in the bag', () => {
-    expect(startExperiment(newWorld(), {})).toBeNull();
-    expect(startExperiment(newWorld(), { ing_cocoa: 1 })).toBeNull();
+    expect(startExperiment(newWorld(), {}, NO_BONUS)).toBeNull();
+    expect(startExperiment(newWorld(), { ing_cocoa: 1 }, NO_BONUS)).toBeNull();
   });
 });
 
@@ -198,20 +201,23 @@ describe('batch cooking (her decision 4 Nov 2026)', () => {
 
   it('takes the recipe time × n with no discount', () => {
     expect(batchMinutes(EGG, 4)).toBe(minutesFor(EGG) * 4);
-    const next = startCooking(withEggs(4), 'boiled_egg', 4)!;
+    const next = startCooking(withEggs(4), 'boiled_egg', 4, {}, NO_BONUS)!;
     expect(next.cooking.slot?.minutesLeft).toBe(minutesFor(EGG) * 4);
   });
 
   it('takes ingredients × n when cooking starts, and refuses more than the bag allows', () => {
     expect(batchIngredients(KAPRAO, 3)).toEqual(Object.fromEntries(Object.entries(KAPRAO.ingredients).map(([item, need]) => [item, need * 3])));
-    const next = startCooking(withEggs(5), 'boiled_egg', 3)!;
+    const next = startCooking(withEggs(5), 'boiled_egg', 3, {}, NO_BONUS)!;
     expect(countOf(next.bag, 'ing_egg')).toBe(2);
-    expect(startCooking(withEggs(2), 'boiled_egg', 3)).toBeNull();
-    expect(startCooking(withEggs(2), 'boiled_egg', 0)).toBeNull();
+    expect(startCooking(withEggs(2), 'boiled_egg', 3, {}, NO_BONUS)).toBeNull();
+    expect(startCooking(withEggs(2), 'boiled_egg', 0, {}, NO_BONUS)).toBeNull();
   });
 
-  it('gives the whole batch the same stars and collects every plate at once', () => {
-    const next = startCooking(withEggs(3, 80), 'boiled_egg', 3)!;
+  it('gives the whole batch the same stars (one happy roll) and collects every plate at once', () => {
+    let rolls = 0;
+    const counting = { next: () => (rolls++, 0), between: (min: number) => min };
+    const next = startCooking(withEggs(3, 80), 'boiled_egg', 3, {}, counting)!;
+    expect(rolls).toBe(1);
     expect(next.cooking.slot).toMatchObject({ stars: 2, count: 3 });
     const done = collectDish(cooked(next))!;
     expect(countOf(done.bag, dishItem('boiled_egg', 2))).toBe(3);
@@ -220,7 +226,7 @@ describe('batch cooking (her decision 4 Nov 2026)', () => {
   });
 
   it('keeps the batch at the campfire when the bag cannot hold every plate', () => {
-    const done = cooked(startCooking(withEggs(3), 'boiled_egg', 3)!);
+    const done = cooked(startCooking(withEggs(3), 'boiled_egg', 3, {}, NO_BONUS)!);
     const nearlyFull: World = {
       ...done,
       bag: [...Array.from({ length: 29 }, () => ({ item: 'seed_rice', count: 99 })), { item: dishItem('boiled_egg', 1), count: 98 }],

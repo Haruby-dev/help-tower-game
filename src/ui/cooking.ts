@@ -5,6 +5,7 @@ import { gameState, type BagStack } from '../core/state';
 import balance from '../data/balance.json';
 import type { Recipe } from '../data/schema';
 import {
+  baseDishStars,
   batchIngredients,
   batchMinutes,
   canCook,
@@ -13,13 +14,16 @@ import {
   isIngredient,
   isRawProduce,
   maxBatch,
+  pickedStars,
   recipes,
-  starsFor,
   startCooking,
   startExperiment,
+  type StarPicks,
 } from '../systems/cooking';
+import { createRng } from '../core/rng';
+import { carriesStars, starLevels } from '../systems/stars';
 import { fishGroupOf, isFish } from '../systems/fishing';
-import { itemImage, itemName } from './inventory';
+import { itemImage, itemName, starBadge } from './inventory';
 import { artUrl } from './pixelArt';
 import { revealWhenReady } from './preload';
 
@@ -34,7 +38,6 @@ const TABS: { id: Tab; label: TextKey }[] = [
 ];
 /** แท็บทดลองผสมใช้ธีมครีมส้มเหมือนหมวดคาว */
 const MIX_THEME: Theme = 'savory';
-const STAR = '★';
 /** กลางจานรองวัตถุดิบขนาด 22×22 */
 const PLATE_CENTER = { x: 11, y: 10 };
 
@@ -115,6 +118,9 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
   let mix: Record<string, number> = {};
   /** จำนวนจานของเมนูที่เลือก กลับเป็น 1 ทุกครั้งที่เปลี่ยนเมนูหรือเปิดหน้าต่างใหม่ */
   let batch = 1;
+  /** ดาวผักที่เลือกต่อวัตถุดิบ ล้างทุกครั้งที่เปลี่ยนเมนู (ค่าเริ่มคือดาวต่ำสุดที่มีพอ ผักดีจะได้ไม่ถูกใช้โดยไม่ตั้งใจ) */
+  let picks: StarPicks = {};
+  const rng = createRng(Date.now());
 
   const hide = (): void => {
     backdrop.hidden = true;
@@ -134,7 +140,7 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     const card = element('button', `cook-card${id === selected ? ' is-selected' : ''}`);
     card.type = 'button';
     card.dataset.recipe = id;
-    const ready = canCook(gameState.world, id);
+    const ready = canCook(gameState.world, id, id === selected ? picks : {});
     card.classList.toggle('is-missing', !ready);
     const recipe = recipes[id]!;
     const art = recipe.bagIcon ? registry[recipe.bagIcon] : undefined;
@@ -148,7 +154,10 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     text.append(element('b', '', t(`dish.${id}.name` as TextKey)), element('small', '', t(ready ? 'cook.ready' : 'cook.missing')));
     card.append(icon, text);
     card.addEventListener('click', () => {
-      if (selected !== id) batch = 1;
+      if (selected !== id) {
+        batch = 1;
+        picks = {};
+      }
       selected = id;
       render();
     });
@@ -159,24 +168,53 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     const recipe = recipes[id]!;
     const { bag, gauges } = gameState.world;
     const detail = element('div', 'cook-detail');
-    // ทำได้มากสุดเท่าชุดวัตถุดิบครบในกระเป๋า ของไม่ครบยังแสดง 1 จาน
-    const most = Math.max(1, maxBatch(bag, recipe));
+    // ทำได้มากสุดเท่าชุดวัตถุดิบครบในกระเป๋า (ผักนับเฉพาะดาวที่เลือก) ของไม่ครบยังแสดง 1 จาน
+    const most = Math.max(1, maxBatch(bag, recipe, picks));
     batch = Math.min(Math.max(1, batch), most);
     const plates = element('div', 'cook-plates');
+    let choosing = false;
     for (const [item, need] of Object.entries(batchIngredients(recipe, batch))) {
-      const have = haveFor(bag, item);
-      plates.append(ingredientPlate(item, theme, `${have}/${need}`, have < need));
+      const have = haveFor(bag, item, picks, recipe.ingredients[item]!);
+      const plate = ingredientPlate(item, theme, `${have}/${need}`, have < need);
+      if (!carriesStars(item)) {
+        plates.append(plate);
+        continue;
+      }
+      // ผักมีดาว: ป้ายดาวที่ใช้อยู่มุมซ้ายล่างของจาน ถ้ามีหลายดาวแตะจานเพื่อเปลี่ยนดาว (เฉพาะดาวที่มีในกระเป๋า)
+      const levels = starLevels(bag, item);
+      const chosen = pickedStars(bag, item, recipe.ingredients[item]!, picks);
+      const badge = starBadge(chosen);
+      badge.classList.add('star-badge--corner');
+      plate.append(badge);
+      if (levels.length <= 1) {
+        plates.append(plate);
+        continue;
+      }
+      choosing = true;
+      const button = element('button', 'cook-star-pick');
+      button.type = 'button';
+      button.dataset.starPick = item;
+      button.dataset.stars = String(chosen);
+      button.setAttribute('aria-label', `${t('cook.star_pick')} ${itemName(item)}`);
+      button.append(plate);
+      button.addEventListener('click', () => {
+        const at = levels.findIndex((level) => level.stars === chosen);
+        picks = { ...picks, [item]: levels[(at + 1) % levels.length]!.stars };
+        render();
+      });
+      plates.append(button);
     }
     const facts = element('p', 'cook-facts');
-    facts.append(
-      element('span', '', `${batchMinutes(recipe, batch)} ${t('cook.minutes')}`),
-      element('span', 'cook-facts__stars', STAR.repeat(starsFor(gauges.happiness))),
-    );
+    const stars = element('span', 'cook-facts__stars');
+    stars.id = 'cook-dish-stars';
+    stars.dataset.stars = String(baseDishStars(bag, recipe, picks));
+    stars.append(starBadge(baseDishStars(bag, recipe, picks)));
+    facts.append(element('span', '', `${batchMinutes(recipe, batch)} ${t('cook.minutes')}`), stars);
     const go = element('button', 'phone-tool cook-go', t('cook.start'));
     go.id = 'cook-go';
     go.type = 'button';
-    go.disabled = !canCook(gameState.world, id);
-    go.addEventListener('click', () => apply(startCooking(gameState.world, id, batch)));
+    go.disabled = !canCook(gameState.world, id, picks);
+    go.addEventListener('click', () => apply(startCooking(gameState.world, id, batch, picks, rng)));
     detail.append(
       dishPicture(recipe, id, theme),
       element('h3', 'cook-detail__name', t(`dish.${id}.name` as TextKey)),
@@ -185,7 +223,8 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
       plates,
       batchStepper(recipe, most, go),
     );
-    if (gauges.happiness < balance.cooking.twoStarHappiness) detail.append(element('small', 'cook-tip', t('cook.star_tip')));
+    if (choosing) detail.append(element('small', 'cook-tip', t('cook.star_rule')));
+    else if (gauges.happiness >= balance.stars.happyBonusFrom) detail.append(element('small', 'cook-tip', t('cook.star_tip')));
     return detail;
   };
 
@@ -241,6 +280,7 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
       const left = stack.count - (mix[stack.item] ?? 0);
       button.disabled = left <= 0;
       button.append(itemImage(stack.item, false), element('b', '', String(left)));
+      if (carriesStars(stack.item)) button.append(starBadge(stack.item));
       button.addEventListener('click', () => {
         mix = { ...mix, [stack.item]: (mix[stack.item] ?? 0) + 1 };
         render();
@@ -281,7 +321,7 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     go.addEventListener('click', () => {
       const chosen = mix;
       mix = {};
-      apply(startExperiment(gameState.world, chosen));
+      apply(startExperiment(gameState.world, chosen, rng));
     });
     const actions = element('div', 'cook-actions');
     actions.append(clear, go);
@@ -331,6 +371,7 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
   eventBus.on('cook-open', () => {
     mix = {};
     batch = 1;
+    picks = {};
     render();
     backdrop.hidden = false;
     revealWhenReady(backdrop);

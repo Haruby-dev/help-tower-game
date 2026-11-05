@@ -1,20 +1,29 @@
 import type { TextKey } from '../core/i18n';
 import type { Rng } from '../core/rng';
-import type { BagStack, Farm, PlotState, Tool, World } from '../core/state';
+import { emptyPlot, type BagStack, type Farm, type PlotState, type Tool, type World } from '../core/state';
 import balance from '../data/balance.json';
 import cropsJson from '../data/crops.json';
 import type { Crops } from '../data/schema';
 import { spendGardenTime } from './gauges';
+import { baseItem, rollCropStars, starChances, withStars } from './stars';
 
 export const crops = cropsJson as Crops;
-const { farm: rules } = balance;
+const rules = { ...balance.farm, fertilizer: balance.fertilizer };
 
 export const produceItem = (crop: string): string => `produce_${crop}`;
 export const seedItem = (crop: string): string => `seed_${crop}`;
-export const cropOfItem = (item: string): string => item.slice(item.indexOf('_') + 1);
+/** ผักดาว 2–3 มีดาวต่อท้ายรหัส ตัดออกก่อนหาชนิดพืช */
+export const cropOfItem = (item: string): string => {
+  const base = baseItem(item);
+  return base.slice(base.indexOf('_') + 1);
+};
 export const isSeed = (item: string): boolean => item.startsWith('seed_');
 
-const emptyPlot = (): PlotState => ({ tilled: false, watered: false, crop: null });
+/** ระดับของปุ๋ยในกระเป๋า ของอื่นตอบ 0 */
+export const fertilizerTier = (item: string | null): number => (item ? (rules.fertilizer.tiers as Record<string, number>)[item] ?? 0 : 0);
+export const isFertilizer = (item: string | null): boolean => fertilizerTier(item) > 0;
+/** ช่องถุงเมล็ดถือได้ทั้งเมล็ด (เก็บเป็นชนิดพืช) และปุ๋ย (เก็บเป็นรหัสปุ๋ย) ตอบรหัสของในกระเป๋า */
+export const sowItem = (selection: string): string => (isFertilizer(selection) ? selection : seedItem(selection));
 
 function cropInfo(id: string): Crops[string] {
   const info = crops[id];
@@ -98,7 +107,7 @@ export function convertToSeeds(world: World, crop: string, rng: Rng): World | nu
   return bag ? { ...world, bag } : null;
 }
 
-export type FarmAction = 'till' | 'plant' | 'water' | 'harvest' | 'dig';
+export type FarmAction = 'till' | 'plant' | 'water' | 'harvest' | 'dig' | 'fertilize';
 
 /** เครื่องมือนี้ทำอะไรกับแปลงนี้ได้ */
 export function actionFor(plot: PlotState, tool: Tool, seed: string | null, bag: BagStack[]): FarmAction | null {
@@ -112,6 +121,11 @@ export function actionFor(plot: PlotState, tool: Tool, seed: string | null, bag:
   }
   if (tool === 'sickle') return isReady(plot) ? 'harvest' : null;
   if (tool !== 'seeds') return null;
+  // ปุ๋ยใส่ได้ทั้งก่อนและหลังปลูก ใส่ซ้ำระดับเดิมหรือต่ำกว่าไม่มีผล ระดับสูงกว่าแทนของเดิม (ฉากถามก่อน)
+  if (isFertilizer(seed)) {
+    const usable = plot.tilled && !isWithered(plot) && !isReady(plot) && countOf(bag, seed!) > 0;
+    return usable && fertilizerTier(seed) > plot.fertilizer ? 'fertilize' : null;
+  }
   return plot.tilled && !plot.crop && seed !== null && countOf(bag, seedItem(seed)) > 0 ? 'plant' : null;
 }
 
@@ -121,6 +135,7 @@ export const ACTION_LABEL: Record<FarmAction, TextKey> = {
   water: 'action.water',
   harvest: 'action.harvest',
   dig: 'action.dig',
+  fertilize: 'action.fertilize',
 };
 
 export const yieldOf = (plot: PlotState): number => {
@@ -129,20 +144,42 @@ export const yieldOf = (plot: PlotState): number => {
   return plot.crop.harvests > 0 && info.regrowYield !== null ? info.regrowYield : info.firstYield;
 };
 
+/** ดาวที่อาจได้จากแปลงนี้ (ตามปุ๋ย) */
+const possibleStars = (plot: PlotState): number[] =>
+  starChances(Math.max(1, plot.fertilizer)).flatMap((chance, index) => (chance > 0 ? [index + 1] : []));
+
+/** เช็กก่อนเก็บแบบเผื่อที่สุด: ใส่ได้แม้ทุกชิ้นออกดาวต่างกันจนแยกช่อง */
 export const canStoreHarvest = (world: World, index: number): boolean => {
   const plot = world.farm.plots[index];
-  return Boolean(plot?.crop && addToBag(world.bag, produceItem(plot.crop.id), yieldOf(plot)));
+  if (!plot?.crop) return false;
+  let bag: BagStack[] | null = world.bag;
+  for (const stars of possibleStars(plot)) bag = bag && addToBag(bag, withStars(produceItem(plot.crop.id), stars), yieldOf(plot));
+  return bag !== null;
 };
+
+/** สุ่มดาวทีละชิ้นตามปุ๋ย แล้วรวมเป็นกองตามดาว */
+export function harvestStacks(plot: PlotState, rng: Rng | undefined): BagStack[] {
+  const counts = new Map<string, number>();
+  for (let piece = 0; piece < yieldOf(plot); piece += 1) {
+    const stars = rng ? rollCropStars(Math.max(1, plot.fertilizer), rng) : 1;
+    const item = withStars(produceItem(plot.crop!.id), stars);
+    counts.set(item, (counts.get(item) ?? 0) + 1);
+  }
+  return [...counts.entries()].map(([item, count]) => ({ item, count }));
+}
 
 function afterHarvest(plot: PlotState): PlotState {
   const crop = plot.crop!;
   const { growDays, regrowDays } = cropInfo(crop.id);
   if (regrowDays === null) return emptyPlot();
-  return { ...plot, crop: { ...crop, daysGrown: growDays - regrowDays, harvests: crop.harvests + 1 } };
+  // ปุ๋ยใช้ได้หนึ่งรอบปลูก หมดตอนเก็บเกี่ยว พืชเก็บซ้ำต้องใส่ใหม่
+  return { ...plot, fertilizer: 0, crop: { ...crop, daysGrown: growDays - regrowDays, harvests: crop.harvests + 1 } };
 }
 
-/** ทำงาน 1 ช่อง ตอบ null เมื่อทำไม่ได้ เช่น กระเป๋าเต็มตอนเก็บเกี่ยว ผักจึงยังอยู่ที่แปลง */
-/** rng ใส่มาเมื่อให้มีโอกาสได้เมล็ดตอนเก็บเกี่ยว กระเป๋าเต็มก็ไม่ได้เมล็ด แต่ผลผลิตยังเก็บได้ */
+/**
+ * ทำงาน 1 ช่อง ตอบ null เมื่อทำไม่ได้ เช่น กระเป๋าเต็มตอนเก็บเกี่ยว ผักจึงยังอยู่ที่แปลง
+ * rng ใช้สุ่มดาวผักและโอกาสได้เมล็ดตอนเก็บเกี่ยว ไม่ใส่มาผักเป็น 1 ดาวและไม่ได้เมล็ด · กระเป๋าเต็มก็ไม่ได้เมล็ด แต่ผลผลิตยังเก็บได้
+ */
 export function applyFarmAction(world: World, index: number, action: FarmAction, seed: string | null, rng?: Rng): World | null {
   const plot = world.farm.plots[index];
   if (!plot) return null;
@@ -154,6 +191,13 @@ export function applyFarmAction(world: World, index: number, action: FarmAction,
     next = { ...plot, watered: true };
   } else if (action === 'dig') {
     next = emptyPlot();
+  } else if (action === 'fertilize') {
+    const tier = fertilizerTier(seed);
+    if (!seed || tier <= plot.fertilizer) return null;
+    const taken = takeFromBag(bag, seed, 1);
+    if (!taken) return null;
+    bag = taken;
+    next = { ...plot, fertilizer: tier };
   } else if (action === 'plant') {
     if (!seed) return null;
     const taken = takeFromBag(bag, seedItem(seed), 1);
@@ -162,7 +206,8 @@ export function applyFarmAction(world: World, index: number, action: FarmAction,
     next = { ...plot, crop: { id: seed, daysGrown: 0, harvests: 0 } };
   } else {
     if (!plot.crop || !isReady(plot)) return null;
-    const stored = addToBag(bag, produceItem(plot.crop.id), yieldOf(plot));
+    let stored: BagStack[] | null = bag;
+    for (const stack of harvestStacks(plot, rng)) stored = stored && addToBag(stored, stack.item, stack.count);
     if (!stored) return null;
     bag = stored;
     if (rng && rng.next() < rules.seedDropChance) bag = addToBag(bag, seedItem(plot.crop.id), 1) ?? bag;

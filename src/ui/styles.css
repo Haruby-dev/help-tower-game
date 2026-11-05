@@ -1689,6 +1689,7 @@ canvas {
 
 #seed-picker,
 #land-confirm,
+#fertilize-confirm,
 #dig-confirm {
   position: absolute;
   inset: 0;
@@ -1700,6 +1701,7 @@ canvas {
 
 #seed-picker[hidden],
 #land-confirm[hidden],
+#fertilize-confirm[hidden],
 #dig-confirm[hidden] {
   display: none;
 }
@@ -4671,4 +4673,93 @@ canvas {
 .settings-test small {
   font-size: 10px;
   color: #a05a7a;
+}
+
+/* ---------- M7a ป้ายดาว (ภาพ 1–3 ดาว ขนาดจริงคูณจำนวนเต็มเท่านั้น) ---------- */
+.star-badge {
+  display: inline-block;
+  vertical-align: middle;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* มุมซ้ายล่างของไอคอน ห่างขอบช่อง 1 พิกเซล */
+.star-badge--corner {
+  position: absolute;
+  left: calc(var(--px) * 1);
+  bottom: calc(var(--px) * 1);
+}
+
+.cook-facts__stars {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* จานวัตถุดิบที่มีหลายดาว แตะเพื่อเปลี่ยนดาว */
+.cook-star-pick {
+  display: grid;
+  min-width: 44px;
+  min-height: 44px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+/* ---------- M7a ฟองคำพูดในฉากกับป้ายชื่อมอนสเตอร์ ---------- */
+#world-bubbles,
+#monster-tags {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.world-bubble {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  animation: bubble-in 0.18s steps(3);
+}
+
+.world-bubble canvas {
+  display: block;
+}
+
+.world-bubble p {
+  position: absolute;
+  top: calc(var(--px) * 1);
+  left: 50%;
+  margin: 0;
+  color: var(--outline);
+  font-size: calc(var(--px) * 8);
+  font-weight: 700;
+  line-height: calc(var(--px) * 12);
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+/* ป้ายทึบสีครีม ขอบพิกเซลเข้ม ไม่มีมุมมน */
+.monster-tag {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--px) * 2);
+  padding: 0 calc(var(--px) * 3);
+  background: #fff6f0;
+  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--outline), 0 calc(var(--px) * 1) 0 0 var(--outline), calc(var(--px) * -1) 0 0 0 var(--outline), calc(var(--px) * 1) 0 0 0 var(--outline);
+  color: var(--outline);
+  font-size: max(10px, calc(var(--px) * 7));
+  font-weight: 700;
+  line-height: calc(var(--px) * 11);
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.monster-tag__heart {
+  width: calc(var(--px) * 5);
+  height: calc(var(--px) * 5);
+}
+
+#ui[data-arrange='open'] :is(#world-bubbles, #monster-tags) {
+  visibility: hidden;
 }

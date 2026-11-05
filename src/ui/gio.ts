@@ -25,7 +25,7 @@ import {
   returnsToday,
   tierFor,
 } from '../systems/gio';
-import { itemImage, itemName } from './inventory';
+import { cornerBadge, itemImage, itemName } from './inventory';
 import { artUrl } from './pixelArt';
 import { revealWhenReady } from './preload';
 import { coinIcon, setMoney } from './money';
@@ -113,6 +113,7 @@ function stackSlot(stack: BagStack | undefined, className: string): HTMLButtonEl
   slot.dataset.item = stack.item;
   slot.setAttribute('aria-label', itemName(stack.item));
   slot.append(itemImage(stack.item, false), element('b', '', String(stack.count)));
+  cornerBadge(slot, stack.item);
   return slot;
 }
 

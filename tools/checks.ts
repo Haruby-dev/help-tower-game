@@ -11,7 +11,9 @@ import {
   chestsSchema,
   cosmeticsSchema,
   cropsSchema,
+  dialogueSchema,
   fishSchema,
+  monstersSchema,
   ingredientsSchema,
   recipeStepsSchema,
   recipesSchema,
@@ -79,6 +81,8 @@ export function checkProject(): string[] {
   checkSchema('src/data/chests.json', chestsSchema, problems);
   checkSchema('src/data/cosmetics.json', cosmeticsSchema, problems);
   checkSchema('src/data/shop.json', shopSchema, problems);
+  checkSchema('src/data/monsters.json', monstersSchema, problems);
+  checkSchema('src/data/dialogue.json', dialogueSchema, problems);
   checkSchema('src/data/audio.json', audioSchema, problems);
   checkSchema('public/assets/audio/_audio_index.json', audioIndexSchema, problems);
   checkSchema('src/data/sprite-meta.json', spriteMetaSchema, problems);
@@ -152,6 +156,34 @@ export function checkProject(): string[] {
       if (!known) problems.push(`src/data/recipes.json: ${id} uses unknown ${item}`);
     }
   }
+
+  // มอนสเตอร์: ชื่อและประโยคครบ 100% อยู่ใน th.json เมนูทุกเมนูมีจริง เมนูประจำใจทำได้ในโซน (แรงก์ไม่เกินอุปกรณ์ช่วงนั้น) ภาพครบทุกท่า และมีบทพูด
+  const recipesData = recipesSchema.parse(readJson('src/data/recipes.json'));
+  const balanceData = balanceSchema.parse(readJson('src/data/balance.json'));
+  const dialogueData = dialogueSchema.parse(readJson('src/data/dialogue.json'));
+  const ranks = ['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS'];
+  for (const [id, monster] of Object.entries(monstersSchema.parse(readJson('src/data/monsters.json')))) {
+    for (const key of [`monster.${id}.name`, `monster.${id}.clear`]) if (!translations[key]) problems.push(`src/i18n/th.json: monster ${id} has no ${key}`);
+    const menus = [...monster.favourite, ...monster.likes, ...monster.dislikes, monster.signature.recipe];
+    for (const recipe of menus) if (!recipesData[recipe]) problems.push(`src/data/monsters.json: ${id} uses unknown recipe ${recipe}`);
+    const signature = recipesData[monster.signature.recipe];
+    const highest = monster.zone === 1 ? 'D' : 'SSS';
+    if (signature && ranks.indexOf(signature.rank) > ranks.indexOf(highest)) problems.push(`src/data/monsters.json: ${id} signature ${monster.signature.recipe} cannot be cooked in zone ${monster.zone}`);
+    if (!dialogueData.monsters[id]) problems.push(`src/data/dialogue.json: monster ${id} has no lines`);
+    if (monster.art) {
+      for (const mood of ['hungry', 'sweet']) {
+        for (const kind of ['stand', 'walk', 'eat']) if (!registry[`${monster.art.sheet}_${mood}_${kind}`]) problems.push(`assets-src/registry.json: ${id} has no ${monster.art.sheet}_${mood}_${kind}`);
+      }
+    }
+  }
+  for (const item of Object.keys(balanceData.fertilizer.tiers)) {
+    if (!translations[`item.${item}.name`]) problems.push(`src/i18n/th.json: ${item} has no name`);
+    if (!registry[item]) problems.push(`assets-src/registry.json: ${item} has no bag image`);
+  }
+  for (const entry of shopSchema.parse(readJson('src/data/shop.json')).fertilizers) {
+    if (balanceData.fertilizer.tiers[entry.item] === undefined) problems.push(`src/data/shop.json: ${entry.item} is not a fertilizer in balance.json`);
+  }
+  for (const level of balanceData.tray.levels) if (!registry[level.id]) problems.push(`src/data/balance.json: tray ${level.id} is not registered`);
 
   const baits = baitsSchema.parse(readJson('src/data/baits.json'));
   const rods = balanceSchema.parse(readJson('src/data/balance.json')).fishing.rods;

@@ -7,6 +7,7 @@ import { computeViewport, homeScreenAppSize, isHomeScreenApp, type Viewport } fr
 import display from './data/display.json';
 import { BaseScene } from './scenes/BaseScene';
 import { BootScene } from './scenes/BootScene';
+import { visitTestHooks } from './scenes/visits';
 import { changeMoney } from './systems/economy';
 import { newWorld } from './systems/gauges';
 import { createOverlay, updateRotationRequired } from './ui/overlay';
@@ -112,6 +113,9 @@ if (params.has('test')) {
   (window as unknown as { __state: typeof gameState }).__state = gameState;
   (window as unknown as { __changeMoney: typeof changeMoney }).__changeMoney = changeMoney;
   (window as unknown as { __sound: typeof sound }).__sound = sound;
+  (window as unknown as { __visitSpeed: (speed: number) => void }).__visitSpeed = (speed) => {
+    visitTestHooks.speed = speed;
+  };
 }
 // การทดสอบที่ไม่ได้สนใจเซฟข้ามหน้าเลือกช่อง
 if (params.has('test') && !params.has('saves')) gameState.startGame(1, newWorld());

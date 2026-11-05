@@ -11,7 +11,7 @@ const shop = shopJson as ShopData;
 const DAY_MIX = 7919;
 
 export type ShopTab = 'daily' | 'random';
-export type ShopGroup = 'treats' | 'seeds' | 'random_seeds' | 'recipes';
+export type ShopGroup = 'treats' | 'seeds' | 'fertilizer' | 'random_seeds' | 'recipes';
 
 export interface Offer {
   id: string;
@@ -41,7 +41,7 @@ function pick<T>(items: T[], count: number, rng: ReturnType<typeof createRng>): 
   return chosen;
 }
 
-/** ขายทุกวัน: แมวเลีย 4 รสกับเมล็ดพืชเริ่มเกม · สุ่มวันนี้: เมล็ดจากร้าน 3 ชนิดกับสูตรที่ยังไม่รู้และทำที่กองไฟได้ 2 สูตร */
+/** ขายทุกวัน: แมวเลีย 4 รส เมล็ดพืชเริ่มเกม และปุ๋ยระดับ 2 · สุ่มวันนี้: เมล็ดจากร้าน 3 ชนิด ปุ๋ยระดับ 3 (บางวัน) และสูตรที่ยังไม่รู้และทำที่กองไฟได้ 2 สูตร */
 export function offersFor(world: World): Offer[] {
   const treats = shop.treats.map(
     (treat): Offer => ({ id: `treats:${treat.item}`, tab: 'daily', group: 'treats', kind: 'item', target: treat.item, price: treat.price, currency: 'coins' }),
@@ -69,7 +69,13 @@ export function offersFor(world: World): Offer[] {
       currency: 'coins',
     }),
   );
-  return [...treats, ...starter, ...randomSeeds, ...recipeOffers];
+  // ปุ๋ยสุ่มหลังของเดิม ของสุ่มเดิมของแต่ละวันจึงไม่เปลี่ยน
+  const fertilizers = shop.fertilizers
+    .filter((entry) => entry.tab === 'daily' || rng.next() < entry.chance)
+    .map((entry): Offer => ({ id: `fertilizer:${entry.item}`, tab: entry.tab, group: 'fertilizer', kind: 'item', target: entry.item, price: entry.price, currency: 'coins' }));
+  const daily = fertilizers.filter((offer) => offer.tab === 'daily');
+  const random = fertilizers.filter((offer) => offer.tab === 'random');
+  return [...treats, ...starter, ...daily, ...randomSeeds, ...random, ...recipeOffers];
 }
 
 export const tasteOfTreat = (item: string): ShopData['treats'][number]['taste'] | null =>

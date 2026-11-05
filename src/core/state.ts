@@ -58,6 +58,37 @@ export interface PlotState {
   /** รดน้ำแล้ววันนี้ แห้งตอนเช้าวันถัดไป */
   watered: boolean;
   crop: CropState | null;
+  /** ระดับปุ๋ย 0 คือไม่ใส่ ใช้ได้หนึ่งรอบปลูก หมดตอนเก็บเกี่ยว */
+  fertilizer: number;
+}
+
+export const emptyPlot = (): PlotState => ({ tilled: false, watered: false, crop: null, fertilizer: 0 });
+
+/** ถาดอาหาร จานละ 1 เมนู เมนูเดิมซ้อนในจานเดิม · level 0 / 1 / 2 คือ 3 / 6 / 10 จาน */
+export interface Tray {
+  level: number;
+  plates: (BagStack | null)[];
+}
+
+export interface Affection {
+  points: number;
+  /** ได้กินเมนูประจำใจแล้ว จึงเลยขั้น 90% ไปถึง 100% ได้ */
+  signature: boolean;
+}
+
+export interface Arrival {
+  monster: string;
+  day: number;
+  hour: number;
+  done: boolean;
+}
+
+export interface Monsters {
+  affection: Record<string, Affection>;
+  /** วันล่าสุดที่วางแผนแขกแล้ว (วางแผนตอนจีโอกลับจากเร่ขาย) จะได้ไม่วางซ้ำ */
+  plannedDay: number;
+  /** แขกของวันนี้และพรุ่งนี้ */
+  arrivals: Arrival[];
 }
 
 export interface Farm {
@@ -89,7 +120,7 @@ export interface RecipeBook {
 export type Tool = 'hoe' | 'can' | 'sickle' | 'seeds' | 'rod';
 
 /** ไอคอนบนปุ่มกระทำปุ่มเดียว เปลี่ยนตามจุดที่ยืนและของที่ถือ */
-export type ActionIcon = 'fish' | 'bath' | 'water' | 'till' | 'plant' | 'harvest' | 'cook' | 'sleep' | 'chest' | 'talk' | 'buy';
+export type ActionIcon = 'fish' | 'bath' | 'water' | 'till' | 'plant' | 'harvest' | 'cook' | 'sleep' | 'chest' | 'talk' | 'buy' | 'tray';
 
 export interface ContextAction {
   icon: ActionIcon;
@@ -159,6 +190,8 @@ export interface World {
   land: { owned: number };
   /** ของที่ผู้เล่นย้ายแล้ว เก็บตำแหน่งเท้าเป็นพิกเซล ของที่ยังไม่ย้ายใช้ตำแหน่งบนแผนที่ */
   placed: Record<string, Point>;
+  tray: Tray;
+  monsters: Monsters;
 }
 
 class GameState {

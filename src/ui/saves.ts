@@ -141,6 +141,14 @@ export function createSaves(uiRoot: HTMLElement): void {
   notice.hidden = true;
   uiRoot.append(notice);
   let timer = 0;
+  eventBus.on('notice-text', (text) => {
+    notice.textContent = text;
+    notice.hidden = false;
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      notice.hidden = true;
+    }, 2500);
+  });
   eventBus.on('notice', (key) => {
     notice.textContent = t(key);
     notice.hidden = false;

@@ -96,7 +96,7 @@ describe('harvesting', () => {
   it('empties the plot of a one-time crop and puts the yield in the bag', () => {
     const world = act(growUntilReady(planted('scallion')), 'harvest');
     expect(countOf(world.bag, 'produce_scallion')).toBe(crops.scallion!.firstYield);
-    expect(plot0(world)).toEqual({ tilled: false, watered: false, crop: null });
+    expect(plot0(world)).toEqual({ tilled: false, watered: false, crop: null, fertilizer: 0 });
   });
 
   it('regrows a repeat crop after its regrow days', () => {

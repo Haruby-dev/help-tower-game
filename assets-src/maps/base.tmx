@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="51" height="35" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="848">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="51" height="35" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="851">
  <tileset firstgid="1" name="ground_grass_dirt" tilewidth="32" tileheight="32" tilecount="16" columns="4">
   <image source="../../public/assets/tiles/ground_grass_dirt.png" width="128" height="128"/>
  </tileset>
@@ -910,6 +910,9 @@
   <object id="7" name="gio_trip_4" x="986" y="362"><point/></object>
   <object id="8" name="gio_trip_5" x="1050" y="301"><point/></object>
   <object id="9" name="gio_burrow" x="1056" y="264"><point/></object>
+  <object id="10" name="monster_eat_1" x="949" y="262"><point/></object>
+  <object id="11" name="monster_eat_2" x="915" y="384"><point/></object>
+  <object id="12" name="monster_eat_3" x="1000" y="419"><point/></object>
  </objectgroup>
  <layer id="7" name="land_1" width="51" height="35" visible="0">
   <data encoding="csv">

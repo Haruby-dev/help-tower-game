@@ -15,7 +15,8 @@ import { FishingRig } from '../entities/FishingRig';
 import { finishBath } from '../systems/bath';
 import { autoHooks, baits, catchItem, chosenBait, finishCast, rollCatch, type Catch } from '../systems/fishing';
 import { countOf, seedItem } from '../systems/farm';
-import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, isWithered, yieldOf, type FarmAction } from '../systems/farm';
+import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, isWithered, produceItem, type FarmAction } from '../systems/farm';
+import { withStars } from '../systems/stars';
 import { MYSTERY, collectDish, isCooked } from '../systems/cooking';
 import { advanceClock, goToSleep } from '../systems/time';
 import balance from '../data/balance.json';
@@ -30,6 +31,9 @@ import { formatMoney } from '../systems/economy';
 import { isGioAway, isTripLive } from '../systems/gio';
 import { landAt, nextLand, plotCell } from '../systems/land';
 import { Arranger, type Rect as ArrangeRect } from './arrange';
+import { TrayView } from './trayView';
+import { Visits } from './visits';
+import { summonNow } from '../systems/monsters';
 
 type MoveKeys = Record<'up' | 'down' | 'left' | 'right' | 'w' | 'a' | 's' | 'd', Phaser.Input.Keyboard.Key>;
 
@@ -78,7 +82,7 @@ const SEED_PILL_DELAY_MS = 450;
 
 type FishingPhase = 'cast' | 'wait' | 'nibble' | 'bite' | 'reel';
 
-const FARM_ICON: Record<FarmAction, ActionIcon> = { till: 'till', dig: 'till', plant: 'plant', water: 'water', harvest: 'harvest' };
+const FARM_ICON: Record<FarmAction, ActionIcon> = { till: 'till', dig: 'till', plant: 'plant', water: 'water', harvest: 'harvest', fertilize: 'plant' };
 /** ภาพท่ารดน้ำมีน้ำไหลจากบัวอยู่แล้ว เติมแค่น้ำกระเซ็นเล็ก ๆ บนแปลงตอนน้ำถึงดิน */
 const WATER_SPLASH_FRAME = 5;
 
@@ -109,6 +113,12 @@ export function nightAlpha(hour: number): number {
 
 /** จุดทางเดินของจีโอไปโพรงบนแผนที่ ชื่อ gio_trip_1, gio_trip_2, … เรียงจากตะกร้าไปโพรง */
 const GIO_TRIP_PREFIX = 'gio_trip_';
+/** มอนสเตอร์ใช้ทางเดียวกันจากโพรงออกมาที่ลาน จำนวนจุดจากฝั่งโพรง */
+const MONSTER_ROUTE_POINTS = 3;
+/** ที่นั่งกินใกล้โพรงบนแผนที่ ชื่อ monster_eat_1, monster_eat_2, … */
+const MONSTER_EAT_PREFIX = 'monster_eat_';
+/** แตะถาดตรงกลางภาพ (เหนือเท้าถาด) */
+const TRAY_TAP_LIFT = 12;
 
 export class BaseScene extends Phaser.Scene {
   private player!: Player;
@@ -144,6 +154,8 @@ export class BaseScene extends Phaser.Scene {
   private plotMarker!: Phaser.GameObjects.Sprite;
   private queuedPlot: number | null = null;
   private campfire: Campfire | null = null;
+  private trayView: TrayView | null = null;
+  private visits: Visits | null = null;
   private cookingShown: boolean | null = null;
   /** เสียงผัดวนระหว่างยืนทำอาหารที่กองไฟ */
   private cookLoop: SoundHandle | null = null;
@@ -166,6 +178,7 @@ export class BaseScene extends Phaser.Scene {
     this.pondObjects = [];
     this.fishing = null;
     this.bath = null;
+    this.trayView = null;
     this.treeSway = new TreeSway();
     this.shadeAreas = [];
     this.glows = {};
@@ -226,6 +239,16 @@ export class BaseScene extends Phaser.Scene {
     this.player = new Player(this, playerSpawn.x, playerSpawn.y);
     this.player.onWalkFrame = (index) => this.footstep(index);
     this.gio = new Gio(this, gioSpawn, this.gioSeat, createRng(Date.now()), { route: tripRoute, burrow: spawn('gio_burrow') });
+    const eatSpots = spawns
+      .filter((point) => point.name.startsWith(MONSTER_EAT_PREFIX))
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((point) => ({ x: point.x ?? 0, y: point.y ?? 0 }));
+    this.visits = new Visits(
+      this,
+      { burrow: spawn('gio_burrow'), route: [...tripRoute].reverse().slice(0, MONSTER_ROUTE_POINTS), eatSpots },
+      () => this.trayView,
+      (x, y) => this.toScreen(x, y),
+    );
 
     this.physics.add.collider(this.player.body, obstacles);
     this.physics.add.collider(this.gio.body, obstacles);
@@ -290,11 +313,17 @@ export class BaseScene extends Phaser.Scene {
         this.useAction();
         return;
       }
+      const tray = this.trayView?.image;
+      if (tray && this.trayInReach() && Phaser.Math.Distance.Between(pointer.worldX, pointer.worldY, tray.x, tray.y - TRAY_TAP_LIFT) < DOOR_TAP_RADIUS) {
+        eventBus.emit('tray-open', undefined);
+        return;
+      }
       const near = Phaser.Math.Distance.Between(pointer.worldX, pointer.worldY, this.door.x, this.door.y - DOOR_TAP_LIFT);
       if (near < DOOR_TAP_RADIUS) this.useAction();
     });
     const stopAction = eventBus.on('action-pressed', () => this.useAction());
     const stopDig = eventBus.on('dig-confirmed', (plot) => this.startMove(plot, 'dig'));
+    const stopFertilize = eventBus.on('fertilize-confirmed', (plot) => this.startMove(plot, 'fertilize'));
     const stopMoved = eventBus.on('player-moved', (point) => this.player.moveTo(point));
     const stopStarted = eventBus.on('game-started', (world) => {
       if (world.player) this.player.moveTo(world.player);
@@ -309,11 +338,21 @@ export class BaseScene extends Phaser.Scene {
     const stopArrangeCommand = eventBus.on('arrange-command', (command) => this.arrangeCommand(command));
     const stopRestart = eventBus.on('game-started', () => {
       this.placedApplied = false;
+      this.visits?.destroy();
+    });
+    // นอนหรือเป็นลมข้ามเวลา แขกที่ยังเดินอยู่หายไป (ระบบกินจากถาดแทนถ้ายังไม่ได้มาถึงถาด)
+    const stopRest = eventBus.on('rest-finished', () => this.visits?.destroy());
+    const stopSummon = eventBus.on('monster-summon', () => {
+      if (!gameState.started) return;
+      const next = summonNow(gameState.world);
+      if (next) gameState.setWorld(next);
+      else eventBus.emit('notice', 'settings.test_monster_none');
     });
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.stopCookLoop();
       stopAction();
       stopDig();
+      stopFertilize();
       stopMoved();
       stopStarted();
       stopViewport();
@@ -322,6 +361,9 @@ export class BaseScene extends Phaser.Scene {
       stopArrange();
       stopArrangeCommand();
       stopRestart();
+      stopRest();
+      stopSummon();
+      this.visits?.destroy();
     });
   }
 
@@ -337,6 +379,10 @@ export class BaseScene extends Phaser.Scene {
     this.gio.update(deltaMs, this.player.feetX, this.player.feetY, !gameState.clockRunning);
     if (gameState.started) this.openReceiptWhenNear();
     if (gameState.started) this.followPlaced();
+    if (gameState.started) {
+      this.trayView?.sync(gameState.world.tray);
+      this.visits?.update(deltaMs, time, { x: this.player.feetX, y: this.player.feetY });
+    }
     if (this.arranger.active) this.arranger.draw(this.playerRect());
     else this.followPlayer();
     gameState.trackPlayer({ x: this.player.body.x, y: this.player.body.y });
@@ -392,6 +438,7 @@ export class BaseScene extends Phaser.Scene {
       return { x: feetX, top, bottom: top + entry.height, width: entry.width };
     };
     if (id === 'gio_seat') this.gioSeat = seatAt(x, y);
+    if (id.startsWith('food_tray')) this.trayView = new TrayView(this, image);
     // ของหน้าบ้านย้ายได้ในโหมดจัดวาง กองไฟพาแสงเรืองไปด้วย ตะกร้าพาจีโอไปด้วย
     this.arranger.register(id, image, this.movableBlockers.get(id) ?? null, flat, (feet) => {
       if (id === 'campfire') {
@@ -531,6 +578,7 @@ export class BaseScene extends Phaser.Scene {
     if (this.landSignWins()) eventBus.emit('land-requested', this.nearLandSign()!);
     else if (plot !== null && this.farmActionAt(plot)) this.useFarm(plot);
     else if (this.campfireAction()) this.useCampfire();
+    else if (this.trayInReach()) eventBus.emit('tray-open', undefined);
     else if (this.nearGio()) eventBus.emit('gio-talk', undefined);
     else if (this.pondSpot()) {
       if (gameState.selectedTool === 'rod') this.startFishing();
@@ -804,6 +852,20 @@ export class BaseScene extends Phaser.Scene {
     return Phaser.Math.Distance.Between(this.player.feetX, this.player.feetY, this.campfire.x, this.campfire.y) < balance.cooking.reachPx;
   }
 
+  /** ยืนใกล้ถาดอาหารจึงวางอาหารได้ */
+  private trayInReach(): boolean {
+    const tray = this.trayView?.image;
+    if (!tray || !gameState.clockRunning || this.player.busy) return false;
+    return Phaser.Math.Distance.Between(this.player.feetX, this.player.feetY, tray.x, tray.y) < balance.tray.reachPx;
+  }
+
+  /** ตำแหน่งบนแผนที่เป็นพิกเซล CSS บนจอ ใช้วางฟองคำพูดและป้ายชื่อ */
+  private toScreen(x: number, y: number): { x: number; y: number } {
+    const camera = this.cameras.main;
+    const scale = camera.zoom / window.devicePixelRatio;
+    return { x: (x - camera.worldView.x) * scale, y: (y - camera.worldView.y) * scale };
+  }
+
   private campfireAction(): TextKey | null {
     if (!this.campfireInReach()) return null;
     const { slot } = gameState.world.cooking;
@@ -963,6 +1025,7 @@ export class BaseScene extends Phaser.Scene {
     let grown = false;
     this.plots.forEach((plot, index) => {
       if (plot.sync(plots[index]!)) grown = true;
+      plot.tick(this.time.now);
     });
     // พืชพร้อมเก็บพร้อมกันหลายแปลง (เช่นเช้าหลังนอน) ดังครั้งเดียว และไม่เกินครั้งละ 2 วินาที
     if (grown && this.time.now - this.grownSoundAt >= audioSettings.farmGrownGapMs) {
@@ -994,6 +1057,7 @@ export class BaseScene extends Phaser.Scene {
     if (farm) return { icon: FARM_ICON[farm], label: ACTION_LABEL[farm] };
     const fire = this.campfireAction();
     if (fire) return { icon: 'cook', label: fire };
+    if (this.trayInReach()) return { icon: 'tray', label: 'action.tray' };
     if (this.nearGio()) return { icon: 'talk', label: 'action.talk' };
     if (this.pondSpot()) return gameState.selectedTool === 'rod' ? { icon: 'fish', label: 'action.fish' } : { icon: 'bath', label: 'action.bath' };
     return this.nearDoor() ? { icon: 'sleep', label: 'action.sleep' } : null;
@@ -1012,6 +1076,11 @@ export class BaseScene extends Phaser.Scene {
       eventBus.emit('dig-requested', { plot: index, crop: state.crop!.id });
       return;
     }
+    // ปุ๋ยระดับสูงกว่าแทนของเดิม ถามก่อน
+    if (action === 'fertilize' && state.fertilizer > 0) {
+      eventBus.emit('fertilize-requested', { plot: index, item: gameState.selectedSeed! });
+      return;
+    }
     if (action === 'harvest' && !canStoreHarvest(gameState.world, index)) {
       eventBus.emit('player-says', 'bagFull');
       return;
@@ -1022,7 +1091,7 @@ export class BaseScene extends Phaser.Scene {
   private startMove(index: number, action: FarmAction): void {
     const plot = this.plots[index]!;
     const seed = gameState.selectedSeed;
-    const move: GardenMove = action === 'dig' ? 'till' : action;
+    const move: GardenMove = action === 'dig' ? 'till' : action === 'fertilize' ? 'plant' : action;
     this.player.playGardenMove(
       move,
       { x: plot.centerX, y: plot.centerY },
@@ -1032,9 +1101,10 @@ export class BaseScene extends Phaser.Scene {
       },
       () => {
         const before = gameState.world.farm.plots[index]!;
-        const amount = yieldOf(before);
         const crop = before.crop?.id;
         const seedsBefore = crop ? countOf(gameState.world.bag, seedItem(crop)) : 0;
+        const starCounts = (bag: typeof gameState.world.bag): number[] => [1, 2, 3].map((stars) => (crop ? countOf(bag, withStars(produceItem(crop), stars)) : 0));
+        const producedBefore = starCounts(gameState.world.bag);
         const next = applyFarmAction(gameState.world, index, action, seed, this.farmRng);
         if (next) {
           gameState.setWorld(next);
@@ -1044,7 +1114,10 @@ export class BaseScene extends Phaser.Scene {
             plot.wake();
             sparkle(this, plot.centerX, plot.centerY - TILE_MIDDLE);
           }
-          if (action === 'harvest' && crop) this.showHarvest(plot, crop, amount, countOf(next.bag, seedItem(crop)) > seedsBefore);
+          if (action === 'harvest' && crop) {
+            const gained = starCounts(next.bag).map((count, at) => count - producedBefore[at]!);
+            this.showHarvest(plot, crop, gained, countOf(next.bag, seedItem(crop)) > seedsBefore);
+          }
         }
         const queued = this.queuedPlot;
         this.queuedPlot = null;
@@ -1060,14 +1133,19 @@ export class BaseScene extends Phaser.Scene {
     if (move === 'water' && frame === WATER_SPLASH_FRAME) splash(this, plot.centerX, plot.centerY);
   }
 
-  /** ได้เมล็ดแถมขึ้นป้ายที่สองต่อจากผลผลิต */
-  private showHarvest(plot: Plot, crop: string, amount: number, gotSeed: boolean): void {
+  /** ป้ายละดาว (ได้ผัก 2–3 ดาวขึ้นป้ายแยกพร้อมป้ายดาว) ได้เมล็ดแถมขึ้นป้ายสุดท้าย · gained คือจำนวนที่ได้ของ 1 / 2 / 3 ดาว */
+  private showHarvest(plot: Plot, crop: string, gained: number[], gotSeed: boolean): void {
     const handY = this.player.feetY - PLAYER_HEAD_PX / 2;
     harvestArc(this, `icon_${crop}`, plot.centerX, plot.centerY, this.player.feetX, handY, () => {
       const name = t(`crop.${crop}.name` as TextKey);
-      popPill(this, this.player.feetX, this.player.feetY - PLAYER_HEAD_PX, `icon_${crop}`, `+${amount} ${name}`, gameState.viewport.zoom);
+      const pills = gained.flatMap((count, at) => (count > 0 ? [{ count, stars: at + 1 }] : []));
+      pills.forEach(({ count, stars }, order) => {
+        this.time.delayedCall(order * SEED_PILL_DELAY_MS, () => {
+          popPill(this, this.player.feetX, this.player.feetY - PLAYER_HEAD_PX, `icon_${crop}`, `+${count} ${name}`, gameState.viewport.zoom, `star_badge_${stars}`);
+        });
+      });
       if (!gotSeed) return;
-      this.time.delayedCall(SEED_PILL_DELAY_MS, () => {
+      this.time.delayedCall(Math.max(1, pills.length) * SEED_PILL_DELAY_MS, () => {
         popPill(this, this.player.feetX, this.player.feetY - PLAYER_HEAD_PX, `icon_${crop}`, `+1 ${t('bag.seed_prefix')}${name}`, gameState.viewport.zoom);
       });
     });

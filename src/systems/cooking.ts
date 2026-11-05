@@ -4,6 +4,8 @@ import recipesJson from '../data/recipes.json';
 import type { Recipe, Recipes } from '../data/schema';
 import { addToBag, countOf, takeFromBag } from './farm';
 import { fishGroupOf, fishGroupRank } from './fishing';
+import type { Rng } from '../core/rng';
+import { baseItem, carriesStars, defaultStarPick, dishStars, starsOf, withStars } from './stars';
 
 export const recipes = recipesJson as Recipes;
 const { cooking: rules, gauges } = balance;
@@ -14,7 +16,7 @@ export const MYSTERY = 'mystery';
 const DISH_PREFIX = 'dish_';
 export const isDish = (item: string): boolean => item.startsWith(DISH_PREFIX);
 export const isIngredient = (item: string): boolean => item.startsWith('ing_');
-export const isRawProduce = (item: string): boolean => item.startsWith('produce_');
+export const isRawProduce = (item: string): boolean => baseItem(item).startsWith('produce_');
 
 export const dishItem = (recipe: string, stars: number): string => `${DISH_PREFIX}${recipe}_${stars}`;
 
@@ -34,11 +36,27 @@ export const canUseCampfire = (recipe: Recipe): boolean => recipe.category === '
 
 export const minutesFor = (recipe: Recipe): number => (recipe.category === 'drink' ? rules.drink.minutes : rankOf(recipe).minutes);
 
-/** 3 ดาวรอจนกว่าวัตถุดิบจะมีดาว */
-export const starsFor = (happiness: number): number => (happiness >= rules.twoStarHappiness ? 2 : 1);
+/** ดาวที่ผู้เล่นเลือกต่อวัตถุดิบที่มีดาว (คีย์คือวัตถุดิบในสูตร เช่น produce_strawberry) ที่ไม่ได้เลือกใช้ค่าเริ่ม */
+export type StarPicks = Record<string, number>;
 
-/** จำนวนที่มีสำหรับวัตถุดิบในสูตร ปลาแรงก์ F นับปลาแรงก์ F ทุกชนิดในกระเป๋า */
-export function haveFor(bag: BagStack[], item: string): number {
+/** ดาวที่ใช้จริงของวัตถุดิบนี้ ค่าเริ่มคือดาวต่ำสุดที่มีพอทำ 1 จาน */
+export const pickedStars = (bag: BagStack[], item: string, need: number, picks: StarPicks): number => picks[item] ?? defaultStarPick(bag, item, need);
+
+/** รหัสของในกระเป๋าที่จะหยิบสำหรับวัตถุดิบในสูตร ผักใส่ดาวที่เลือก ของอื่นใช้รหัสเดิม */
+const stockItem = (bag: BagStack[], item: string, need: number, picks: StarPicks): string =>
+  carriesStars(item) ? withStars(item, pickedStars(bag, item, need, picks)) : item;
+
+/** ดาวของอาหารก่อนสุ่มโบนัสเกจสุข = ดาวต่ำสุดของวัตถุดิบที่มีดาว */
+export function baseDishStars(bag: BagStack[], recipe: Recipe, picks: StarPicks = {}): number {
+  const levels = Object.entries(recipe.ingredients)
+    .filter(([item]) => carriesStars(item))
+    .map(([item, need]) => pickedStars(bag, item, need, picks));
+  return levels.length > 0 ? Math.min(...levels) : 1;
+}
+
+/** จำนวนที่มีสำหรับวัตถุดิบในสูตร ปลาแรงก์ F นับปลาแรงก์ F ทุกชนิดในกระเป๋า · ผักนับเฉพาะดาวที่เลือก */
+export function haveFor(bag: BagStack[], item: string, picks: StarPicks = {}, need = 1): number {
+  if (carriesStars(item)) return countOf(bag, stockItem(bag, item, need, picks));
   if (!fishGroupRank(item)) return countOf(bag, item);
   return countOf(bag, item) + bag.filter((stack) => fishGroupOf(stack.item) === item).reduce((sum, stack) => sum + stack.count, 0);
 }
@@ -57,9 +75,9 @@ function takeFor(bag: BagStack[], item: string, count: number): BagStack[] | nul
   return left;
 }
 
-/** ทำได้มากสุดกี่จาน นับจากชุดวัตถุดิบครบที่มีในกระเป๋า ไม่มีเพดานอื่น */
-export function maxBatch(bag: BagStack[], recipe: Recipe): number {
-  return Math.min(...Object.entries(recipe.ingredients).map(([item, count]) => Math.floor(haveFor(bag, item) / count)));
+/** ทำได้มากสุดกี่จาน นับจากชุดวัตถุดิบครบที่มีในกระเป๋า (ผักนับเฉพาะดาวที่เลือก) ไม่มีเพดานอื่น */
+export function maxBatch(bag: BagStack[], recipe: Recipe, picks: StarPicks = {}): number {
+  return Math.min(...Object.entries(recipe.ingredients).map(([item, count]) => Math.floor(haveFor(bag, item, picks, count) / count)));
 }
 
 /** วัตถุดิบที่ใช้ทั้งรอบ */
@@ -69,8 +87,13 @@ export const batchIngredients = (recipe: Recipe, count: number): Record<string, 
 /** เวลาทำทั้งรอบ คูณจำนวนจานตรง ๆ ไม่มีส่วนลด */
 export const batchMinutes = (recipe: Recipe, count: number): number => minutesFor(recipe) * count;
 
-export function hasIngredients(bag: BagStack[], recipe: Recipe): boolean {
-  return Object.entries(recipe.ingredients).every(([item, count]) => haveFor(bag, item) >= count);
+export function hasIngredients(bag: BagStack[], recipe: Recipe, picks: StarPicks = {}): boolean {
+  return Object.entries(recipe.ingredients).every(([item, count]) => haveFor(bag, item, picks, count) >= count);
+}
+
+/** วัตถุดิบทั้งรอบเป็นรหัสของจริงในกระเป๋า (ผักใส่ดาวที่เลือก) */
+function stockFor(bag: BagStack[], recipe: Recipe, count: number, picks: StarPicks): Record<string, number> {
+  return Object.fromEntries(Object.entries(recipe.ingredients).map(([item, need]) => [stockItem(bag, item, need, picks), need * count]));
 }
 
 function takeAll(bag: BagStack[], items: Record<string, number>): BagStack[] | null {
@@ -85,28 +108,29 @@ function takeAll(bag: BagStack[], items: Record<string, number>): BagStack[] | n
 function asRecipeItems(mix: Record<string, number>): Record<string, number> {
   const items: Record<string, number> = {};
   for (const [item, count] of Object.entries(mix)) {
-    const key = fishGroupOf(item) ?? item;
+    const key = fishGroupOf(item) ?? baseItem(item);
     items[key] = (items[key] ?? 0) + count;
   }
   return items;
 }
 
-export function canCook(world: World, id: string): boolean {
+export function canCook(world: World, id: string, picks: StarPicks = {}): boolean {
   const recipe = recipes[id];
-  return Boolean(recipe && !world.cooking.slot && canUseCampfire(recipe) && hasIngredients(world.bag, recipe));
+  return Boolean(recipe && !world.cooking.slot && canUseCampfire(recipe) && hasIngredients(world.bag, recipe, picks));
 }
 
 function put(world: World, bag: BagStack[], slot: CookingSlot): World {
   return { ...world, bag, cooking: { slot } };
 }
 
-/** หยิบวัตถุดิบ × จำนวนจานตอนเริ่ม สุ่มดาวครั้งเดียวทั้งรอบ */
-export function startCooking(world: World, id: string, count = 1): World | null {
+/** หยิบวัตถุดิบ × จำนวนจานตอนเริ่ม ดาวอาหาร = ดาวต่ำสุดของผักที่เลือก สุ่มโบนัสเกจสุขครั้งเดียวทั้งรอบ */
+export function startCooking(world: World, id: string, count: number, picks: StarPicks, rng: Rng): World | null {
   const recipe = recipes[id];
-  if (!recipe || !world.recipes.known.includes(id) || !canCook(world, id)) return null;
-  if (!Number.isInteger(count) || count < 1 || count > maxBatch(world.bag, recipe)) return null;
-  const bag = takeAll(world.bag, batchIngredients(recipe, count));
-  return bag && put(world, bag, { recipe: id, stars: starsFor(world.gauges.happiness), minutesLeft: batchMinutes(recipe, count), count });
+  if (!recipe || !world.recipes.known.includes(id) || !canCook(world, id, picks)) return null;
+  if (!Number.isInteger(count) || count < 1 || count > maxBatch(world.bag, recipe, picks)) return null;
+  const stars = dishStars([baseDishStars(world.bag, recipe, picks)], world.gauges.happiness, rng);
+  const bag = takeAll(world.bag, stockFor(world.bag, recipe, count, picks));
+  return bag && put(world, bag, { recipe: id, stars, minutesLeft: batchMinutes(recipe, count), count });
 }
 
 /** ของที่ผสมต้องตรงสูตรทุกอย่าง และเป็นเมนูที่กองไฟทำได้ */
@@ -122,8 +146,8 @@ export function matchRecipe(raw: Record<string, number>): string | null {
   return found ? found[0] : null;
 }
 
-/** ตรงสูตรจะปลดสูตรนั้น ผิดได้อาหารปริศนา วัตถุดิบหมดทั้งสองแบบ */
-export function startExperiment(world: World, mix: Record<string, number>): World | null {
+/** ตรงสูตรจะปลดสูตรนั้น ผิดได้อาหารปริศนา วัตถุดิบหมดทั้งสองแบบ · ดาวคิดจากผักที่ใส่จริง */
+export function startExperiment(world: World, mix: Record<string, number>, rng: Rng): World | null {
   if (world.cooking.slot || Object.keys(mix).length === 0) return null;
   const bag = takeAll(world.bag, mix);
   if (!bag) return null;
@@ -132,9 +156,14 @@ export function startExperiment(world: World, mix: Record<string, number>): Worl
   const recipe = recipes[id]!;
   const known = world.recipes.known.includes(id) ? world.recipes.known : [...world.recipes.known, id];
   return {
-    ...put(world, bag, { recipe: id, stars: starsFor(world.gauges.happiness), minutesLeft: minutesFor(recipe), count: 1 }),
+    ...put(world, bag, { recipe: id, stars: mixStars(mix, world.gauges.happiness, rng), minutesLeft: minutesFor(recipe), count: 1 }),
     recipes: { ...world.recipes, known },
   };
+}
+
+function mixStars(mix: Record<string, number>, happiness: number, rng: Rng): number {
+  const levels = Object.keys(mix).flatMap((item) => (carriesStars(item) ? [starsOf(item) ?? 1] : []));
+  return dishStars(levels, happiness, rng);
 }
 
 export function tickCooking(cooking: Cooking, hours: number): Cooking {

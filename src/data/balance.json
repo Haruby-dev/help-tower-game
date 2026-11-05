@@ -248,7 +248,6 @@
   },
   "cooking": {
     "reachPx": 60,
-    "twoStarHappiness": 70,
     "rawFullness": 5,
     "ranks": {
       "F": {
@@ -413,5 +412,210 @@
   },
   "test": {
     "stars": 100
+  },
+  "stars": {
+    "max": 3,
+    "rolls": {
+      "1": [
+        1,
+        0,
+        0
+      ],
+      "2": [
+        0.8,
+        0.2,
+        0
+      ],
+      "3": [
+        0,
+        0.7,
+        0.3
+      ]
+    },
+    "skillShift": 0.1,
+    "happyBonusFrom": 70,
+    "happyBonusChance": 0.1,
+    "priceMultiplier": [
+      1,
+      1.2,
+      1.5
+    ]
+  },
+  "fertilizer": {
+    "tiers": {
+      "fertilizer_2": 2,
+      "fertilizer_3": 3
+    }
+  },
+  "monsters": {
+    "rankBase": {
+      "F": 2,
+      "E": 3,
+      "D": 5,
+      "C": 8,
+      "B": 13,
+      "A": 20,
+      "S": 28,
+      "SS": 38,
+      "SSS": 50
+    },
+    "drinkBaseShare": 0.5,
+    "taste": {
+      "favourite": 3,
+      "like": 1.5,
+      "neutral": 1,
+      "dislike": 0
+    },
+    "variety": [
+      1,
+      0.6,
+      0.3
+    ],
+    "starMultiplier": [
+      1,
+      1.2,
+      1.5
+    ],
+    "clean": {
+      "goodFrom": 70,
+      "good": 1.1,
+      "badAtOrBelow": 30,
+      "bad": 0.8
+    },
+    "signatureAt": 0.9,
+    "minRankByZone": [
+      "F",
+      "E",
+      "D",
+      "C",
+      "B",
+      "B",
+      "A",
+      "A",
+      "S",
+      "S"
+    ],
+    "unlockedZones": 1,
+    "visitorsBase": 1,
+    "soldPerVisitor": 4,
+    "maxVisitors": 6,
+    "visitFromHour": 12,
+    "visitToHour": 20,
+    "settleAfterHour": 21,
+    "appetiteMin": 1,
+    "appetiteMax": 5,
+    "towerMin": 3,
+    "towerMax": 5,
+    "warmFrom": 40,
+    "closeFrom": 80,
+    "talkChance": 0.4,
+    "clearStars": 30,
+    "walkSpeed": 26,
+    "browseMs": 650,
+    "thinkMs": 900,
+    "eatGapMs": 350,
+    "eyeSteps": 5,
+    "labelReachPx": 90,
+    "bubbleMs": 1800,
+    "maxBubbles": 3,
+    "motesPerSecond": 4
+  },
+  "tray": {
+    "reachPx": 48,
+    "levels": [
+      {
+        "id": "food_tray_3",
+        "plates": [
+          [
+            11,
+            6
+          ],
+          [
+            25,
+            13
+          ],
+          [
+            41,
+            6
+          ]
+        ]
+      },
+      {
+        "id": "food_tray_6",
+        "plates": [
+          [
+            13,
+            6
+          ],
+          [
+            13,
+            17
+          ],
+          [
+            29,
+            6
+          ],
+          [
+            29,
+            19
+          ],
+          [
+            46,
+            6
+          ],
+          [
+            46,
+            18
+          ]
+        ]
+      },
+      {
+        "id": "food_tray_10",
+        "plates": [
+          [
+            9,
+            6
+          ],
+          [
+            9,
+            19
+          ],
+          [
+            25,
+            6
+          ],
+          [
+            25,
+            19
+          ],
+          [
+            40,
+            6
+          ],
+          [
+            40,
+            19
+          ],
+          [
+            56,
+            6
+          ],
+          [
+            56,
+            19
+          ],
+          [
+            72,
+            7
+          ],
+          [
+            72,
+            20
+          ]
+        ]
+      }
+    ],
+    "stackStepPx": 2,
+    "stackShownMax": 4
   }
 }

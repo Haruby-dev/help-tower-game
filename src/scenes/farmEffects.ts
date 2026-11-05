@@ -94,19 +94,21 @@ export function harvestArc(scene: Phaser.Scene, icon: string, fromX: number, fro
   });
 }
 
-/** ป้าย "+1 ชื่อ" รูปอยู่ซ้าย ตัวหนังสืออยู่ในป้าย ลอยขึ้นแล้วจาง */
-export function popPill(scene: Phaser.Scene, x: number, y: number, icon: string, text: string, resolution: number): void {
+/** ป้าย "+1 ชื่อ" รูปอยู่ซ้าย ตัวหนังสืออยู่ในป้าย ลอยขึ้นแล้วจาง · badge คือป้ายดาวต่อท้าย เช่น ผักที่ได้ 2–3 ดาว */
+export function popPill(scene: Phaser.Scene, x: number, y: number, icon: string, text: string, resolution: number, badge?: string): void {
   const label = scene.add
     .text(0, 0, text, { fontFamily: 'Mali', fontSize: `${POP_FONT_PX}px`, fontStyle: 'bold', color: '#5c304c' })
     .setOrigin(0, 0.5)
     .setResolution(resolution);
   const picture = scene.add.image(0, 0, icon).setOrigin(0, 0.5);
-  const width = Math.ceil(picture.width + POP_GAP + label.width + POP_PADDING * 2);
+  const stars = badge ? scene.add.image(0, 0, badge).setOrigin(0, 0.5) : null;
+  const width = Math.ceil(picture.width + POP_GAP + label.width + (stars ? POP_GAP + stars.width : 0) + POP_PADDING * 2);
   const height = Math.max(POP_MIN_HEIGHT, Math.ceil(picture.height + 2));
   const left = -Math.floor(width / 2);
   picture.setX(left + POP_PADDING);
   label.setX(left + POP_PADDING + picture.width + POP_GAP);
+  stars?.setX(Math.ceil(label.x + label.width + POP_GAP));
   const pill = scene.add.nineslice(0, 0, 'fx_pop_pill', undefined, width, height, POP_SLICE, POP_SLICE, POP_SLICE, POP_SLICE);
-  const group = scene.add.container(x, y, [pill, picture, label]).setDepth(FX_DEPTH + 1);
+  const group = scene.add.container(x, y, stars ? [pill, picture, label, stars] : [pill, picture, label]).setDepth(FX_DEPTH + 1);
   scene.tweens.add({ targets: group, y: y - 14, alpha: 0, delay: 350, duration: 650, onComplete: () => group.destroy() });
 }

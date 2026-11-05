@@ -23,5 +23,19 @@
   ],
   "randomSeeds": 3,
   "randomRecipes": 2,
-  "recipePriceMultiplier": 5
+  "recipePriceMultiplier": 5,
+  "fertilizers": [
+    {
+      "item": "fertilizer_2",
+      "price": 160,
+      "tab": "daily",
+      "chance": 1
+    },
+    {
+      "item": "fertilizer_3",
+      "price": 800,
+      "tab": "random",
+      "chance": 0.3
+    }
+  ]
 }

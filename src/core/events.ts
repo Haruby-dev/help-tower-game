@@ -19,6 +19,9 @@ export interface GameEvents {
   'tool-changed': Tool;
   'dig-requested': { plot: number; crop: string };
   'dig-confirmed': number;
+  /** ปุ๋ยระดับสูงกว่าจะแทนปุ๋ยเดิมในแปลง ถามก่อน */
+  'fertilize-requested': { plot: number; item: string };
+  'fertilize-confirmed': number;
   /** key ของบทพูดตัวเอกใน lines.json */
   'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut' | 'noMoney';
   'cook-open': undefined;
@@ -41,6 +44,16 @@ export interface GameEvents {
   'arrange-command': 'place' | 'cancel' | 'done';
   /** สถานะโหมดจัดวาง ให้แถบล่างแสดงปุ่มให้ตรง */
   'arrange-changed': { active: boolean; selected: string | null; valid: boolean };
+  /** ข้อความแจ้งที่ประกอบจากหลายส่วน (เช่น ประตูชั้น N เปิดแล้ว) */
+  'notice-text': string;
+  /** ฟองคำพูดเหนือหัวตัวละครในฉาก anchor ตอบตำแหน่งบนจอ (null คือตัวหายไปแล้ว) · พูดพร้อมกันไม่เกิน 3 ฟอง ที่เหลือรอคิว */
+  speech: { speaker: string; text: string; anchor: () => Point | null };
+  /** ป้ายชื่อกับความชอบเหนือหัวมอนสเตอร์ตอนยืนใกล้ */
+  'monster-tag': { id: string; hidden: true } | { id: string; hidden: false; name: string; percent: number; anchor: () => Point | null };
+  /** ยืนที่ถาดแล้วกดปุ่มกระทำ เปิดหน้าต่างวางอาหาร */
+  'tray-open': undefined;
+  /** ปุ่มทดสอบในตั้งค่า เรียกมอนสเตอร์มาตอนนี้ (ตอบผลกลับด้วย notice) */
+  'monster-summon': undefined;
 }
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

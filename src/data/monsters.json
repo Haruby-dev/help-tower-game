@@ -1,0 +1,233 @@
+{
+  "puinun": {
+    "floor": 1,
+    "zone": 1,
+    "points": 30,
+    "personality": "shy",
+    "favourite": [
+      "strawberry_skewer"
+    ],
+    "likes": [
+      "grilled_corn",
+      "warm_honey_milk"
+    ],
+    "dislikes": [
+      "grilled_fish"
+    ],
+    "signature": {
+      "recipe": "baked_potato",
+      "stars": 1
+    },
+    "art": {
+      "sheet": "monster_puinun",
+      "frame": 40,
+      "walkMs": 130,
+      "eatMs": 150,
+      "eatFrames": [
+        0,
+        1,
+        1,
+        2,
+        2,
+        0,
+        1,
+        1,
+        2,
+        3,
+        0,
+        0
+      ],
+      "hungryEye": "#c2364a",
+      "height": 36
+    }
+  },
+  "popcorn": {
+    "floor": 2,
+    "zone": 1,
+    "points": 32,
+    "personality": "cheerful",
+    "favourite": [
+      "boiled_egg"
+    ],
+    "likes": [
+      "scallion_omelet",
+      "honey_pancake"
+    ],
+    "dislikes": [
+      "tomato_soup"
+    ],
+    "signature": {
+      "recipe": "grilled_corn",
+      "stars": 1
+    },
+    "art": null
+  },
+  "mookmik": {
+    "floor": 3,
+    "zone": 1,
+    "points": 33,
+    "personality": "proud",
+    "favourite": [
+      "tomato_soup"
+    ],
+    "likes": [
+      "potato_carrot_stew",
+      "honey_apple_grill"
+    ],
+    "dislikes": [
+      "boiled_egg"
+    ],
+    "signature": {
+      "recipe": "scallion_omelet",
+      "stars": 1
+    },
+    "art": null
+  },
+  "toomtia": {
+    "floor": 4,
+    "zone": 1,
+    "points": 35,
+    "personality": "lazy",
+    "favourite": [
+      "baked_potato"
+    ],
+    "likes": [
+      "fish_congee",
+      "potato_carrot_stew"
+    ],
+    "dislikes": [
+      "strawberry_skewer"
+    ],
+    "signature": {
+      "recipe": "tomato_soup",
+      "stars": 1
+    },
+    "art": null
+  },
+  "tangkrading": {
+    "floor": 5,
+    "zone": 1,
+    "points": 36,
+    "personality": "cheerful",
+    "favourite": [
+      "grilled_fish"
+    ],
+    "likes": [
+      "home_kaprao",
+      "boiled_egg"
+    ],
+    "dislikes": [
+      "grilled_corn"
+    ],
+    "signature": {
+      "recipe": "fish_congee",
+      "stars": 1
+    },
+    "art": null
+  },
+  "yaibaimai": {
+    "floor": 6,
+    "zone": 1,
+    "points": 38,
+    "personality": "elder",
+    "favourite": [
+      "fish_congee"
+    ],
+    "likes": [
+      "tomato_soup",
+      "warm_honey_milk"
+    ],
+    "dislikes": [
+      "grilled_corn"
+    ],
+    "signature": {
+      "recipe": "home_kaprao",
+      "stars": 1
+    },
+    "art": null
+  },
+  "wingwing": {
+    "floor": 7,
+    "zone": 1,
+    "points": 40,
+    "personality": "shy",
+    "favourite": [
+      "warm_honey_milk"
+    ],
+    "likes": [
+      "strawberry_skewer",
+      "honey_pancake"
+    ],
+    "dislikes": [
+      "grilled_fish"
+    ],
+    "signature": {
+      "recipe": "corn_egg_fried_rice",
+      "stars": 1
+    },
+    "art": null
+  },
+  "tubpong": {
+    "floor": 8,
+    "zone": 1,
+    "points": 42,
+    "personality": "lazy",
+    "favourite": [
+      "scallion_omelet"
+    ],
+    "likes": [
+      "baked_potato",
+      "corn_egg_fried_rice"
+    ],
+    "dislikes": [
+      "strawberry_skewer"
+    ],
+    "signature": {
+      "recipe": "potato_carrot_stew",
+      "stars": 1
+    },
+    "art": null
+  },
+  "jaotungtong": {
+    "floor": 9,
+    "zone": 1,
+    "points": 44,
+    "personality": "proud",
+    "favourite": [
+      "honey_pancake"
+    ],
+    "likes": [
+      "honey_apple_grill",
+      "strawberry_milk_pudding"
+    ],
+    "dislikes": [
+      "baked_potato"
+    ],
+    "signature": {
+      "recipe": "warm_honey_milk",
+      "stars": 1
+    },
+    "art": null
+  },
+  "puefaotung": {
+    "floor": 10,
+    "zone": 1,
+    "points": 47,
+    "personality": "elder",
+    "favourite": [
+      "strawberry_milk_pudding"
+    ],
+    "likes": [
+      "home_kaprao",
+      "fish_congee"
+    ],
+    "dislikes": [
+      "corn_egg_fried_rice"
+    ],
+    "signature": {
+      "recipe": "strawberry_skewer",
+      "stars": 3
+    },
+    "art": null
+  }
+}

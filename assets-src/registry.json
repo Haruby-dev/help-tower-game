@@ -8066,5 +8066,180 @@
     "file": "ui/shop/items/recipe_scroll_sweet.png",
     "jade_tone": false,
     "lazy": true
+  },
+  "star_badge_1": {
+    "type": "local",
+    "width": 9,
+    "height": 9,
+    "source": "public/assets/ui/badges/star_badge_1.png",
+    "file": "ui/badges/star_badge_1.png",
+    "jade_tone": false,
+    "note": "ป้ายดาว 1 ดวง มุมซ้ายล่างของไอคอน ห่างขอบช่อง 1 พิกเซล (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "star_badge_2": {
+    "type": "local",
+    "width": 16,
+    "height": 9,
+    "source": "public/assets/ui/badges/star_badge_2.png",
+    "file": "ui/badges/star_badge_2.png",
+    "jade_tone": false,
+    "note": "ป้ายดาว 2 ดวง มุมซ้ายล่างของไอคอน ห่างขอบช่อง 1 พิกเซล (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "star_badge_3": {
+    "type": "local",
+    "width": 23,
+    "height": 9,
+    "source": "public/assets/ui/badges/star_badge_3.png",
+    "file": "ui/badges/star_badge_3.png",
+    "jade_tone": false,
+    "note": "ป้ายดาว 3 ดวง มุมซ้ายล่างของไอคอน ห่างขอบช่อง 1 พิกเซล (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "fertilizer_2": {
+    "type": "local",
+    "width": 23,
+    "height": 27,
+    "source": "public/assets/farm/fertilizer/fertilizer_2.png",
+    "file": "farm/fertilizer/fertilizer_2.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ปุ๋ยระดับ 2 ในกระเป๋า ขนาดเท่าถุงเมล็ด"
+  },
+  "shop_item_fertilizer_2": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/fertilizer_2.png",
+    "file": "ui/shop/items/fertilizer_2.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ปุ๋ยระดับ 2 บนชั้นร้าน"
+  },
+  "fertilizer_3": {
+    "type": "local",
+    "width": 23,
+    "height": 27,
+    "source": "public/assets/farm/fertilizer/fertilizer_3.png",
+    "file": "farm/fertilizer/fertilizer_3.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ปุ๋ยระดับ 3 ในกระเป๋า ขนาดเท่าถุงเมล็ด"
+  },
+  "shop_item_fertilizer_3": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/fertilizer_3.png",
+    "file": "ui/shop/items/fertilizer_3.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ปุ๋ยระดับ 3 บนชั้นร้าน"
+  },
+  "fx_fert2_twinkle": {
+    "type": "local",
+    "width": 28,
+    "height": 7,
+    "source": "public/assets/farm/fx/fx_fert2_twinkle_4f.png",
+    "file": "farm/fx/fx_fert2_twinkle_4f.png",
+    "jade_tone": false,
+    "frame_width": 7,
+    "frame_height": 7,
+    "frames": 4,
+    "note": "ประกายเหลืองอ่อนบนแปลงที่ใส่ปุ๋ยระดับ 2 แปลงละ 2 จุด"
+  },
+  "fx_fert3_twinkle": {
+    "type": "local",
+    "width": 45,
+    "height": 9,
+    "source": "public/assets/farm/fx/fx_fert3_twinkle_5f.png",
+    "file": "farm/fx/fx_fert3_twinkle_5f.png",
+    "jade_tone": false,
+    "frame_width": 9,
+    "frame_height": 9,
+    "frames": 5,
+    "note": "ประกายชมพูทองบนแปลงที่ใส่ปุ๋ยระดับ 3 แปลงละ 4 จุด"
+  },
+  "monster_puinun_hungry_stand": {
+    "type": "local",
+    "width": 160,
+    "height": 40,
+    "source": "public/assets/monsters/puinun/puinun_hungry_stand.png",
+    "file": "monsters/puinun/puinun_hungry_stand.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 4,
+    "note": "ปุยนุ่นตอนหิว ยืน 4 เฟรม เรียง ใต้ ตะวันออก เหนือ ตะวันตก (docs/puinun_art_2026-11-05.md)"
+  },
+  "monster_puinun_hungry_walk": {
+    "type": "local",
+    "width": 240,
+    "height": 160,
+    "source": "public/assets/monsters/puinun/puinun_hungry_walk.png",
+    "file": "monsters/puinun/puinun_hungry_walk.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 24,
+    "rows": [
+      "south",
+      "east",
+      "north",
+      "west"
+    ],
+    "note": "เดิน 4 แถว ใต้ ตะวันออก เหนือ ตะวันตก แถวละ 6 เฟรม 130 ms เฟรม 2 กับ 5 ตัวลอย 1 พิกเซล"
+  },
+  "monster_puinun_hungry_eat": {
+    "type": "local",
+    "width": 160,
+    "height": 40,
+    "source": "public/assets/monsters/puinun/puinun_hungry_eat.png",
+    "file": "monsters/puinun/puinun_hungry_eat.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 4,
+    "note": "กิน ทิศใต้ 4 เฟรม พัก อ้าปาก เคี้ยว ขยิบตา"
+  },
+  "monster_puinun_sweet_stand": {
+    "type": "local",
+    "width": 160,
+    "height": 40,
+    "source": "public/assets/monsters/puinun/puinun_sweet_stand.png",
+    "file": "monsters/puinun/puinun_sweet_stand.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 4,
+    "note": "ปุยนุ่นตอนหวาน ยืน 4 เฟรม เรียง ใต้ ตะวันออก เหนือ ตะวันตก (docs/puinun_art_2026-11-05.md)"
+  },
+  "monster_puinun_sweet_walk": {
+    "type": "local",
+    "width": 240,
+    "height": 160,
+    "source": "public/assets/monsters/puinun/puinun_sweet_walk.png",
+    "file": "monsters/puinun/puinun_sweet_walk.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 24,
+    "rows": [
+      "south",
+      "east",
+      "north",
+      "west"
+    ],
+    "note": "เดิน 4 แถว ใต้ ตะวันออก เหนือ ตะวันตก แถวละ 6 เฟรม 130 ms เฟรม 2 กับ 5 ตัวลอย 1 พิกเซล"
+  },
+  "monster_puinun_sweet_eat": {
+    "type": "local",
+    "width": 160,
+    "height": 40,
+    "source": "public/assets/monsters/puinun/puinun_sweet_eat.png",
+    "file": "monsters/puinun/puinun_sweet_eat.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 4,
+    "note": "กิน ทิศใต้ 4 เฟรม พัก อ้าปาก เคี้ยว ขยิบตา"
   }
 }

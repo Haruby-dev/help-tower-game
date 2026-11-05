@@ -1,6 +1,7 @@
 import { audioSettings, sound, type SoundGroup } from '../core/audio';
 import balance from '../data/balance.json';
 import { applyTransaction } from '../systems/economy';
+import { eventBus } from '../core/events';
 import { t } from '../core/i18n';
 import { gameState } from '../core/state';
 import { isHomeScreenApp } from '../core/viewport';
@@ -285,6 +286,24 @@ function createTestStarsRow(): HTMLElement {
   return row;
 }
 
+/** ปุ่มลับช่วงทดสอบ เรียกมอนสเตอร์ที่มาได้ตัวแรกมาเยี่ยมตอนนี้เลย ไม่ต้องรอจีโอเร่ขาย ต้องเอาออกก่อนปล่อยจริง */
+function createTestMonsterRow(): HTMLElement {
+  const row = document.createElement('div');
+  row.className = 'settings-row settings-test';
+  const label = document.createElement('span');
+  const name = Object.assign(document.createElement('b'), { textContent: t('settings.test_monster') });
+  const note = Object.assign(document.createElement('small'), { textContent: t('settings.test_stars_note') });
+  label.append(name, note);
+  const button = document.createElement('button');
+  button.id = 'test-monster';
+  button.type = 'button';
+  button.className = 'settings-button';
+  button.textContent = t('settings.test_monster');
+  button.addEventListener('click', () => eventBus.emit('monster-summon', undefined));
+  row.append(label, button);
+  return row;
+}
+
 let appRootForPage: HTMLElement | null = null;
 
 /** อ่านค่าที่จำไว้ตั้งแต่เปิดเกม ไม่ต้องรอเปิดหน้าตั้งค่า */
@@ -329,7 +348,7 @@ function createSettingsPage(): HTMLElement {
   page.append(title, ...volumes, row, createAutoFishRow(rebait.sync), rebait.row, createZoomRow(), createSaveRow());
   const fullscreen = appRootForPage ? createFullscreenRow(appRootForPage) : null;
   if (fullscreen) page.append(fullscreen);
-  page.append(createTestStarsRow());
+  page.append(createTestStarsRow(), createTestMonsterRow());
   return page;
 }
 

@@ -19,6 +19,7 @@ const TABS: { id: Tab; label: TextKey }[] = [
 const GROUP_LABEL: Record<ShopGroup, TextKey> = {
   treats: 'shop.group_treats',
   seeds: 'shop.group_seeds',
+  fertilizer: 'shop.group_fertilizer',
   random_seeds: 'shop.group_random_seeds',
   recipes: 'shop.group_recipes',
 };
@@ -46,9 +47,12 @@ function artImage(id: string, scale: number): HTMLElement {
   return image;
 }
 
-/** ภาพของบนชั้น สูตรเป็นม้วนกระดาษตามหมวด ของที่ยังไม่มีภาพใช้กล่องสี */
-const offerImage = (offer: Offer, scale = 1): HTMLElement =>
-  offer.kind === 'recipe' ? artImage(scrollFor(offer.target), scale) : itemImage(offer.target, false, scale);
+/** ภาพของบนชั้น สูตรเป็นม้วนกระดาษตามหมวด ของที่มีภาพบนชั้นร้านแยก (เช่น ปุ๋ย) ใช้ภาพนั้น ของที่ยังไม่มีภาพใช้กล่องสี */
+const offerImage = (offer: Offer, scale = 1): HTMLElement => {
+  if (offer.kind === 'recipe') return artImage(scrollFor(offer.target), scale);
+  const shelf = `shop_item_${offer.target}`;
+  return registry[shelf]?.type === 'local' ? artImage(shelf, scale) : itemImage(offer.target, false, scale);
+};
 
 const offerName = (offer: Offer): string => (offer.kind === 'recipe' ? t(`dish.${offer.target}.name` as TextKey) : itemName(offer.target));
 
@@ -59,6 +63,7 @@ function offerNotes(offer: Offer): string[] {
     const gain = taste === 'special' ? balance.gioCare.specialWeeklyGain : balance.gioCare.treatGains[0]!;
     return [t(TASTE_LABEL[taste]), `${t('shop.happiness')} +${gain}`];
   }
+  if (offer.group === 'fertilizer') return [t('shop.fertilizer_note')];
   return [t(offer.kind === 'recipe' ? 'shop.recipe_note' : 'shop.seed_note')];
 }
 

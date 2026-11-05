@@ -1,8 +1,10 @@
 import { createRng } from '../core/rng';
-import { defaultCosmetics, emptyWallet, type BagStack, type Farm, type Fishing, type GaugeValues, type RecipeBook, type Weather, type World } from '../core/state';
+import { defaultCosmetics, emptyPlot, emptyWallet, type BagStack, type Farm, type Fishing, type GaugeValues, type RecipeBook, type Weather, type World } from '../core/state';
 import balance from '../data/balance.json';
 import recipesJson from '../data/recipes.json';
 import { newGioCare } from './gio';
+import { newMonsters } from './monsters';
+import { newTray } from './tray';
 
 const { gauges, time, farm, cooking, fishing, weather } = balance;
 const SEED_RANGE = 2 ** 31;
@@ -21,7 +23,7 @@ export function clampGauges(values: GaugeValues): GaugeValues {
 }
 
 export const newFarm = (): Farm => ({
-  plots: Array.from({ length: farm.cols * farm.rows }, () => ({ tilled: false, watered: false, crop: null })),
+  plots: Array.from({ length: farm.cols * farm.rows }, emptyPlot),
 });
 
 export const starterBag = (): BagStack[] => Object.entries(farm.starterBag).map(([item, count]) => ({ item, count }));
@@ -64,6 +66,8 @@ export function newWorld(): World {
     gio: newGioCare(),
     land: { owned: 0 },
     placed: {},
+    tray: newTray(),
+    monsters: newMonsters(),
   };
 }
 

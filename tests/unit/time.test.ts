@@ -29,6 +29,8 @@ describe('clock', () => {
       gio: newGioCare(),
       land: { owned: 0 },
       placed: {},
+      tray: { level: 0, plates: [null, null, null] },
+      monsters: { affection: {}, plannedDay: 0, arrivals: [] },
     });
   });
 

@@ -3,6 +3,8 @@ import { assetUrl, registry } from '../core/assets';
 /** เก็บภาพที่ถอดรหัสแล้วไว้ เบราว์เซอร์จะได้ไม่ทิ้งก่อนเปิดหน้าต่าง */
 const kept: HTMLImageElement[] = [];
 const REVEAL_LIMIT_MS = 1500;
+/** ภาพที่ Phaser โหลดแล้วแต่หน้าจอใช้ด้วย (ป้ายดาว หัวใจบนป้ายชื่อมอนสเตอร์) โหลดไว้ก่อนเหมือนกัน */
+const ALSO_IN_INTERFACE = ['star_badge_1', 'star_badge_2', 'star_badge_3', 'fx_heart_5'];
 
 const wait = (ms: number): Promise<void> => new Promise((resolve) => window.setTimeout(resolve, ms));
 
@@ -11,6 +13,10 @@ export function preloadInterfaceArt(): Promise<void> {
   const files = new Set<string>();
   for (const entry of Object.values(registry)) {
     if (entry.type === 'local' && entry.lazy) files.add(assetUrl(entry.file));
+  }
+  for (const id of ALSO_IN_INTERFACE) {
+    const entry = registry[id];
+    if (entry?.type === 'local') files.add(assetUrl(entry.file));
   }
   const jobs = [...files].map((url) => {
     const image = new Image();

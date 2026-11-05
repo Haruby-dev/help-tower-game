@@ -139,7 +139,7 @@ test('hoeing a plot plays the till sound on the hit frame, and walking plays foo
 test('a crop that becomes ready twinkles once, even when several plots are ready together', async ({ page }) => {
   await open(page);
   await skipWithoutWebAudio(page);
-  const growing = (daysGrown: number) => ({ tilled: true, watered: false, crop: { id: 'scallion', daysGrown, harvests: 0 } });
+  const growing = (daysGrown: number) => ({ tilled: true, watered: false, crop: { id: 'scallion', daysGrown, harvests: 0 }, fertilizer: 0 });
   await page.evaluate((plot) => {
     const s = (window as unknown as { __state: TestState }).__state;
     s.setWorld({ ...s.world, farm: { plots: s.world.farm.plots.map((old, index) => (index < 3 ? plot : old)) } });

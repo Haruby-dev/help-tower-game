@@ -1,4 +1,4 @@
-import type { World } from '../core/state';
+import { emptyPlot, type World } from '../core/state';
 import balance from '../data/balance.json';
 import { applyTransaction } from './economy';
 
@@ -53,7 +53,7 @@ export function buyLand(world: World, index: number): BuyLandResult {
   const price = landPrice(index);
   if (world.wallet.coins < price) return { world: null, reason: 'money' };
   const paid = applyTransaction(world, 'coins', -price, 'wallet.land', 'wallet.category_land');
-  const added = Array.from({ length: plotsOf(index) }, () => ({ tilled: false, watered: false, crop: null }));
+  const added = Array.from({ length: plotsOf(index) }, emptyPlot);
   return {
     world: { ...paid, land: { owned: index + 1 }, farm: { plots: [...paid.farm.plots, ...added] } },
   };

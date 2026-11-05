@@ -96,7 +96,7 @@ test('digging up a plant asks first, and saying no keeps it', async ({ page }) =
   await page.evaluate(() => {
     const s = (window as unknown as { __state: { world: FarmWorld; setWorld(w: unknown): void } }).__state;
     const plots = s.world.farm.plots.map((plot, index) =>
-      index === 0 ? { tilled: true, watered: false, crop: { id: 'chili', daysGrown: 1, harvests: 0 } } : plot,
+      index === 0 ? { tilled: true, watered: false, crop: { id: 'chili', daysGrown: 1, harvests: 0 }, fertilizer: 0 } : plot,
     );
     s.setWorld({ ...s.world, farm: { plots } });
   });
@@ -118,7 +118,7 @@ test('a full bag leaves the produce on the plot and the player says so', async (
   await page.evaluate(() => {
     const s = (window as unknown as { __state: { world: FarmWorld; setWorld(w: unknown): void } }).__state;
     const plots = s.world.farm.plots.map((plot, index) =>
-      index === 0 ? { tilled: true, watered: false, crop: { id: 'scallion', daysGrown: 3, harvests: 0 } } : plot,
+      index === 0 ? { tilled: true, watered: false, crop: { id: 'scallion', daysGrown: 3, harvests: 0 }, fertilizer: 0 } : plot,
     );
     const bag = Array.from({ length: 30 }, () => ({ item: 'seed_rice', count: 99 }));
     s.setWorld({ ...s.world, bag, farm: { plots } });
@@ -135,7 +135,7 @@ test('a withered plant clears with the hoe without asking', async ({ page }) => 
   await page.evaluate(() => {
     const s = (window as unknown as { __state: { world: FarmWorld; setWorld(w: unknown): void } }).__state;
     const plots = s.world.farm.plots.map((plot, index) =>
-      index === 0 ? { tilled: true, watered: false, crop: { id: 'chili', daysGrown: 2, harvests: 4 } } : plot,
+      index === 0 ? { tilled: true, watered: false, crop: { id: 'chili', daysGrown: 2, harvests: 4 }, fertilizer: 0 } : plot,
     );
     s.setWorld({ ...s.world, farm: { plots } });
   });
