@@ -3,13 +3,13 @@ import type { Tray } from '../core/state';
 import balance from '../data/balance.json';
 import { parseDish, recipes } from '../systems/cooking';
 import { platePoints, trayArt } from '../systems/tray';
-import { foodMoundKey } from './monsterArt';
+import { foodArtKey } from './monsterArt';
 
 type Point = { x: number; y: number };
-/** อาหารจิ๋ววางกลางจาน ฐานกองต่ำกว่ากลางจาน 2 พิกเซล */
+/** อาหารจิ๋ววางกลางจาน ฐานต่ำกว่ากลางจาน 2 พิกเซล */
 const MOUND_DROP_PX = 2;
 
-/** อาหารบนจานถาด (วาดด้วยโค้ดจนกว่าจะมีภาพอาหารจิ๋ว) เมนูเดิมซ้อนกองสูงขึ้นตามจำนวน อ่านจาก GameState อย่างเดียว */
+/** อาหารจิ๋วบนจานถาด เมนูเดิมซ้อนสูงขึ้นตามจำนวน อ่านจาก GameState อย่างเดียว */
 export class TrayView {
   private piles: Phaser.GameObjects.Image[] = [];
   private shown: Tray | null = null;
@@ -46,7 +46,7 @@ export class TrayView {
     tray.plates.forEach((plate, index) => {
       if (!plate) return;
       const { recipe } = parseDish(plate.item);
-      const key = foodMoundKey(this.scene, recipe, recipes[recipe]?.icon);
+      const key = foodArtKey(this.scene, recipe, recipes[recipe]?.icon);
       const center = this.platePoint(tray.level, index);
       for (let layer = 0; layer < Math.min(plate.count, stackShownMax); layer += 1) {
         const pile = this.scene.add

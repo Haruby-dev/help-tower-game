@@ -3924,5 +3924,340 @@
     "footY": {
       "default": 38
     }
+  },
+  "tray_mini_baked_potato": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "tray_mini_basil_tea": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_berry_pudding": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_blueberry_macaron": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_boiled_egg": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "tray_mini_caramel_pudding": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_cherry_cream_macaron": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_choco_donut": {
+    "footY": {
+      "default": 6
+    }
+  },
+  "tray_mini_choco_macaron": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_choco_parfait": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_corn_egg_fried_rice": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "tray_mini_cream_puff": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_fish_congee": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_grilled_corn": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_grilled_fish": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_home_kaprao": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "tray_mini_honey_apple_grill": {
+    "footY": {
+      "default": 6
+    }
+  },
+  "tray_mini_honey_macaron": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_honey_pancake": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_potato_carrot_stew": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_scallion_omelet": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "tray_mini_soda_ice_cream": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_soda_jelly_dessert": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_strawberry_jelly": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_strawberry_milk_pudding": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_strawberry_parfait": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_strawberry_skewer": {
+    "footY": {
+      "default": 10
+    }
+  },
+  "tray_mini_swiss_roll": {
+    "footY": {
+      "default": 6
+    }
+  },
+  "tray_mini_tomato_juice": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_tomato_soup": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_warm_honey_milk": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "tray_mini_whip_cream_mumu": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "mini16_baked_potato": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "mini16_basil_tea": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "mini16_berry_pudding": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "mini16_blueberry_macaron": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "mini16_boiled_egg": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "mini16_caramel_pudding": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "mini16_cherry_cream_macaron": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "mini16_choco_donut": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "mini16_choco_macaron": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "mini16_choco_parfait": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "mini16_corn_egg_fried_rice": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "mini16_cream_puff": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "mini16_fish_congee": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "mini16_grilled_corn": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "mini16_grilled_fish": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "mini16_home_kaprao": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "mini16_honey_apple_grill": {
+    "footY": {
+      "default": 14
+    }
+  },
+  "mini16_honey_macaron": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "mini16_honey_pancake": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "mini16_potato_carrot_stew": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "mini16_scallion_omelet": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "mini16_soda_ice_cream": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "mini16_soda_jelly_dessert": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "mini16_strawberry_jelly": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "mini16_strawberry_milk_pudding": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "mini16_strawberry_parfait": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "mini16_strawberry_skewer": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "mini16_swiss_roll": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "mini16_tomato_juice": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "mini16_tomato_soup": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "mini16_warm_honey_milk": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "mini16_whip_cream_mumu": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "ui_thought_bubble": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "fx_sulk_7": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "ui_action_icon_tray": {
+    "footY": {
+      "default": 30
+    }
   }
 }

@@ -159,6 +159,12 @@ export function foodMoundKey(scene: Phaser.Scene, recipe: string, icon: string |
   return key;
 }
 
+/** อาหารจิ๋วบนจานถาดและหอคอย: ใช้ภาพ tray_mini (ราว 9 พิกเซล ฝั่งวางแผนทำ 6 พ.ย. 2026) เมนูที่ยังไม่มีภาพ (น้ำสตรอว์เบอร์รี) ใช้กองสีวาดด้วยโค้ด */
+export function foodArtKey(scene: Phaser.Scene, recipe: string, icon: string | undefined): string {
+  const art = `tray_mini_${recipe}`;
+  return scene.textures.exists(art) ? art : foodMoundKey(scene, recipe, icon);
+}
+
 /** จานขาวเล็กใต้อาหารแต่ละชั้นของหอคอย */
 export function miniPlateKey(scene: Phaser.Scene): string {
   const key = 'tower_plate';

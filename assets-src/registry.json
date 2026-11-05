@@ -3578,8 +3578,7 @@
     "source": "assets-src/art_2026-11-01/yard/food_tray_6.png",
     "file": "world/yard/food_tray_6.png",
     "jade_tone": true,
-    "note": "tray upgrade, matches food_tray_3",
-    "lazy": true
+    "note": "tray upgrade, matches food_tray_3"
   },
   "food_tray_10": {
     "type": "local",
@@ -3590,8 +3589,7 @@
     "source": "assets-src/art_2026-11-01/yard/food_tray_10.png",
     "file": "world/yard/food_tray_10.png",
     "jade_tone": true,
-    "note": "tray upgrade, matches food_tray_3",
-    "lazy": true
+    "note": "tray upgrade, matches food_tray_3"
   },
   "decor_rustic_rejected": {
     "type": "not_used",
@@ -8409,5 +8407,609 @@
     "frame_height": 40,
     "frames": 8,
     "note": "กิน ทิศใต้ 8 เฟรม 150 ms"
+  },
+  "tray_mini_baked_potato": {
+    "type": "local",
+    "width": 9,
+    "height": 7,
+    "source": "public/assets/food/tray_mini/baked_potato.png",
+    "file": "food/tray_mini/baked_potato.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_basil_tea": {
+    "type": "local",
+    "width": 8,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/basil_tea.png",
+    "file": "food/tray_mini/basil_tea.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_berry_pudding": {
+    "type": "local",
+    "width": 8,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/berry_pudding.png",
+    "file": "food/tray_mini/berry_pudding.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_blueberry_macaron": {
+    "type": "local",
+    "width": 7,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/blueberry_macaron.png",
+    "file": "food/tray_mini/blueberry_macaron.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_boiled_egg": {
+    "type": "local",
+    "width": 9,
+    "height": 7,
+    "source": "public/assets/food/tray_mini/boiled_egg.png",
+    "file": "food/tray_mini/boiled_egg.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_caramel_pudding": {
+    "type": "local",
+    "width": 8,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/caramel_pudding.png",
+    "file": "food/tray_mini/caramel_pudding.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_cherry_cream_macaron": {
+    "type": "local",
+    "width": 7,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/cherry_cream_macaron.png",
+    "file": "food/tray_mini/cherry_cream_macaron.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_choco_donut": {
+    "type": "local",
+    "width": 9,
+    "height": 6,
+    "source": "public/assets/food/tray_mini/choco_donut.png",
+    "file": "food/tray_mini/choco_donut.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_choco_macaron": {
+    "type": "local",
+    "width": 8,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/choco_macaron.png",
+    "file": "food/tray_mini/choco_macaron.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_choco_parfait": {
+    "type": "local",
+    "width": 6,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/choco_parfait.png",
+    "file": "food/tray_mini/choco_parfait.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_corn_egg_fried_rice": {
+    "type": "local",
+    "width": 9,
+    "height": 7,
+    "source": "public/assets/food/tray_mini/corn_egg_fried_rice.png",
+    "file": "food/tray_mini/corn_egg_fried_rice.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_cream_puff": {
+    "type": "local",
+    "width": 7,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/cream_puff.png",
+    "file": "food/tray_mini/cream_puff.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_fish_congee": {
+    "type": "local",
+    "width": 8,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/fish_congee.png",
+    "file": "food/tray_mini/fish_congee.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_grilled_corn": {
+    "type": "local",
+    "width": 9,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/grilled_corn.png",
+    "file": "food/tray_mini/grilled_corn.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_grilled_fish": {
+    "type": "local",
+    "width": 9,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/grilled_fish.png",
+    "file": "food/tray_mini/grilled_fish.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_home_kaprao": {
+    "type": "local",
+    "width": 9,
+    "height": 7,
+    "source": "public/assets/food/tray_mini/home_kaprao.png",
+    "file": "food/tray_mini/home_kaprao.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_honey_apple_grill": {
+    "type": "local",
+    "width": 9,
+    "height": 6,
+    "source": "public/assets/food/tray_mini/honey_apple_grill.png",
+    "file": "food/tray_mini/honey_apple_grill.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_honey_macaron": {
+    "type": "local",
+    "width": 8,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/honey_macaron.png",
+    "file": "food/tray_mini/honey_macaron.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_honey_pancake": {
+    "type": "local",
+    "width": 8,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/honey_pancake.png",
+    "file": "food/tray_mini/honey_pancake.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_potato_carrot_stew": {
+    "type": "local",
+    "width": 7,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/potato_carrot_stew.png",
+    "file": "food/tray_mini/potato_carrot_stew.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_scallion_omelet": {
+    "type": "local",
+    "width": 9,
+    "height": 7,
+    "source": "public/assets/food/tray_mini/scallion_omelet.png",
+    "file": "food/tray_mini/scallion_omelet.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_soda_ice_cream": {
+    "type": "local",
+    "width": 7,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/soda_ice_cream.png",
+    "file": "food/tray_mini/soda_ice_cream.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_soda_jelly_dessert": {
+    "type": "local",
+    "width": 7,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/soda_jelly_dessert.png",
+    "file": "food/tray_mini/soda_jelly_dessert.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_strawberry_jelly": {
+    "type": "local",
+    "width": 7,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/strawberry_jelly.png",
+    "file": "food/tray_mini/strawberry_jelly.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_strawberry_milk_pudding": {
+    "type": "local",
+    "width": 7,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/strawberry_milk_pudding.png",
+    "file": "food/tray_mini/strawberry_milk_pudding.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_strawberry_parfait": {
+    "type": "local",
+    "width": 6,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/strawberry_parfait.png",
+    "file": "food/tray_mini/strawberry_parfait.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_strawberry_skewer": {
+    "type": "local",
+    "width": 9,
+    "height": 10,
+    "source": "public/assets/food/tray_mini/strawberry_skewer.png",
+    "file": "food/tray_mini/strawberry_skewer.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_swiss_roll": {
+    "type": "local",
+    "width": 9,
+    "height": 6,
+    "source": "public/assets/food/tray_mini/swiss_roll.png",
+    "file": "food/tray_mini/swiss_roll.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_tomato_juice": {
+    "type": "local",
+    "width": 6,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/tomato_juice.png",
+    "file": "food/tray_mini/tomato_juice.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_tomato_soup": {
+    "type": "local",
+    "width": 7,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/tomato_soup.png",
+    "file": "food/tray_mini/tomato_soup.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_warm_honey_milk": {
+    "type": "local",
+    "width": 6,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/warm_honey_milk.png",
+    "file": "food/tray_mini/warm_honey_milk.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "tray_mini_whip_cream_mumu": {
+    "type": "local",
+    "width": 8,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/whip_cream_mumu.png",
+    "file": "food/tray_mini/whip_cream_mumu.png",
+    "jade_tone": false,
+    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+  },
+  "mini16_baked_potato": {
+    "type": "local",
+    "width": 18,
+    "height": 17,
+    "source": "public/assets/food/mini16/baked_potato.png",
+    "file": "food/mini16/baked_potato.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_basil_tea": {
+    "type": "local",
+    "width": 18,
+    "height": 17,
+    "source": "public/assets/food/mini16/basil_tea.png",
+    "file": "food/mini16/basil_tea.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_berry_pudding": {
+    "type": "local",
+    "width": 17,
+    "height": 17,
+    "source": "public/assets/food/mini16/berry_pudding.png",
+    "file": "food/mini16/berry_pudding.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_blueberry_macaron": {
+    "type": "local",
+    "width": 17,
+    "height": 18,
+    "source": "public/assets/food/mini16/blueberry_macaron.png",
+    "file": "food/mini16/blueberry_macaron.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_boiled_egg": {
+    "type": "local",
+    "width": 18,
+    "height": 15,
+    "source": "public/assets/food/mini16/boiled_egg.png",
+    "file": "food/mini16/boiled_egg.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_caramel_pudding": {
+    "type": "local",
+    "width": 17,
+    "height": 17,
+    "source": "public/assets/food/mini16/caramel_pudding.png",
+    "file": "food/mini16/caramel_pudding.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_cherry_cream_macaron": {
+    "type": "local",
+    "width": 17,
+    "height": 18,
+    "source": "public/assets/food/mini16/cherry_cream_macaron.png",
+    "file": "food/mini16/cherry_cream_macaron.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_choco_donut": {
+    "type": "local",
+    "width": 18,
+    "height": 13,
+    "source": "public/assets/food/mini16/choco_donut.png",
+    "file": "food/mini16/choco_donut.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_choco_macaron": {
+    "type": "local",
+    "width": 17,
+    "height": 16,
+    "source": "public/assets/food/mini16/choco_macaron.png",
+    "file": "food/mini16/choco_macaron.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_choco_parfait": {
+    "type": "local",
+    "width": 14,
+    "height": 18,
+    "source": "public/assets/food/mini16/choco_parfait.png",
+    "file": "food/mini16/choco_parfait.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_corn_egg_fried_rice": {
+    "type": "local",
+    "width": 18,
+    "height": 17,
+    "source": "public/assets/food/mini16/corn_egg_fried_rice.png",
+    "file": "food/mini16/corn_egg_fried_rice.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_cream_puff": {
+    "type": "local",
+    "width": 17,
+    "height": 18,
+    "source": "public/assets/food/mini16/cream_puff.png",
+    "file": "food/mini16/cream_puff.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_fish_congee": {
+    "type": "local",
+    "width": 18,
+    "height": 17,
+    "source": "public/assets/food/mini16/fish_congee.png",
+    "file": "food/mini16/fish_congee.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_grilled_corn": {
+    "type": "local",
+    "width": 18,
+    "height": 16,
+    "source": "public/assets/food/mini16/grilled_corn.png",
+    "file": "food/mini16/grilled_corn.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_grilled_fish": {
+    "type": "local",
+    "width": 18,
+    "height": 17,
+    "source": "public/assets/food/mini16/grilled_fish.png",
+    "file": "food/mini16/grilled_fish.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_home_kaprao": {
+    "type": "local",
+    "width": 18,
+    "height": 16,
+    "source": "public/assets/food/mini16/home_kaprao.png",
+    "file": "food/mini16/home_kaprao.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_honey_apple_grill": {
+    "type": "local",
+    "width": 18,
+    "height": 14,
+    "source": "public/assets/food/mini16/honey_apple_grill.png",
+    "file": "food/mini16/honey_apple_grill.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_honey_macaron": {
+    "type": "local",
+    "width": 17,
+    "height": 17,
+    "source": "public/assets/food/mini16/honey_macaron.png",
+    "file": "food/mini16/honey_macaron.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_honey_pancake": {
+    "type": "local",
+    "width": 18,
+    "height": 17,
+    "source": "public/assets/food/mini16/honey_pancake.png",
+    "file": "food/mini16/honey_pancake.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_potato_carrot_stew": {
+    "type": "local",
+    "width": 16,
+    "height": 18,
+    "source": "public/assets/food/mini16/potato_carrot_stew.png",
+    "file": "food/mini16/potato_carrot_stew.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_scallion_omelet": {
+    "type": "local",
+    "width": 18,
+    "height": 17,
+    "source": "public/assets/food/mini16/scallion_omelet.png",
+    "file": "food/mini16/scallion_omelet.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_soda_ice_cream": {
+    "type": "local",
+    "width": 17,
+    "height": 18,
+    "source": "public/assets/food/mini16/soda_ice_cream.png",
+    "file": "food/mini16/soda_ice_cream.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_soda_jelly_dessert": {
+    "type": "local",
+    "width": 16,
+    "height": 18,
+    "source": "public/assets/food/mini16/soda_jelly_dessert.png",
+    "file": "food/mini16/soda_jelly_dessert.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_strawberry_jelly": {
+    "type": "local",
+    "width": 17,
+    "height": 18,
+    "source": "public/assets/food/mini16/strawberry_jelly.png",
+    "file": "food/mini16/strawberry_jelly.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_strawberry_milk_pudding": {
+    "type": "local",
+    "width": 17,
+    "height": 18,
+    "source": "public/assets/food/mini16/strawberry_milk_pudding.png",
+    "file": "food/mini16/strawberry_milk_pudding.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_strawberry_parfait": {
+    "type": "local",
+    "width": 14,
+    "height": 18,
+    "source": "public/assets/food/mini16/strawberry_parfait.png",
+    "file": "food/mini16/strawberry_parfait.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_strawberry_skewer": {
+    "type": "local",
+    "width": 16,
+    "height": 18,
+    "source": "public/assets/food/mini16/strawberry_skewer.png",
+    "file": "food/mini16/strawberry_skewer.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_swiss_roll": {
+    "type": "local",
+    "width": 18,
+    "height": 12,
+    "source": "public/assets/food/mini16/swiss_roll.png",
+    "file": "food/mini16/swiss_roll.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_tomato_juice": {
+    "type": "local",
+    "width": 15,
+    "height": 18,
+    "source": "public/assets/food/mini16/tomato_juice.png",
+    "file": "food/mini16/tomato_juice.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_tomato_soup": {
+    "type": "local",
+    "width": 17,
+    "height": 18,
+    "source": "public/assets/food/mini16/tomato_soup.png",
+    "file": "food/mini16/tomato_soup.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_warm_honey_milk": {
+    "type": "local",
+    "width": 15,
+    "height": 18,
+    "source": "public/assets/food/mini16/warm_honey_milk.png",
+    "file": "food/mini16/warm_honey_milk.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "mini16_whip_cream_mumu": {
+    "type": "local",
+    "width": 17,
+    "height": 17,
+    "source": "public/assets/food/mini16/whip_cream_mumu.png",
+    "file": "food/mini16/whip_cream_mumu.png",
+    "jade_tone": false,
+    "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "ui_thought_bubble": {
+    "type": "local",
+    "width": 26,
+    "height": 33,
+    "source": "public/assets/ui/thought_bubble.png",
+    "file": "ui/thought_bubble.png",
+    "jade_tone": false,
+    "note": "ฟองความคิด 26×33 จุดลากซ้ายล่างชี้ลงหัวมอนสเตอร์ ไอคอนอาหารกลางที่ (13,13)"
+  },
+  "fx_sulk_7": {
+    "type": "local",
+    "width": 7,
+    "height": 7,
+    "source": "public/assets/fx/fx_sulk_7.png",
+    "file": "fx/fx_sulk_7.png",
+    "jade_tone": false,
+    "note": "เส้นเลือดสีชมพูตอนมอนสเตอร์งอน (ผู้ใช้เลือกแบบ A)"
+  },
+  "ui_action_icon_tray": {
+    "type": "local",
+    "width": 30,
+    "height": 30,
+    "source": "public/assets/ui/hud_v2/icon_place_food.png",
+    "file": "ui/hud_v2/icon_place_food.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ไอคอนปุ่มวางอาหาร ถาดกับกะเพรา"
   }
 }

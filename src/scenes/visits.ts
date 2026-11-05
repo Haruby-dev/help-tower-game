@@ -26,7 +26,7 @@ import {
   type Reaction,
 } from '../systems/monsters';
 import { servingsOnTray } from '../systems/tray';
-import { foodMoundKey, type MonsterArt } from './monsterArt';
+import { foodArtKey, type MonsterArt } from './monsterArt';
 import type { TrayView } from './trayView';
 
 type Point = { x: number; y: number };
@@ -319,9 +319,10 @@ export class Visits {
       }
       yield { kind: 'ms', left: rules.browseMs };
       if (plan.pouts.includes(index)) {
+        // เส้นเลือดงอนขึ้นก่อน บทพูดไม่ชอบ (ถ้าสุ่มได้) ตามมาหลังเส้นเลือดจาง จะได้ไม่ทับกัน
         monster.pout();
-        this.say(run, 'dislike');
         yield { kind: 'ms', left: POUT_MS };
+        this.say(run, 'dislike');
         continue;
       }
       const take = plan.takes.find((entry) => entry.plate === index);
@@ -330,7 +331,7 @@ export class Visits {
       gameState.setWorld(result.world);
       if (result.taken === 0) continue;
       const recipe = parseDish(take.item).recipe;
-      monster.addToTower(foodMoundKey(this.scene, recipe, recipes[recipe]?.icon), result.taken);
+      monster.addToTower(foodArtKey(this.scene, recipe, recipes[recipe]?.icon), result.taken);
       monster.hearts(take.reaction === 'neutral' ? 0 : 1);
       if (take.reaction === 'favourite' || take.reaction === 'signature') monster.sparkles();
       if (take.reaction === 'favourite') this.say(run, 'favourite', true);
@@ -349,7 +350,10 @@ export class Visits {
       yield { kind: 'ms', left: rules.eatGapMs };
     }
     if (plan.asks) {
-      this.speak(run, `${t('monster.asks')}${t(`dish.${plan.asks}.name` as TextKey)}${t('monster.asks_end')}`);
+      // ฟองความคิดมีไอคอนเมนูประจำใจที่อยากกิน ไม่มีตัวหนังสือ (ภาพยังไม่มีใช้ฟองคำพูดแทน)
+      const icon = `mini16_${plan.asks}`;
+      if (this.scene.textures.exists(icon)) monster.think(icon, rules.bubbleMs);
+      else this.speak(run, `${t('monster.asks')}${t(`dish.${plan.asks}.name` as TextKey)}${t('monster.asks_end')}`);
       yield { kind: 'ms', left: rules.bubbleMs };
     }
     this.trayOwner = null;

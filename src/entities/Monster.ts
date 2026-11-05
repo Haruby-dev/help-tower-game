@@ -9,10 +9,19 @@ type Point = { x: number; y: number };
 
 const ARRIVE_PX = 1.5;
 const FX_DEPTH_LIFT = 100;
-/** หอคอยอาหารเหนือหัว: ชั้นละ 4 พิกเซล อาหารวางบนจานสูงขึ้น 3 พิกเซล */
-const TOWER_STEP_PX = 4;
-const TOWER_FOOD_LIFT = 3;
+/** หอคอยอาหารเหนือหัว: จานแล้วอาหารสลับกัน แต่ละชั้นสูงตามภาพอาหารจริง ขอบจานกับอาหารซ้อนกัน 1 พิกเซล */
+const PLATE_HEIGHT_PX = 4;
+const LAYER_OVERLAP_PX = 1;
 const TOWER_GAP_PX = 2;
+/** ฟองความคิด: มุมซ้ายของฟองห่างกลางตัวเท่านี้ จุดลากซ้ายล่างอยู่เหนือหัว ไอคอนอาหารกลางที่ (13, 13) ของฟอง */
+const THOUGHT_LEFT_PX = -3;
+const THOUGHT_GAP_PX = 2;
+const THOUGHT_ICON = { x: 13, y: 13 };
+const THOUGHT_BOB_MS = 600;
+/** เส้นเลือดงอนอยู่เหนือหัวค่อนขวา ลอยขึ้นแล้วจางเหมือนหัวใจ */
+const SULK_RIGHT_PX = 7;
+const SULK_RISE_PX = 6;
+const SULK_MS = 500;
 const TOWER_WOBBLE_MS = 170;
 const TOWER_WOBBLE_MAX = 2;
 const HEART_RISE_PX = 18;
@@ -52,6 +61,10 @@ export class Monster {
   private tower: { plate: Phaser.GameObjects.Image; food: Phaser.GameObjects.Image }[] = [];
   private fx: Phaser.GameObjects.GameObject[] = [];
   private shake: { step: number; ms: number } | null = null;
+  /** ฟองความคิด "อยากกิน" (ฟองกับไอคอนอาหาร) ตามหัวไปจนหมดเวลา */
+  private thought: { bubble: Phaser.GameObjects.Image; icon: Phaser.GameObjects.Image; until: number } | null = null;
+  /** ความสูงหอคอยตอนนี้ (พิกเซล) ใช้วางฟองเหนือหอคอย */
+  private towerHeight = 0;
   private moteMs = 0;
   private position: Point;
 
@@ -90,7 +103,7 @@ export class Monster {
 
   /** เหนือหัวพอดี ใช้วางฟองคำพูด (เหนือหอคอยถ้าถืออยู่) */
   get headY(): number {
-    return this.position.y - this.art.height - (this.tower.length > 0 ? TOWER_GAP_PX + this.tower.length * TOWER_STEP_PX + TOWER_FOOD_LIFT : 0);
+    return this.position.y - this.art.height - (this.tower.length > 0 ? TOWER_GAP_PX + this.towerHeight : 0);
   }
 
   get arrived(): boolean {
@@ -196,9 +209,31 @@ export class Monster {
     }
   }
 
-  /** หน้างอน: ส่ายตัวซ้ายขวา 1 พิกเซล */
+  /** หน้างอน: ส่ายตัวซ้ายขวา 1 พิกเซล และเส้นเลือดสีชมพูลอยขึ้นเหนือหัวแล้วจาง */
   pout(): void {
     this.shake = { step: 0, ms: 0 };
+    const headTop = Math.round(this.position.y - this.art.height);
+    const sulk = this.scene.add.image(Math.round(this.position.x + SULK_RIGHT_PX), headTop, 'fx_sulk_7').setDepth(this.position.y + FX_DEPTH_LIFT);
+    this.fx.push(sulk);
+    this.scene.tweens.add({
+      targets: sulk,
+      y: headTop - SULK_RISE_PX,
+      alpha: 0,
+      duration: SULK_MS,
+      ease: 'Quad.easeIn',
+      onUpdate: () => sulk.setY(Math.round(sulk.y)),
+      onComplete: () => sulk.destroy(),
+    });
+  }
+
+  /** ฟองความคิดมีไอคอนอาหารที่อยากกิน (ไม่มีตัวหนังสือ) ค้างไว้ ms มิลลิวินาที */
+  think(icon: string, ms: number): void {
+    this.thought?.bubble.destroy();
+    this.thought?.icon.destroy();
+    const bubble = this.scene.add.image(0, 0, 'ui_thought_bubble').setOrigin(0, 1);
+    const picture = this.scene.add.image(0, 0, icon);
+    this.thought = { bubble, icon: picture, until: this.scene.time.now + ms };
+    this.sync(this.scene.time.now);
   }
 
   /** paused คือนาฬิกาหยุด (เปิดหน้าต่าง) หยุดเดินแต่ท่าที่เล่นอยู่ยังเล่นต่อ */
@@ -219,6 +254,9 @@ export class Monster {
   }
 
   destroy(): void {
+    this.thought?.bubble.destroy();
+    this.thought?.icon.destroy();
+    this.thought = null;
     for (const piece of this.fx) {
       this.scene.tweens.killTweensOf(piece);
       piece.destroy();
@@ -322,11 +360,35 @@ export class Monster {
     const y = Math.round(this.position.y);
     this.sprite.setPosition(x, y).setDepth(y);
     const base = y - this.art.height - TOWER_GAP_PX;
+    let plateY = base;
     this.tower.forEach((layer, index) => {
       const wobble = Math.max(-TOWER_WOBBLE_MAX, Math.min(TOWER_WOBBLE_MAX, Math.round(Math.sin(time / TOWER_WOBBLE_MS + index * 0.9) * index * 0.5)));
-      const plateY = base - index * TOWER_STEP_PX;
+      const foodY = plateY - PLATE_HEIGHT_PX + LAYER_OVERLAP_PX;
       layer.plate.setPosition(x + wobble, plateY).setDepth(y + 1 + index * 0.01);
-      layer.food.setPosition(x + wobble, plateY - TOWER_FOOD_LIFT + 1).setDepth(y + 1.005 + index * 0.01);
+      layer.food.setPosition(x + wobble, foodY).setDepth(y + 1.005 + index * 0.01);
+      plateY = foodY - layer.food.height + LAYER_OVERLAP_PX;
     });
+    this.towerHeight = base - plateY;
+    this.syncThought(x, time);
+  }
+
+  /** ฟองอยู่เหนือหัว (หรือเหนือหอคอย) เยื้องขวา ลอยขึ้นลง 1 พิกเซล หมดเวลาแล้วหายไป */
+  private syncThought(x: number, time: number): void {
+    const thought = this.thought;
+    if (!thought) return;
+    if (time > thought.until) {
+      thought.bubble.destroy();
+      thought.icon.destroy();
+      this.thought = null;
+      return;
+    }
+    const bob = Math.floor(time / THOUGHT_BOB_MS) % 2;
+    const left = x + THOUGHT_LEFT_PX;
+    const bottom = Math.round(this.headY) - THOUGHT_GAP_PX - bob;
+    const depth = this.position.y + FX_DEPTH_LIFT;
+    thought.bubble.setPosition(left, bottom).setDepth(depth);
+    const top = bottom - thought.bubble.height;
+    // ไอคอนกลางที่ (13, 13) ปัดเป็นจำนวนเต็มให้พิกเซลตรง
+    thought.icon.setPosition(left + THOUGHT_ICON.x - Math.floor(thought.icon.width / 2), top + THOUGHT_ICON.y - Math.floor(thought.icon.height / 2)).setOrigin(0).setDepth(depth + 0.01);
   }
 }

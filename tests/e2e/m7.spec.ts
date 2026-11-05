@@ -74,6 +74,15 @@ test('puts dishes on the tray in the tray window: one menu per plate, the same m
   await tray.locator('#tray-close').click();
   await expect(tray).toBeHidden();
   await shot(page, '02_tray_in_world');
+  // อาหารจิ๋วบนจานใช้ภาพจริงจากฝั่งวางแผน (6 พ.ย. 2026) ไม่ใช่กองสี
+  const piles = await page.evaluate(() =>
+    ((window as unknown as Win).__game.scene.getScene('Base') as { children: { list: { name: string; texture?: { key: string } }[] } }).children.list
+      .filter((child) => child.name.startsWith('tray_pile_'))
+      .map((child) => child.texture?.key),
+  );
+  expect(piles.sort()).toEqual(['tray_mini_boiled_egg', 'tray_mini_strawberry_skewer']);
+  // ปุ่มวางอาหารมีไอคอนจริงแล้ว ไม่ใช่กล่อง "…"
+  await expect(page.locator('#action-button .action-button__icon')).toHaveAttribute('src', /icon_place_food/);
 });
 
 test('Puinun (warm, 50%) comes out of the burrow, takes a favourite tower, eats near the burrow, and her affection rises', async ({ page }, info) => {
