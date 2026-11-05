@@ -280,7 +280,8 @@ export const audioSchema = z.strictObject({
   }),
   uiTapDedupeMs: z.number().nonnegative(),
 });
-export const audioIndexSchema = z.record(z.string().regex(/^[a-z0-9_]+$/), z.enum(['bgm', 'sfx', 'voice']));
+export const soundGroupSchema = z.enum(['bgm', 'sfx', 'voice']);
+export const audioIndexSchema = z.record(z.string().regex(/^[a-z0-9_]+$/), soundGroupSchema);
 
 export const shopSchema = z.strictObject({
   treats: z

@@ -83,6 +83,29 @@ game.events.once(Phaser.Core.Events.READY, () => {
   window.addEventListener('resize', onScreenChanged);
 });
 
+/**
+ * เครื่องที่หน่วยความจำการ์ดจอเต็ม (เช่น iPhone ที่เปิดแอปไว้เยอะ) อาจเสียบริบท WebGL ตอนเกมกำลังเปิด แล้วค้างจอดำ
+ * ถ้าเสียก่อนเข้าฉากชั้นฐาน โหลดหน้าใหม่หนึ่งครั้ง (ไม่วนโหลดซ้ำภายใน WEBGL_RELOAD_GAP_MS) · เสียระหว่างเล่น Phaser กู้คืนเอง
+ */
+const WEBGL_RELOAD_KEY = 'webgl-lost-reload-at';
+const WEBGL_RELOAD_GAP_MS = 30_000;
+document.addEventListener(
+  'webglcontextlost',
+  () => {
+    if (game.scene.isActive('Base')) return;
+    try {
+      const last = Number(window.sessionStorage.getItem(WEBGL_RELOAD_KEY) ?? 0);
+      if (Date.now() - last < WEBGL_RELOAD_GAP_MS) return;
+      window.sessionStorage.setItem(WEBGL_RELOAD_KEY, String(Date.now()));
+    } catch {
+      // เบราว์เซอร์ไม่ให้จำ จะกันการวนโหลดไม่ได้ จึงไม่โหลดใหม่
+      return;
+    }
+    window.location.reload();
+  },
+  { capture: true },
+);
+
 const params = new URLSearchParams(window.location.search);
 if (params.has('test')) {
   (window as unknown as { __game: Phaser.Game; __state: typeof gameState }).__game = game;

@@ -1,13 +1,19 @@
 import audioIndexJson from '../../public/assets/audio/_audio_index.json';
 import audioJson from '../data/audio.json';
-import { audioIndexSchema, audioSchema } from '../data/schema';
+import { audioSchema, soundGroupSchema } from '../data/schema';
 import { assetUrl } from './assets';
 import { createRng } from './rng';
 
 export type SoundGroup = 'bgm' | 'sfx' | 'voice';
 
 const settings = audioSchema.parse(audioJson);
-const soundIndex = audioIndexSchema.parse(audioIndexJson);
+/**
+ * รายการเสียงจากฝั่งเสียง กลุ่มที่เกมยังไม่รู้จัก (เช่นเสียงบรรยากาศที่เพิ่มมาใหม่) ข้ามไปก่อน ห้ามทำให้เกมเปิดไม่ขึ้น
+ * npm run validate ยังตรวจทุกชื่อตามปกติ
+ */
+const soundIndex = Object.fromEntries(
+  Object.entries(audioIndexJson as Record<string, string>).filter((entry): entry is [string, SoundGroup] => soundGroupSchema.safeParse(entry[1]).success),
+);
 const GROUPS: SoundGroup[] = ['bgm', 'sfx', 'voice'];
 const MS = 1000;
 /** เสียงสั้นที่โหลดไม่ทันเกินเท่านี้ไม่เล่น เสียงที่ดังช้าฟังเหมือนบั๊ก */

@@ -35,7 +35,10 @@ export default defineConfig({
     },
     {
       name: 'iphone-landscape',
-      use: { ...devices['iPhone 15 Pro Max landscape'] },
+      use: { ...devices['iPhone 15 Pro Max landscape'], trace: 'retain-on-failure' },
+      // WebKit ของ Playwright บน Windows เสียบริบท WebGL เป็นบางครั้งเมื่อเปิดหน้าเกมต่อกันหลายหน้า (หน่วยความจำการ์ดจอเต็ม) เกมจึงเปิดไม่ขึ้น
+      // รันข้อนั้นใหม่หนึ่งครั้งในเบราว์เซอร์ใหม่ ผลจะขึ้นว่า flaky ให้เห็น ไม่ได้ซ่อน · บน GitHub ไม่รัน Playwright
+      retries: process.env.CI ? 0 : 1,
     },
   ],
 });
