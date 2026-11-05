@@ -57,7 +57,8 @@ const game = new Phaser.Game({
   height: initialViewport.canvasHeight,
   backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--world-background').trim(),
   scale: { mode: Phaser.Scale.NONE },
-  render: { pixelArt: true, roundPixels: true, antialias: false },
+  // มือถือใช้วิธีวาดรวมหลายภาพในครั้งเดียวเหมือนคอม (ค่าเดิมของ Phaser วาดทีละภาพบนมือถือ ทำให้สั่งวาดหลายร้อยครั้งต่อภาพจนกระตุก)
+  render: { pixelArt: true, roundPixels: true, antialias: false, autoMobilePipeline: false },
   physics: { default: 'arcade', arcade: { gravity: { x: 0, y: 0 } } },
   banner: false,
   scene: [BootScene, BaseScene],

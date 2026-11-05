@@ -72,7 +72,8 @@ test('buys cat treats and seeds in the system shop, and the money is logged', as
   await expect.poll(() => count(page, 'seed_scallion')).toBe(1);
   expect((await state(page)).wallet.coins).toBe(1520);
   await page.locator('[data-shop-tab="random"]').click();
-  await expect(page.locator('.shop-item')).toHaveCount(5);
+  // ปุ๋ยระดับ 3 ขายเฉพาะบางวัน (M7a) จึงไม่นับ
+  await expect(page.locator('.shop-item:not([data-offer^="fertilizer:"])')).toHaveCount(5);
   await page.locator('[data-shop-tab="equipment"]').click();
   await expect(page.locator('.shop-closed')).toBeVisible();
 });

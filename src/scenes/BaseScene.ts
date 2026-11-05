@@ -32,6 +32,7 @@ import { isGioAway, isTripLive } from '../systems/gio';
 import { landAt, nextLand, plotCell } from '../systems/land';
 import { Arranger, type Rect as ArrangeRect } from './arrange';
 import { TrayView } from './trayView';
+import { cullOffscreen } from './culling';
 import { Visits } from './visits';
 import { summonNow } from '../systems/monsters';
 
@@ -278,6 +279,8 @@ export class BaseScene extends Phaser.Scene {
     this.night = this.add.rectangle(0, 0, worldWidth, worldHeight, nightColor, 0).setOrigin(0).setDepth(DEPTH.night);
     this.weatherFx = new WeatherEffects(this, DEPTH.weather);
     this.rig = new FishingRig(this);
+    // ภาพนอกกล้องไม่ต้องวาด มือถือจะได้ไม่สั่งวาดหลายร้อยครั้งต่อภาพ
+    cullOffscreen(this);
 
     this.input.keyboard!.on('keydown-E', () => this.useAction());
     this.input.keyboard!.on('keydown-SPACE', () => this.useAction());
