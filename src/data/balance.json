@@ -121,8 +121,8 @@
   "gioCare": {
     "startHappiness": 50,
     "dailyDecay": 10,
-    "homeFromHour": 18,
-    "homeUntilHour": 8,
+    "leaveHour": 12,
+    "tripWindowHours": 1,
     "returnHour": 18,
     "bagSlots": 10,
     "tiers": [

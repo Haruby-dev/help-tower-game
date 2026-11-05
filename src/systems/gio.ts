@@ -38,8 +38,17 @@ export function tierIndex(happiness: number): number {
 
 export const tierFor = (happiness: number) => care.tiers[tierIndex(happiness)]!;
 
-/** จีโออยู่บ้านตั้งแต่หกโมงเย็นถึงแปดโมงเช้า ชั่วโมงหลังเที่ยงคืนนับต่อเป็น 24 ขึ้นไป */
-export const isGioHome = (hour: number): boolean => hour >= care.homeFromHour || hour < care.homeUntilHour;
+/** จีโอออกไปเร่ขายเฉพาะวันที่มีของฝาก ตั้งแต่เที่ยงถึงหกโมงเย็นของวันที่จะกลับ วันอื่นอยู่บ้านทั้งวัน */
+export function isGioAway(world: World): boolean {
+  const deal = world.gio.consignment;
+  return deal !== null && world.day === deal.returnDay && world.hour >= care.leaveHour && world.hour < care.returnHour;
+}
+
+/** เพิ่งถึงเวลาออกหรือกลับไม่เกิน tripWindowHours จีโอจึงเดินเข้าหรือออกจากโพรงให้เห็น ถ้านานกว่านั้น (เช่นเพิ่งโหลดเซฟ) วางที่ปลายทางเลย */
+export const isTripLive = (world: World, away: boolean): boolean => {
+  const since = world.hour - (away ? care.leaveHour : care.returnHour);
+  return since >= 0 && since < care.tripWindowHours;
+};
 
 export const isTreat = (item: string): boolean => shop.treats.some((treat) => treat.item === item);
 export const tasteOf = (item: string): TreatTaste | null => shop.treats.find((treat) => treat.item === item)?.taste ?? null;
@@ -107,7 +116,7 @@ export function removeFromGioBag(picked: BagStack[], item: string, count: number
   return picked.flatMap((stack) => (stack.item !== item ? [stack] : stack.count > count ? [{ ...stack, count: stack.count - count }] : []));
 }
 
-/** ฝากแล้วของออกจากกระเป๋าเรา ฝากก่อนหกโมงเย็นจีโอกลับเย็นนี้ หลังจากนั้นกลับเย็นพรุ่งนี้ ฝากได้ครั้งละชุด */
+/** ฝากแล้วของออกจากกระเป๋าเรา ฝากก่อนเที่ยงจีโอออกเที่ยงนี้และกลับเย็นนี้ หลังจากนั้นออกเที่ยงพรุ่งนี้ ฝากได้ครั้งละชุด */
 export function consign(world: World, items: BagStack[]): World | null {
   if (world.gio.consignment || items.length === 0 || items.length > care.bagSlots) return null;
   let bag: BagStack[] | null = world.bag;
@@ -116,11 +125,11 @@ export function consign(world: World, items: BagStack[]): World | null {
     bag = bag && takeFromBag(bag, stack.item, stack.count);
   }
   if (!bag) return null;
-  const returnDay = world.hour >= care.returnHour ? world.day + 1 : world.day;
+  const returnDay = world.hour >= care.leaveHour ? world.day + 1 : world.day;
   return { ...world, bag, gio: { ...world.gio, consignment: { items, returnDay, tier: tierIndex(world.gio.happiness) } } };
 }
 
-export const returnsToday = (world: World): boolean => world.hour < care.returnHour;
+export const returnsToday = (world: World): boolean => world.hour < care.leaveHour;
 
 /** ถึงเวลากลับ จีโอเอาเงินเข้ากระเป๋าเงินทันที สรุปยอดรอให้ผู้เล่นมาคุย ใช้ค่าคอมตามความสุขตอนฝาก */
 export function settleGio(world: World): World {

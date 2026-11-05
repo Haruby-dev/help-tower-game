@@ -26,6 +26,14 @@ const HEART_START_ABOVE_FEET = 40;
 export type TreatTaste = 'like' | 'love' | 'special';
 type Mode = 'seated' | 'walking' | 'standing' | 'eating';
 
+type Point = { x: number; y: number };
+
+/** ทางเดินจากหน้าตะกร้าไปปากโพรง (จุดเรียงจากตะกร้าไปโพรง) อ่านจากแผนที่ */
+export interface GioTrip {
+  route: Point[];
+  burrow: Point;
+}
+
 /** ตะกร้าที่นั่งจีโอบนแผนที่ (ภาพแบนวางใต้ตัวละคร) */
 export interface GioSeat {
   x: number;
@@ -92,12 +100,15 @@ export class Gio {
   private stuck = { ms: 0, x: 0, y: 0 };
   private walkBudgetMs = 0;
   private fx: Phaser.GameObjects.GameObject[] = [];
+  /** กำลังเดินเข้าโพรง (out) หรือเดินกลับจากโพรง (back) */
+  private trip: 'out' | 'back' | null = null;
 
   constructor(
     private readonly scene: Phaser.Scene,
     spawn: { x: number; y: number },
     seat: GioSeat | null,
     private readonly rng: Rng,
+    private readonly tripPath: GioTrip | null = null,
   ) {
     createAnimations(scene);
     const { seatFeetRow, seatExitGap } = balance.gio;
@@ -147,21 +158,91 @@ export class Gio {
     return this.mode === 'seated';
   }
 
-  /** จีโออยู่บ้านช่วงเย็นถึงเช้า กลางวันออกไปเร่ขาย จึงซ่อนทั้งภาพและตัวชน */
+  /** วันที่ไปเร่ขาย จีโอเข้าโพรงตอนเที่ยงและออกมาตอนหกโมงเย็น ระหว่างนั้นซ่อนทั้งภาพและตัวชน */
   get present(): boolean {
     return this.sprite.visible;
   }
 
-  setPresent(present: boolean): void {
-    if (this.sprite.visible === present) return;
-    this.sprite.setVisible(present);
-    this.physicsBody.enable = present;
-    if (!present) {
-      this.clearFx();
-      this.body.setPosition(this.seatFeet.x, this.seatFeet.y - BODY_HEIGHT / 2);
+  /** คุยได้เมื่ออยู่บ้านและไม่ได้กำลังเดินเข้าหรือออกจากโพรง */
+  get canTalk(): boolean {
+    return this.present && this.trip === null;
+  }
+
+  get leaving(): boolean {
+    return this.trip === 'out';
+  }
+
+  get returning(): boolean {
+    return this.trip === 'back';
+  }
+
+  get burrowPoint(): Point | null {
+    return this.tripPath?.burrow ?? null;
+  }
+
+  /** ออกไปเร่ขาย: walk คือเดินไปมุดโพรงให้เห็น ไม่งั้นหายไปเลย (ตอนกล้องมองไม่เห็นหรือเพิ่งโหลดเซฟ) */
+  leave(walk: boolean): void {
+    if (!this.present || this.trip === 'out' || this.mode === 'eating') return;
+    this.clearFx();
+    if (!walk || !this.tripPath) {
+      this.hide();
+      return;
+    }
+    const { route, burrow } = this.tripPath;
+    // เริ่มจากจุดบนทางที่ใกล้ที่สุด จะได้ไม่เดินย้อนกลับไปหน้าตะกร้า
+    const away = (point: Point): number => Math.hypot(point.x - this.feetX, point.y - this.feetY);
+    let start = 0;
+    route.forEach((point, index) => {
+      if (away(point) < away(route[start]!)) start = index;
+    });
+    const tail = this.mode === 'seated' ? route : route.slice(start);
+    const first = tail[0] ?? burrow;
+    const lead = this.mode === 'seated' ? [this.exitPoint] : this.aroundSeat(first);
+    this.trip = 'out';
+    this.homing = true;
+    this.walkTo([...lead, ...tail, burrow], () => this.hide());
+  }
+
+  /** กลับจากเร่ขาย: walk คือโผล่จากปากโพรงแล้วเดินกลับเข้าตะกร้า ไม่งั้นนั่งในตะกร้าเลย */
+  comeBack(walk: boolean): void {
+    if (this.present) return;
+    this.sprite.setVisible(true);
+    this.physicsBody.enable = true;
+    if (!walk || !this.tripPath) {
+      this.physicsBody.reset(this.seatFeet.x, this.seatFeet.y - BODY_HEIGHT / 2);
       this.sitInSeat();
       this.syncSprite();
+      return;
     }
+    const { route, burrow } = this.tripPath;
+    this.physicsBody.reset(burrow.x, burrow.y - BODY_HEIGHT / 2);
+    this.trip = 'back';
+    this.homing = true;
+    this.walkTo([...[...route].reverse(), this.exitPoint, this.seatFeet], () => this.sitInSeat());
+    this.syncSprite();
+  }
+
+  /** ยกเลิกการออก (เช่นโหลดเซฟที่ไม่ได้ฝากของ) เดินกลับตะกร้าตามปกติ */
+  cancelLeave(playerX: number, playerY: number): void {
+    if (this.trip !== 'out') return;
+    this.trip = null;
+    this.goHome(playerX, playerY);
+  }
+
+  private hide(): void {
+    this.clearFx();
+    this.sprite.setVisible(false);
+    this.physicsBody.enable = false;
+    this.physicsBody.reset(this.seatFeet.x, this.seatFeet.y - BODY_HEIGHT / 2);
+    this.sitInSeat();
+    this.syncSprite();
+  }
+
+  /** ถ้าเดินตรงไปแล้วจะข้ามตะกร้า ให้อ้อมด้านข้างก่อน */
+  private aroundSeat(target: Point): Point[] {
+    if (!this.seatBox || !this.crossesSeat(this.feetX, this.feetY, target.x, target.y)) return [];
+    const sideX = this.feetX < this.seatFeet.x ? this.seatBox.left - BODY_WIDTH : this.seatBox.right + BODY_WIDTH;
+    return [{ x: sideX, y: this.feetY }, { x: sideX, y: this.exitPoint.y }];
   }
 
   get feetX(): number {
@@ -259,6 +340,7 @@ export class Gio {
 
   private sitInSeat(): void {
     this.mode = 'seated';
+    this.trip = null;
     this.homing = false;
     this.facing = 'south';
     this.route = [];
@@ -329,12 +411,8 @@ export class Gio {
       this.waitMs = balance.gio.standMinMs;
       return;
     }
-    const sideX = this.seatBox && this.feetX < this.seatFeet.x ? this.seatBox.left - BODY_WIDTH : (this.seatBox?.right ?? 0) + BODY_WIDTH;
-    const route = this.crossesSeat(this.feetX, this.feetY, this.exitPoint.x, this.exitPoint.y)
-      ? [{ x: sideX, y: this.feetY }, { x: sideX, y: this.exitPoint.y }, this.exitPoint]
-      : [this.exitPoint];
     this.homing = true;
-    this.walkTo([...route, this.seatFeet], () => this.sitInSeat());
+    this.walkTo([...this.aroundSeat(this.exitPoint), this.exitPoint, this.seatFeet], () => this.sitInSeat());
   }
 
   private homing = false;
@@ -344,7 +422,14 @@ export class Gio {
     this.route = route.map((point) => ({ ...point }));
     this.afterRoute = then;
     this.stuck = { ms: 0, x: this.feetX, y: this.feetY };
-    this.walkBudgetMs = balance.gio.walkMaxMs * (route.length + 1);
+    // ให้เวลาเดินตามความยาวทางจริง เผื่อไว้สองเท่า
+    let length = 0;
+    let from: Point = { x: this.feetX, y: this.feetY };
+    for (const point of route) {
+      length += Math.hypot(point.x - from.x, point.y - from.y);
+      from = point;
+    }
+    this.walkBudgetMs = Math.max(balance.gio.walkMaxMs * (route.length + 1), (length / balance.gio.walkSpeed) * 1000 * 2);
     this.headToward(this.route[0]!);
   }
 
@@ -404,9 +489,18 @@ export class Gio {
     this.headToward(point);
   }
 
-  /** เดินต่อไม่ได้ ยืนพักก่อน ถ้ากำลังกลับบ้านจะลองใหม่รอบหน้า */
+  /** เดินต่อไม่ได้ ยืนพักก่อน ถ้ากำลังกลับบ้านจะลองใหม่รอบหน้า · ระหว่างไปหรือกลับจากโพรงให้ถึงปลายทางเลย */
   private giveUpWalk(homeLeg: boolean): void {
     this.route = [];
+    if (this.trip === 'out') {
+      this.hide();
+      return;
+    }
+    if (this.trip === 'back') {
+      this.physicsBody.reset(this.seatFeet.x, this.seatFeet.y - BODY_HEIGHT / 2);
+      this.sitInSeat();
+      return;
+    }
     if (homeLeg) this.walksLeft = 0;
     this.stand(balance.gio.standMinMs);
   }

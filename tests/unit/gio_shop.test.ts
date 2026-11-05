@@ -11,7 +11,9 @@ import {
   estimate,
   giveTreat,
   gioMorning,
-  isGioHome,
+  isGioAway,
+  isTripLive,
+  returnsToday,
   hasUnreadNews,
   petGio,
   pettedToday,
@@ -79,12 +81,30 @@ describe('Gio happiness (GDD step 1)', () => {
     expect(treat.world?.gio.happiness).toBe(100);
   });
 
-  it('is home from 18:00 until 08:00', () => {
-    expect(isGioHome(17.9)).toBe(false);
-    expect(isGioHome(18)).toBe(true);
-    expect(isGioHome(25)).toBe(true);
-    expect(isGioHome(7.9)).toBe(true);
-    expect(isGioHome(8)).toBe(false);
+  it('stays home all day unless something is consigned, then is away from 12:00 to 18:00 on the day he sells', () => {
+    const home = newWorld();
+    for (const hour of [6, 12, 15, 17.9, 25]) expect(isGioAway({ ...home, hour })).toBe(false);
+    const left = consign({ ...home, hour: 9, bag: [{ item: 'produce_scallion', count: 1 }] }, [{ item: 'produce_scallion', count: 1 }])!;
+    expect(isGioAway({ ...left, hour: 11.9 })).toBe(false);
+    expect(isGioAway({ ...left, hour: 12 })).toBe(true);
+    expect(isGioAway({ ...left, hour: 17.9 })).toBe(true);
+    expect(isGioAway({ ...left, hour: 18 })).toBe(false);
+    // ฝากหลังเที่ยง วันนี้ยังอยู่บ้าน ออกเที่ยงพรุ่งนี้
+    const late = consign({ ...home, hour: 14, bag: [{ item: 'produce_scallion', count: 1 }] }, [{ item: 'produce_scallion', count: 1 }])!;
+    expect(late.gio.consignment?.returnDay).toBe(2);
+    expect(isGioAway({ ...late, hour: 15 })).toBe(false);
+    expect(isGioAway({ ...late, day: 2, hour: 13 })).toBe(true);
+    expect(returnsToday({ ...home, hour: 11.9 })).toBe(true);
+    expect(returnsToday({ ...home, hour: 12 })).toBe(false);
+  });
+
+  it('walks to and from the burrow only within an hour of leaving or coming back', () => {
+    const world = newWorld();
+    expect(isTripLive({ ...world, hour: 12.5 }, true)).toBe(true);
+    expect(isTripLive({ ...world, hour: 13 }, true)).toBe(false);
+    expect(isTripLive({ ...world, hour: 18.2 }, false)).toBe(true);
+    expect(isTripLive({ ...world, hour: 19 }, false)).toBe(false);
+    expect(isTripLive({ ...world, hour: 6 }, false)).toBe(false);
   });
 });
 
@@ -111,7 +131,7 @@ describe('consignment', () => {
     expect(picked).toHaveLength(balance.gioCare.bagSlots);
   });
 
-  it('takes the goods, comes back the same evening if left before 18:00, and pays after commission', () => {
+  it('takes the goods, comes back the same evening if left before 12:00, and pays after commission', () => {
     const start: World = { ...withGio(newWorld(), 50), hour: 9, bag: [{ item: 'produce_scallion', count: 10 }] };
     const items = [{ item: 'produce_scallion', count: 10 }];
     expect(estimate(items, 50)).toEqual({ gross: 800, commission: 160, coins: 640 });
@@ -127,7 +147,7 @@ describe('consignment', () => {
     expect(back.wallet.log[0]).toMatchObject({ label: 'wallet.gio_sale', amount: 640 });
   });
 
-  it('comes back the next evening when left after 18:00, using the happiness at hand-over', () => {
+  it('comes back the next evening when left after 12:00, using the happiness at hand-over', () => {
     const start: World = { ...withGio(newWorld(), 80), hour: 20, bag: [{ item: 'produce_tomato', count: 4 }] };
     const left = consign(start, [{ item: 'produce_tomato', count: 4 }])!;
     expect(left.gio.consignment?.returnDay).toBe(2);

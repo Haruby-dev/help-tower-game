@@ -217,8 +217,8 @@ export const balanceSchema = z.strictObject({
   gioCare: z.strictObject({
     startHappiness: z.number(),
     dailyDecay: z.number(),
-    homeFromHour: z.number(),
-    homeUntilHour: z.number(),
+    leaveHour: z.number(),
+    tripWindowHours: z.number(),
     returnHour: z.number(),
     bagSlots: z.number().int().positive(),
     tiers: z.array(gioTierSchema).min(1),

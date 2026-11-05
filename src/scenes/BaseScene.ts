@@ -26,7 +26,7 @@ import { WeatherEffects } from './weatherEffects';
 import { TreeSway } from './treeSway';
 import { createCanopyMask, softEllipseTexture, type ShadeArea } from './sceneArt';
 import { formatMoney } from '../systems/economy';
-import { isGioHome } from '../systems/gio';
+import { isGioAway, isTripLive } from '../systems/gio';
 
 type MoveKeys = Record<'up' | 'down' | 'left' | 'right' | 'w' | 'a' | 's' | 'd', Phaser.Input.Keyboard.Key>;
 
@@ -95,6 +95,9 @@ export function nightAlpha(hour: number): number {
   const after = keys[next]!;
   return before.alpha + ((after.alpha - before.alpha) * (hour - before.hour)) / (after.hour - before.hour);
 }
+
+/** จุดทางเดินของจีโอไปโพรงบนแผนที่ ชื่อ gio_trip_1, gio_trip_2, … เรียงจากตะกร้าไปโพรง */
+const GIO_TRIP_PREFIX = 'gio_trip_';
 
 export class BaseScene extends Phaser.Scene {
   private player!: Player;
@@ -174,8 +177,13 @@ export class BaseScene extends Phaser.Scene {
     this.door = spawn('door');
     const playerSpawn = spawn('player');
     const gioSpawn = spawn('gio');
+    const tripStep = (name: string): number => Number(name.slice(GIO_TRIP_PREFIX.length));
+    const tripRoute = spawns
+      .filter((point) => point.name.startsWith(GIO_TRIP_PREFIX))
+      .sort((a, b) => tripStep(a.name) - tripStep(b.name))
+      .map((point) => ({ x: point.x ?? 0, y: point.y ?? 0 }));
     this.player = new Player(this, playerSpawn.x, playerSpawn.y);
-    this.gio = new Gio(this, gioSpawn, this.gioSeat, createRng(Date.now()));
+    this.gio = new Gio(this, gioSpawn, this.gioSeat, createRng(Date.now()), { route: tripRoute, burrow: spawn('gio_burrow') });
 
     this.physics.add.collider(this.player.body, obstacles);
     this.physics.add.collider(this.gio.body, obstacles);
@@ -256,7 +264,7 @@ export class BaseScene extends Phaser.Scene {
     const input = gameState.clockRunning ? this.readMoveInput() : STANDING_STILL;
     this.followPond();
     this.player.update(input, running);
-    if (gameState.started) this.gio.setPresent(isGioHome(gameState.world.hour));
+    if (gameState.started) this.updateGioTrip();
     this.gio.update(deltaMs, this.player.feetX, this.player.feetY, !gameState.clockRunning);
     if (gameState.started) this.openReceiptWhenNear();
     this.followPlayer();
@@ -435,6 +443,21 @@ export class BaseScene extends Phaser.Scene {
     } else if (this.nearDoor() && !this.player.busy) goToSleep(this.door);
   }
 
+  /** วันที่ฝากขาย จีโอเดินไปมุดโพรงตอนเที่ยงและโผล่ออกมาตอนหกโมงเย็น เดินให้เห็นเฉพาะตอนกล้องมองเห็นและเพิ่งถึงเวลา */
+  private updateGioTrip(): void {
+    const world = gameState.world;
+    const away = isGioAway(world);
+    const view = this.cameras.main.worldView;
+    if (away && this.gio.present && !this.gio.leaving) {
+      this.gio.leave(isTripLive(world, true) && view.contains(this.gio.feetX, this.gio.feetY));
+    } else if (!away && this.gio.leaving) {
+      this.gio.cancelLeave(this.player.feetX, this.player.feetY);
+    } else if (!away && !this.gio.present) {
+      const burrow = this.gio.burrowPoint;
+      this.gio.comeBack(isTripLive(world, false) && burrow !== null && view.contains(burrow.x, burrow.y));
+    }
+  }
+
   /** จีโอกลับมาพร้อมเงิน ใบสรุปยอดเปิดเองครั้งแรกที่เดินมาใกล้ (ครั้งเดียวต่อรอบ) */
   private openReceiptWhenNear(): void {
     const report = gameState.world.gio.report;
@@ -443,9 +466,9 @@ export class BaseScene extends Phaser.Scene {
     eventBus.emit('gio-talk', undefined);
   }
 
-  /** คุยกับจีโอได้เมื่อจีโออยู่บ้านและยืนใกล้ */
+  /** คุยกับจีโอได้เมื่อจีโออยู่บ้าน นั่งหรือเดินเล่นอยู่ (ไม่ใช่ระหว่างไปหรือกลับจากโพรง) และยืนใกล้ */
   private nearGio(): boolean {
-    if (!this.gio.present || !gameState.clockRunning || this.player.busy) return false;
+    if (!this.gio.canTalk || !gameState.clockRunning || this.player.busy) return false;
     const distance = Phaser.Math.Distance.Between(this.player.feetX, this.player.feetY, this.gio.feetX, this.gio.feetY);
     return distance < balance.gioCare.talkReachPx;
   }

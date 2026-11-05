@@ -16,6 +16,10 @@ interface GioView {
   feetX: number;
   feetY: number;
   present: boolean;
+  leaving: boolean;
+  returning: boolean;
+  isSeated: boolean;
+  burrowPoint: { x: number; y: number };
 }
 
 test.setTimeout(180_000);
@@ -31,7 +35,8 @@ const count = async (page: Page, item: string): Promise<number> =>
 const gio = (page: Page): Promise<GioView> =>
   page.evaluate(() => {
     const scene = (window as unknown as { __game: { scene: { getScene(k: string): { gio: GioView } } } }).__game.scene.getScene('Base');
-    return { feetX: scene.gio.feetX, feetY: scene.gio.feetY, present: scene.gio.present };
+    const g = scene.gio;
+    return { feetX: g.feetX, feetY: g.feetY, present: g.present, leaving: g.leaving, returning: g.returning, isSeated: g.isSeated, burrowPoint: g.burrowPoint };
   });
 
 async function open(page: Page): Promise<void> {
@@ -72,12 +77,11 @@ test('buys cat treats and seeds in the system shop, and the money is logged', as
   await expect(page.locator('.shop-closed')).toBeVisible();
 });
 
-test('Gio is away selling in the day and home in the evening, where she can talk, give a treat and pet him', async ({ page }) => {
+test('Gio stays home all day when nothing is consigned, where she can talk, give a treat and pet him', async ({ page }) => {
   await open(page);
-  await change(page, { hour: 12 });
-  await expect.poll(async () => (await gio(page)).present).toBe(false);
-  await change(page, { hour: 19, bag: [...(await state(page)).bag, { item: 'treat_tuna', count: 2 }] });
-  await expect.poll(async () => (await gio(page)).present).toBe(true);
+  await change(page, { hour: 14, bag: [...(await state(page)).bag, { item: 'treat_tuna', count: 2 }] });
+  await page.waitForTimeout(500);
+  expect((await gio(page)).present).toBe(true);
   await standByGio(page);
   await page.locator('#action-button').click();
   await expect(page.locator('#gio-window')).toBeVisible();
@@ -243,4 +247,61 @@ test('Gio sits inside his basket, gets out by the front, and every pose keeps hi
   });
   expect(rim?.crop).toBe(true);
   expect(rim!.depth).toBeGreaterThan(start.feetY);
+});
+
+test('on a selling day Gio walks into the burrow at noon and walks back out to his basket at six', async ({ page }) => {
+  test.setTimeout(300_000);
+  await open(page);
+  const deal = { items: [{ item: 'produce_scallion', count: 1 }], returnDay: 1, tier: 1 };
+  const left = await page.evaluate(() => (window as unknown as { __state: TestState }).__state.world);
+  await change(page, { hour: 11.9, gio: { ...(left.gio as object), consignment: deal } as never });
+  expect((await gio(page)).present).toBe(true);
+  // ยืนดูอยู่ใกล้ตะกร้า ถึงเที่ยงจีโอเดินไปทางโพรง ระหว่างนั้นคุยไม่ได้
+  const home = await gio(page);
+  await page.evaluate(({ x, y }) => (window as unknown as { __state: TestState }).__state.movePlayer({ x: x + 40, y: y + 30 }), { x: home.feetX, y: home.feetY });
+  await change(page, { hour: 12.05 });
+  await expect.poll(async () => (await gio(page)).leaving).toBe(true);
+  await expect(page.locator('#action-button')).not.toHaveAttribute('aria-label', 'คุย');
+  await expect.poll(async () => (await gio(page)).feetX, { timeout: 20_000 }).toBeGreaterThan(home.feetX + 60);
+  // เดินไปจนถึงปากโพรงจริง แล้วจึงหายไป (ไม่ใช่ติดของแล้วหายกลางทาง)
+  let last = await gio(page);
+  for (let step = 0; step < 300; step += 1) {
+    const now = await gio(page);
+    if (!now.present) break;
+    last = now;
+    await page.waitForTimeout(300);
+  }
+  expect((await gio(page)).present).toBe(false);
+  expect(Math.hypot(last.feetX - last.burrowPoint.x, last.feetY - last.burrowPoint.y)).toBeLessThan(16);
+  // ไม่ได้ฝากของ วันอื่นอยู่บ้าน · ตอนหกโมงเย็นยืนดูที่ปากโพรง จีโอโผล่จากโพรงแล้วเดินกลับเข้าตะกร้า
+  const burrow = (await gio(page)).burrowPoint;
+  await page.evaluate(({ x, y }) => (window as unknown as { __state: TestState }).__state.movePlayer({ x: x - 40, y: y + 50 }), burrow);
+  await expect.poll(() => page.evaluate(({ x, y }) => (window as unknown as { __game: { scene: { getScene(k: string): { cameras: { main: { worldView: { contains(a: number, b: number): boolean } } } } } } }).__game.scene.getScene('Base').cameras.main.worldView.contains(x, y), burrow)).toBe(true);
+  await change(page, { hour: 18.02 });
+  await expect.poll(async () => (await gio(page)).returning).toBe(true);
+  const out = await gio(page);
+  expect(Math.hypot(out.feetX - burrow.x, out.feetY - burrow.y)).toBeLessThan(20);
+  // เดินกลับเองจนถึงหน้าตะกร้า ไม่ได้วาร์ปกลับ
+  let before = await gio(page);
+  for (let step = 0; step < 300; step += 1) {
+    const now = await gio(page);
+    if (now.isSeated) break;
+    before = now;
+    await page.waitForTimeout(300);
+  }
+  expect((await gio(page)).isSeated).toBe(true);
+  expect(Math.hypot(before.feetX - home.feetX, before.feetY - home.feetY)).toBeLessThan(30);
+  const seated = await gio(page);
+  expect(Math.abs(seated.feetX - home.feetX)).toBeLessThan(1);
+  expect((await state(page)).gio.report).not.toBeNull();
+});
+
+test('Gio is just gone when she is far away at noon, and is just back in his basket when loaded later in the evening', async ({ page }) => {
+  await open(page);
+  const left = await page.evaluate(() => (window as unknown as { __state: TestState }).__state.world);
+  await change(page, { hour: 14, gio: { ...(left.gio as object), consignment: { items: [{ item: 'produce_scallion', count: 1 }], returnDay: 1, tier: 1 } } as never });
+  await expect.poll(async () => (await gio(page)).present).toBe(false);
+  await change(page, { hour: 20 });
+  await expect.poll(async () => (await gio(page)).isSeated && (await gio(page)).present).toBe(true);
+  expect((await gio(page)).returning).toBe(false);
 });
