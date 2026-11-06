@@ -118,7 +118,8 @@ describe('twins on floor 5 (GDD "แฝดขี้แกล้ง")', () => {
     expect(tipText(big)).toContain('หางกระดิ่งมีสองตัว');
   });
 
-  it('the wind chime adds a little happiness every morning once won (placeholder value, TODO)', () => {
+  it('the wind chime adds +5 happiness every morning once won (her pick)', () => {
+    expect(balance.decor.deco_bell_chime.dailyHappiness).toBe(5);
     const won = twins(newWorld(), true, true);
     expect(decorHappiness(newWorld())).toBe(0);
     expect(decorHappiness(won)).toBe(balance.decor.deco_bell_chime.dailyHappiness);

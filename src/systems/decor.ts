@@ -9,7 +9,7 @@ export function ownedDecor(world: World): string[] {
   return world.monsters.twins.quizWon ? ['deco_bell_chime'] : [];
 }
 
-/** ความสุขที่ของตกแต่งเพิ่มให้ทุกเช้า (กระดิ่งลมแฝดยังเป็นค่าชั่วคราว รอผู้ใช้เลือก) */
+/** ความสุขที่ของตกแต่งเพิ่มให้ทุกเช้า (กระดิ่งลมแฝด +5 ผู้ใช้เลือก 7 พ.ย. 2026) */
 export const decorHappiness = (world: World): number => ownedDecor(world).reduce((sum, id) => sum + (decor[id]?.dailyHappiness ?? 0), 0);
 
 /** เช้าวันใหม่: เติมความสุขจากของตกแต่ง */

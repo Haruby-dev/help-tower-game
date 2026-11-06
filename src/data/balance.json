@@ -676,8 +676,7 @@
   "decor": {
     "deco_bell_chime": {
       "swayMs": 180,
-      "dailyHappiness": 1,
-      "todo": "ค่าชั่วคราว ยังไม่กำหนด GDD ให้ช่วงของตกแต่ง +1 ถึง +10 ต่อวัน รอผู้ใช้เลือก",
+      "dailyHappiness": 5,
       "prefer": {
         "x": 14,
         "y": 10
