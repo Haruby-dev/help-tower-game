@@ -871,6 +871,14 @@ const assetEntrySchema = z.discriminatedUnion('type', [
   placeholderEntrySchema,
 ]);
 
+/** แผ่นรวมภาพ สร้างโดย tools/pack-atlases.ts ห้ามแก้มือ · frames: รหัสภาพ → [แผ่น, x, y, กว้าง, สูง] · hashes: ไฟล์ต้นทาง → md5 ใช้ตรวจว่าแผ่นไม่เก่า */
+export const atlasSchema = z.strictObject({
+  pages: z.array(z.strictObject({ group: z.string().regex(/^[a-z0-9_]+$/), file: z.string().min(1), width: z.number().int().positive(), height: z.number().int().positive() })),
+  frames: z.record(z.string().regex(/^[a-z0-9_]+$/), z.tuple([z.number().int().nonnegative(), z.number().int().nonnegative(), z.number().int().nonnegative(), z.number().int().positive(), z.number().int().positive()])),
+  hashes: z.record(z.string().min(1), z.string().min(1)),
+});
+export type AtlasManifest = z.infer<typeof atlasSchema>;
+
 export const registrySchema = z.record(z.string().regex(/^[a-z0-9_]+$/), assetEntrySchema);
 
 /** ตำแหน่งแถวของเท้าในแต่ละเฟรม วัดจากภาพจริงโดย fetch-assets */

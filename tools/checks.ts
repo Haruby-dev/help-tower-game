@@ -3,7 +3,9 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
 import type { z } from 'zod';
+import { atlasGroups, fileHash } from './pack-atlases';
 import {
+  atlasSchema,
   audioIndexSchema,
   audioSchema,
   balanceSchema,
@@ -88,7 +90,21 @@ export function checkProject(): string[] {
   checkSchema('src/data/sprite-meta.json', spriteMetaSchema, problems);
   checkSchema('src/i18n/th.json', translationsSchema, problems);
   checkSchema('assets-src/registry.json', registrySchema, problems);
+  checkSchema('src/data/atlas.json', atlasSchema, problems);
   if (problems.length > 0) return problems;
+
+  // แผ่นรวมภาพต้องตรงกับไฟล์ต้นทาง: ครบทุกภาพ ไฟล์แผ่นมีจริง และไม่มีภาพไหนเปลี่ยนหลังรวม (ไม่งั้นเกมแสดงภาพเก่า)
+  const atlas = atlasSchema.parse(readJson('src/data/atlas.json'));
+  const stale = 'run npm run pack-atlases';
+  for (const page of atlas.pages) if (!existsSync(join(projectRoot, 'public/assets', page.file))) problems.push(`src/data/atlas.json: sheet ${page.file} is missing (${stale})`);
+  for (const items of atlasGroups().values()) {
+    for (const { id, file } of items) {
+      if (!atlas.frames[id]) problems.push(`src/data/atlas.json: ${id} is not in an atlas sheet (${stale})`);
+      else if (atlas.hashes[file] !== fileHash(file)) problems.push(`src/data/atlas.json: ${file} changed after packing (${stale})`);
+    }
+  }
+  const registered = readJson('assets-src/registry.json') as Record<string, unknown>;
+  for (const id of Object.keys(atlas.frames)) if (!registered[id]) problems.push(`src/data/atlas.json: ${id} is not in the registry (${stale})`);
 
   // เสียงทุกตัวในรายการมีทั้ง .ogg และ .m4a (iPhone ใช้ .m4a) และเพลงทุกเพลงมีจุดวน
   const audioIndex = audioIndexSchema.parse(readJson('public/assets/audio/_audio_index.json'));

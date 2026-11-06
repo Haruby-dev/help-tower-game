@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 import { animationKey, assetUrl, directionsOf, registry } from '../core/assets';
+import { atlasGroupOf, idsInGroup, loadAtlasGroup, registerAtlasGroup } from '../core/atlas';
+import type { AssetEntry } from '../data/schema';
 import balance from '../data/balance.json';
 import { createPlaceholderTexture } from './sceneArt';
 import { prepareTreeSway } from './treeSway';
@@ -22,12 +24,23 @@ const WATER_FRAMES: [string, number, number][] = [
 ];
 
 export class BootScene extends Phaser.Scene {
+  /** แผ่นรวมภาพที่ใช้ตั้งแต่เปิดเกม เริ่มโหลดพร้อมไฟล์อื่นใน preload */
+  private bootArt: Promise<void> = Promise.resolve();
+
   constructor() {
     super('Boot');
   }
 
   preload(): void {
-    for (const [id, entry] of Object.entries(registry)) {
+    // ภาพที่อยู่ในแผ่นรวมไม่โหลดทีละไฟล์ (มอนสเตอร์โหลดตอนจะมาเยี่ยม หน้าจอโหลดตอนหน้าจอโหลด)
+    for (const [id, entry] of Object.entries(registry)) if (atlasGroupOf(id) === null) this.queue(id, entry);
+    this.load.tilemapTiledJSON('base_map', assetUrl('maps/base.json'));
+    this.bootArt = loadAtlasGroup('boot');
+  }
+
+  /** โหลดไฟล์เดี่ยวของภาพนี้ด้วยตัวโหลดของ Phaser */
+  private queue(id: string, entry: AssetEntry): void {
+    {
       if (entry.type === 'character') {
         this.load.spritesheet(id, assetUrl(entry.file), {
           frameWidth: entry.frameWidth,
@@ -43,7 +56,6 @@ export class BootScene extends Phaser.Scene {
         this.load.image(id, assetUrl(entry.file));
       }
     }
-    this.load.tilemapTiledJSON('base_map', assetUrl('maps/base.json'));
   }
 
   private createFarmEffects(): void {
@@ -89,6 +101,20 @@ export class BootScene extends Phaser.Scene {
   }
 
   create(): void {
+    void this.bootArt
+      .then(() => registerAtlasGroup(this.textures, 'boot'))
+      .then(
+        () => this.setup(),
+        () => {
+          // โหลดแผ่นรวมไม่ได้ (เน็ตหลุด) ลองโหลดไฟล์เดี่ยวเหมือนเดิม เกมจะได้ไม่ค้าง
+          for (const id of idsInGroup('boot')) this.queue(id, registry[id]!);
+          this.load.once(Phaser.Loader.Events.COMPLETE, () => this.setup());
+          this.load.start();
+        },
+      );
+  }
+
+  private setup(): void {
     this.createFarmEffects();
     this.createBobberAnimations();
     prepareTreeSway(this);

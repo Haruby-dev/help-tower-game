@@ -11,7 +11,8 @@
     "test:e2e": "playwright test",
     "validate": "tsx tools/validate.ts",
     "fetch-assets": "tsx tools/fetch-assets.ts",
-    "build-map": "tsx tools/build-map.ts"
+    "build-map": "tsx tools/build-map.ts",
+    "pack-atlases": "tsx tools/pack-atlases.ts"
   },
   "dependencies": {
     "idb-keyval": "6.2.1",

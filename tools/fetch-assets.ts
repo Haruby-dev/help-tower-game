@@ -15,6 +15,7 @@ import {
   type TilesetMeta,
 } from '../src/data/schema';
 import { projectRoot } from './checks';
+import { packAtlases } from './pack-atlases';
 import { buildHopSheet, steadyWalkRow } from './sprite-fix';
 
 async function downloadBytes(url: string): Promise<Buffer> {
@@ -282,3 +283,7 @@ for (const [id, entry] of Object.entries(registry)) {
 applyJadeTone(registry);
 
 writeFileSync(join(projectRoot, 'src/data/sprite-meta.json'), `${JSON.stringify(meta, null, 2)}\n`);
+
+// รวมภาพเป็นแผ่นใหญ่ตามหมวดหลังลงสีเสร็จ เกมจะได้โหลดไม่กี่ไฟล์
+const atlas = packAtlases();
+console.log(`atlas: ${Object.keys(atlas.frames).length} images in ${atlas.pages.length} sheets`);

@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import { assetUrl, registry } from '../core/assets';
+import { atlasGroupOf, idsInGroup, loadAtlasGroup, registerAtlasGroup } from '../core/atlas';
 import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
 import { createRng } from '../core/rng';
@@ -130,6 +132,8 @@ export class Visits {
   private readonly talkRng = createRng(Date.now() + 7);
   private tagShown = new Set<string>();
   private player: Point = { x: 0, y: 0 };
+  /** แผ่นภาพมอนสเตอร์ที่สั่งโหลดแล้ว (โหลดตอนจะมาเยี่ยม ไม่โหลดตอนเปิดเกม) */
+  private art = new Map<string, 'loading' | 'done'>();
   private twinAnswer: number | null = null;
   private readonly stopAnswer = eventBus.on('twin-quiz-answer', ({ index }) => {
     this.twinAnswer = index;
@@ -146,6 +150,8 @@ export class Visits {
     if (!gameState.started) return;
     const world = gameState.world;
     this.player = player;
+    // แขกที่วางแผนไว้แล้ว (วันนี้และพรุ่งนี้) โหลดภาพไว้ก่อน ตอนถึงเวลาจะได้ออกมาทันที
+    for (const arrival of world.monsters.arrivals) if (!arrival.done) this.requestArt(arrival.monster);
     for (const arrival of dueArrivals(world)) {
       const key = arrivalKey(arrival);
       if (!this.runs.has(key)) this.spawn(key, Math.round(arrival.hour * 1000), arrival.monster, arrival.kind ?? null);
@@ -182,6 +188,7 @@ export class Visits {
     const own = monsterTable[id]?.art ?? null;
     // น้องแฝดก่อนเฉลยปลอมตัวเป็นพี่ทุกพิกเซล (ใช้ภาพพี่ทั้งชุด)
     const art = monsterTable[id]?.twinOf && !gameState.world.monsters.twins.revealed ? (monsterTable[monsterTable[id]!.twinOf!]?.art ?? own) : own;
+    if (art && !this.scene.textures.exists(`${art.sheet}_hungry_stand`) && this.requestArt(id) === 'loading') return;
     if (!art || !this.scene.textures.exists(`${art.sheet}_hungry_stand`)) {
       // ไม่มีภาพ (ข้อมูลผิด) นับว่ามาแล้ว จะได้ไม่ค้าง
       gameState.setWorld(markArrived(gameState.world, key));
@@ -199,6 +206,38 @@ export class Visits {
     run.script = kind === 'reveal' || kind === 'quiz' ? this.twinScene(run, kind) : kind === 'tease' ? this.teaseVisit(run) : this.visit(run);
     this.runs.set(key, run);
     this.next(run);
+  }
+
+  /**
+   * โหลดแผ่นภาพของมอนสเตอร์ตัวนี้ (แฝดน้องอยู่แผ่นเดียวกับพี่) ตอบ done เมื่อโหลดเสร็จหรือโหลดไม่ได้แล้ว
+   * โหลดแผ่นรวมไม่ได้ลองโหลดไฟล์เดี่ยวแบบเดิม
+   */
+  private requestArt(id: string): 'loading' | 'done' {
+    const art = monsterTable[id]?.art;
+    const group = art ? atlasGroupOf(`${art.sheet}_hungry_stand`) : null;
+    if (!group) return 'done';
+    const known = this.art.get(group);
+    if (known) return known;
+    this.art.set(group, 'loading');
+    const textures = this.scene.textures;
+    loadAtlasGroup(group)
+      .then(() => registerAtlasGroup(textures, group))
+      .catch(
+        () =>
+          new Promise<void>((resolve) => {
+            const loader = this.scene.load;
+            for (const sheet of idsInGroup(group)) {
+              const entry = registry[sheet];
+              if (entry?.type === 'local' && entry.frame_width && entry.frame_height && !textures.exists(sheet)) {
+                loader.spritesheet(sheet, assetUrl(entry.file), { frameWidth: entry.frame_width, frameHeight: entry.frame_height });
+              }
+            }
+            loader.once(Phaser.Loader.Events.COMPLETE, () => resolve());
+            loader.start();
+          }),
+      )
+      .finally(() => this.art.set(group, 'done'));
+    return 'loading';
   }
 
   private remove(run: Run): void {

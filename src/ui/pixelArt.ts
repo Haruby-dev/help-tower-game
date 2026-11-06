@@ -1,10 +1,11 @@
 import { assetUrl, registry } from '../core/assets';
+import { sliceUrl } from '../core/atlas';
 
-/** ที่อยู่ไฟล์จากทะเบียน สลับเป็นภาพจริงได้ด้วยการแก้ทะเบียนอย่างเดียว */
+/** ที่อยู่ภาพจากทะเบียน สลับเป็นภาพจริงได้ด้วยการแก้ทะเบียนอย่างเดียว · ภาพที่ตัดจากแผ่นรวมแล้วใช้ภาพในเครื่อง ไม่ต้องโหลดไฟล์เดี่ยวซ้ำ */
 export function artUrl(id: string): string {
   const entry = registry[id];
   if (entry?.type !== 'local' && entry?.type !== 'character') throw new Error(`${id} has no image in the registry`);
-  return assetUrl(entry.file);
+  return sliceUrl(id) ?? assetUrl(entry.file);
 }
 
 function loadImage(url: string): Promise<HTMLImageElement> {
