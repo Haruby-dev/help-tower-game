@@ -102,6 +102,13 @@ test('Puinun (warm, 50%) comes out of the burrow, takes a favourite tower, eats 
   await shot(page, '03_puinun_out');
   // หยิบเมนูโปรดเป็นหอคอย 3–5 ที่ ไม่แตะปลาย่าง (ไม่ชอบ) รวมไม่เกิน 5 ที่
   await expect.poll(async () => (await world(page)).tray.plates[1]?.count ?? 0, { timeout: 60_000 }).toBeLessThan(6);
+  // หอคอยเหนือหัวใช้จาน D1 กับภาพถังหูลู่จิ๋ว (ผู้ใช้เลือก 6 พ.ย. 2026 14:18)
+  const towerKeys = await page.evaluate(() =>
+    ((window as unknown as Win).__game.scene.getScene('Base') as { children: { list: { name: string; texture?: { key: string } }[] } }).children.list
+      .filter((child) => child.name === 'tower_layer')
+      .map((child) => child.texture?.key),
+  );
+  expect(new Set(towerKeys)).toEqual(new Set(['tower_plate', 'tray_mini_strawberry_skewer']));
   await expect.poll(async () => (await world(page)).monsters.arrivals[0]?.done).toBe(true);
   await page.waitForTimeout(2500);
   await shot(page, '04_tower');

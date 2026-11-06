@@ -12,7 +12,6 @@ const { eyeSteps } = balance.monsters;
 /** สีเนื้ออาหารจิ๋วบนจาน คิดจากสีที่สดที่สุดของไอคอนอาหาร (ข้ามพิกเซลสีขาวเทาของจานใบตอง) */
 const DULL_SPREAD = 40;
 const MOUND = { width: 9, height: 4 };
-const PLATE = { width: 11, height: 4 };
 
 const hex = (value: string): [number, number, number] => [1, 3, 5].map((at) => Number.parseInt(value.slice(at, at + 2), 16)) as [number, number, number];
 
@@ -129,8 +128,8 @@ const shade = (color: [number, number, number], amount: number): string =>
   `rgb(${color.map((channel) => Math.max(0, Math.min(255, Math.round(channel * amount)))).join(',')})`;
 
 /**
- * อาหารจิ๋ววาดด้วยโค้ด (ยังไม่มีภาพอาหารเล็กพอวางบนจานถาด) กองสีตามไอคอนอาหาร มีขอบเข้มและไฮไลต์
- * ใช้ทั้งบนจานถาดและหอคอยอาหารที่มอนสเตอร์ถือ
+ * อาหารจิ๋ววาดด้วยโค้ด กองสีตามไอคอนอาหาร มีขอบเข้มและไฮไลต์
+ * ใช้แทนเมนูที่ยังไม่มีภาพ tray_mini (ตอนนี้คือน้ำสตรอว์เบอร์รี) ทั้งบนจานถาดและหอคอย
  */
 export function foodMoundKey(scene: Phaser.Scene, recipe: string, icon: string | undefined): string {
   const key = `tray_food_${recipe}`;
@@ -165,25 +164,17 @@ export function foodArtKey(scene: Phaser.Scene, recipe: string, icon: string | u
   return scene.textures.exists(art) ? art : foodMoundKey(scene, recipe, icon);
 }
 
-/** จานขาวเล็กใต้อาหารแต่ละชั้นของหอคอย */
-export function miniPlateKey(scene: Phaser.Scene): string {
-  const key = 'tower_plate';
-  if (scene.textures.exists(key)) return key;
-  const canvas = document.createElement('canvas');
-  canvas.width = PLATE.width;
-  canvas.height = PLATE.height;
-  const context = canvas.getContext('2d')!;
-  context.fillStyle = '#5c304c';
-  context.fillRect(1, 0, 9, 1);
-  context.fillRect(0, 1, 1, 2);
-  context.fillRect(10, 1, 1, 2);
-  context.fillRect(1, 3, 9, 1);
-  context.fillStyle = '#fff6f0';
-  context.fillRect(1, 1, 9, 2);
-  context.fillStyle = '#d9c8d0';
-  context.fillRect(2, 2, 7, 1);
-  scene.textures.addCanvas(key, canvas);
-  return key;
+const topRows = new Map<string, number>();
+
+/** จำนวนแถวโปร่งด้านบนของภาพ (ภาพอาหารจิ๋วบางชิ้นเว้นแถวบนไว้ 1 แถว) ใช้วางจานชั้นถัดไปของหอคอยบนพิกเซลที่เห็นจริง */
+export function artTopPx(scene: Phaser.Scene, key: string): number {
+  const known = topRows.get(key);
+  if (known !== undefined) return known;
+  const { data, width, height } = pixels(scene, key);
+  let top = 0;
+  while (top < height - 1 && !Array.from({ length: width }, (_, x) => data[(top * width + x) * 4 + 3]!).some((alpha) => alpha > 0)) top += 1;
+  topRows.set(key, top);
+  return top;
 }
 
 /** ละอองหิวสีม่วงหม่น 1×1 กับ 2×2 พิกเซล ลอยขึ้นรอบตัวตอนยังหิว จางลงเมื่อชอบมากขึ้น */

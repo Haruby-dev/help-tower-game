@@ -4057,7 +4057,7 @@
   },
   "tray_mini_strawberry_skewer": {
     "footY": {
-      "default": 10
+      "default": 4
     }
   },
   "tray_mini_swiss_roll": {
@@ -4258,6 +4258,11 @@
   "ui_action_icon_tray": {
     "footY": {
       "default": 30
+    }
+  },
+  "tower_plate": {
+    "footY": {
+      "default": 6
     }
   }
 }

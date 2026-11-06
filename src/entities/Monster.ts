@@ -3,18 +3,19 @@ import { footY } from '../core/assets';
 import { direction4From } from '../core/movement';
 import type { Rng } from '../core/rng';
 import balance from '../data/balance.json';
-import { eyeLevel, miniPlateKey, moteKey, prepareMonsterArt, sheetKey, DIRECTIONS, type Facing, type MonsterArt, type SheetKind } from '../scenes/monsterArt';
+import { artTopPx, eyeLevel, moteKey, prepareMonsterArt, sheetKey, DIRECTIONS, type Facing, type MonsterArt, type SheetKind } from '../scenes/monsterArt';
 
 type Point = { x: number; y: number };
 
 const ARRIVE_PX = 1.5;
 const FX_DEPTH_LIFT = 100;
 /**
- * หอคอยอาหารเหนือหัว: จานขาวบาง ๆ กับกองอาหารเล็ก ชั้นละ 4 พิกเซล โยกไปมา
- * ผู้ใช้เลือกแบบจานบางเดิม (6 พ.ย. 2026) แทนภาพอาหารจิ๋วที่ซ้อนแล้วดูแข็ง · ภาพอาหารจิ๋วใช้บนจานถาดเท่านั้น
+ * หอคอยอาหารเหนือหัว: จานขาวขอบเทาฟ้า D1 (`tower_plate` 13×6) กับภาพอาหารจิ๋ว โยกไปมาเบา ๆ (ผู้ใช้เลือก 6 พ.ย. 2026)
+ * ฐานอาหารสูงจากขอบล่างจาน 3 พิกเซล (อยู่ในขอบจาน) จานถัดไปวางบนยอดอาหารซ้อนกัน 1 พิกเซล ชั้นสูงตามภาพอาหารแต่ละชิ้น
  */
-const TOWER_STEP_PX = 4;
+const TOWER_PLATE = 'tower_plate';
 const TOWER_FOOD_LIFT = 3;
+const TOWER_OVERLAP_PX = 1;
 const TOWER_GAP_PX = 2;
 /** ฟองความคิด: มุมซ้ายของฟองห่างกลางตัวเท่านี้ จุดลากซ้ายล่างอยู่เหนือหัว ไอคอนอาหารกลางที่ (13, 13) ของฟอง */
 const THOUGHT_LEFT_PX = -3;
@@ -61,7 +62,8 @@ export class Monster {
   private level: number | 'sweet';
   private percent: number;
   private eatingNow = false;
-  private tower: { plate: Phaser.GameObjects.Image; food: Phaser.GameObjects.Image }[] = [];
+  /** `top` คือแถวโปร่งด้านบนของภาพอาหาร จานถัดไปจึงวางบนพิกเซลที่เห็นจริง */
+  private tower: { plate: Phaser.GameObjects.Image; food: Phaser.GameObjects.Image; top: number }[] = [];
   private fx: Phaser.GameObjects.GameObject[] = [];
   private shake: { step: number; ms: number } | null = null;
   /** ฟองความคิด "อยากกิน" (ฟองกับไอคอนอาหาร) ตามหัวไปจนหมดเวลา */
@@ -161,10 +163,11 @@ export class Monster {
 
   /** วางอาหารบนหอคอยเหนือหัว ชั้นละ 1 ที่ */
   addToTower(foodKey: string, count: number): void {
+    const top = artTopPx(this.scene, foodKey);
     for (let serving = 0; serving < count; serving += 1) {
-      const plate = this.scene.add.image(0, 0, miniPlateKey(this.scene)).setOrigin(0.5, 1);
-      const food = this.scene.add.image(0, 0, foodKey).setOrigin(0.5, 1);
-      this.tower.push({ plate, food });
+      const plate = this.scene.add.image(0, 0, TOWER_PLATE).setOrigin(0.5, 1).setName('tower_layer');
+      const food = this.scene.add.image(0, 0, foodKey).setOrigin(0.5, 1).setName('tower_layer');
+      this.tower.push({ plate, food, top });
     }
     this.sync(this.scene.time.now);
   }
@@ -363,13 +366,17 @@ export class Monster {
     const y = Math.round(this.position.y);
     this.sprite.setPosition(x, y).setDepth(y);
     const base = y - this.art.height - TOWER_GAP_PX;
+    let plateY = base;
+    let topY = base;
     this.tower.forEach((layer, index) => {
       const wobble = Math.max(-TOWER_WOBBLE_MAX, Math.min(TOWER_WOBBLE_MAX, Math.round(Math.sin(time / TOWER_WOBBLE_MS + index * 0.9) * index * 0.5)));
-      const plateY = base - index * TOWER_STEP_PX;
+      const foodY = plateY - TOWER_FOOD_LIFT;
       layer.plate.setPosition(x + wobble, plateY).setDepth(y + 1 + index * 0.01);
-      layer.food.setPosition(x + wobble, plateY - TOWER_FOOD_LIFT + 1).setDepth(y + 1.005 + index * 0.01);
+      layer.food.setPosition(x + wobble, foodY).setDepth(y + 1.005 + index * 0.01);
+      topY = Math.min(plateY - layer.plate.height, foodY - layer.food.height + layer.top);
+      plateY = foodY - layer.food.height + layer.top + TOWER_OVERLAP_PX;
     });
-    this.towerHeight = this.tower.length > 0 ? this.tower.length * TOWER_STEP_PX + TOWER_FOOD_LIFT : 0;
+    this.towerHeight = base - topY;
     this.syncThought(x, time);
   }
 

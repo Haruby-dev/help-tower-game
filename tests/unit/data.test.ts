@@ -24,11 +24,16 @@ describe('project data', () => {
       readFileSync(join(projectRoot, 'assets-src/art_2026-11-01/registry_additions.json'), 'utf8'),
     ) as { name: string; file: string; jade_tone: boolean; currency?: string }[];
     expect(additions).toHaveLength(250);
+    // ถาดจาน D1 แทนถาดชุด 1 พ.ย. (ผู้ใช้เลือก 6 พ.ย. 2026) ลงสีหยกมาแล้วในไฟล์
+    const replaced: Record<string, { file: string; jade_tone: boolean }> = Object.fromEntries(
+      [3, 6, 10].map((size) => [`food_tray_${size}`, { file: `assets-src/art_2026-11-06/yard/food_tray_${size}_d1.png`, jade_tone: false }]),
+    );
     for (const addition of additions) {
       const entry = registry[addition.name];
       if (entry?.type !== 'local' && entry?.type !== 'local_tileset') throw new Error(`${addition.name} is missing`);
-      expect(entry.source).toBe(addition.file);
-      expect(entry.jade_tone).toBe(addition.jade_tone);
+      const expected = replaced[addition.name] ?? addition;
+      expect(entry.source).toBe(expected.file);
+      expect(entry.jade_tone).toBe(expected.jade_tone);
       if (entry.type === 'local') expect(entry.currency).toBe(addition.currency);
     }
   });

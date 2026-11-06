@@ -526,10 +526,10 @@
     "index": 15,
     "width": 52,
     "height": 32,
-    "source": "assets-src/art_2026-11-01/yard/food_tray_3.png",
+    "source": "assets-src/art_2026-11-06/yard/food_tray_3_d1.png",
     "file": "world/yard/food_tray_3.png",
-    "jade_tone": true,
-    "note": "low tray, 3 plates"
+    "jade_tone": false,
+    "note": "low tray, 3 plates · จานขาวขอบเทาฟ้า D1 ลงสีหยกมาแล้วในไฟล์ ห้ามลงสีซ้ำ (ผู้ใช้เลือก 6 พ.ย. 2026)"
   },
   "stump_table": {
     "type": "local",
@@ -3575,10 +3575,10 @@
     "index": 13,
     "width": 60,
     "height": 36,
-    "source": "assets-src/art_2026-11-01/yard/food_tray_6.png",
+    "source": "assets-src/art_2026-11-06/yard/food_tray_6_d1.png",
     "file": "world/yard/food_tray_6.png",
-    "jade_tone": true,
-    "note": "tray upgrade, matches food_tray_3"
+    "jade_tone": false,
+    "note": "tray upgrade, matches food_tray_3 · จานขาวขอบเทาฟ้า D1 ลงสีหยกมาแล้วในไฟล์ ห้ามลงสีซ้ำ (ผู้ใช้เลือก 6 พ.ย. 2026)"
   },
   "food_tray_10": {
     "type": "local",
@@ -3586,10 +3586,10 @@
     "index": 3,
     "width": 82,
     "height": 36,
-    "source": "assets-src/art_2026-11-01/yard/food_tray_10.png",
+    "source": "assets-src/art_2026-11-06/yard/food_tray_10_d1.png",
     "file": "world/yard/food_tray_10.png",
-    "jade_tone": true,
-    "note": "tray upgrade, matches food_tray_3"
+    "jade_tone": false,
+    "note": "tray upgrade, matches food_tray_3 · จานขาวขอบเทาฟ้า D1 ลงสีหยกมาแล้วในไฟล์ ห้ามลงสีซ้ำ (ผู้ใช้เลือก 6 พ.ย. 2026)"
   },
   "decor_rustic_rejected": {
     "type": "not_used",
@@ -8644,12 +8644,12 @@
   },
   "tray_mini_strawberry_skewer": {
     "type": "local",
-    "width": 9,
-    "height": 10,
+    "width": 12,
+    "height": 4,
     "source": "public/assets/food/tray_mini/strawberry_skewer.png",
     "file": "food/tray_mini/strawberry_skewer.png",
     "jade_tone": false,
-    "note": "อาหารจิ๋วบนจานถาดและหอคอยเหนือหัวมอนสเตอร์ วางกลางล่าง (docs/m7a_art_2026-11-06.md)"
+    "note": "ถังหูลู่จิ๋ววางนอน 12×4 ซ้อนหอคอยได้เรียบ (ผู้ใช้เลือก ลูกเล็ก)"
   },
   "tray_mini_swiss_roll": {
     "type": "local",
@@ -9011,5 +9011,14 @@
     "jade_tone": false,
     "lazy": true,
     "note": "ไอคอนปุ่มวางอาหาร ถาดกับกะเพรา"
+  },
+  "tower_plate": {
+    "type": "local",
+    "width": 13,
+    "height": 6,
+    "source": "public/assets/food/tower_plate.png",
+    "file": "food/tower_plate.png",
+    "jade_tone": false,
+    "note": "จานขาวขอบเทาฟ้า D1 ใต้อาหารแต่ละชั้นของหอคอยเหนือหัวมอนสเตอร์"
   }
 }
