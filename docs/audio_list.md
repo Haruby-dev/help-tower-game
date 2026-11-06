@@ -17,8 +17,8 @@ Covers what exists now (M0–M5). Later milestones (M6–M9) get added when she 
 | amb_day_birds | farm, daytime | B | DRAFT approved 11-05 21:31 (amb_final, studiogreenhill birds) — wiring pending (batch 2 item 11) |
 | amb_night_crickets | farm, night | B | DRAFT approved 11-05 21:31 (amb_final, PhilllChabbb crickets) — wiring pending (batch 2 item 11) |
 | amb_rain | rain weather | A | DRAFT approved 11-05 20:46 (art-src/audio_src/amb_final, rubberduck loop_rain, -3 dB) — in public/assets/audio/amb, wiring pending (batch 2 item 10) |
-| amb_pond | near the pond (soft water) | C | todo |
-| amb_campfire | near the campfire (crackle) | B | todo |
+| amb_pond | near the pond (soft water) | C | DRAFT approved 11-07 01:40 (amb_final, Gently Splashing Water loop) — wiring pending (batch 3 item 2) |
+| amb_campfire | near the campfire (crackle) | B | DRAFT approved 11-07 01:53 (amb_final, Sauron974 crackling fire) — wiring pending (batch 3 item 3) |
 
 ## SFX — UI / phone
 | id | event | pri | status |
@@ -33,6 +33,7 @@ Covers what exists now (M0–M5). Later milestones (M6–M9) get added when she 
 ## SFX — farm
 | id | event | pri | status |
 |---|---|---|---|
+| step_dirt (_1.._5) | footsteps on dirt / farm soil | B | DRAFT approved 11-07 01:23 (sfx_step_draft) — in public/assets/audio, wiring pending (batch 3 item 1) |
 | step_grass (_1.._5) | footsteps (soft, quiet) | B | DRAFT approved 11-05 19:28 (art-src/audio_src/sfx_step_draft) — in public/assets/audio, code wiring pending (batch 2 item 5) |
 | farm_till | hoe into soil | A | DRAFT L1 approved 11-04, play at frame 6 (art-src/audio_src/sfx_farm_draft) |
 | farm_plant | drop seed / pat soil | A | DRAFT sandy brush x2 approved 11-04, play at frame 4 |
@@ -61,6 +62,9 @@ Covers what exists now (M0–M5). Later milestones (M6–M9) get added when she 
 | fish_catch | caught! (jingle + splash) | A | DRAFT approved 11-04 (art-src/audio_src/sfx_fishing_draft, see README for triggers) |
 | fish_escape | fish gets away (soft "aww" splash) | A | DRAFT approved 11-04 (art-src/audio_src/sfx_fishing_draft, see README for triggers) |
 
+| voice_till_effort | her effort voice on the hoe hit (till/dig), ~1 in 3 | B | DRAFT approved 11-07 05:22 (voice_draft, her recording) — wiring pending (batch 3 item 5) |
+| eat_crunch | eat AND drink from the bag (one crunchy bite, replaces "งั่ม") | A | DRAFT approved 11-07 02:54 (sfx_cook_draft) — wiring pending (batch 3 item 4) |
+
 ## SFX — bath / weather
 | id | event | pri | status |
 |---|---|---|---|
@@ -77,12 +81,17 @@ Covers what exists now (M0–M5). Later milestones (M6–M9) get added when she 
 | chest_open_golden | burst open, golden chest only (coins + shimmer) | B | DRAFT approved 11-05 20:38 (sfx_chest_draft) — wiring pending |
 | chest_item_1..5 | item pops out (1 per item, rising) | A | DRAFT approved 11-05 20:35 (sfx_chest_draft) — wiring pending |
 
+## SFX — tower / twins
+| id | event | pri | status |
+|---|---|---|---|
+| twin_chime | floor-5 twin reveal (two-note bell) + yard deco กระดิ่งลมแฝด when near | B | DRAFT approved 11-07 05:51 (sfx_chime_draft) — wiring pending (batch 3 item 7) |
+
 ## SFX — gauges / status
 | id | event | pri | status |
 |---|---|---|---|
 | warn_hungry | hunger low (cute stomach growl) | B | DRAFT approved 11-05 20:11 (art-src/audio_src/sfx_gauge_draft) — in public/assets/audio, code wiring pending (batch 2 item 7) |
 | warn_generic | clean / happy gauge low (soft blip) | B | DRAFT approved 11-05 20:19 (sfx_gauge_draft, synthesised) — in public/assets/audio, code wiring pending (batch 2 item 8) |
-| faint | player faints (soft thud / swirl) | B | todo |
+| faint | player faints (her voice + slide down + soft fall) | B | DRAFT approved 11-07 05:47 (voice_draft/faint.wav) — wiring pending (batch 3 item 6) |
 
 Note: default volume — music below SFX (suggest music 0.6–0.7, sfx 1.0) + player sliders (her request 11-04).
 

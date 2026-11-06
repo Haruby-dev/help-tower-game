@@ -1,30 +1,79 @@
 {
-  "defaultVolume": { "bgm": 0.65, "sfx": 1, "voice": 1, "amb": 1 },
+  "defaultVolume": {
+    "bgm": 0.65,
+    "sfx": 1,
+    "voice": 1,
+    "amb": 1
+  },
   "music": {
-    "bgm_title": { "loopStart": 32 },
-    "bgm_farm_day": { "loopStart": 12.5 },
-    "bgm_farm_night": { "loopStart": 6.32 }
+    "bgm_title": {
+      "loopStart": 32
+    },
+    "bgm_farm_day": {
+      "loopStart": 12.5
+    },
+    "bgm_farm_night": {
+      "loopStart": 6.32
+    }
   },
   "dayMusicFromHour": 6,
   "nightMusicFromHour": 18,
   "dayNightFadeMs": 3000,
   "titleFadeMs": 1000,
-  "farmFrames": { "till": 6, "plant": 4, "water": 5, "harvest": 7 },
-  "castFrames": { "east": 6, "south": 5, "north": 4 },
+  "farmFrames": {
+    "till": 6,
+    "plant": 4,
+    "water": 5,
+    "harvest": 7
+  },
+  "castFrames": {
+    "east": 6,
+    "south": 5,
+    "north": 4
+  },
   "cookLoopFadeMs": 150,
-  "voiceTakes": ["eat_rapid_1", "eat_rapid_2"],
+  "voiceTakes": [
+    "voice_till_effort"
+  ],
   "warningEveryGameHours": 1,
   "bath": {
     "scoopFrame": 4,
     "splashFrame": 6,
-    "splashes": ["bath_splash_1", "bath_splash_2", "bath_splash_3", "bath_splash_4"]
+    "splashes": [
+      "bath_splash_1",
+      "bath_splash_2",
+      "bath_splash_3",
+      "bath_splash_4"
+    ]
   },
   "steps": {
-    "frames": [2, 6],
-    "keys": ["step_grass_1", "step_grass_2", "step_grass_3", "step_grass_4", "step_grass_5"]
+    "frames": [
+      2,
+      6
+    ],
+    "keys": [
+      "step_grass_1",
+      "step_grass_2",
+      "step_grass_3",
+      "step_grass_4",
+      "step_grass_5"
+    ],
+    "dirtKeys": [
+      "step_dirt_1",
+      "step_dirt_2",
+      "step_dirt_3",
+      "step_dirt_4",
+      "step_dirt_5"
+    ]
   },
   "farmGrownGapMs": 2000,
-  "chestItems": ["chest_item_1", "chest_item_2", "chest_item_3", "chest_item_4", "chest_item_5"],
+  "chestItems": [
+    "chest_item_1",
+    "chest_item_2",
+    "chest_item_3",
+    "chest_item_4",
+    "chest_item_5"
+  ],
   "ambience": {
     "day": "amb_day_birds",
     "night": "amb_night_crickets",
@@ -33,5 +82,29 @@
     "rainLoopAfterStartMs": 1500,
     "underRain": 0.5
   },
-  "uiTapDedupeMs": 60
+  "uiTapDedupeMs": 60,
+  "eatSound": "eat_crunch",
+  "tillVoiceChance": 0.33,
+  "tillVoiceGapMs": 1000,
+  "faint": "faint",
+  "nearAmbience": {
+    "fadeMs": 300,
+    "pond": {
+      "key": "amb_pond",
+      "nearTiles": 1.5,
+      "farTiles": 6
+    },
+    "campfire": {
+      "key": "amb_campfire",
+      "nearTiles": 1.5,
+      "farTiles": 6
+    }
+  },
+  "twinChime": {
+    "key": "twin_chime",
+    "nearTiles": 2,
+    "volume": 0.6,
+    "everyMs": 10000
+  },
+  "tillVoice": "voice_till_effort"
 }

@@ -19,7 +19,7 @@ const MS = 1000;
 const LATE_LIMIT_MS = 400;
 const LOG_LIMIT = 80;
 const PRELOAD_TOGETHER = 4;
-/** ตัวเอกเหลือเสียงพูดแค่ "งั่ม" (ผู้ใช้ตัดสิน 5 พ.ย. 2026) ไฟล์เสียงพูดอื่นยังอยู่ แต่ไม่โหลด */
+/** เสียงพูดตัวเอกที่ยังโหลด: เหลือเสียงออกแรงตอนพรวนดิน (ผู้ใช้ตัดสิน 7 พ.ย. 2026 "งั่ม" เปลี่ยนเป็นเสียงกรุบในกลุ่มเอฟเฟกต์) ไฟล์เสียงพูดอื่นยังอยู่ แต่ไม่โหลด */
 const VOICE_KEYS = new Set(settings.voiceTakes);
 
 export interface SoundHandle {
@@ -63,7 +63,7 @@ function preferredFormat(): 'ogg' | 'm4a' {
   return probe.canPlayType('audio/ogg; codecs="vorbis"') === '' ? 'm4a' : 'ogg';
 }
 
-/** เสียงที่ใช้ในเกมจริง: เสียงพูดเหลือแค่ "งั่ม" */
+/** เสียงที่ใช้ในเกมจริง: เสียงพูดเฉพาะที่อยู่ใน voiceTakes */
 const inUse = (key: string): boolean => soundIndex[key] !== undefined && (soundIndex[key] !== 'voice' || VOICE_KEYS.has(key));
 
 /**
@@ -240,7 +240,7 @@ class SoundEngine {
   }
 
   /** เอฟเฟกต์เสียง loop ใช้กับเสียงที่วนจนกว่าจะสั่งหยุด เช่นเสียงผัดตอนทำอาหาร */
-  play(key: string, options: { loop?: boolean } = {}): SoundHandle {
+  play(key: string, options: { loop?: boolean; volume?: number } = {}): SoundHandle {
     if (!this.ctx || !inUse(key)) return NO_SOUND;
     const asked = performance.now();
     let playing: Playing | null = null;
@@ -249,7 +249,7 @@ class SoundEngine {
     void this.load(key).then((buffer) => {
       if (!buffer || stopped) return;
       if (!options.loop && performance.now() - asked > LATE_LIMIT_MS) return;
-      playing = this.start(key, buffer, this.gains.get(group)!, options.loop ? { from: 0 } : null);
+      playing = this.start(key, buffer, this.gains.get(group)!, options.loop ? { from: 0 } : null, 0, options.volume ?? 1);
     });
     return {
       stop: (fadeMs = 0) => {

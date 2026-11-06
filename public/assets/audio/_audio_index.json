@@ -75,5 +75,16 @@
  "chest_open_golden": "sfx",
  "amb_rain": "amb",
  "amb_day_birds": "amb",
- "amb_night_crickets": "amb"
+ "amb_night_crickets": "amb",
+ "step_dirt_1": "sfx",
+ "step_dirt_2": "sfx",
+ "step_dirt_3": "sfx",
+ "step_dirt_4": "sfx",
+ "step_dirt_5": "sfx",
+ "amb_pond": "amb",
+ "amb_campfire": "amb",
+ "eat_crunch": "sfx",
+ "voice_till_effort": "voice",
+ "faint": "sfx",
+ "twin_chime": "sfx"
 }

@@ -298,10 +298,27 @@ test('floor 5 twins: the reveal scene asks who likes fish, a right guess opens t
     return { elderLeft: run.monster.feetX < run.partner.feetX, same: run.monster.sprite.texture.key === run.partner.sprite.texture.key };
   });
   expect(sides.same).toBe(true);
+  // กระดิ่งสองโน้ตดังตอนแฝดมาถึง (เบราว์เซอร์ที่ไม่มี Web Audio ไม่มีเสียงให้ตรวจ)
+  if (await page.evaluate(() => 'AudioContext' in window)) {
+    expect(await page.evaluate(() => (window as unknown as { __sound: { log: string[] } }).__sound.log)).toContain('twin_chime');
+  }
   await page.locator(`.twin-quiz__pick[data-twin="${sides.elderLeft ? 0 : 1}"]`).click();
   await expect(page.locator('#twin-quiz')).toBeHidden();
   await expect.poll(async () => (await page.evaluate(() => (window as unknown as { __state: { world: { monsters: { twins: unknown } } } }).__state.world.monsters.twins)), { timeout: 60_000 }).toMatchObject({ revealed: true, quizWon: true });
   // กระดิ่งลมแฝดแขวนที่ลานหน้าบ้าน ย้ายได้ในโหมดจัดวาง
   await expect.poll(() => page.evaluate(() => ((window as unknown as Win).__game.scene.getScene('Base') as { children: { list: { texture?: { key: string } }[] } }).children.list.some((child) => child.texture?.key === 'deco_bell_chime_sway'))).toBe(true);
   await expect.poll(() => visitsActive(page), { timeout: 90_000 }).toBe(0);
+  // เดินเข้าใกล้กระดิ่งลมแฝด กระดิ่งดังสองโน้ตเบา ๆ
+  if (await page.evaluate(() => 'AudioContext' in window)) {
+    const rung = (): Promise<number> => page.evaluate(() => (window as unknown as { __sound: { log: string[] } }).__sound.log.filter((key) => key === 'twin_chime').length);
+    const before = await rung();
+    const chime = await page.evaluate(() => {
+      const scene = (window as unknown as Win).__game.scene.getScene('Base') as { chime: { x: number; y: number } };
+      return { x: scene.chime.x, y: scene.chime.y };
+    });
+    await page.evaluate((at) => (window as unknown as Win).__state.movePlayer({ x: at.x + 300, y: at.y }), chime);
+    await page.waitForTimeout(300);
+    await page.evaluate((at) => (window as unknown as Win).__state.movePlayer({ x: at.x + 24, y: at.y + 6 }), chime);
+    await expect.poll(rung).toBe(before + 1);
+  }
 });

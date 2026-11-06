@@ -13,6 +13,8 @@ export interface GameEvents {
   'game-started': World;
   'player-moved': Point;
   'rest-finished': { cause: RestCause; day: number };
+  /** เสียงบรรยากาศตามระยะจากฉาก (บ่อน้ำ กองไฟ) ชื่อเสียง → ระดับ 0–1 */
+  'ambience-near': Record<string, number>;
   'action-changed': ContextAction | null;
   'action-pressed': undefined;
   notice: TextKey;

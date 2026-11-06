@@ -1,5 +1,5 @@
 import { loadAtlasGroup } from '../core/atlas';
-import { audioSettings, sound } from '../core/audio';
+import { audioSettings, sound, type SoundHandle } from '../core/audio';
 import { eventBus } from '../core/events';
 import { gameState, type World } from '../core/state';
 import balance from '../data/balance.json';
@@ -21,13 +21,12 @@ export function uiSound(key: 'ui_tap' | 'ui_open' | 'ui_close' | 'ui_page' | 'ui
   sound.play(key);
 }
 
-let munchTake = 0;
+let lastBite: SoundHandle | null = null;
 
-/** กินหรือดื่มจากกระเป๋า: "งั่ม" สลับสองแบบ 1 2 1 2 … เสียงเดียวของตัวเอก (ผู้ใช้ตัดสิน 5 พ.ย. 2026) */
-export function eatVoice(): void {
-  const takes = audioSettings.voiceTakes;
-  sound.say(takes[munchTake % takes.length]!);
-  munchTake += 1;
+/** กินหรือดื่มจากกระเป๋า: เสียงกรุบเสียงเดียว แตะรัวหยุดเสียงก่อนหน้าก่อน (ผู้ใช้ตัดสิน 7 พ.ย. 2026 แทน "งั่ม") */
+export function eatSound(): void {
+  lastBite?.stop();
+  lastBite = sound.play(audioSettings.eatSound);
 }
 
 /** เพลงชั้นฐาน: กลางวัน 06:00–18:00 กลางคืน 18:00–02:00 (ชั่วโมงหลังเที่ยงคืนนับต่อเป็น 24 ขึ้นไป) */
@@ -76,14 +75,22 @@ function createAmbience(): { start(world: World): void; follow(world: World): vo
   let rainLoopFrom = 0;
   /** ม่านตอนนอนปิดถึงเวลานี้ ฝนที่เริ่มตอนตื่นจะดังหลังม่านเปิด */
   let curtainUntil = 0;
+  /** บ่อน้ำกับกองไฟดังตามระยะจากตัวเอก ไม่เบาลงตอนฝนตก (ฉากส่งมา) */
+  let near: Record<string, number> = {};
 
-  const apply = (world: World): void => {
+  const apply = (world: World, fadeOverride?: number): void => {
     const next = farmMusicAt(world.hour) === 'bgm_farm_day' ? ambience.day : ambience.night;
     const raining = world.weather === 'rain' && performance.now() >= rainLoopFrom;
-    const fade = base !== null && base !== next ? audioSettings.dayNightFadeMs : ambience.rainFadeMs;
+    const fade = fadeOverride ?? (base !== null && base !== next ? audioSettings.dayNightFadeMs : ambience.rainFadeMs);
     base = next;
-    sound.setAmbience(raining ? { [next]: ambience.underRain, [ambience.rain]: 1 } : { [next]: 1 }, fade);
+    const sky = raining ? { [next]: ambience.underRain, [ambience.rain]: 1 } : { [next]: 1 };
+    sound.setAmbience({ ...sky, ...near }, fade);
   };
+
+  eventBus.on('ambience-near', (levels) => {
+    near = levels;
+    if (gameState.started) apply(gameState.world, audioSettings.nearAmbience.fadeMs);
+  });
 
   const rainStarts = (): void => {
     rainLoopFrom = Infinity;
@@ -101,7 +108,9 @@ function createAmbience(): { start(world: World): void; follow(world: World): vo
     }, 0);
   };
 
-  eventBus.on('rest-finished', () => {
+  eventBus.on('rest-finished', ({ cause }) => {
+    // เป็นลม: เสียงเป็นลมครั้งเดียวตอนม่านขึ้น (ม่านไม่มีเสียงเปิดปิด แต่เสียงนี้เล่นเสมอ) นอนปกติกับหลับคาที่ไม่มีเสียงนี้
+    if (cause === 'faint') sound.play(audioSettings.faint);
     curtainUntil = performance.now() + balance.time.restCurtainMs;
   });
 

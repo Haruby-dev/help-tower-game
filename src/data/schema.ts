@@ -351,11 +351,32 @@ export const audioSchema = z.strictObject({
   farmFrames: z.strictObject({ till: z.number().int(), plant: z.number().int(), water: z.number().int(), harvest: z.number().int() }),
   castFrames: z.strictObject({ east: z.number().int(), south: z.number().int(), north: z.number().int() }),
   cookLoopFadeMs: z.number().nonnegative(),
-  /** เสียงพูดที่เหลืออยู่ ("งั่ม") เล่นสลับกันตามลำดับ */
+  /** เสียงพูดของตัวเอกที่ยังโหลด (ตอนนี้เหลือเสียงออกแรงตอนพรวนดิน) ตัวแรกใช้ลองเสียงในตั้งค่า */
   voiceTakes: z.array(z.string().regex(/^[a-z0-9_]+$/)).min(1),
+  /** กินหรือดื่มจากกระเป๋า: เสียงกรุบเดียว แตะรัวหยุดเสียงก่อนหน้า */
+  eatSound: z.string().regex(/^[a-z0-9_]+$/),
+  /** เสียงออกแรงตอนจอบกระทบดิน (พรวนและขุดทิ้ง) โอกาสราว 1 ใน 3 และห่างกันอย่างน้อยเท่านี้ */
+  tillVoice: z.string().regex(/^[a-z0-9_]+$/),
+  tillVoiceChance: z.number().min(0).max(1),
+  tillVoiceGapMs: z.number().nonnegative(),
+  /** เสียงเป็นลม เล่นครั้งเดียวตอนม่านเป็นลมขึ้น */
+  faint: z.string().regex(/^[a-z0-9_]+$/),
+  /** เสียงบรรยากาศตามระยะ: ดังเต็มเมื่อใกล้กว่า nearTiles เงียบเมื่อไกลกว่า farTiles (ช่องละ 32 พิกเซล) */
+  nearAmbience: z.strictObject({
+    fadeMs: z.number().nonnegative(),
+    pond: z.strictObject({ key: z.string().regex(/^[a-z0-9_]+$/), nearTiles: z.number().nonnegative(), farTiles: z.number().positive() }),
+    campfire: z.strictObject({ key: z.string().regex(/^[a-z0-9_]+$/), nearTiles: z.number().nonnegative(), farTiles: z.number().positive() }),
+  }),
+  /** กระดิ่งสองโน้ตของแฝด: ฉากเฉลย และกระดิ่งลมแฝดที่ลานเมื่อเดินเข้าใกล้ (ดังเบา ไม่ถี่กว่า everyMs) */
+  twinChime: z.strictObject({ key: z.string().regex(/^[a-z0-9_]+$/), nearTiles: z.number().positive(), volume, everyMs: z.number().nonnegative() }),
   warningEveryGameHours: z.number().positive(),
   bath: z.strictObject({ scoopFrame: z.number().int(), splashFrame: z.number().int(), splashes: z.array(z.string().regex(/^[a-z0-9_]+$/)).min(1) }),
-  steps: z.strictObject({ frames: z.array(z.number().int().nonnegative()).min(1), keys: z.array(z.string().regex(/^[a-z0-9_]+$/)).min(1) }),
+  /** เสียงเท้า keys บนหญ้า dirtKeys บนดิน (ลานดินและแปลงผัก) นับรอบแยกกัน */
+  steps: z.strictObject({
+    frames: z.array(z.number().int().nonnegative()).min(1),
+    keys: z.array(z.string().regex(/^[a-z0-9_]+$/)).min(1),
+    dirtKeys: z.array(z.string().regex(/^[a-z0-9_]+$/)).min(1),
+  }),
   farmGrownGapMs: z.number().nonnegative(),
   chestItems: z.array(z.string().regex(/^[a-z0-9_]+$/)).min(1),
   ambience: z.strictObject({

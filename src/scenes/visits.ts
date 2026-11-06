@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { assetUrl, registry } from '../core/assets';
 import { atlasGroupOf, idsInGroup, loadAtlasGroup, registerAtlasGroup } from '../core/atlas';
+import { audioSettings, sound } from '../core/audio';
 import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
 import { createRng } from '../core/rng';
@@ -78,9 +79,9 @@ const QUIZ_BUBBLE_LIFT_PX = 19;
 /** น้องเดินออกจากโพรงตามพี่ห่างกันเท่านี้ จะได้ไม่ซ้อนกันตอนเดิน */
 const PARTNER_DELAY_MS = 450;
 
-/** เสียงกระดิ่งสองโน้ต "กริ๊ง~ กรุ๊ง~" ของแฝด ฝั่งเสียงยังทำไม่เสร็จ เว้นไว้ก่อน */
+/** เสียงกระดิ่งสองโน้ต "กริ๊ง~ กรุ๊ง~" ของแฝด (กระดิ่งสูงคือพี่ ต่ำคือน้อง) */
 function playTwinBells(): void {
-  // TODO(audio): ต่อเสียงกระดิ่งสองโน้ตเมื่อฝั่งเสียงส่งไฟล์มา
+  sound.play(audioSettings.twinChime.key);
 }
 
 type Wait = { kind: 'ms'; left: number } | { kind: 'walk' } | { kind: 'eat' } | { kind: 'until'; test: () => boolean };

@@ -10,7 +10,7 @@ import { baseItem, starsOf } from '../systems/stars';
 import { fishOfItem, isBait, isFish, makeBait } from '../systems/fishing';
 import { artUrl } from './pixelArt';
 import { isTreat } from '../systems/gio';
-import { eatVoice, uiSound } from './sound';
+import { eatSound, uiSound } from './sound';
 
 
 type BagTab = 'all' | 'seeds' | 'produce' | 'goods' | 'collection';
@@ -213,7 +213,7 @@ export function createInventoryPage(): HTMLElement {
       eat.addEventListener('click', () => {
         const next = eatItem(gameState.world, item);
         if (next) {
-          eatVoice();
+          eatSound();
           gameState.setWorld(next);
         } else uiSound('ui_error');
         render();

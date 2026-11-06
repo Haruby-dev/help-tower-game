@@ -188,6 +188,27 @@ export class Pond {
     return y * this.width + x;
   }
 
+  /** ขอบน้ำ (พิกเซลน้ำที่ติดพื้นบก) พิกัดแผนที่ คิดครั้งแรกที่ใช้ */
+  private shore: { x: number; y: number }[] | null = null;
+
+  /** ระยะจากจุดนี้ถึงน้ำที่ใกล้ที่สุด (พิกเซลแผนที่) อยู่ในน้ำเป็น 0 ใช้ปรับเสียงบ่อน้ำตามระยะ */
+  distanceToWater(x: number, y: number): number {
+    if (this.isWater(Math.round(x - this.left), Math.round(y - this.top))) return 0;
+    if (!this.shore) {
+      this.shore = [];
+      for (let py = 0; py < this.height; py += 1) {
+        for (let px = 0; px < this.width; px += 1) {
+          if (!this.isWater(px, py)) continue;
+          if (this.isWater(px - 1, py) && this.isWater(px + 1, py) && this.isWater(px, py - 1) && this.isWater(px, py + 1)) continue;
+          this.shore.push({ x: px + this.left, y: py + this.top });
+        }
+      }
+    }
+    let best = Infinity;
+    for (const point of this.shore) best = Math.min(best, (point.x - x) ** 2 + (point.y - y) ** 2);
+    return Math.sqrt(best);
+  }
+
   private isWater(x: number, y: number): boolean {
     return x >= 0 && y >= 0 && x < this.width && y < this.height && this.water[this.index(x, y)] === 1;
   }

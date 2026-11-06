@@ -22,11 +22,21 @@ interface TestSound {
 
 test.setTimeout(180_000);
 
-const sound = (page: Page): Promise<{ log: string[]; musicKey: string | null; running: boolean; bgm: number; ambience: Record<string, number> }> =>
-  page.evaluate(() => {
+/** ambience คือเสียงฟ้า (นก จิ้งหรีด ฝน) · near คือเสียงตามระยะ (บ่อน้ำ กองไฟ) */
+const NEAR_KEYS = ['amb_pond', 'amb_campfire'];
+const sound = (page: Page): Promise<{ log: string[]; musicKey: string | null; running: boolean; bgm: number; ambience: Record<string, number>; near: Record<string, number> }> =>
+  page.evaluate((nearKeys) => {
     const s = (window as unknown as { __sound: TestSound }).__sound;
-    return { log: [...s.log], musicKey: s.musicKey, running: s.running, bgm: s.volume('bgm'), ambience: s.ambienceLevels };
-  });
+    const levels = Object.entries(s.ambienceLevels);
+    return {
+      log: [...s.log],
+      musicKey: s.musicKey,
+      running: s.running,
+      bgm: s.volume('bgm'),
+      ambience: Object.fromEntries(levels.filter(([key]) => !nearKeys.includes(key))),
+      near: Object.fromEntries(levels.filter(([key]) => nearKeys.includes(key))),
+    };
+  }, NEAR_KEYS);
 const log = async (page: Page): Promise<string[]> => (await sound(page)).log;
 const change = (page: Page, patch: Partial<SoundWorld>): Promise<void> =>
   page.evaluate((next) => {
@@ -89,10 +99,10 @@ test('settings has four volume sliders, music starts at 65%, and the choice is r
   expect((await music.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   await music.fill('30');
   expect((await sound(page)).bgm).toBeCloseTo(0.3);
-  // แถบเสียงพูดเล่น "งั่ม" ให้ฟัง
+  // แถบเสียงพูดเล่นเสียงออกแรงของตัวเอกให้ฟัง (เสียงพูดเดียวที่เหลือ)
   await page.locator('#volume-voice').fill('80');
   await page.locator('#volume-voice').dispatchEvent('change');
-  await expect.poll(() => log(page)).toContain('eat_rapid_1');
+  await expect.poll(() => log(page)).toContain('voice_till_effort');
   // ปุ่มที่เปิดหรือปิดหน้าต่างมีเสียงเปิดปิด ไม่มีเสียงแตะซ้อน
   const before = (await log(page)).length;
   await page.locator('#settings-close').click();
@@ -104,36 +114,71 @@ test('settings has four volume sliders, music starts at 65%, and the choice is r
   expect((await sound(page)).bgm).toBeCloseTo(0.3);
 });
 
-test('eating or drinking says only "งั่ม", the two takes in turn', async ({ page }) => {
+test('eating or drinking plays one crunchy bite each time, no voice', async ({ page }) => {
   await open(page);
   await skipWithoutWebAudio(page);
   await change(page, { bag: [{ item: 'dish_home_kaprao_1', count: 3 }, { item: 'dish_tomato_juice_1', count: 1 }] });
   await openBag(page);
   await page.locator('[data-item="dish_home_kaprao_1"]').click();
   await page.locator('#bag-eat').click();
-  await expect.poll(() => log(page)).toContain('eat_rapid_1');
   await page.locator('[data-item="dish_tomato_juice_1"]').click();
   await page.locator('#bag-eat').click();
-  await expect.poll(() => log(page)).toContain('eat_rapid_2');
   await page.locator('[data-item="dish_home_kaprao_1"]').click();
   await page.locator('#bag-eat').click();
-  await expect.poll(async () => (await log(page)).filter((key) => key.startsWith('eat_rapid_'))).toEqual(['eat_rapid_1', 'eat_rapid_2', 'eat_rapid_1']);
-  expect((await log(page)).some((key) => key.startsWith('voice_') || key === 'eat' || key === 'drink')).toBe(false);
+  await expect.poll(async () => (await log(page)).filter((key) => key === 'eat_crunch').length).toBe(3);
+  expect((await log(page)).some((key) => key.startsWith('eat_rapid_') || key.startsWith('voice_'))).toBe(false);
 });
 
-test('hoeing a plot plays the till sound on the hit frame, and walking plays footsteps', async ({ page }) => {
+test('fainting plays the faint sound once when the curtain comes up', async ({ page }) => {
+  await open(page);
+  await skipWithoutWebAudio(page);
+  await change(page, { hour: 10, gauges: { fullness: 0.01, happiness: 80, cleanliness: 80, homesickness: 0 } });
+  await expect(page.locator('#rest-curtain')).toBeVisible();
+  await expect.poll(async () => (await log(page)).filter((key) => key === 'faint').length).toBe(1);
+});
+
+test('the pond and the campfire sound louder as she walks closer and fade out far away', async ({ page }) => {
+  await open(page);
+  await skipWithoutWebAudio(page);
+  // ริมบ่อ (จุดตกปลาในเทสต์ตกปลา) ดังเต็ม ไกลออกไปเงียบ
+  await moveTo(page, { x: 752, y: 600 });
+  await expect.poll(async () => (await sound(page)).near.amb_pond ?? 0).toBe(1);
+  // ยืนที่จุดทำอาหารข้างกองไฟ เสียงกองไฟดังเต็ม
+  const fire = await page.evaluate(() => {
+    const scene = (window as unknown as { __game: { scene: { getScene(k: string): { campfire: { x: number; y: number } } } } }).__game.scene.getScene('Base');
+    return { x: scene.campfire.x, y: scene.campfire.y };
+  });
+  await moveTo(page, { x: fire.x + 30, y: fire.y + 12 });
+  await expect.poll(async () => (await sound(page)).near.amb_campfire ?? 0).toBe(1);
+  await moveTo(page, { x: 1400, y: 300 });
+  await expect.poll(async () => (await sound(page)).near).toEqual({});
+});
+
+test('hoeing a plot plays the till sound (and sometimes her effort voice) on the hit frame, and walking plays footsteps by the ground', async ({ page }) => {
   await open(page);
   await skipWithoutWebAudio(page);
   await moveTo(page, { x: 176, y: 336 });
+  // ให้สุ่มเสียงออกแรงออกทุกครั้ง จะได้ตรวจได้แน่นอน (ปกติราว 1 ใน 3)
+  await page.evaluate(() => {
+    const scene = (window as unknown as { __game: { scene: { getScene(k: string): { voiceRng: { next(): number } } } } }).__game.scene.getScene('Base');
+    scene.voiceRng.next = () => 0;
+  });
   await page.locator('[data-tool="hoe"]').click();
   await page.locator('#action-button').click();
   await expect.poll(() => log(page), { timeout: 20_000 }).toContain('farm_till');
-  expect((await log(page)).some((key) => key.startsWith('step_grass_'))).toBe(false);
+  await expect.poll(() => log(page)).toContain('voice_till_effort');
+  expect((await log(page)).some((key) => key.startsWith('step_'))).toBe(false);
+  // แปลงผักเป็นดิน เดินบนดินเป็นเสียงเท้าบนดิน นับรอบของตัวเอง
+  await page.keyboard.down('ArrowRight');
+  await expect.poll(async () => (await log(page)).filter((key) => key.startsWith('step_dirt_')).length, { timeout: 20_000 }).toBeGreaterThanOrEqual(2);
+  await page.keyboard.up('ArrowRight');
+  expect((await log(page)).filter((key) => key.startsWith('step_dirt_')).slice(0, 2)).toEqual(['step_dirt_1', 'step_dirt_2']);
+  // บนหญ้าเป็นเสียงเท้าบนหญ้า
+  await moveTo(page, { x: 1100, y: 520 });
   await page.keyboard.down('ArrowRight');
   await expect.poll(async () => (await log(page)).filter((key) => key.startsWith('step_grass_')).length, { timeout: 20_000 }).toBeGreaterThanOrEqual(2);
   await page.keyboard.up('ArrowRight');
-  const steps = (await log(page)).filter((key) => key.startsWith('step_grass_'));
-  expect(steps.slice(0, 2)).toEqual(['step_grass_1', 'step_grass_2']);
+  expect((await log(page)).filter((key) => key.startsWith('step_grass_')).slice(0, 2)).toEqual(['step_grass_1', 'step_grass_2']);
 });
 
 test('a crop that becomes ready twinkles once, even when several plots are ready together', async ({ page }) => {

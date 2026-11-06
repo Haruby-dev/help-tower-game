@@ -36,6 +36,11 @@ import { cullOffscreen } from './culling';
 import { Visits } from './visits';
 import { summonNow } from '../systems/monsters';
 import { ownedDecor } from '../systems/decor';
+import { SurfaceMap, type Surface } from './surface';
+
+/** เสียงบรรยากาศตามระยะคิดทุกเท่านี้ (มิลลิวินาที) และปัดระดับเป็นขั้นละ 1/20 จะได้ไม่สั่งเสียงทุกเฟรม */
+const NEAR_AMBIENCE_EVERY_MS = 150;
+const NEAR_AMBIENCE_STEPS = 20;
 
 const CHIME = 'deco_bell_chime';
 const CHIME_SHEET = 'deco_bell_chime_sway';
@@ -145,7 +150,18 @@ export class BaseScene extends Phaser.Scene {
   private night!: Phaser.GameObjects.Rectangle;
   private plots: Plot[] = [];
   private grownSoundAt = -Infinity;
-  private stepTake = 0;
+  /** รอบเสียงเท้าแยกตามพื้น หญ้ากับดินนับของตัวเอง */
+  private stepTakes: Record<Surface, number> = { grass: 0, dirt: 0 };
+  private surfaces!: SurfaceMap;
+  /** เสียงออกแรงตอนพรวนดิน สุ่มราว 1 ใน 3 ไม่ติดกันเกินไป */
+  private readonly voiceRng = createRng(Date.now() + 31);
+  private lastTillVoiceAt = -Infinity;
+  /** เสียงบ่อน้ำกับกองไฟตามระยะ คิดทุก NEAR_AMBIENCE_EVERY_MS ส่งเมื่อระดับเปลี่ยน */
+  private nearAmbienceAt = 0;
+  private nearAmbienceShown = '';
+  /** กระดิ่งลมแฝดดังเมื่อเดินเข้าใกล้ ไม่ถี่กว่าที่ตั้งไว้ */
+  private chimeNear = false;
+  private chimeRungAt = -Infinity;
   private ground!: Phaser.Tilemaps.TilemapLayer;
   /** ชั้นแปลงผักของที่ดิน land_1..3 แสดงชั้นเดียวตามจำนวนที่ซื้อแล้ว */
   private landLayers: Phaser.Tilemaps.TilemapLayer[] = [];
@@ -200,6 +216,10 @@ export class BaseScene extends Phaser.Scene {
     this.landClutter = balance.land.lands.map(() => []);
     this.landSigns = [];
     this.landLayers = balance.land.lands.map((_, index) => map.createLayer(`land_${index + 1}`, tilesets)!.setDepth(DEPTH.ground).setVisible(false));
+    this.surfaces = new SurfaceMap(this, () => [...this.landLayers, this.ground]);
+    this.stepTakes = { grass: 0, dirt: 0 };
+    this.nearAmbienceShown = '';
+    this.chimeNear = false;
     this.createPlots(ground);
 
     const worldWidth = map.widthInPixels;
@@ -392,6 +412,10 @@ export class BaseScene extends Phaser.Scene {
     if (gameState.started) this.openReceiptWhenNear();
     if (gameState.started) this.followPlaced();
     if (gameState.started) this.syncDecor();
+    if (gameState.started) {
+      this.updateNearAmbience(time);
+      this.ringChimeWhenNear(time);
+    }
     if (gameState.started) {
       this.trayView?.sync(gameState.world.tray);
       this.visits?.update(deltaMs, time, { x: this.player.feetX, y: this.player.feetY });
@@ -776,10 +800,54 @@ export class BaseScene extends Phaser.Scene {
 
   /** เสียงเท้าตอนเท้าแตะพื้นในท่าเดิน (เฟรมใน audio.json) วิ่งแล้วท่าเร็วขึ้น เสียงจึงถี่ขึ้นเอง */
   private footstep(index: number): void {
-    const { frames, keys } = audioSettings.steps;
+    const { frames, keys, dirtKeys } = audioSettings.steps;
     if (!frames.includes(index)) return;
-    sound.play(keys[this.stepTake % keys.length]!);
-    this.stepTake += 1;
+    // บนลานดินและแปลงผักเป็นเสียงเท้าบนดิน ที่อื่นเป็นหญ้า (แผ่นครึ่งหญ้าครึ่งดินดูพิกเซลตรงจุดเท้า)
+    const surface = this.surfaces.at(this.player.feetX, this.player.feetY);
+    const list = surface === 'dirt' ? dirtKeys : keys;
+    sound.play(list[this.stepTakes[surface] % list.length]!);
+    this.stepTakes[surface] += 1;
+  }
+
+  /** เสียงออกแรงของตัวเอกตอนจอบกระทบดิน (พรวนและขุดทิ้ง) ราว 1 ใน 3 และไม่ห่างกันน้อยกว่า tillVoiceGapMs */
+  private tillVoice(): void {
+    const now = this.time.now;
+    if (now - this.lastTillVoiceAt < audioSettings.tillVoiceGapMs || this.voiceRng.next() >= audioSettings.tillVoiceChance) return;
+    this.lastTillVoiceAt = now;
+    sound.say(audioSettings.tillVoice);
+  }
+
+  /** เสียงบ่อน้ำดังเต็มเมื่อยืนริมบ่อ เสียงกองไฟดังเต็มเมื่อยืนที่จุดทำอาหาร ค่อย ๆ เงียบเมื่อเดินห่าง (ระยะใน audio.json) */
+  private updateNearAmbience(time: number): void {
+    if (!gameState.started || time < this.nearAmbienceAt) return;
+    this.nearAmbienceAt = time + NEAR_AMBIENCE_EVERY_MS;
+    const { pond, campfire } = audioSettings.nearAmbience;
+    const level = (distance: number, rule: { nearTiles: number; farTiles: number }): number => {
+      const span = (rule.farTiles - rule.nearTiles) * TILE_PX;
+      const raw = span > 0 ? (rule.farTiles * TILE_PX - distance) / span : distance <= rule.farTiles * TILE_PX ? 1 : 0;
+      return Math.round(Math.min(1, Math.max(0, raw)) * NEAR_AMBIENCE_STEPS) / NEAR_AMBIENCE_STEPS;
+    };
+    const { feetX, feetY } = this.player;
+    const levels = {
+      [pond.key]: this.pond ? level(this.pond.distanceToWater(feetX, feetY), pond) : 0,
+      [campfire.key]: this.campfire ? level(Phaser.Math.Distance.Between(feetX, feetY, this.campfire.x, this.campfire.y), campfire) : 0,
+    };
+    const shown = JSON.stringify(levels);
+    if (shown === this.nearAmbienceShown) return;
+    this.nearAmbienceShown = shown;
+    eventBus.emit('ambience-near', levels);
+  }
+
+  /** กระดิ่งลมแฝดดังสองโน้ตเบา ๆ เมื่อเดินเข้าใกล้ ไม่ถี่กว่า everyMs */
+  private ringChimeWhenNear(time: number): void {
+    if (!this.chime) return;
+    const { key, nearTiles, volume, everyMs } = audioSettings.twinChime;
+    const near = Phaser.Math.Distance.Between(this.player.feetX, this.player.feetY, this.chime.x, this.chime.y) <= nearTiles * TILE_PX;
+    if (near && !this.chimeNear && time - this.chimeRungAt >= everyMs) {
+      sound.play(key, { volume });
+      this.chimeRungAt = time;
+    }
+    this.chimeNear = near;
   }
 
   /** อาบน้ำที่บ่อหันไหนก็ใช้ท่าทิศใต้ มีฟองกับประกายลอยรอบตัว */
@@ -1130,7 +1198,10 @@ export class BaseScene extends Phaser.Scene {
       { x: plot.centerX, y: plot.centerY },
       (frame) => {
         this.playMoveEffect(move, frame, plot);
-        if (frame === audioSettings.farmFrames[move]) sound.play(`farm_${move}`);
+        if (frame === audioSettings.farmFrames[move]) {
+          sound.play(`farm_${move}`);
+          if (move === 'till') this.tillVoice();
+        }
       },
       () => {
         const before = gameState.world.farm.plots[index]!;

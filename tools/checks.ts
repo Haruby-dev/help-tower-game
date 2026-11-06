@@ -120,9 +120,9 @@ export function checkProject(): string[] {
   }
   // ชื่อเสียงทุกตัวที่ audio.json อ้างต้องมีในรายการ และอยู่กลุ่มที่ถูกต้อง
   const wanted: [string, string][] = [
-    ...audio.voiceTakes.map((key): [string, string] => [key, 'voice']),
-    ...[...audio.bath.splashes, ...audio.steps.keys, ...audio.chestItems].map((key): [string, string] => [key, 'sfx']),
-    ...[audio.ambience.day, audio.ambience.night, audio.ambience.rain].map((key): [string, string] => [key, 'amb']),
+    ...[...audio.voiceTakes, audio.tillVoice].map((key): [string, string] => [key, 'voice']),
+    ...[...audio.bath.splashes, ...audio.steps.keys, ...audio.steps.dirtKeys, ...audio.chestItems, audio.eatSound, audio.faint, audio.twinChime.key].map((key): [string, string] => [key, 'sfx']),
+    ...[audio.ambience.day, audio.ambience.night, audio.ambience.rain, audio.nearAmbience.pond.key, audio.nearAmbience.campfire.key].map((key): [string, string] => [key, 'amb']),
   ];
   for (const [key, group] of wanted) {
     if (audioIndex[key] !== group) problems.push(`src/data/audio.json: ${key} is not a ${group} key in _audio_index.json`);
