@@ -21,7 +21,8 @@ const hex = (value: string): [number, number, number] => [1, 3, 5].map((at) => N
  */
 export function sheetKey(art: MonsterArt, level: number | 'sweet', kind: SheetKind): string {
   if (level === 'sweet') return `${art.sheet}_sweet_${kind}`;
-  return level <= 0 ? `${art.sheet}_hungry_${kind}` : `${art.sheet}_eye${level}_${kind}`;
+  // ภาพหิววาดมาครบแล้ว (ไม่มีสีตาให้ไล่) ใช้ภาพหิวจนครบ 100%
+  return level <= 0 || art.hungryEye === null ? `${art.sheet}_hungry_${kind}` : `${art.sheet}_eye${level}_${kind}`;
 }
 
 /** ระดับสีตาจากเปอร์เซ็นต์ความชอบ */
@@ -52,6 +53,7 @@ function addSheet(scene: Phaser.Scene, key: string, canvas: HTMLCanvasElement, f
 
 /** สร้างภาพช่วงกลาง: เปลี่ยนเฉพาะพิกเซลสีตาตอนหิว ไล่เข้าหาสีที่ตำแหน่งเดียวกันในภาพหวาน (พิกเซลคมเหมือนเดิม ไม่เบลอ) */
 function makeEyeSheets(scene: Phaser.Scene, art: MonsterArt): void {
+  if (art.hungryEye === null) return;
   const [eyeRed, eyeGreen, eyeBlue] = hex(art.hungryEye);
   for (const kind of SHEET_KINDS) {
     const hungry = pixels(scene, sheetKey(art, 0, kind));
@@ -80,11 +82,15 @@ function makeAnimations(scene: Phaser.Scene, art: MonsterArt, level: number | 's
   const walk = sheetKey(art, level, 'walk');
   if (scene.anims.exists(`${walk}_south`)) return;
   const walkFrames = 6;
+  // ผู้เฝ้าทุ่งกระโดดบนฐาน เวลาแต่ละเฟรมไม่เท่ากัน Phaser ใช้ duration ของเฟรมแทนเวลาปกติ
+  const perFrame = Array.isArray(art.walkMs) ? art.walkMs : null;
+  const walkMs = perFrame ? Math.min(...perFrame) : (art.walkMs as number);
   DIRECTIONS.forEach((facing, row) => {
+    const frames = scene.anims.generateFrameNumbers(walk, { start: row * walkFrames, end: row * walkFrames + walkFrames - 1 });
     scene.anims.create({
       key: `${walk}_${facing}`,
-      frames: scene.anims.generateFrameNumbers(walk, { start: row * walkFrames, end: row * walkFrames + walkFrames - 1 }),
-      frameRate: 1000 / art.walkMs,
+      frames: perFrame ? frames.map((frame, index) => ({ ...frame, duration: perFrame[index % perFrame.length] })) : frames,
+      frameRate: 1000 / walkMs,
       repeat: -1,
     });
   });
@@ -97,6 +103,37 @@ export function prepareMonsterArt(scene: Phaser.Scene, art: MonsterArt): void {
   makeEyeSheets(scene, art);
   for (let level = 0; level < eyeSteps; level += 1) makeAnimations(scene, art, level);
   makeAnimations(scene, art, 'sweet');
+}
+
+/** ท่าพิเศษของแฝดชั้น 5 ชื่อลงท้าย _once คือเล่นครั้งเดียวแล้วกลับไปท่ายืน */
+export const TWIN_ANIMS = {
+  shake: 'monster_tangkrading_b_shake_once',
+  giggle: 'monster_tangkrading_a_giggle_once',
+  runEast: 'monster_tangkrading_a_run_east',
+  runWest: 'monster_tangkrading_a_run_west',
+  jumpA: 'monster_tangkrading_a_jump_once',
+  jumpB: 'monster_tangkrading_b_jump_once',
+} as const;
+
+/** สร้างท่าพิเศษของแฝดตามเวลาในเอกสารส่งงาน (สะบัดฟาง 20 เฟรม เฟรมแรกกับเฟรมท้ายค้างนานกว่า) */
+export function prepareTwinArt(scene: Phaser.Scene): void {
+  if (scene.anims.exists(TWIN_ANIMS.shake)) return;
+  const { shakeMs, giggleMs, giggleRepeat, runMs, jumpMs } = balance.monsters.twins;
+  const shakeSheet = 'monster_tangkrading_b_shake';
+  const shake = scene.anims.generateFrameNumbers(shakeSheet, { start: 0, end: 19 });
+  scene.anims.create({
+    key: TWIN_ANIMS.shake,
+    frames: shake.map((frame, index) => ({ ...frame, duration: index === 0 ? shakeMs.first : index === shake.length - 1 ? shakeMs.last : shakeMs.middle })),
+    frameRate: 1000 / shakeMs.middle,
+    repeat: 0,
+  });
+  const giggleRun = 'monster_tangkrading_a_giggle_run';
+  const RUN_FRAMES = 6;
+  scene.anims.create({ key: TWIN_ANIMS.giggle, frames: scene.anims.generateFrameNumbers(giggleRun, { start: 0, end: 2 }), frameRate: 1000 / giggleMs, repeat: giggleRepeat - 1 });
+  scene.anims.create({ key: TWIN_ANIMS.runEast, frames: scene.anims.generateFrameNumbers(giggleRun, { start: RUN_FRAMES, end: RUN_FRAMES * 2 - 1 }), frameRate: 1000 / runMs, repeat: -1 });
+  scene.anims.create({ key: TWIN_ANIMS.runWest, frames: scene.anims.generateFrameNumbers(giggleRun, { start: RUN_FRAMES * 2, end: RUN_FRAMES * 3 - 1 }), frameRate: 1000 / runMs, repeat: -1 });
+  scene.anims.create({ key: TWIN_ANIMS.jumpA, frames: scene.anims.generateFrameNumbers('monster_tangkrading_a_jump', { start: 0, end: 5 }), frameRate: 1000 / jumpMs, repeat: 0 });
+  scene.anims.create({ key: TWIN_ANIMS.jumpB, frames: scene.anims.generateFrameNumbers('monster_tangkrading_b_jump', { start: 0, end: 5 }), frameRate: 1000 / jumpMs, repeat: 0 });
 }
 
 function vividColor(scene: Phaser.Scene, key: string): [number, number, number] {

@@ -35,6 +35,12 @@ import { TrayView } from './trayView';
 import { cullOffscreen } from './culling';
 import { Visits } from './visits';
 import { summonNow } from '../systems/monsters';
+import { ownedDecor } from '../systems/decor';
+
+const CHIME = 'deco_bell_chime';
+const CHIME_SHEET = 'deco_bell_chime_sway';
+const CHIME_SWAY = 'deco_bell_chime_sway_loop';
+const CHIME_FRAMES = 8;
 
 type MoveKeys = Record<'up' | 'down' | 'left' | 'right' | 'w' | 'a' | 's' | 'd', Phaser.Input.Keyboard.Key>;
 
@@ -151,6 +157,8 @@ export class BaseScene extends Phaser.Scene {
   private arranger!: Arranger;
   private movableBlockers = new Map<string, Phaser.GameObjects.Zone>();
   private placedApplied = false;
+  /** กระดิ่งลมแฝด (รางวัลทายแฝดถูก) แกว่งเบา ๆ ที่ลานหน้าบ้าน ย้ายได้ในโหมดจัดวาง */
+  private chime: Phaser.GameObjects.Sprite | null = null;
   private obstacles!: Phaser.Physics.Arcade.StaticGroup;
   private plotMarker!: Phaser.GameObjects.Sprite;
   private queuedPlot: number | null = null;
@@ -180,6 +188,7 @@ export class BaseScene extends Phaser.Scene {
     this.fishing = null;
     this.bath = null;
     this.trayView = null;
+    this.chime = null;
     this.treeSway = new TreeSway();
     this.shadeAreas = [];
     this.glows = {};
@@ -382,6 +391,7 @@ export class BaseScene extends Phaser.Scene {
     this.gio.update(deltaMs, this.player.feetX, this.player.feetY, !gameState.clockRunning);
     if (gameState.started) this.openReceiptWhenNear();
     if (gameState.started) this.followPlaced();
+    if (gameState.started) this.syncDecor();
     if (gameState.started) {
       this.trayView?.sync(gameState.world.tray);
       this.visits?.update(deltaMs, time, { x: this.player.feetX, y: this.player.feetY });
@@ -922,6 +932,26 @@ export class BaseScene extends Phaser.Scene {
       const top = zone.y - zone.height / 2;
       return left < rect.x + rect.width && rect.x < left + zone.width && top < rect.y + rect.height && rect.y < top + zone.height;
     });
+  }
+
+  /** ของตกแต่งรางวัลที่ได้แล้วแต่ยังไม่มีในฉาก วางที่ตำแหน่งในเซฟ หรือช่องว่างใกล้ช่องที่อยากวางที่สุด */
+  private syncDecor(): void {
+    if (this.chime || !ownedDecor(gameState.world).includes(CHIME)) return;
+    const rule = balance.decor[CHIME];
+    if (!this.anims.exists(CHIME_SWAY)) {
+      this.anims.create({ key: CHIME_SWAY, frames: this.anims.generateFrameNumbers(CHIME_SHEET, { start: 0, end: CHIME_FRAMES - 1 }), frameRate: 1000 / rule.swayMs, repeat: -1 });
+    }
+    const entry = registry[CHIME_SHEET];
+    const frameHeight = entry?.type === 'local' ? (entry.frame_height ?? entry.height) : 1;
+    const sprite = this.add.sprite(0, 0, CHIME_SHEET, 0).setOrigin(0.5, footY(CHIME_SHEET) / frameHeight).play(CHIME_SWAY);
+    this.chime = sprite;
+    this.arranger.register(CHIME, sprite as unknown as Phaser.GameObjects.Image, null, false, () => undefined);
+    const saved = gameState.world.placed[CHIME];
+    const tile = TILE_PX;
+    const feet = saved ?? this.arranger.findFree(CHIME, this.playerRect(), { x: (rule.prefer.x + 0.5) * tile, y: (rule.prefer.y + 1) * tile });
+    if (!feet) return;
+    this.arranger.apply(CHIME, feet);
+    if (!saved) gameState.setWorld({ ...gameState.world, placed: { ...gameState.world.placed, [CHIME]: feet } });
   }
 
   /** ตำแหน่งที่เคยย้ายไว้ในเซฟ ใช้ครั้งเดียวต่อการเริ่มเกม */

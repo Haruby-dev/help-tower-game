@@ -41,8 +41,8 @@ const withTray = (world: World, plates: ({ item: string; count: number } | null)
 const fixed = (value: number) => ({ next: () => value, between: (min: number, max: number) => min + value * (max - min) });
 
 describe('monster data (GDD stage 3)', () => {
-  it('has floors 1–10 with the GDD points and Puinun likes strawberry tanghulu most', () => {
-    expect(Object.values(monsters).map((monster) => monster.points)).toEqual([30, 32, 33, 35, 36, 38, 40, 42, 44, 47]);
+  it('has floors 1–10 with the GDD points (twins 36 each) and Puinun likes strawberry tanghulu most', () => {
+    expect(Object.values(monsters).map((monster) => monster.points)).toEqual([30, 32, 33, 35, 36, 36, 38, 40, 42, 44, 47]);
     expect(monsters.puinun.favourite).toEqual(['strawberry_skewer']);
     expect(monsters.puinun.signature).toEqual({ recipe: 'baked_potato', stars: 1 });
     expect(monsters.puefaotung.signature).toEqual({ recipe: 'strawberry_skewer', stars: 3 });
@@ -114,9 +114,10 @@ describe('visitors', () => {
     expect(visitorCount(100)).toBe(6);
   });
 
-  it('only comes from monsters with art that are not cleared yet (Puinun, Popcorn, Mukmik so far)', () => {
-    expect(eligibleMonsters(newWorld())).toEqual([PUINUN, 'popcorn', 'mookmik']);
-    expect(eligibleMonsters(withPoints(newWorld(), 30, true))).toEqual(['popcorn', 'mookmik']);
+  it('only comes from monsters with art that are not cleared yet, floor 5 counts once (the twins)', () => {
+    const zone1 = [PUINUN, 'popcorn', 'mookmik', 'toomtia', 'tangkrading', 'yaibaimai', 'wingwing', 'tubpong', 'jaotungtong', 'puefaotung'];
+    expect(eligibleMonsters(newWorld())).toEqual(zone1);
+    expect(eligibleMonsters(withPoints(newWorld(), 30, true))).toEqual(zone1.slice(1));
   });
 
   it('plans tomorrow\'s visit when Gio comes back, once, spread between 12:00 and 20:00', () => {
@@ -149,7 +150,11 @@ describe('visitors', () => {
     expect(dueArrivals(summoned)).toEqual([{ monster: PUINUN, day: 1, hour: 9, done: false }]);
     const allCleared: World = {
       ...newWorld(),
-      monsters: { ...newWorld().monsters, affection: Object.fromEntries(Object.entries(monsters).map(([id, monster]) => [id, { points: monster.points, signature: true }])) },
+      monsters: {
+        ...newWorld().monsters,
+        affection: Object.fromEntries(Object.entries(monsters).map(([id, monster]) => [id, { points: monster.points, signature: true }])),
+        twins: { revealed: true, revealDay: 1, quizWon: true },
+      },
     };
     expect(summonNow(allCleared)).toBeNull();
   });
@@ -245,8 +250,10 @@ describe('tray and taking', () => {
   it('lets a monster that missed its visit (slept, fainted) eat from the tray without being seen', () => {
     const report = { day: 1, sold: [], returned: [], gross: 0, commission: 0, coins: 0, gift: null, tier: 0 };
     const start: World = withTray({ ...plain(), hour: 10, gio: { ...newWorld().gio, report } }, [{ item: dishItem('strawberry_skewer', 1), count: 4 }, null, null]);
-    const planned = planVisits(start);
-    const guest = planned.monsters.arrivals[0]!.monster;
+    // มอนสเตอร์มาได้ 10 ตัวแล้ว ให้แขกเป็นปุยนุ่น (ชอบถังหูลู่ที่สุด) จะได้รู้แน่ว่ากินจากถาด
+    const plannedAny = planVisits(start);
+    const planned: World = { ...plannedAny, monsters: { ...plannedAny.monsters, arrivals: plannedAny.monsters.arrivals.map((arrival) => ({ ...arrival, monster: PUINUN })) } };
+    const guest = PUINUN;
     const visitDay: World = { ...planned, day: 2, hour: 10 };
     const next = sleep(visitDay);
     expect(next.day).toBe(3);

@@ -8,25 +8,36 @@ import dialogueJson from '../data/dialogue.json';
 import type { Dialogue } from '../data/schema';
 import { Monster } from '../entities/Monster';
 import { parseDish, recipes } from '../systems/cooking';
+import type { ArrivalKind } from '../core/state';
 import {
   affectionOf,
   affectionPercent,
   arrivalKey,
+  barOwner,
   dueArrivals,
   eatPlaceFor,
+  finishTwinScene,
   isCleared,
+  isTwin,
+  nameKey,
   newVisitMemo,
   markArrived,
   monsterTable,
   planVisit,
   requiredPoints,
+  revealDue,
+  scheduleReveal,
   takePlate,
   tierOf,
+  twinA,
+  twinB,
+  twinsSwitched,
+  voiceOf,
   type EatPlace,
   type Reaction,
 } from '../systems/monsters';
 import { servingsOnTray } from '../systems/tray';
-import { foodArtKey, type MonsterArt } from './monsterArt';
+import { foodArtKey, prepareTwinArt, TWIN_ANIMS, type MonsterArt } from './monsterArt';
 import type { TrayView } from './trayView';
 
 type Point = { x: number; y: number };
@@ -58,6 +69,15 @@ const FALLBACK_EAT: Point[] = [
 
 /** เทสต์อัตโนมัติเร่งการมาเยี่ยมได้ (เปิดเฉพาะโหมด ?test) เกมจริงเป็น 1 เสมอ */
 export const visitTestHooks = { speed: 1 };
+const twinRules = rules.twins;
+const twinLines = dialogue.twins;
+/** น้องเดินออกจากโพรงตามพี่ห่างกันเท่านี้ จะได้ไม่ซ้อนกันตอนเดิน */
+const PARTNER_DELAY_MS = 450;
+
+/** เสียงกระดิ่งสองโน้ต "กริ๊ง~ กรุ๊ง~" ของแฝด ฝั่งเสียงยังทำไม่เสร็จ เว้นไว้ก่อน */
+function playTwinBells(): void {
+  // TODO(audio): ต่อเสียงกระดิ่งสองโน้ตเมื่อฝั่งเสียงส่งไฟล์มา
+}
 
 type Wait = { kind: 'ms'; left: number } | { kind: 'walk' } | { kind: 'eat' } | { kind: 'until'; test: () => boolean };
 
@@ -83,6 +103,10 @@ interface Run {
   shownCleared: boolean;
   /** ที่นั่งกินที่จองไว้ เช่น nearBurrow:0 หรือ yard:1 */
   spot: string | null;
+  /** แขกแบบพิเศษของแฝด (แวะมาแกล้ง ฉากเฉลย ชวนทาย) */
+  kind: ArrivalKind | null;
+  /** น้องแฝดที่มาพร้อมพี่ในฉากเฉลย */
+  partner: Monster | null;
 }
 
 export interface VisitPlaces {
@@ -105,6 +129,11 @@ export class Visits {
   private spotsTaken = new Set<string>();
   private readonly talkRng = createRng(Date.now() + 7);
   private tagShown = new Set<string>();
+  private player: Point = { x: 0, y: 0 };
+  private twinAnswer: number | null = null;
+  private readonly stopAnswer = eventBus.on('twin-quiz-answer', ({ index }) => {
+    this.twinAnswer = index;
+  });
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -116,15 +145,20 @@ export class Visits {
   update(deltaMs: number, time: number, player: Point): void {
     if (!gameState.started) return;
     const world = gameState.world;
+    this.player = player;
     for (const arrival of dueArrivals(world)) {
       const key = arrivalKey(arrival);
-      if (!this.runs.has(key)) this.spawn(key, Math.round(arrival.hour * 1000), arrival.monster);
+      if (!this.runs.has(key)) this.spawn(key, Math.round(arrival.hour * 1000), arrival.monster, arrival.kind ?? null);
     }
     const paused = !gameState.clockRunning;
     const step = deltaMs * visitTestHooks.speed;
     for (const run of [...this.runs.values()]) {
       run.monster.sprite.anims.timeScale = visitTestHooks.speed * run.monster.speedMultiplier;
       run.monster.update(step, paused, time);
+      if (run.partner) {
+        run.partner.sprite.anims.timeScale = visitTestHooks.speed * run.partner.speedMultiplier;
+        run.partner.update(step, paused, time);
+      }
       if (!paused) this.advance(run, step);
       if (run.done) this.remove(run);
     }
@@ -134,15 +168,20 @@ export class Visits {
   destroy(): void {
     for (const run of this.runs.values()) {
       run.monster.destroy();
+      run.partner?.destroy();
       eventBus.emit('monster-tag', { id: run.key, hidden: true });
     }
     this.runs.clear();
+    this.stopAnswer();
+    eventBus.emit('twin-quiz-close', undefined);
     this.trayOwner = null;
     this.spotsTaken.clear();
   }
 
-  private spawn(key: string, seed: number, id: string): void {
-    const art = monsterTable[id]?.art;
+  private spawn(key: string, seed: number, id: string, kind: ArrivalKind | null): void {
+    const own = monsterTable[id]?.art ?? null;
+    // น้องแฝดก่อนเฉลยปลอมตัวเป็นพี่ทุกพิกเซล (ใช้ภาพพี่ทั้งชุด)
+    const art = monsterTable[id]?.twinOf && !gameState.world.monsters.twins.revealed ? (monsterTable[monsterTable[id]!.twinOf!]?.art ?? own) : own;
     if (!art || !this.scene.textures.exists(`${art.sheet}_hungry_stand`)) {
       // ไม่มีภาพ (ข้อมูลผิด) นับว่ามาแล้ว จะได้ไม่ค้าง
       gameState.setWorld(markArrived(gameState.world, key));
@@ -151,8 +190,13 @@ export class Visits {
     const world = gameState.world;
     const affection = affectionOf(world, id);
     const monster = new Monster(this.scene, id, art as MonsterArt, this.places.burrow, affectionPercent(world, id), isCleared(world, id), createRng(Date.now() + seed));
-    const run: Run = { key, seed, monster, script: undefined as never, wait: null, done: false, shownPoints: affection.points, shownCleared: isCleared(world, id), spot: null };
-    run.script = this.visit(run);
+    const run: Run = { key, seed, monster, script: undefined as never, wait: null, done: false, shownPoints: affection.points, shownCleared: isCleared(world, id), spot: null, kind, partner: null };
+    if (kind === 'reveal' || kind === 'quiz') {
+      // น้องมาพร้อมพี่ ในชุดฟางเหมือนกันจนสะบัดฟางออก
+      prepareTwinArt(this.scene);
+      run.partner = new Monster(this.scene, twinB, art as MonsterArt, this.places.burrow, 100, true, createRng(Date.now() + seed + 1));
+    } else if (kind === 'tease') prepareTwinArt(this.scene);
+    run.script = kind === 'reveal' || kind === 'quiz' ? this.twinScene(run, kind) : kind === 'tease' ? this.teaseVisit(run) : this.visit(run);
     this.runs.set(key, run);
     this.next(run);
   }
@@ -161,6 +205,7 @@ export class Visits {
     if (this.trayOwner === run) this.trayOwner = null;
     if (run.spot !== null) this.spotsTaken.delete(run.spot);
     run.monster.destroy();
+    run.partner?.destroy();
     this.runs.delete(run.key);
     this.tagShown.delete(run.key);
     eventBus.emit('monster-tag', { id: run.key, hidden: true });
@@ -188,19 +233,24 @@ export class Visits {
 
   /** ป้ายชื่อกับความชอบเหนือหัว เมื่อตัวเอกยืนใกล้ */
   private updateTags(player: Point): void {
+    const world = gameState.world;
     for (const run of this.runs.values()) {
       const { monster } = run;
-      const near = Math.hypot(monster.feetX - player.x, monster.feetY - player.y) < rules.labelReachPx;
+      // ฉากเฉลยไม่มีป้าย จะได้ไม่บังคำถาม
+      const near = run.partner === null && Math.hypot(monster.feetX - player.x, monster.feetY - player.y) < rules.labelReachPx;
       if (!near) {
         if (this.tagShown.delete(run.key)) eventBus.emit('monster-tag', { id: run.key, hidden: true });
         continue;
       }
       this.tagShown.add(run.key);
-      const percent = run.shownCleared ? 100 : Math.min(100, (run.shownPoints / requiredPoints(monster.id)) * 100);
+      // แฝดก่อนเฉลยแสดงหลอดของตัวเดียว ("100% หลอก") วันที่อีกตัวมา หลอดไม่ขยับ
+      const owner = barOwner(world, monster.id);
+      const percent =
+        owner !== monster.id ? affectionPercent(world, owner) : run.shownCleared ? 100 : Math.min(100, (run.shownPoints / requiredPoints(monster.id)) * 100);
       eventBus.emit('monster-tag', {
         id: run.key,
         hidden: false,
-        name: t(`monster.${monster.id}.name` as TextKey),
+        name: t(nameKey(world, monster.id)),
         percent: Math.floor(percent),
         // ป้ายชื่ออยู่ใต้เท้า ฟองคำพูดอยู่เหนือหัว จะได้ไม่ทับกัน
         anchor: () => (monster.sprite.active ? this.toScreen(monster.feetX, monster.feetY + TAG_DROP_PX) : null),
@@ -210,16 +260,27 @@ export class Visits {
 
   private say(run: Run, beat: Beat, always = false): void {
     if (!always && this.talkRng.next() >= rules.talkChance) return;
-    const lines = dialogue.monsters[run.monster.id]?.[beat];
+    const lines = dialogue.monsters[voiceOf(run.monster.id)]?.[beat];
     const tier = tierOf(gameState.world, run.monster.id);
     const pool = lines?.[tier] ?? lines?.any;
     if (!pool || pool.length === 0) return;
     this.speak(run, pool[Math.floor(this.talkRng.next() * pool.length)]!);
   }
 
-  private speak(run: Run, text: string): void {
-    const { monster } = run;
-    eventBus.emit('speech', { speaker: run.key, text, anchor: () => (monster.sprite.active ? this.toScreen(monster.feetX, monster.headY) : null) });
+  private speak(run: Run, text: string, who: Monster = run.monster): void {
+    eventBus.emit('speech', { speaker: `${run.key}:${who.id}`, text, anchor: () => (who.sprite.active ? this.toScreen(who.feetX, who.headY) : null) });
+  }
+
+  private pick(lines: string[]): string {
+    return lines[Math.floor(this.talkRng.next() * lines.length)]!;
+  }
+
+  /** แฝดก่อนเฉลย: บทแซวตอนเจอเมนูที่ไม่ชอบ ให้รู้ว่าโดนแกล้ง ไม่ใช่บั๊ก */
+  private twinPrank(run: Run): boolean {
+    const id = run.monster.id;
+    if (!isTwin(id) || gameState.world.monsters.twins.revealed) return false;
+    this.speak(run, this.pick(id === twinA ? twinLines.dislike_A_pre : twinLines.dislike_B_pre));
+    return true;
   }
 
   private *walk(run: Run, points: Point[]): Generator<Wait, void, void> {
@@ -322,7 +383,7 @@ export class Visits {
         // เส้นเลือดงอนขึ้นก่อน บทพูดไม่ชอบ (ถ้าสุ่มได้) ตามมาหลังเส้นเลือดจาง จะได้ไม่ทับกัน
         monster.pout();
         yield { kind: 'ms', left: POUT_MS };
-        this.say(run, 'dislike');
+        if (!this.twinPrank(run)) this.say(run, 'dislike');
         continue;
       }
       const take = plan.takes.find((entry) => entry.plate === index);
@@ -358,17 +419,22 @@ export class Visits {
       yield { kind: 'ms', left: rules.bubbleMs };
     }
     this.trayOwner = null;
+    // น้องแฝดมากินก่อนหลอดสลับ หลอดไม่ขยับ มีบทแซว
+    const frozenBar = id === twinB && !twinsSwitched(gameState.world);
     if (meals.length === 0) {
-      this.say(run, 'done');
+      if (frozenBar) this.speak(run, this.pick(twinLines.B_done_bar_frozen));
+      else this.say(run, 'done');
       yield* this.goHome(run, 'yard');
       return;
     }
 
     // ยังระแวง: คว้าอาหารแล้ววิ่งกลับไปกินในโพรง
     if (place === 'burrow') {
-      this.say(run, 'eat', true);
+      if (frozenBar) this.speak(run, this.pick(twinLines.B_done_bar_frozen));
+      else this.say(run, 'eat', true);
       monster.speedMultiplier = rules.runSpeedMultiplier;
       yield* this.goHome(run, 'yard');
+      yield* this.revealAfter();
       return;
     }
     // กลาง: นั่งกินใกล้โพรง · สนิท: นั่งกินที่ลานหน้าบ้านใกล้ถาด (ร้านยังไม่เปิด) ทีละที่ ตาค่อย ๆ หวานขึ้นตามความชอบที่ได้
@@ -383,7 +449,19 @@ export class Visits {
       this.showAffection(run, meal);
       if (HEARTS[meal.reaction] > 0) monster.hearts(HEARTS[meal.reaction]);
       if (meal.set) monster.sparkles();
-      if (meal.cleared) {
+      if (meal.cleared && id === twinA && !gameState.world.monsters.twins.revealed) {
+        // พี่ครบ 100% แต่ประตูยังไม่เปิด หัวเราะคิกคัก แล้วหลอดสลับเป็นของน้อง
+        monster.sparkles();
+        this.speak(run, twinLines.bar_switch[0]!);
+        prepareTwinArt(this.scene);
+        monster.perform(TWIN_ANIMS.giggle);
+        yield { kind: 'eat' };
+        yield { kind: 'ms', left: CLEAR_PAUSE_MS };
+      } else if (meal.cleared && id === twinB) {
+        // น้องครบ 100% ฉากเฉลยตามมาหลังกลับเข้าโพรง ยังไม่บอกว่าประตูเปิด
+        monster.sparkles();
+        yield { kind: 'ms', left: CLEAR_PAUSE_MS / 2 };
+      } else if (meal.cleared) {
         monster.sparkles();
         this.speak(run, t(`monster.${id}.clear` as TextKey));
         eventBus.emit('notice-text', `${t('monster.cleared_notice')}${info.floor}${t('monster.cleared_notice_end')}`);
@@ -391,11 +469,125 @@ export class Visits {
       }
       yield { kind: 'ms', left: rules.eatGapMs };
     }
-    this.say(run, 'done');
+    if (frozenBar) this.speak(run, this.pick(twinLines.B_done_bar_frozen));
+    else this.say(run, 'done');
     yield { kind: 'ms', left: rules.eatGapMs };
     if (run.spot !== null) this.spotsTaken.delete(run.spot);
     run.spot = null;
     yield* this.goHome(run, place);
+    yield* this.revealAfter();
+  }
+
+  /** น้องเพิ่งครบ 100%: นัดฉากเฉลยทันทีหลังกลับเข้าโพรง */
+  private *revealAfter(): Generator<Wait, void, void> {
+    if (revealDue(gameState.world)) gameState.setWorld(scheduleReveal(gameState.world));
+  }
+
+  /** หลังหลอดสลับ พี่แวะมาแกล้งนาน ๆ ที: เดินมาที่ลาน หัวเราะคิกคัก แล้ววิ่งหนีกลับโพรง ไม่กิน */
+  private *teaseVisit(run: Run): Generator<Wait, void, void> {
+    const { monster } = run;
+    gameState.setWorld(markArrived(gameState.world, run.key));
+    const front = this.trayFront();
+    yield* this.walk(run, [...this.places.route, ...(front ? [front.approach] : [])]);
+    monster.stand('south');
+    this.speak(run, this.pick(twinLines.A_tease_visit));
+    monster.perform(TWIN_ANIMS.giggle);
+    yield { kind: 'eat' };
+    monster.setRunAnims({ east: TWIN_ANIMS.runEast, west: TWIN_ANIMS.runWest });
+    monster.speedMultiplier = rules.runSpeedMultiplier;
+    yield* this.goHome(run, 'yard');
+  }
+
+  /**
+   * ฉากเฉลยแฝด (GDD): โผล่จากโพรงพร้อมกันสีฟางทั้งคู่ → กระดิ่งสองโน้ต → ทายว่าใครชอบกินปลา (สุ่มซ้ายขวา)
+   * → น้องสะบัดฟางเป็นขนม่วงเทา → กระโดดดีใจ → ประตูชั้น 5 เปิด · ทายผิดไม่ได้รางวัล วันหลังมาชวนทายใหม่ (kind quiz)
+   */
+  private *twinScene(run: Run, kind: 'reveal' | 'quiz'): Generator<Wait, void, void> {
+    const elder = run.monster;
+    const younger = run.partner!;
+    gameState.setWorld(markArrived(gameState.world, run.key));
+    const view = this.tray();
+    const center = view
+      ? { x: view.bounds.centerX, y: view.bounds.bottom + twinRules.stageDropPx }
+      : (this.places.eatSpots[0] ?? { x: this.places.burrow.x + FALLBACK_EAT[0]!.x, y: this.places.burrow.y + FALLBACK_EAT[0]!.y });
+    const elderLeft = this.talkRng.next() < 0.5;
+    const left = { x: center.x - twinRules.standApartPx, y: center.y };
+    const right = { x: center.x + twinRules.standApartPx, y: center.y };
+    const [leftTwin, rightTwin] = elderLeft ? [elder, younger] : [younger, elder];
+    elder.walkTo([...this.places.route, elderLeft ? left : right]);
+    yield { kind: 'ms', left: PARTNER_DELAY_MS };
+    younger.walkTo([...this.places.route, elderLeft ? right : left]);
+    yield { kind: 'until', test: () => elder.arrived && younger.arrived };
+    elder.stand('south');
+    younger.stand('south');
+    // รอให้ตัวเอกเดินมาใกล้ก่อนเริ่มทาย ถ้าไม่มาจนดึกก็กลับบ้าน ฉากเฉลยยังรออยู่
+    const late = (): boolean => gameState.world.hour >= rules.settleAfterHour;
+    const near = (): boolean => Math.hypot(center.x - this.player.x, center.y - this.player.y) < twinRules.quizReachPx;
+    yield { kind: 'until', test: () => near() || late() };
+    if (!near()) {
+      yield* this.twinsHome(run);
+      return;
+    }
+    playTwinBells();
+    elder.sparkles();
+    younger.sparkles();
+    yield { kind: 'ms', left: twinRules.bellsMs };
+    if (kind === 'quiz') {
+      this.speak(run, twinLines.reveal_quiz.retry_visit, younger);
+      yield { kind: 'ms', left: rules.bubbleMs };
+    }
+    this.speak(run, twinLines.reveal_quiz.A, elder);
+    yield { kind: 'ms', left: rules.bubbleMs };
+    this.speak(run, twinLines.reveal_quiz.B, younger);
+    yield { kind: 'ms', left: rules.bubbleMs };
+    const anchor = (twin: Monster) => () => (twin.sprite.active ? this.toScreen(twin.feetX, twin.feetY - Math.round(twin.art.height / 2)) : null);
+    this.twinAnswer = null;
+    eventBus.emit('twin-quiz', { prompt: twinLines.reveal_quiz.prompt, anchors: [anchor(leftTwin), anchor(rightTwin)] });
+    yield { kind: 'until', test: () => this.twinAnswer !== null || late() };
+    if (this.twinAnswer === null) {
+      eventBus.emit('twin-quiz-close', undefined);
+      yield* this.twinsHome(run);
+      return;
+    }
+    const correct = (this.twinAnswer === 0) === elderLeft;
+    this.twinAnswer = null;
+    if (correct) this.speak(run, twinLines.reveal_quiz.correct, elder);
+    else this.speak(run, twinLines.reveal_quiz.wrong, younger);
+    yield { kind: 'ms', left: rules.bubbleMs };
+    // น้องสะบัดฟางออก เผยขนสีม่วงเทา
+    younger.perform(TWIN_ANIMS.shake);
+    yield { kind: 'until', test: () => !younger.eating };
+    younger.setArt(monsterTable[twinB]!.art as MonsterArt);
+    elder.perform(TWIN_ANIMS.jumpA);
+    younger.perform(TWIN_ANIMS.jumpB);
+    this.speak(run, twinLines.reveal_line[0]!, elder);
+    yield { kind: 'until', test: () => !elder.eating && !younger.eating };
+    const before = gameState.world.monsters.twins;
+    gameState.setWorld(finishTwinScene(gameState.world, kind, correct));
+    if (!before.revealed) {
+      eventBus.emit('notice-text', `${t('monster.cleared_notice')}${monsterTable[twinA]!.floor}${t('monster.cleared_notice_end')}`);
+      yield { kind: 'ms', left: CLEAR_PAUSE_MS };
+    }
+    if (correct && !before.quizWon) {
+      eventBus.emit('notice', 'twins.chime_reward');
+      yield { kind: 'ms', left: CLEAR_PAUSE_MS };
+    }
+    yield* this.twinsHome(run);
+  }
+
+  /** แฝดกลับเข้าโพรงด้วยกัน น้องเดินตามหลังพี่ */
+  private *twinsHome(run: Run): Generator<Wait, void, void> {
+    const elder = run.monster;
+    const younger = run.partner!;
+    const path = [...[...this.places.route].reverse(), this.places.burrow];
+    elder.walkTo(path);
+    yield { kind: 'ms', left: PARTNER_DELAY_MS };
+    younger.walkTo(path);
+    yield { kind: 'until', test: () => elder.arrived && younger.arrived };
+    if (VANISH_SPARKLE) {
+      elder.sparkles();
+      younger.sparkles();
+    }
   }
 }
 

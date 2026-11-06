@@ -142,7 +142,25 @@
       "recipe": "tomato_soup",
       "stars": 1
     },
-    "art": null
+    "art": {
+      "sheet": "monster_toomtia",
+      "frame": 48,
+      "feetRow": 45,
+      "walkMs": 140,
+      "eatMs": 150,
+      "eatFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "hungryEye": null,
+      "height": 44
+    }
   },
   "tangkrading": {
     "floor": 5,
@@ -164,7 +182,66 @@
       "recipe": "fish_congee",
       "stars": 1
     },
-    "art": null
+    "art": {
+      "sheet": "monster_tangkrading",
+      "frame": 56,
+      "feetRow": 46,
+      "walkMs": 110,
+      "eatMs": 150,
+      "eatFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "hungryEye": null,
+      "height": 38
+    }
+  },
+  "tangkrading_b": {
+    "floor": 5,
+    "zone": 1,
+    "points": 36,
+    "personality": "cheerful",
+    "favourite": [
+      "grilled_corn"
+    ],
+    "favouriteDrink": "warm_honey_milk",
+    "likes": [
+      "boiled_egg",
+      "warm_honey_milk"
+    ],
+    "dislikes": [
+      "grilled_fish"
+    ],
+    "signature": {
+      "recipe": "grilled_corn",
+      "stars": 3
+    },
+    "twinOf": "tangkrading",
+    "art": {
+      "sheet": "monster_tangkrading_b",
+      "frame": 56,
+      "feetRow": 46,
+      "walkMs": 110,
+      "eatMs": 150,
+      "eatFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "hungryEye": null,
+      "height": 38
+    }
   },
   "yaibaimai": {
     "floor": 6,
@@ -186,7 +263,25 @@
       "recipe": "home_kaprao",
       "stars": 1
     },
-    "art": null
+    "art": {
+      "sheet": "monster_yaibaimai",
+      "frame": 48,
+      "feetRow": 44,
+      "walkMs": 160,
+      "eatMs": 150,
+      "eatFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "hungryEye": null,
+      "height": 43
+    }
   },
   "wingwing": {
     "floor": 7,
@@ -208,7 +303,25 @@
       "recipe": "corn_egg_fried_rice",
       "stars": 1
     },
-    "art": null
+    "art": {
+      "sheet": "monster_wingwing",
+      "frame": 56,
+      "feetRow": 50,
+      "walkMs": 140,
+      "eatMs": 150,
+      "eatFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "hungryEye": null,
+      "height": 46
+    }
   },
   "tubpong": {
     "floor": 8,
@@ -230,7 +343,25 @@
       "recipe": "potato_carrot_stew",
       "stars": 1
     },
-    "art": null
+    "art": {
+      "sheet": "monster_tubpong",
+      "frame": 56,
+      "feetRow": 55,
+      "walkMs": 180,
+      "eatMs": 150,
+      "eatFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "hungryEye": null,
+      "height": 55
+    }
   },
   "jaotungtong": {
     "floor": 9,
@@ -252,7 +383,25 @@
       "recipe": "warm_honey_milk",
       "stars": 1
     },
-    "art": null
+    "art": {
+      "sheet": "monster_jaotungtong",
+      "frame": 64,
+      "feetRow": 59,
+      "walkMs": 160,
+      "eatMs": 150,
+      "eatFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "hungryEye": null,
+      "height": 59
+    }
   },
   "puefaotung": {
     "floor": 10,
@@ -274,6 +423,31 @@
       "recipe": "strawberry_skewer",
       "stars": 3
     },
-    "art": null
+    "art": {
+      "sheet": "monster_puefaotung",
+      "frame": 64,
+      "feetRow": 60,
+      "walkMs": [
+        140,
+        100,
+        100,
+        140,
+        100,
+        160
+      ],
+      "eatMs": 150,
+      "eatFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "hungryEye": null,
+      "height": 58
+    }
   }
 }

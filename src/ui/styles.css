@@ -4824,3 +4824,60 @@ canvas {
   position: static;
   flex: none;
 }
+
+/* ทายแฝดในฉากเฉลยชั้น 5: ป้ายคำถามกลางบน ปุ่มแตะทับตัวแฝด (กว้างอย่างน้อย 44px) ลูกศรกระดิกใต้เท้า (เหนือหัวมีฟองคำพูด) */
+#twin-quiz {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.twin-quiz__prompt {
+  position: absolute;
+  top: calc(var(--px) * 56);
+  left: 50%;
+  margin: 0;
+  padding: calc(var(--px) * 3) calc(var(--px) * 8);
+  background: #fff6f0;
+  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--outline), 0 calc(var(--px) * 1) 0 0 var(--outline), calc(var(--px) * -1) 0 0 0 var(--outline), calc(var(--px) * 1) 0 0 0 var(--outline);
+  color: var(--outline);
+  font-size: max(14px, calc(var(--px) * 9));
+  font-weight: 700;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.twin-quiz__pick {
+  position: absolute;
+  width: max(44px, calc(var(--px) * 34));
+  height: max(44px, calc(var(--px) * 40));
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: auto;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+}
+
+.twin-quiz__arrow {
+  position: absolute;
+  bottom: calc(var(--px) * -12);
+  left: 50%;
+  color: #f8b4cc;
+  font-size: max(14px, calc(var(--px) * 9));
+  text-shadow: 0 calc(var(--px) * 1) 0 var(--outline), 0 calc(var(--px) * -1) 0 var(--outline), calc(var(--px) * 1) 0 0 var(--outline), calc(var(--px) * -1) 0 0 var(--outline);
+  transform: translateX(-50%);
+  animation: twin-arrow 0.6s steps(2) infinite;
+}
+
+@keyframes twin-arrow {
+  50% {
+    transform: translate(-50%, calc(var(--px) * -2));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .twin-quiz__arrow {
+    animation: none;
+  }
+}

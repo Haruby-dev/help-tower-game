@@ -4334,5 +4334,359 @@
     "footY": {
       "default": 30
     }
+  },
+  "monster_toomtia_hungry_stand": {
+    "footY": {
+      "default": 46
+    }
+  },
+  "monster_toomtia_hungry_walk": {
+    "footY": {
+      "default": 190,
+      "south": 46,
+      "east": 46,
+      "north": 46,
+      "west": 46
+    }
+  },
+  "monster_toomtia_hungry_eat": {
+    "footY": {
+      "default": 46
+    }
+  },
+  "monster_toomtia_sweet_stand": {
+    "footY": {
+      "default": 46
+    }
+  },
+  "monster_toomtia_sweet_walk": {
+    "footY": {
+      "default": 190,
+      "south": 46,
+      "east": 46,
+      "north": 46,
+      "west": 46
+    }
+  },
+  "monster_toomtia_sweet_eat": {
+    "footY": {
+      "default": 46
+    }
+  },
+  "monster_yaibaimai_hungry_stand": {
+    "footY": {
+      "default": 45
+    }
+  },
+  "monster_yaibaimai_hungry_walk": {
+    "footY": {
+      "default": 189,
+      "south": 45,
+      "east": 45,
+      "north": 45,
+      "west": 45
+    }
+  },
+  "monster_yaibaimai_hungry_eat": {
+    "footY": {
+      "default": 45
+    }
+  },
+  "monster_yaibaimai_sweet_stand": {
+    "footY": {
+      "default": 45
+    }
+  },
+  "monster_yaibaimai_sweet_walk": {
+    "footY": {
+      "default": 189,
+      "south": 45,
+      "east": 45,
+      "north": 45,
+      "west": 45
+    }
+  },
+  "monster_yaibaimai_sweet_eat": {
+    "footY": {
+      "default": 45
+    }
+  },
+  "monster_wingwing_hungry_stand": {
+    "footY": {
+      "default": 51
+    }
+  },
+  "monster_wingwing_hungry_walk": {
+    "footY": {
+      "default": 219,
+      "south": 50,
+      "east": 50,
+      "north": 50,
+      "west": 50
+    }
+  },
+  "monster_wingwing_hungry_eat": {
+    "footY": {
+      "default": 51
+    }
+  },
+  "monster_wingwing_sweet_stand": {
+    "footY": {
+      "default": 51
+    }
+  },
+  "monster_wingwing_sweet_walk": {
+    "footY": {
+      "default": 219,
+      "south": 50,
+      "east": 50,
+      "north": 50,
+      "west": 50
+    }
+  },
+  "monster_wingwing_sweet_eat": {
+    "footY": {
+      "default": 51
+    }
+  },
+  "monster_tubpong_hungry_stand": {
+    "footY": {
+      "default": 56
+    }
+  },
+  "monster_tubpong_hungry_walk": {
+    "footY": {
+      "default": 224,
+      "south": 56,
+      "east": 56,
+      "north": 56,
+      "west": 56
+    }
+  },
+  "monster_tubpong_hungry_eat": {
+    "footY": {
+      "default": 56
+    }
+  },
+  "monster_tubpong_sweet_stand": {
+    "footY": {
+      "default": 56
+    }
+  },
+  "monster_tubpong_sweet_walk": {
+    "footY": {
+      "default": 224,
+      "south": 56,
+      "east": 56,
+      "north": 56,
+      "west": 56
+    }
+  },
+  "monster_tubpong_sweet_eat": {
+    "footY": {
+      "default": 56
+    }
+  },
+  "monster_jaotungtong_hungry_stand": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "monster_jaotungtong_hungry_walk": {
+    "footY": {
+      "default": 254,
+      "south": 62,
+      "east": 62,
+      "north": 61,
+      "west": 62
+    }
+  },
+  "monster_jaotungtong_hungry_eat": {
+    "footY": {
+      "default": 60
+    }
+  },
+  "monster_jaotungtong_sweet_stand": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "monster_jaotungtong_sweet_walk": {
+    "footY": {
+      "default": 254,
+      "south": 62,
+      "east": 62,
+      "north": 61,
+      "west": 62
+    }
+  },
+  "monster_jaotungtong_sweet_eat": {
+    "footY": {
+      "default": 60
+    }
+  },
+  "monster_puefaotung_hungry_stand": {
+    "footY": {
+      "default": 61
+    }
+  },
+  "monster_puefaotung_hungry_walk": {
+    "footY": {
+      "default": 253,
+      "south": 59,
+      "east": 59,
+      "north": 59,
+      "west": 59
+    }
+  },
+  "monster_puefaotung_hungry_eat": {
+    "footY": {
+      "default": 61
+    }
+  },
+  "monster_puefaotung_sweet_stand": {
+    "footY": {
+      "default": 61
+    }
+  },
+  "monster_puefaotung_sweet_walk": {
+    "footY": {
+      "default": 253,
+      "south": 59,
+      "east": 59,
+      "north": 59,
+      "west": 59
+    }
+  },
+  "monster_puefaotung_sweet_eat": {
+    "footY": {
+      "default": 61
+    }
+  },
+  "monster_tangkrading_hungry_stand": {
+    "footY": {
+      "default": 47
+    }
+  },
+  "monster_tangkrading_sweet_stand": {
+    "footY": {
+      "default": 47
+    }
+  },
+  "monster_tangkrading_b_hungry_stand": {
+    "footY": {
+      "default": 47
+    }
+  },
+  "monster_tangkrading_b_sweet_stand": {
+    "footY": {
+      "default": 47
+    }
+  },
+  "monster_tangkrading_hungry_walk": {
+    "footY": {
+      "default": 215,
+      "south": 47,
+      "east": 47,
+      "north": 46,
+      "west": 47
+    }
+  },
+  "monster_tangkrading_sweet_walk": {
+    "footY": {
+      "default": 215,
+      "south": 47,
+      "east": 47,
+      "north": 46,
+      "west": 47
+    }
+  },
+  "monster_tangkrading_b_hungry_walk": {
+    "footY": {
+      "default": 215,
+      "south": 47,
+      "east": 47,
+      "north": 46,
+      "west": 47
+    }
+  },
+  "monster_tangkrading_b_sweet_walk": {
+    "footY": {
+      "default": 215,
+      "south": 47,
+      "east": 47,
+      "north": 46,
+      "west": 47
+    }
+  },
+  "monster_tangkrading_hungry_eat": {
+    "footY": {
+      "default": 48
+    }
+  },
+  "monster_tangkrading_sweet_eat": {
+    "footY": {
+      "default": 48
+    }
+  },
+  "monster_tangkrading_b_hungry_eat": {
+    "footY": {
+      "default": 48
+    }
+  },
+  "monster_tangkrading_b_sweet_eat": {
+    "footY": {
+      "default": 48
+    }
+  },
+  "monster_tangkrading_b_shake": {
+    "footY": {
+      "default": 54
+    }
+  },
+  "monster_tangkrading_a_giggle_run": {
+    "footY": {
+      "default": 160
+    }
+  },
+  "monster_tangkrading_a_jump": {
+    "footY": {
+      "default": 47
+    }
+  },
+  "monster_tangkrading_b_jump": {
+    "footY": {
+      "default": 47
+    }
+  },
+  "deco_bell_chime": {
+    "footY": {
+      "default": 60
+    }
+  },
+  "deco_bell_chime_sway": {
+    "footY": {
+      "default": 60
+    }
+  },
+  "dish_icon_strawberry_juice": {
+    "footY": {
+      "default": 44
+    }
+  },
+  "dish_bag_strawberry_juice": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "tray_mini_strawberry_juice": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "mini16_strawberry_juice": {
+    "footY": {
+      "default": 18
+    }
   }
 }

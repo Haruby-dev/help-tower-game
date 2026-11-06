@@ -2,6 +2,7 @@ import { eventBus, type RestCause } from '../core/events';
 import { gameState, type Point, type World } from '../core/state';
 import balance from '../data/balance.json';
 import { finishOvernight, tickCooking } from './cooking';
+import { decorMorning } from './decor';
 import { growFarm } from './farm';
 import { gioMorning, settleGio } from './gio';
 import { planVisits, settleVisits } from './monsters';
@@ -19,7 +20,7 @@ function nextMorning(world: World, restful: boolean): World {
   const day = world.day + 1;
   const weather = weatherFor(world.seed, day);
   const farm = growFarm(world.farm);
-  return {
+  return decorMorning({
     ...world,
     day,
     weather,
@@ -28,7 +29,7 @@ function nextMorning(world: World, restful: boolean): World {
     farm: weather === 'rain' ? rainOnFarm(farm) : farm,
     cooking: finishOvernight(world.cooking),
     gio: gioMorning(world.gio),
-  };
+  });
 }
 
 export type StepResult = { world: World; cause: RestCause | null };

@@ -95,6 +95,20 @@ export class Arranger {
     return { x: left + (item.cols * CELL) / 2, y: top + item.rows * CELL };
   }
 
+  /** ช่องว่างที่ใกล้ช่องที่อยากวางที่สุดในโซนของชิ้นนี้ (ของรางวัลที่เพิ่งได้) ไม่มีที่ว่างตอบ null */
+  findFree(id: string, player: Rect, prefer: Point): Point | null {
+    const item = this.items.get(id);
+    if (!item) return null;
+    const spots: Point[] = [];
+    for (let x = item.zone.x; x + item.cols * CELL <= item.zone.x + item.zone.width; x += CELL) {
+      for (let y = item.zone.y; y + item.rows * CELL <= item.zone.y + item.zone.height; y += CELL) {
+        spots.push({ x: x + (item.cols * CELL) / 2, y: y + item.rows * CELL });
+      }
+    }
+    spots.sort((a, b) => Math.hypot(a.x - prefer.x, a.y - prefer.y) - Math.hypot(b.x - prefer.x, b.y - prefer.y));
+    return spots.find((feet) => this.canPlace(id, feet, player)) ?? null;
+  }
+
   canPlace(id: string, feet: Point, player: Rect): boolean {
     const item = this.items.get(id);
     if (!item) return false;

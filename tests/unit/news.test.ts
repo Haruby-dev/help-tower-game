@@ -30,10 +30,11 @@ describe('Gio news (GDD: 2 tips · 1 tip · 1 tip every 2 days by happiness)', (
       { monster: 'mookmik', kind: 'favourite' },
       { monster: 'puinun', kind: 'favourite' },
       { monster: 'popcorn', kind: 'favourite' },
-      { monster: 'mookmik', kind: 'drink' },
+      { monster: 'toomtia', kind: 'favourite' },
     ]);
     const all = nextTips(newWorld(), 99);
-    expect(all).toHaveLength(9);
+    // 9 ตัว ตัวละ 3 ข้อ และแฝดชั้น 5 มีข่าวเบาะแสเพิ่ม 1 ข้อ
+    expect(all).toHaveLength(31);
     expect(all.filter((tip) => tip.monster === 'puinun').map((tip) => tip.kind)).toEqual(['favourite', 'drink', 'signature']);
   });
 
@@ -56,7 +57,7 @@ describe('Gio news (GDD: 2 tips · 1 tip · 1 tip every 2 days by happiness)', (
     const world = newWorld();
     const { tips: _tips, tipsReportDay: _day, lastTipDay: _last, ...oldGio } = world.gio;
     const parsed = parseSaveFile({ version: 12, savedAt: 'x', world: { ...world, gio: { ...oldGio, report: report(4, 0) } } })!;
-    expect(parsed.version).toBe(13);
+    expect(parsed.version).toBe(14);
     expect(parsed.world.gio.tips).toEqual([]);
     expect(parsed.world.gio.tipsReportDay).toBe(4);
     expect(gainTips(parsed.world).gio.tips).toEqual([]);

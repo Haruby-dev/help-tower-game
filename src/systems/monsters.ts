@@ -1,5 +1,6 @@
 import { createRng, type Rng } from '../core/rng';
-import type { Affection, Arrival, Monsters, World } from '../core/state';
+import type { TextKey } from '../core/i18n';
+import type { Affection, Arrival, ArrivalKind, Monsters, Twins, World } from '../core/state';
 import balance from '../data/balance.json';
 import monstersJson from '../data/monsters.json';
 import type { MonsterData } from '../data/schema';
@@ -21,7 +22,8 @@ const EPSILON = 1e-9;
 export type Taste = 'favourite' | 'like' | 'neutral' | 'dislike' | 'belowRank';
 export type Tier = 'hungry' | 'warm' | 'close';
 
-export const newMonsters = (): Monsters => ({ affection: {}, plannedDay: 0, arrivals: [] });
+export const newTwins = (): Twins => ({ revealed: false, revealDay: 0, quizWon: false });
+export const newMonsters = (): Monsters => ({ affection: {}, plannedDay: 0, arrivals: [], twins: newTwins() });
 
 /** รหัสแขกแต่ละครั้ง ฉากใช้จำว่าตัวไหนออกมาแล้ว */
 export const arrivalKey = (arrival: Arrival): string => `${arrival.day}:${arrival.hour.toFixed(4)}:${arrival.monster}`;
@@ -80,9 +82,12 @@ export const isCleared = (world: World, id: string): boolean => {
   return affection.signature && affection.points >= requiredPoints(id) - EPSILON;
 };
 
-/** ถึง 90% แล้วยังไม่ได้กินเมนูประจำใจ จะขอเมนูนั้น */
-export const wantsSignature = (world: World, id: string): boolean =>
-  !affectionOf(world, id).signature && affectionOf(world, id).points >= requiredPoints(id) * rules.signatureAt - EPSILON;
+/** ถึง 90% แล้วยังไม่ได้กินเมนูประจำใจ จะขอเมนูนั้น · แฝดน้องขอหลังหลอดสลับแล้วเท่านั้น จะได้ไม่หลุดปริศนา */
+export function wantsSignature(world: World, id: string): boolean {
+  const twinOf = monsterTable[id]?.twinOf;
+  if (twinOf && !isCleared(world, twinOf)) return false;
+  return !affectionOf(world, id).signature && affectionOf(world, id).points >= requiredPoints(id) * rules.signatureAt - EPSILON;
+}
 
 export const signatureOf = (id: string): { recipe: string; stars: number } => info(id).signature;
 
@@ -137,10 +142,69 @@ function addPoints(world: World, id: string, amount: number): { world: World; ad
   return { world: next, added: points - affection.points };
 }
 
-/** แขกที่มาได้: อยู่ในโซนที่ปลดแล้ว ยังไม่ครบ 100% และมีภาพแล้ว (ตัวที่ยังไม่มีภาพรอจนกว่าฝั่งวางแผนส่งมา) */
+// ---------- แฝดขี้แกล้งชั้น 5 (GDD) ----------
+const twinRule = rules.twins;
+
+export const isTwin = (id: string): boolean => id === twinRule.a || id === twinRule.b;
+export const twinA = twinRule.a;
+export const twinB = twinRule.b;
+/** พี่ครบ 100% แล้ว ประตูยังไม่เปิด หลอดสลับเป็นของน้อง */
+export const twinsSwitched = (world: World): boolean => isCleared(world, twinRule.a);
+/** น้องครบ 100% แล้วแต่ยังไม่ได้เล่นฉากเฉลย */
+export const revealDue = (world: World): boolean => !world.monsters.twins.revealed && isCleared(world, twinRule.b);
+/** เฉลยแล้วและทายถูกแล้ว ชั้น 5 ไม่มาเยี่ยมอีก */
+const twinsDone = (world: World): boolean => world.monsters.twins.revealed && world.monsters.twins.quizWon;
+
+/** หลอดความชอบที่แสดง ("100% หลอก"): ก่อนเฉลยแสดงของพี่ พี่ครบแล้วแสดงของน้องที่แอบสะสมไว้ */
+export function barOwner(world: World, id: string): string {
+  if (!isTwin(id) || world.monsters.twins.revealed) return id;
+  return twinsSwitched(world) ? twinRule.b : twinRule.a;
+}
+
+/** ชื่อที่แสดง: ก่อนเฉลยทั้งคู่ชื่อหางกระดิ่ง หลังเฉลยเป็นหางกระดิ่งพี่กับหางกระดิ่งน้อง */
+export function nameKey(world: World, id: string): TextKey {
+  if (!isTwin(id)) return `monster.${id}.name` as TextKey;
+  if (!world.monsters.twins.revealed) return `monster.${twinRule.a}.name` as TextKey;
+  return (id === twinRule.a ? `monster.${twinRule.a}.name_revealed` : `monster.${twinRule.b}.name`) as TextKey;
+}
+
+/** บทพูดของแฝดน้องใช้ของพี่ (ปลอมตัวเป็นตัวเดียวกัน) */
+export const voiceOf = (id: string): string => monsterTable[id]?.twinOf ?? id;
+
+/**
+ * ชั้น 5 ถูกสุ่มมาเยี่ยมแล้ว เลือกว่าใครมา: ก่อนหลอดสลับพี่หรือน้องอย่างละครึ่ง (ไม่มีวันมาพร้อมกัน)
+ * หลังสลับส่วนใหญ่น้อง พี่แวะมาแกล้ง 1 ใน 5 · น้องครบแล้วเป็นฉากเฉลย · เฉลยแล้วแต่ยังทายไม่ถูก มาชวนทายใหม่
+ */
+export function twinArrival(world: World, rng: Rng): { monster: string; kind?: ArrivalKind } {
+  const { a, b } = twinRule;
+  if (world.monsters.twins.revealed) return { monster: a, kind: 'quiz' };
+  if (isCleared(world, b)) return { monster: a, kind: 'reveal' };
+  if (twinsSwitched(world)) return rng.next() < twinRule.teaseChance ? { monster: a, kind: 'tease' } : { monster: b };
+  return { monster: rng.next() < twinRule.firstPick ? a : b };
+}
+
+/** น้องเพิ่งครบ 100% ระหว่างมาเยี่ยม: ฉากเฉลยตามมาทันทีหลังน้องกลับเข้าโพรง */
+export function scheduleReveal(world: World): World {
+  if (!revealDue(world) || world.monsters.arrivals.some((arrival) => arrival.kind === 'reveal' && !arrival.done)) return world;
+  const arrival: Arrival = { monster: twinRule.a, day: world.day, hour: world.hour, done: false, kind: 'reveal' };
+  return { ...world, monsters: { ...world.monsters, arrivals: [...world.monsters.arrivals, arrival] } };
+}
+
+/** ฉากเฉลยจบ ประตูชั้น 5 เปิด · ทายถูกได้กระดิ่งลมแฝด */
+export function finishTwinScene(world: World, kind: 'reveal' | 'quiz', correct: boolean): World {
+  const twins = world.monsters.twins;
+  const next: Twins = {
+    revealed: true,
+    revealDay: kind === 'reveal' && !twins.revealed ? world.day : twins.revealDay,
+    quizWon: twins.quizWon || correct,
+  };
+  return { ...world, monsters: { ...world.monsters, twins: next } };
+}
+
+/** แขกที่มาได้: อยู่ในโซนที่ปลดแล้ว ยังไม่ครบ 100% และมีภาพแล้ว (ตัวที่ยังไม่มีภาพรอจนกว่าฝั่งวางแผนส่งมา) · ชั้น 5 นับเป็นตัวเดียว (พี่) จนกว่าแฝดจะจบครบ */
 export function eligibleMonsters(world: World): string[] {
   return Object.entries(monsterTable)
-    .filter(([id, monster]) => monster.zone <= rules.unlockedZones && monster.art !== null && !isCleared(world, id))
+    .filter(([id, monster]) => monster.zone <= rules.unlockedZones && monster.art !== null && !monster.twinOf && (isTwin(id) ? !twinsDone(world) : !isCleared(world, id)))
     .sort((a, b) => a[1].floor - b[1].floor)
     .map(([id]) => id);
 }
@@ -160,10 +224,12 @@ function shuffle<T>(items: T[], rng: Rng): T[] {
 /** แขกหนึ่งวัน เวลามากระจายตลอดช่วง 12:00–20:00 แต่ละตัวต่างกัน */
 export function arrivalsFor(world: World, day: number, count: number): Arrival[] {
   const rng = createRng(world.seed + day * VISIT_MIX);
-  const chosen = shuffle(eligibleMonsters(world), rng).slice(0, count);
+  const chosen = shuffle(eligibleMonsters(world), rng)
+    .slice(0, count)
+    .map((monster) => (isTwin(monster) ? twinArrival(world, rng) : { monster }));
   const span = (rules.visitToHour - rules.visitFromHour) / Math.max(1, chosen.length);
   return chosen
-    .map((monster, index) => ({ monster, day, hour: rules.visitFromHour + span * (index + rng.next() * ARRIVAL_SPREAD), done: false }))
+    .map((pick, index) => ({ ...pick, day, hour: rules.visitFromHour + span * (index + rng.next() * ARRIVAL_SPREAD), done: false }))
     .sort((a, b) => a.hour - b.hour);
 }
 
@@ -189,9 +255,10 @@ export function markArrived(world: World, key: string): World {
 
 /** ปุ่มทดสอบ: มอนสเตอร์ที่มาได้ตัวแรกมาเยี่ยมตอนนี้เลย ตอบ null เมื่อไม่มีตัวไหนมาได้ */
 export function summonNow(world: World): World | null {
-  const monster = eligibleMonsters(world)[0];
-  if (!monster) return null;
-  const arrival: Arrival = { monster, day: world.day, hour: world.hour, done: false };
+  const first = eligibleMonsters(world)[0];
+  if (!first) return null;
+  const pick = isTwin(first) ? twinArrival(world, createRng(world.seed + world.day * VISIT_MIX + Math.round(world.hour * 60))) : { monster: first };
+  const arrival: Arrival = { ...pick, day: world.day, hour: world.hour, done: false };
   return { ...world, monsters: { ...world.monsters, arrivals: [...world.monsters.arrivals, arrival] } };
 }
 
@@ -335,7 +402,8 @@ export function settleVisits(world: World): World {
   world.monsters.arrivals.forEach((arrival, index) => {
     if (arrival.done || !stale(arrival)) return;
     next = markArrived(next, arrivalKey(arrival));
-    if (isCleared(next, arrival.monster)) return;
+    // แฝดแวะมาแกล้ง ฉากเฉลย และชวนทายไม่กินจากถาด ฉากเฉลยที่ไม่ได้เห็นยังรออยู่ ชั้น 5 ครั้งหน้าจะเป็นฉากเฉลย
+    if (arrival.kind || isCleared(next, arrival.monster)) return;
     const memo = newVisitMemo();
     for (const take of planVisit(next, arrival.monster, createRng(world.seed + arrival.day * SETTLE_MIX + index)).takes) {
       next = takePlate(next, arrival.monster, take, memo).world;

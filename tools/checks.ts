@@ -163,14 +163,17 @@ export function checkProject(): string[] {
   const dialogueData = dialogueSchema.parse(readJson('src/data/dialogue.json'));
   const ranks = ['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS'];
   for (const [id, monster] of Object.entries(monstersSchema.parse(readJson('src/data/monsters.json')))) {
-    for (const key of [`monster.${id}.name`, `monster.${id}.clear`]) if (!translations[key]) problems.push(`src/i18n/th.json: monster ${id} has no ${key}`);
+    // แฝดน้องไม่มีบทครบ 100% ของตัวเอง (ฉากเฉลยใช้บทแฝด) และใช้บทพูดของพี่ · พี่มีชื่อหลังเฉลยเพิ่ม
+    const keys = monster.twinOf ? [`monster.${id}.name`, `monster.${monster.twinOf}.name_revealed`] : [`monster.${id}.name`, `monster.${id}.clear`];
+    for (const key of keys) if (!translations[key]) problems.push(`src/i18n/th.json: monster ${id} has no ${key}`);
+    if (monster.twinOf && !monstersSchema.parse(readJson('src/data/monsters.json'))[monster.twinOf]) problems.push(`src/data/monsters.json: ${id} is a twin of unknown ${monster.twinOf}`);
     const menus = [...monster.favourite, ...monster.likes, ...monster.dislikes, monster.signature.recipe];
     if (recipesData[monster.favouriteDrink]?.category !== 'drink') problems.push(`src/data/monsters.json: ${id} favourite drink ${monster.favouriteDrink} is not a drink`);
     for (const recipe of menus) if (!recipesData[recipe]) problems.push(`src/data/monsters.json: ${id} uses unknown recipe ${recipe}`);
     const signature = recipesData[monster.signature.recipe];
     const highest = monster.zone === 1 ? 'D' : 'SSS';
     if (signature && ranks.indexOf(signature.rank) > ranks.indexOf(highest)) problems.push(`src/data/monsters.json: ${id} signature ${monster.signature.recipe} cannot be cooked in zone ${monster.zone}`);
-    if (!dialogueData.monsters[id]) problems.push(`src/data/dialogue.json: monster ${id} has no lines`);
+    if (!dialogueData.monsters[monster.twinOf ?? id]) problems.push(`src/data/dialogue.json: monster ${id} has no lines`);
     if (monster.art) {
       for (const mood of ['hungry', 'sweet']) {
         for (const kind of ['stand', 'walk', 'eat']) if (!registry[`${monster.art.sheet}_${mood}_${kind}`]) problems.push(`assets-src/registry.json: ${id} has no ${monster.art.sheet}_${mood}_${kind}`);

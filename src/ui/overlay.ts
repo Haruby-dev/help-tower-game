@@ -20,6 +20,7 @@ import { createToolbar } from './toolbar';
 import { createGioWindows } from './gio';
 import { createTrayWindow } from './tray';
 import { createWorldBubbles } from './bubbles';
+import { createTwinQuiz } from './twinQuiz';
 
 function createRotatePrompt(uiRoot: HTMLElement): void {
   const gio = registry.gio_sit;
@@ -69,6 +70,7 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   createGioWindows(uiRoot);
   createTrayWindow(uiRoot);
   createWorldBubbles(uiRoot);
+  createTwinQuiz(uiRoot);
   createChestWindow(uiRoot);
   createSettings(uiRoot);
   createPhone(uiRoot);

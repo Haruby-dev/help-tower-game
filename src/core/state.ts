@@ -76,11 +76,22 @@ export interface Affection {
   signature: boolean;
 }
 
+/** แขกแบบพิเศษของแฝดชั้น 5: พี่แวะมาแกล้ง · ฉากเฉลย · ชวนทายใหม่หลังทายผิด */
+export type ArrivalKind = 'tease' | 'reveal' | 'quiz';
+
 export interface Arrival {
   monster: string;
   day: number;
   hour: number;
   done: boolean;
+  kind?: ArrivalKind;
+}
+
+/** แฝดชั้น 5 เฉลยแล้วหรือยัง (วันไหน) และทายถูกแล้วหรือยัง (ได้กระดิ่งลมแฝด) */
+export interface Twins {
+  revealed: boolean;
+  revealDay: number;
+  quizWon: boolean;
 }
 
 export interface Monsters {
@@ -89,6 +100,7 @@ export interface Monsters {
   plannedDay: number;
   /** แขกของวันนี้และพรุ่งนี้ */
   arrivals: Arrival[];
+  twins: Twins;
 }
 
 export interface Farm {
@@ -149,7 +161,8 @@ export interface GioReport {
   tier: number;
 }
 
-export type TipKind = 'favourite' | 'drink' | 'signature';
+/** twin_clue ข่าวแฝดที่จีโอเล่าขัดกันเองก่อนเฉลย · twin_reveal ข่าวด่วนวันหลังเฉลย */
+export type TipKind = 'favourite' | 'drink' | 'signature' | 'twin_clue' | 'twin_reveal';
 
 /** ข่าวหนึ่งข้อที่จีโอเล่า */
 export interface Tip {

@@ -275,3 +275,28 @@ test('M7b: Gio comes back with news: the summary shows tomorrow\'s visitors and 
   await page.locator('.gio-talk__news-back').click();
   await expect(page.locator('[data-gio-action="news"] .gio-talk__dot')).toHaveCount(0);
 });
+
+test('floor 5 twins: the reveal scene asks who likes fish, a right guess opens the door and gives the wind chime', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'the reveal is one scene; desktop is enough');
+  await open(page);
+  await page.evaluate(() => (window as unknown as Win).__visitSpeed(3));
+  // ข้ามไปฉากเฉลย: พี่กับน้องครบ 100% ทั้งคู่แล้ว
+  await patch(page, `(w) => ({ ...w, hour: 15, monsters: { ...w.monsters, affection: { tangkrading: { points: 36, signature: true }, tangkrading_b: { points: 36, signature: true } } } })`);
+  await page.evaluate(() => (window as unknown as Win).__state.movePlayer({ x: 700, y: 372 }));
+  await patch(page, `(w) => ({ ...w, monsters: { ...w.monsters, arrivals: [{ monster: 'tangkrading', day: w.day, hour: w.hour, done: false, kind: 'reveal' }] } })`);
+  await expect(page.locator('#twin-quiz')).toBeVisible({ timeout: 90_000 });
+  await expect(page.locator('.twin-quiz__prompt')).toHaveText('ใครชอบกินปลา?');
+  await expect(page.locator('.twin-quiz__pick')).toHaveCount(2);
+  // ก่อนสะบัดฟาง สองตัวใช้ภาพเดียวกันทุกพิกเซล
+  const sides = await page.evaluate(() => {
+    const run = [...((window as unknown as Win).__game.scene.getScene('Base') as { visits: { runs: Map<string, { monster: { feetX: number; sprite: { texture: { key: string } } }; partner: { feetX: number; sprite: { texture: { key: string } } } }> } }).visits.runs.values()][0]!;
+    return { elderLeft: run.monster.feetX < run.partner.feetX, same: run.monster.sprite.texture.key === run.partner.sprite.texture.key };
+  });
+  expect(sides.same).toBe(true);
+  await page.locator(`.twin-quiz__pick[data-twin="${sides.elderLeft ? 0 : 1}"]`).click();
+  await expect(page.locator('#twin-quiz')).toBeHidden();
+  await expect.poll(async () => (await page.evaluate(() => (window as unknown as { __state: { world: { monsters: { twins: unknown } } } }).__state.world.monsters.twins)), { timeout: 60_000 }).toMatchObject({ revealed: true, quizWon: true });
+  // กระดิ่งลมแฝดแขวนที่ลานหน้าบ้าน ย้ายได้ในโหมดจัดวาง
+  await expect.poll(() => page.evaluate(() => ((window as unknown as Win).__game.scene.getScene('Base') as { children: { list: { texture?: { key: string } }[] } }).children.list.some((child) => child.texture?.key === 'deco_bell_chime_sway'))).toBe(true);
+  await expect.poll(() => visitsActive(page), { timeout: 90_000 }).toBe(0);
+});

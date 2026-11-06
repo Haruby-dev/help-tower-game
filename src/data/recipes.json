@@ -223,7 +223,9 @@
       "produce_strawberry": 3
     },
     "price": 1080,
-    "source": "shop"
+    "source": "shop",
+    "icon": "dish_icon_strawberry_juice",
+    "bagIcon": "dish_bag_strawberry_juice"
   },
   "whip_cream_mumu": {
     "category": "sweet",

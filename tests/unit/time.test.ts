@@ -30,7 +30,7 @@ describe('clock', () => {
       land: { owned: 0 },
       placed: {},
       tray: { level: 0, plates: [null, null, null] },
-      monsters: { affection: {}, plannedDay: 0, arrivals: [] },
+      monsters: { affection: {}, plannedDay: 0, arrivals: [], twins: { revealed: false, revealDay: 0, quizWon: false } },
     });
   });
 

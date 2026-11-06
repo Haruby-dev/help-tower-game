@@ -306,7 +306,29 @@ export const balanceSchema = z.strictObject({
     runSpeedMultiplier: z.number().min(1),
     /** ตัวที่สนิทนั่งกินที่ลานหน้าบ้าน ห่างจากเท้าถาดเท่านี้ (พิกเซล) ถาดย้ายที่ก็ตามไป */
     yardSpots: z.array(z.tuple([z.number(), z.number()])).min(1),
+    /** แฝดขี้แกล้งชั้น 5 (GDD): พี่ a น้อง b · firstPick โอกาสเป็นพี่ก่อนหลอดสลับ · teaseChance โอกาสพี่แวะมาแกล้งหลังหลอดสลับ · เวลาเฟรมฉากเฉลยเป็นมิลลิวินาที */
+    twins: z.strictObject({
+      a: z.string().regex(/^[a-z_]+$/),
+      b: z.string().regex(/^[a-z_]+$/),
+      _note: z.string().optional(),
+      firstPick: z.number().min(0).max(1),
+      teaseChance: z.number().min(0).max(1),
+      shakeMs: z.strictObject({ first: z.number().positive(), middle: z.number().positive(), last: z.number().positive() }),
+      giggleMs: z.number().positive(),
+      giggleRepeat: z.number().int().positive(),
+      runMs: z.number().positive(),
+      jumpMs: z.number().positive(),
+      standApartPx: z.number().positive(),
+      stageDropPx: z.number(),
+      quizReachPx: z.number().positive(),
+      bellsMs: z.number().nonnegative(),
+    }),
   }),
+  /** ของตกแต่งที่ได้เป็นรางวัล วางในโหมดจัดวางได้ · dailyHappiness เพิ่มความสุขทุกเช้า · prefer ช่องที่ลองวางก่อน (ช่องแผนที่) */
+  decor: z.record(
+    z.string().regex(/^[a-z0-9_]+$/),
+    z.strictObject({ swayMs: z.number().positive(), dailyHappiness: z.number().nonnegative(), todo: z.string().optional(), prefer: z.strictObject({ x: z.number().int(), y: z.number().int() }) }),
+  ),
   /** ถาดอาหาร 3 · 6 · 10 จาน plates คือกลางจานในภาพถาด (นับจากมุมซ้ายบน) เรียงตามที่มอนสเตอร์เดินดู */
   tray: z.strictObject({
     reachPx: z.number().positive(),
@@ -383,17 +405,22 @@ export const monstersSchema = z.record(
     dislikes: tasteListSchema,
     /** เมนูประจำใจ ขอเมื่อความชอบถึง 90% ต้องได้จึงไปถึง 100% */
     signature: z.strictObject({ recipe: z.string().regex(/^[a-z_]+$/), stars: z.number().int().min(1).max(3) }),
+    /** แฝดตัวที่ซ่อน (น้อง) ชี้ไปหาพี่ ใช้ชั้น บทพูด และชื่อก่อนเฉลยร่วมกับพี่ */
+    twinOf: z.string().regex(/^[a-z_]+$/).optional(),
     art: z
       .strictObject({
         /** รหัสภาพในทะเบียน มีต่อท้าย _hungry_ / _sweet_ กับ stand walk eat */
         sheet: z.string().regex(/^[a-z0-9_]+$/),
         frame: z.number().int().positive(),
-        walkMs: z.number().positive(),
+        /** แถวล่างสุดที่ทึบของท่ายืนทิศใต้ (นับในช่อง) ใช้วางท่ายืนกับท่าเดินให้เท้าอยู่บนเส้นเดียวกับตัวเอก ไม่ใส่ใช้ค่าที่วัดจากภาพ */
+        feetRow: z.number().int().nonnegative().optional(),
+        /** มิลลิวินาทีต่อเฟรมท่าเดิน หรือรายการต่อเฟรม (ท่ากระโดดของผู้เฝ้าทุ่ง) */
+        walkMs: z.union([z.number().positive(), z.array(z.number().positive()).min(1)]),
         eatMs: z.number().positive(),
         /** ลำดับเฟรมท่ากิน (ทิศใต้) */
         eatFrames: z.array(z.number().int().nonnegative()).min(1),
-        /** สีตาตอนหิวในภาพ ช่วงกลางค่อย ๆ เปลี่ยนเป็นสีตาตอนหวานที่ตำแหน่งเดียวกัน */
-        hungryEye: z.string().regex(/^#[0-9a-f]{6}$/),
+        /** สีตาตอนหิวในภาพ ช่วงกลางค่อย ๆ เปลี่ยนเป็นสีตาตอนหวานที่ตำแหน่งเดียวกัน · null คือภาพหิววาดมาครบแล้ว ใช้ภาพหิวจนครบ 100% */
+        hungryEye: z.string().regex(/^#[0-9a-f]{6}$/).nullable(),
         /** ความสูงตัวที่มองเห็น ใช้วางฟองคำพูดและหอคอยอาหารเหนือหัว */
         height: z.number().int().positive(),
       })
@@ -425,6 +452,18 @@ export const dialogueSchema = z.strictObject({
   ),
   pets: z.record(z.string().regex(/^[a-z_]+$/), z.record(z.string().min(1), z.array(z.string().min(1)))),
   gio: z.record(z.string().min(1), z.array(z.string().min(1))),
+  /** แฝดขี้แกล้งชั้น 5 (ร่าง ผู้ใช้ยังแก้คำได้) A = พี่ B = น้อง */
+  twins: z.strictObject({
+    _note: z.string().optional(),
+    dislike_A_pre: z.array(z.string().min(1)).min(1),
+    dislike_B_pre: z.array(z.string().min(1)).min(1),
+    B_done_bar_frozen: z.array(z.string().min(1)).min(1),
+    bar_switch: z.array(z.string().min(1)).min(1),
+    A_tease_visit: z.array(z.string().min(1)).min(1),
+    reveal_quiz: z.strictObject({ A: z.string().min(1), B: z.string().min(1), prompt: z.string().min(1), correct: z.string().min(1), wrong: z.string().min(1), retry_visit: z.string().min(1) }),
+    reveal_line: z.array(z.string().min(1)).min(1),
+    gio_news: z.strictObject({ pre_reveal_clue: z.string().min(1), reveal_next_day: z.string().min(1), after: z.string().min(1) }),
+  }),
 });
 export type Dialogue = z.infer<typeof dialogueSchema>;
 
@@ -514,7 +553,7 @@ export const saveFileSchema = z.strictObject({
       /** แมวเลียรสที่จีโอเคยกินแล้ว เปิดรูปในอัลบั้ม */
       album: z.array(z.string().min(1)),
       /** ข่าวมอนสเตอร์ที่จีโอเล่าแล้ว (เมนูโปรด เครื่องดื่มโปรด เมนูประจำใจ) */
-      tips: z.array(z.strictObject({ monster: z.string().min(1), kind: z.enum(['favourite', 'drink', 'signature']), day: z.number().int().positive(), read: z.boolean() })),
+      tips: z.array(z.strictObject({ monster: z.string().min(1), kind: z.enum(['favourite', 'drink', 'signature', 'twin_clue', 'twin_reveal']), day: z.number().int().positive(), read: z.boolean() })),
       /** สรุปยอดวันล่าสุดที่ให้ข่าวไปแล้ว และวันล่าสุดที่ได้ข่าวจริง (ช่วงความสุขต่ำได้ข่าวทุก 2 วัน) */
       tipsReportDay: z.number().int().nonnegative(),
       lastTipDay: z.number().int().nonnegative(),
@@ -536,7 +575,11 @@ export const saveFileSchema = z.strictObject({
     monsters: z.strictObject({
       affection: z.record(z.string().min(1), z.strictObject({ points: z.number().nonnegative(), signature: z.boolean() })),
       plannedDay: z.number().int().nonnegative(),
-      arrivals: z.array(z.strictObject({ monster: z.string().min(1), day: z.number().int().positive(), hour: z.number(), done: z.boolean() })),
+      arrivals: z.array(
+        z.strictObject({ monster: z.string().min(1), day: z.number().int().positive(), hour: z.number(), done: z.boolean(), kind: z.enum(['tease', 'reveal', 'quiz']).optional() }),
+      ),
+      /** แฝดชั้น 5: เฉลยแล้วหรือยัง (วันไหน) และทายถูกแล้วหรือยัง */
+      twins: z.strictObject({ revealed: z.boolean(), revealDay: z.number().int().nonnegative(), quizWon: z.boolean() }),
     }),
   }),
 });

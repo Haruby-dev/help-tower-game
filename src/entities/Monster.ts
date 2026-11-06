@@ -57,6 +57,9 @@ export class Monster {
   /** วิ่งกลับโพรงใช้ท่าเดินเร่งความเร็ว (ฉากตั้งค่า) */
   speedMultiplier = 1;
   private route: Point[] = [];
+  /** ท่าวิ่งแทนท่าเดิน (พี่แฝดหัวเราะแล้ววิ่งหนี) เลือกแถวตามทิศซ้ายขวาที่วิ่ง */
+  private runAnims: { east: string; west: string } | null = null;
+  private runDx = 1;
   private facing: Facing = 'south';
   private kind: SheetKind = 'stand';
   private level: number | 'sweet';
@@ -76,7 +79,7 @@ export class Monster {
   constructor(
     private readonly scene: Phaser.Scene,
     readonly id: string,
-    readonly art: MonsterArt,
+    public art: MonsterArt,
     at: Point,
     percent: number,
     cleared: boolean,
@@ -145,6 +148,29 @@ export class Monster {
     this.sprite.setFlipX(false);
     this.placeFeet('eat');
     this.sprite.play(`${sheetKey(this.art, this.level, 'eat')}_once`);
+  }
+
+  /** เล่นท่าพิเศษครั้งเดียว (ชื่อลงท้าย _once) วางด้วยเส้นเท้าของท่ายืน จบแล้วกลับไปท่ายืน · รอด้วย Wait แบบ eat */
+  perform(animKey: string): void {
+    this.route = [];
+    this.facing = 'south';
+    this.kind = 'stand';
+    this.eatingNow = true;
+    this.sprite.setFlipX(false);
+    this.placeFeet('stand');
+    this.sprite.play(animKey);
+  }
+
+  /** เปลี่ยนชุดภาพ (น้องแฝดสะบัดฟางแล้วเป็นขนม่วงเทา) */
+  setArt(art: MonsterArt): void {
+    prepareMonsterArt(this.scene, art);
+    this.art = art;
+    if (!this.eatingNow) this.showStand();
+  }
+
+  /** วิ่งด้วยท่าวิ่งของภาพพิเศษแทนท่าเดิน · null กลับไปใช้ท่าเดิน */
+  setRunAnims(anims: { east: string; west: string } | null): void {
+    this.runAnims = anims;
   }
 
   /** เปลี่ยนภาพตามความชอบ ท่าที่เล่นอยู่เล่นต่อจากเฟรมเดิม */
@@ -301,14 +327,16 @@ export class Monster {
     const length = Math.hypot(dx, dy);
     if (length < ARRIVE_PX) return;
     const facing = direction4From({ x: dx / length, y: dy / length });
-    const changed = facing !== this.facing || this.kind !== 'walk' || !this.sprite.anims.isPlaying;
+    const side = dx >= 0 ? 1 : -1;
+    const changed = facing !== this.facing || this.kind !== 'walk' || !this.sprite.anims.isPlaying || (this.runAnims !== null && side !== this.runDx);
+    this.runDx = side;
     this.facing = facing;
     this.kind = 'walk';
     if (changed) this.playWalk(false);
   }
 
   private playWalk(keepFrame: boolean): void {
-    const key = `${sheetKey(this.art, this.level, 'walk')}_${this.facing}`;
+    const key = this.runAnims ? (this.runDx >= 0 ? this.runAnims.east : this.runAnims.west) : `${sheetKey(this.art, this.level, 'walk')}_${this.facing}`;
     const progress = keepFrame ? this.sprite.anims.getProgress() : 0;
     this.sprite.setFlipX(false);
     this.placeFeet('walk');
@@ -322,7 +350,9 @@ export class Monster {
    */
   private placeFeet(kind: SheetKind): void {
     const sheet = sheetKey(this.art, 0, kind === 'eat' ? 'eat' : 'stand');
-    this.sprite.setOrigin(0.5, footY(sheet) / this.art.frame);
+    // ท่ายืนบางทิศของเจ้าทุ่งทองย่ำเท้าต่ำกว่าทิศใต้ ค่าที่วัดทั้งแผ่นจึงต่ำไป ใช้แถวเท้าทิศใต้จากเอกสารส่งงานแทน
+    const line = kind !== 'eat' && this.art.feetRow !== undefined ? this.art.feetRow + 1 : footY(sheet);
+    this.sprite.setOrigin(0.5, line / this.art.frame);
   }
 
   private showStand(): void {

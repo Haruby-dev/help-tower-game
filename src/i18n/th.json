@@ -135,7 +135,7 @@
   "arrange.place": "วางตรงนี้",
   "arrange.cancel": "ยกเลิก",
   "arrange.done": "เสร็จ",
-  "arrange.hint_pick": "ลากของที่อยากย้าย (กองไฟ ถาด ตะกร้าจีโอ) หรือแตะเพื่อหยิบ",
+  "arrange.hint_pick": "ลากของที่อยากย้าย (กองไฟ ถาด ตะกร้าจีโอ ของตกแต่ง) หรือแตะเพื่อหยิบ",
   "arrange.hint_move": "ลากหรือแตะช่องที่อยากวาง ช่องเขียววางได้ ช่องแดงวางไม่ได้",
   "arrange.hint_ok": "วางตรงนี้ได้ กด วางตรงนี้ หรือแตะช่องอื่น",
   "land.question": "ซื้อที่ดินแปลงที่ {n} เลยไหม?",
@@ -416,6 +416,8 @@
   "monster.mookmik.name": "มุกมิก",
   "monster.toomtia.name": "ตุ้มเตี้ย",
   "monster.tangkrading.name": "หางกระดิ่ง",
+  "monster.tangkrading.name_revealed": "หางกระดิ่งพี่",
+  "monster.tangkrading_b.name": "หางกระดิ่งน้อง",
   "monster.yaibaimai.name": "ยายใบไม้",
   "monster.wingwing.name": "วิ้งวิ้ง",
   "monster.tubpong.name": "ตุ๊บป่อง",
@@ -452,5 +454,8 @@
   "report.visitors_a": "พรุ่งนี้มอนสเตอร์มาเยี่ยม ",
   "report.visitors_b": " ตัว",
   "report.news_a": "มีข่าวใหม่ ",
-  "report.news_b": " ข้อ"
+  "report.news_b": " ข้อ",
+  "twins.pick_left": "แฝดตัวซ้าย",
+  "twins.pick_right": "แฝดตัวขวา",
+  "twins.chime_reward": "ทายถูก! ได้ของตกแต่ง \"กระดิ่งลมแฝด\" แขวนไว้ที่ลานหน้าบ้านแล้ว ย้ายได้ในโหมดจัดวาง"
 }

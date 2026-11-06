@@ -54,6 +54,12 @@ export interface GameEvents {
   'tray-open': undefined;
   /** ปุ่มทดสอบในตั้งค่า เรียกมอนสเตอร์มาตอนนี้ (ตอบผลกลับด้วย notice) */
   'monster-summon': undefined;
+  /** ฉากเฉลยแฝดชั้น 5: เปิดคำถาม "ใครชอบกินปลา?" anchors คือกลางตัวแฝดซ้ายและขวาบนจอ */
+  'twin-quiz': { prompt: string; anchors: (() => Point | null)[] };
+  /** ผู้เล่นแตะแฝดตัวที่ index (0 ซ้าย 1 ขวา) */
+  'twin-quiz-answer': { index: number };
+  /** ปิดคำถามแฝด (แฝดกลับบ้านก่อนตอบ) */
+  'twin-quiz-close': undefined;
 }
 
 type Listener<K extends keyof GameEvents> = (payload: GameEvents[K]) => void;

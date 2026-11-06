@@ -421,6 +421,11 @@
         "zone": "frontyard",
         "cols": 2,
         "rows": 1
+      },
+      "deco_bell_chime": {
+        "zone": "frontyard",
+        "cols": 1,
+        "rows": 1
       }
     }
   },
@@ -548,7 +553,27 @@
         86,
         40
       ]
-    ]
+    ],
+    "twins": {
+      "a": "tangkrading",
+      "b": "tangkrading_b",
+      "_note": "แฝดขี้แกล้งชั้น 5 (GDD) · หลังหลอดสลับ พี่แวะมาแกล้ง 1 ใน 5 ของครั้งที่ชั้น 5 ถูกสุ่ม (ปรับได้) · เวลาเฟรมตาม docs/zone1_delivery_2026-11-07.md",
+      "firstPick": 0.5,
+      "teaseChance": 0.2,
+      "shakeMs": {
+        "first": 300,
+        "middle": 80,
+        "last": 800
+      },
+      "giggleMs": 120,
+      "giggleRepeat": 2,
+      "runMs": 90,
+      "jumpMs": 110,
+      "standApartPx": 18,
+      "stageDropPx": 34,
+      "quizReachPx": 140,
+      "bellsMs": 900
+    }
   },
   "tray": {
     "reachPx": 48,
@@ -647,5 +672,16 @@
     ],
     "stackStepPx": 2,
     "stackShownMax": 4
+  },
+  "decor": {
+    "deco_bell_chime": {
+      "swayMs": 180,
+      "dailyHappiness": 1,
+      "todo": "ค่าชั่วคราว ยังไม่กำหนด GDD ให้ช่วงของตกแต่ง +1 ถึง +10 ต่อวัน รอผู้ใช้เลือก",
+      "prefer": {
+        "x": 14,
+        "y": 10
+      }
+    }
   }
 }
