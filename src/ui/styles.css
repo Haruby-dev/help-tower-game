@@ -4834,7 +4834,8 @@ canvas {
 
 .twin-quiz__prompt {
   position: absolute;
-  top: calc(var(--px) * 56);
+  /* บนสุดกลางจอ ไม่บังฟองคำพูดของแฝดที่ค้างอยู่เหนือหัว */
+  top: calc(var(--px) * 8);
   left: 50%;
   margin: 0;
   padding: calc(var(--px) * 3) calc(var(--px) * 8);

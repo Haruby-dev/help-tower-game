@@ -463,6 +463,19 @@ export const dialogueSchema = z.strictObject({
     reveal_quiz: z.strictObject({ A: z.string().min(1), B: z.string().min(1), prompt: z.string().min(1), correct: z.string().min(1), wrong: z.string().min(1), retry_visit: z.string().min(1) }),
     reveal_line: z.array(z.string().min(1)).min(1),
     gio_news: z.strictObject({ pre_reveal_clue: z.string().min(1), reveal_next_day: z.string().min(1), after: z.string().min(1) }),
+    /** บทพูดทั่วไปของน้อง ใช้ทุกครั้งที่น้องมาเยี่ยม (ก่อนและหลังเฉลย) ก่อนเฉลยบทไม่ชอบใช้ dislike_B_pre (pre_reveal เป็นแค่โน้ต) */
+    B_general: z.strictObject({
+      _note: z.string().optional(),
+      voice: z.string().min(1),
+      appear: linesByTierSchema,
+      browse: linesByTierSchema,
+      dislike: linesByTierSchema.extend({ pre_reveal: z.string().optional() }),
+      like: linesByTierSchema,
+      favourite: linesByTierSchema,
+      eat: linesByTierSchema,
+      done: linesByTierSchema,
+      emptyTray: linesByTierSchema,
+    }),
   }),
 });
 export type Dialogue = z.infer<typeof dialogueSchema>;

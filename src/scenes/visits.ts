@@ -73,6 +73,8 @@ const FALLBACK_EAT: Point[] = [
 export const visitTestHooks = { speed: 1 };
 const twinRules = rules.twins;
 const twinLines = dialogue.twins;
+/** ตอนทายแฝด ฟองคำพูดตัวขวายกสูงกว่าตัวซ้ายเท่านี้ (พิกเซลเกม) ฟองสูง 13 กับหางฟอง */
+const QUIZ_BUBBLE_LIFT_PX = 19;
 /** น้องเดินออกจากโพรงตามพี่ห่างกันเท่านี้ จะได้ไม่ซ้อนกันตอนเดิน */
 const PARTNER_DELAY_MS = 450;
 
@@ -299,15 +301,23 @@ export class Visits {
 
   private say(run: Run, beat: Beat, always = false): void {
     if (!always && this.talkRng.next() >= rules.talkChance) return;
-    const lines = dialogue.monsters[voiceOf(run.monster.id)]?.[beat];
+    // น้องแฝดมีบทของตัวเอง (ก่อนเฉลยบทไม่ชอบมาจาก dislike_B_pre ผ่าน twinPrank)
+    const lines = run.monster.id === twinB ? twinLines.B_general[beat] : dialogue.monsters[voiceOf(run.monster.id)]?.[beat];
     const tier = tierOf(gameState.world, run.monster.id);
     const pool = lines?.[tier] ?? lines?.any;
     if (!pool || pool.length === 0) return;
     this.speak(run, pool[Math.floor(this.talkRng.next() * pool.length)]!);
   }
 
-  private speak(run: Run, text: string, who: Monster = run.monster): void {
-    eventBus.emit('speech', { speaker: `${run.key}:${who.id}`, text, anchor: () => (who.sprite.active ? this.toScreen(who.feetX, who.headY) : null) });
+  /** lift ยกฟองขึ้นอีก (พิกเซลเกม) ฟองสองตัวที่ยืนชิดกันจะได้ไม่ทับกัน · hold ค้างฟองไว้จนกว่าจะตอบ false */
+  private speak(run: Run, text: string, who: Monster = run.monster, options: { lift?: number; hold?: () => boolean } = {}): void {
+    const lift = options.lift ?? 0;
+    eventBus.emit('speech', {
+      speaker: `${run.key}:${who.id}`,
+      text,
+      anchor: () => (who.sprite.active ? this.toScreen(who.feetX, who.headY - lift) : null),
+      ...(options.hold ? { hold: options.hold } : {}),
+    });
   }
 
   private pick(lines: string[]): string {
@@ -575,14 +585,19 @@ export class Visits {
       this.speak(run, twinLines.reveal_quiz.retry_visit, younger);
       yield { kind: 'ms', left: rules.bubbleMs };
     }
-    this.speak(run, twinLines.reveal_quiz.A, elder);
+    // บทเบาะแสของสองตัวค้างไว้เหนือหัวตลอดเวลาที่เลือก จนกว่าผู้เล่นจะแตะ (ผู้ใช้เลือก 7 พ.ย. 2026) ฟองตัวขวายกสูงกว่าจะได้ไม่ทับกัน
+    let choosing = true;
+    const hold = (): boolean => choosing;
+    const lift = (twin: Monster): number => (twin === rightTwin ? QUIZ_BUBBLE_LIFT_PX : 0);
+    this.speak(run, twinLines.reveal_quiz.A, elder, { lift: lift(elder), hold });
     yield { kind: 'ms', left: rules.bubbleMs };
-    this.speak(run, twinLines.reveal_quiz.B, younger);
+    this.speak(run, twinLines.reveal_quiz.B, younger, { lift: lift(younger), hold });
     yield { kind: 'ms', left: rules.bubbleMs };
     const anchor = (twin: Monster) => () => (twin.sprite.active ? this.toScreen(twin.feetX, twin.feetY - Math.round(twin.art.height / 2)) : null);
     this.twinAnswer = null;
     eventBus.emit('twin-quiz', { prompt: twinLines.reveal_quiz.prompt, anchors: [anchor(leftTwin), anchor(rightTwin)] });
     yield { kind: 'until', test: () => this.twinAnswer !== null || late() };
+    choosing = false;
     if (this.twinAnswer === null) {
       eventBus.emit('twin-quiz-close', undefined);
       yield* this.twinsHome(run);

@@ -108,7 +108,8 @@ test('Puinun (warm, 50%) comes out of the burrow, takes a favourite tower, eats 
       .filter((child) => child.name === 'tower_layer')
       .map((child) => child.texture?.key),
   );
-  expect(new Set(towerKeys)).toEqual(new Set(['tower_plate', 'tray_mini_strawberry_skewer']));
+  // อาจหยิบไข่ต้ม (เฉย ๆ) ขึ้นหอคอยก่อนตรวจทัน จึงเช็กแค่ว่ามีจาน D1 กับถังหูลู่
+  expect(towerKeys).toEqual(expect.arrayContaining(['tower_plate', 'tray_mini_strawberry_skewer']));
   await expect.poll(async () => (await world(page)).monsters.arrivals[0]?.done).toBe(true);
   await page.waitForTimeout(2500);
   await shot(page, '04_tower');
@@ -287,6 +288,10 @@ test('floor 5 twins: the reveal scene asks who likes fish, a right guess opens t
   await expect(page.locator('#twin-quiz')).toBeVisible({ timeout: 90_000 });
   await expect(page.locator('.twin-quiz__prompt')).toHaveText('ใครชอบกินปลา?');
   await expect(page.locator('.twin-quiz__pick')).toHaveCount(2);
+  // บทเบาะแสของสองตัวค้างเหนือหัวตลอดเวลาที่เลือก (นานกว่าเวลาฟองปกติ) จนกว่าจะแตะ
+  await page.waitForTimeout(2500);
+  await expect(page.locator('.world-bubble')).toHaveCount(2);
+  await expect(page.locator('.world-bubble p')).toContainText(['ใครชอบ', 'ใครชอบ']);
   // ก่อนสะบัดฟาง สองตัวใช้ภาพเดียวกันทุกพิกเซล
   const sides = await page.evaluate(() => {
     const run = [...((window as unknown as Win).__game.scene.getScene('Base') as { visits: { runs: Map<string, { monster: { feetX: number; sprite: { texture: { key: string } } }; partner: { feetX: number; sprite: { texture: { key: string } } } }> } }).visits.runs.values()][0]!;

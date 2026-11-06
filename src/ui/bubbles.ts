@@ -14,6 +14,8 @@ interface Speech {
   speaker: string;
   text: string;
   anchor: () => Point | null;
+  /** ค้างฟองไว้จนกว่าจะตอบ false (ทายแฝด: ฟองสองตัวค้างจนผู้เล่นแตะ) ไม่ใส่ก็หายตามเวลาปกติ */
+  hold?: () => boolean;
 }
 
 interface Shown {
@@ -59,7 +61,8 @@ function createSpeechBubbles(uiRoot: HTMLElement): void {
     const now = performance.now();
     for (const item of [...shown]) {
       const at = item.speech.anchor();
-      if (!at || now > item.hideAt) {
+      const expired = item.speech.hold ? !item.speech.hold() : now > item.hideAt;
+      if (!at || expired) {
         item.element.remove();
         shown.splice(shown.indexOf(item), 1);
         continue;
