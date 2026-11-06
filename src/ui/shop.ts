@@ -2,6 +2,8 @@ import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
 import { gameState } from '../core/state';
 import balance from '../data/balance.json';
+import shopJson from '../data/shop.json';
+import type { ShopData } from '../data/schema';
 import { registry } from '../core/assets';
 import { recipes } from '../systems/cooking';
 import { buyOffer, maxQuantity, offersFor, tasteOfTreat, type Offer, type ShopGroup } from '../systems/shop';
@@ -47,10 +49,13 @@ function artImage(id: string, scale: number): HTMLElement {
   return image;
 }
 
-/** ภาพของบนชั้น สูตรเป็นม้วนกระดาษตามหมวด ของที่มีภาพบนชั้นร้านแยก (เช่น ปุ๋ย) ใช้ภาพนั้น ของที่ยังไม่มีภาพใช้กล่องสี */
+/**
+ * ภาพของบนชั้น สูตรเป็นม้วนกระดาษตามหมวด ของที่มีภาพบนชั้นร้านแยก (ปุ๋ย อุปกรณ์ครัว ถาด) ใช้ภาพนั้น ของที่ยังไม่มีภาพใช้กล่องสี
+ * ภาพบนชั้นต้องหน้าตาเหมือนของที่ได้จริง (ผู้ใช้ตัดสิน 5 พ.ย. 2026)
+ */
 const offerImage = (offer: Offer, scale = 1): HTMLElement => {
   if (offer.kind === 'recipe') return artImage(scrollFor(offer.target), scale);
-  const shelf = `shop_item_${offer.target}`;
+  const shelf = (shopJson as ShopData).shelfArt[offer.target] ?? `shop_item_${offer.target}`;
   return registry[shelf]?.type === 'local' ? artImage(shelf, scale) : itemImage(offer.target, false, scale);
 };
 

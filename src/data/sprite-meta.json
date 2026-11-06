@@ -4264,5 +4264,75 @@
     "footY": {
       "default": 6
     }
+  },
+  "shop_item_kitchen_oven_mortar": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "shop_item_kitchen_magic": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "shop_item_kitchen_star_stove": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "shop_item_tray_6": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "shop_item_tray_10": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "shop_item_rod_iron": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "shop_item_rod_silver": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "shop_item_rod_star": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "shop_item_pet_coop": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "shop_item_pet_beehive": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "shop_item_pet_pen": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "shop_item_farm_expand": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "shop_item_farm_greenhouse": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "shop_item_life_bathtub": {
+    "footY": {
+      "default": 30
+    }
   }
 }

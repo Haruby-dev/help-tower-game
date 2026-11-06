@@ -181,8 +181,12 @@ export function checkProject(): string[] {
     if (!translations[`item.${item}.name`]) problems.push(`src/i18n/th.json: ${item} has no name`);
     if (!registry[item]) problems.push(`assets-src/registry.json: ${item} has no bag image`);
   }
-  for (const entry of shopSchema.parse(readJson('src/data/shop.json')).fertilizers) {
+  const shopData = shopSchema.parse(readJson('src/data/shop.json'));
+  for (const entry of shopData.fertilizers) {
     if (balanceData.fertilizer.tiers[entry.item] === undefined) problems.push(`src/data/shop.json: ${entry.item} is not a fertilizer in balance.json`);
+  }
+  for (const [target, art] of Object.entries(shopData.shelfArt)) {
+    if (registry[art]?.type !== 'local') problems.push(`src/data/shop.json: shelf art ${art} for ${target} is not registered`);
   }
   for (const level of balanceData.tray.levels) if (!registry[level.id]) problems.push(`src/data/balance.json: tray ${level.id} is not registered`);
 

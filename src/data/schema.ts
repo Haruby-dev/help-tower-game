@@ -360,6 +360,8 @@ export const shopSchema = z.strictObject({
   fertilizers: z
     .array(z.strictObject({ item: z.string().regex(/^fertilizer_[a-z0-9_]+$/), price: z.number().int().positive(), tab: z.enum(['daily', 'random']), chance: z.number().min(0).max(1) }))
     .min(1),
+  /** ภาพบนชั้นร้านของสินค้าที่รหัสไม่ตรงกับชื่อภาพ (อุปกรณ์ครัว ถาด) ของที่ไม่มีในนี้ใช้ shop_item_<รหัส> หรือกล่องสี */
+  shelfArt: z.record(z.string().regex(/^[a-z0-9_]+$/), z.string().regex(/^shop_item_[a-z0-9_]+$/)),
 });
 export type ShopData = z.infer<typeof shopSchema>;
 

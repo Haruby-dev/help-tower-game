@@ -3,7 +3,7 @@
 Not sent to the code side yet. It goes into the M6 prompt.
 
 ## When it appears
-In the evening, when Gio comes home with the money from the items she consigned the day before (Gio is home from 18:00 to 08:00), this popup opens automatically the first time she is near him, or right away when the evening starts. Code side may pick whichever trigger fits the flow.
+On a consign day Gio leaves at 12:00 and comes back at 18:00 (updated 2026-11-05: on other days Gio stays home all day). As built by the code side, the popup opens when Gio sits back down in the basket.
 - The game clock pauses. The HUD (toolbar, action buttons, joystick) is **hidden** while it is open. The mocks still show the HUD only because they reuse an old screenshot.
 - The world dims with an evening plum overlay of about 47% (60,30,70,120).
 

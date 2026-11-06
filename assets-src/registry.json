@@ -8045,7 +8045,7 @@
     "file": "ui/shop/items/kitchen_pots_pans.png",
     "jade_tone": false,
     "lazy": true,
-    "note": "หม้อและกระทะ ใช้เมื่อแท็บอุปกรณ์เปิดขาย"
+    "note": "หม้อและกระทะ (ขั้น 2) ทำจากภาพอุปกรณ์จริง บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
   },
   "shop_item_recipe_scroll_savory": {
     "type": "local",
@@ -9020,5 +9020,145 @@
     "file": "food/tower_plate.png",
     "jade_tone": false,
     "note": "จานขาวขอบเทาฟ้า D1 ใต้อาหารแต่ละชั้นของหอคอยเหนือหัวมอนสเตอร์"
+  },
+  "shop_item_kitchen_oven_mortar": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/kitchen_oven_mortar.png",
+    "file": "ui/shop/items/kitchen_oven_mortar.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "เตาอบกับครก (ขั้น 3) ทำจากภาพอุปกรณ์จริง บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "shop_item_kitchen_magic": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/kitchen_magic.png",
+    "file": "ui/shop/items/kitchen_magic.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ครัวเวทมนตร์ = smart_cooker (ขั้น 4) ทำจากภาพอุปกรณ์จริง บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "shop_item_kitchen_star_stove": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/kitchen_star_stove.png",
+    "file": "ui/shop/items/kitchen_star_stove.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "เตาดาว (ขั้น 5) ทำจากภาพอุปกรณ์จริง บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "shop_item_tray_6": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/tray_6.png",
+    "file": "ui/shop/items/tray_6.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ถาดกลาง 6 ช่อง ย่อจาก food_tray_6 บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "shop_item_tray_10": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/tray_10.png",
+    "file": "ui/shop/items/tray_10.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ถาดสูง 10 ช่อง ย่อจาก food_tray_10 บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "shop_item_rod_iron": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/rod_iron.png",
+    "file": "ui/shop/items/rod_iron.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "คันเบ็ดเหล็ก บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "shop_item_rod_silver": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/rod_silver.png",
+    "file": "ui/shop/items/rod_silver.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "คันเบ็ดเงิน บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "shop_item_rod_star": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/rod_star.png",
+    "file": "ui/shop/items/rod_star.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "คันเบ็ดดาว บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "shop_item_pet_coop": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/pet_coop.png",
+    "file": "ui/shop/items/pet_coop.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "เล้าปังป๊อก ย่อจาก home_coop_kaipok บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "shop_item_pet_beehive": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/pet_beehive.png",
+    "file": "ui/shop/items/pet_beehive.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "รังผึ้งบึ้มบึ้ม ย่อจาก home_hive_boomboom บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "shop_item_pet_pen": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/pet_pen.png",
+    "file": "ui/shop/items/pet_pen.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "คอกมูมู่เมฆ ย่อจาก home_barn_mumumek บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "shop_item_farm_expand": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/farm_expand.png",
+    "file": "ui/shop/items/farm_expand.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ขยายฟาร์ม ใช้ทุกขั้น บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "shop_item_farm_greenhouse": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/farm_greenhouse.png",
+    "file": "ui/shop/items/farm_greenhouse.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "โรงเรือนปรับอากาศ บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
+  },
+  "shop_item_life_bathtub": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/ui/shop/items/life_bathtub.png",
+    "file": "ui/shop/items/life_bathtub.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "อ่างอาบน้ำ บนชั้นร้าน (ผู้ใช้อนุมัติ 5 พ.ย. 2026)"
   }
 }

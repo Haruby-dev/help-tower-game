@@ -37,5 +37,13 @@
       "tab": "random",
       "chance": 0.3
     }
-  ]
+  ],
+  "shelfArt": {
+    "pot_pan": "shop_item_kitchen_pots_pans",
+    "oven_mortar": "shop_item_kitchen_oven_mortar",
+    "magic_kitchen": "shop_item_kitchen_magic",
+    "star_stove": "shop_item_kitchen_star_stove",
+    "food_tray_6": "shop_item_tray_6",
+    "food_tray_10": "shop_item_tray_10"
+  }
 }

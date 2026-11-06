@@ -3,7 +3,7 @@
 Not sent to the code side yet. It goes into the M6 code prompt together with the shop / consignment screens.
 
 ## Flow
-1. Gio is at home from 18:00 to 08:00. Walking up to him turns the context action button into the **talk** icon: `art-src/ui_buttons_1104/action_icons/action_talk.png`, a cat-ear bubble with a heart. No text label (her rule: no labels under the action button).
+1. Gio is at home all day, except 12:00–18:00 on a consign day; while walking to or from the burrow he cannot be talked to (updated 2026-11-05). Walking up to him turns the context action button into the **talk** icon: `art-src/ui_buttons_1104/action_icons/action_talk.png`, a cat-ear bubble with a heart. No text label (her rule: no labels under the action button).
 2. Pressing it opens a **dialog box docked at the bottom centre** of the screen. The world dims slightly behind it (about 25% plum overlay).
 3. Four big choices are laid out 2×2: ฝากขาย (consign) / ให้แมวเลีย (give a cat treat) / ลูบหัว (pat Gio's head) / ข่าววันนี้ (today's news).
 4. To close: press the × coin at the top-right, or tap outside the box.
