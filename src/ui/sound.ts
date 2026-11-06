@@ -1,3 +1,4 @@
+import { loadAtlasGroup } from '../core/atlas';
 import { audioSettings, sound } from '../core/audio';
 import { eventBus } from '../core/events';
 import { gameState, type World } from '../core/state';
@@ -121,7 +122,8 @@ function createAmbience(): { start(world: World): void; follow(world: World): vo
 /** ต่อเสียงเข้ากับหน้าจอและเหตุการณ์ในเกม เสียงในฉาก (ทำสวน ตกปลา ทำอาหาร อาบน้ำ เดิน) อยู่ใน BaseScene */
 export function createSound(): void {
   sound.init();
-  sound.preloadShort();
+  // เสียงสั้นโหลดหลังแผ่นภาพเปิดเกมกับภาพหน้าจอเสร็จ จะได้ไม่แย่งเน็ตกันตอนเปิดเกม (เสียงที่เล่นก่อนนั้นโหลดเองตอนเล่น)
+  void Promise.allSettled([loadAtlasGroup('boot'), loadAtlasGroup('ui')]).then(() => sound.preloadShort());
   if (!gameState.started) sound.playMusic('bgm_title', 0);
 
   const warn = createWarnings();
