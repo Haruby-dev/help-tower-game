@@ -64,7 +64,7 @@ export function createChestWindow(uiRoot: HTMLElement): void {
   backdrop.id = 'chest-window';
   backdrop.hidden = true;
   const panel = document.createElement('div');
-  panel.className = 'seed-picker__panel chest-panel';
+  panel.className = 'chest-panel';
   const stage = document.createElement('div');
   stage.className = 'chest-stage';
   const chest = document.createElement('img');

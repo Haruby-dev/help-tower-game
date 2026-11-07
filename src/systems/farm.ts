@@ -22,6 +22,8 @@ export const isSeed = (item: string): boolean => item.startsWith('seed_');
 /** ระดับของปุ๋ยในกระเป๋า ของอื่นตอบ 0 */
 export const fertilizerTier = (item: string | null): number => (item ? (rules.fertilizer.tiers as Record<string, number>)[item] ?? 0 : 0);
 export const isFertilizer = (item: string | null): boolean => fertilizerTier(item) > 0;
+/** ปุ๋ยทุกระดับ เรียงจากระดับต่ำไปสูง */
+export const fertilizerItems = (): string[] => Object.keys(rules.fertilizer.tiers).sort((a, b) => fertilizerTier(a) - fertilizerTier(b));
 /** ช่องถุงเมล็ดถือได้ทั้งเมล็ด (เก็บเป็นชนิดพืช) และปุ๋ย (เก็บเป็นรหัสปุ๋ย) ตอบรหัสของในกระเป๋า */
 export const sowItem = (selection: string): string => (isFertilizer(selection) ? selection : seedItem(selection));
 

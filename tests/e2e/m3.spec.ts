@@ -68,6 +68,10 @@ test('grows a scallion from seed to harvest in 3 game days and saves it', async 
   await act.click();
   await expect.poll(async () => (await plot0(page)).crop?.id, { timeout: 30000 }).toBe('scallion');
 
+  // ปลูกแล้วยังอยู่ในแถบเมล็ด เมล็ดเม็ดสุดท้ายหมดแล้วเป็นช่องว่างทั้งแถบ แถบยังเปิดอยู่ ปุ่มสลับ (จอบ) พากลับแถบเครื่องมือ
+  await expect(page.locator('#toolbar')).toHaveAttribute('data-mode', 'seeds');
+  await expect(page.locator('#toolbar .food-slot.is-empty')).toHaveCount(5);
+  await page.locator('#toolbar-mode').click();
   await page.locator('[data-tool="can"]').click();
   for (let day = 0; day < 3; day += 1) {
     await act.click();
@@ -175,9 +179,68 @@ test('the seed slot shows the chosen bag and its count', async ({ page }) => {
   });
   await page.locator('[data-tool="seeds"]').click();
   await page.locator('[data-seed="blueberry"]').click();
+  await page.locator('#toolbar-mode').click();
+  await expect(page.locator('[data-tool="seeds"]')).toHaveClass(/is-selected/);
   await expect(page.locator('[data-tool="seeds"] img').first()).toHaveAttribute('src', /seed_blueberry/);
   await expect(page.locator('.tool-slot__count')).toHaveText('12');
   await expect(page.locator('.tool-slot__key')).toHaveCount(5);
+});
+
+test('the seed bag turns the whole bar into a seed bar: seeds then fertilizer, pages, planting keeps the bar, a used-up seed moves to the next', async ({ page }) => {
+  await open(page);
+  // 6 ชนิด + ปุ๋ย 2 ระดับ = 8 ช่อง 2 หน้า · ต้นหอมเหลือ 1 เมล็ด
+  const bag = [
+    { item: 'fertilizer_3', count: 1 },
+    { item: 'seed_tomato', count: 2 },
+    { item: 'seed_scallion', count: 1 },
+    { item: 'seed_garlic', count: 4 },
+    { item: 'seed_rice', count: 3 },
+    { item: 'fertilizer_2', count: 2 },
+    { item: 'seed_chili', count: 5 },
+    { item: 'seed_basil', count: 6 },
+  ];
+  await page.evaluate((items) => {
+    const s = (window as unknown as { __state: { world: FarmWorld & { farm: { plots: Record<string, unknown>[] } }; setWorld(w: unknown): void } }).__state;
+    const plots = s.world.farm.plots.map((plot) => ({ ...plot, tilled: true, crop: null }));
+    s.setWorld({ ...s.world, bag: items, farm: { ...s.world.farm, plots } });
+  }, bag);
+  await expect(page.locator('#seed-picker')).toHaveCount(0);
+  await page.locator('[data-tool="seeds"]').click();
+  const bar = page.locator('#toolbar');
+  await expect(bar).toHaveAttribute('data-mode', 'seeds');
+  await expect(page.locator('#toolbar-mode img')).toHaveAttribute('src', /hoe/);
+  await expect(page.locator('#toolbar-mode')).toHaveText('');
+  // เมล็ดเรียงตาม crops.json แล้วต่อด้วยปุ๋ย ไม่มีป้ายดาว มีจำนวนมุมขวาล่าง
+  const order = await page.locator('#toolbar .food-slot:not([hidden])').evaluateAll((slots) => slots.map((slot) => (slot as HTMLElement).dataset.seed ?? ''));
+  expect(order).toEqual(['scallion', 'chili', 'basil', 'tomato', 'garlic']);
+  await expect(page.locator('#toolbar .food-slot .star-badge')).toHaveCount(0);
+  const next = page.locator('#food-next');
+  await expect(next).toBeVisible();
+  await next.click();
+  const second = await page.locator('#toolbar .food-slot:not([hidden])').evaluateAll((slots) => slots.map((slot) => (slot as HTMLElement).dataset.seed ?? ''));
+  expect([...order, ...second.filter(Boolean)].slice(-2)).toEqual(['fertilizer_2', 'fertilizer_3']);
+  await expect(page.locator('#bag-button')).toBeVisible();
+  await next.click();
+  // เลือกต้นหอม (เหลือ 1) ช่องที่เลือกเป็นสีชมพู ปลูกแล้วยังอยู่ในแถบเมล็ด เมล็ดหมดแล้วเลือกชิ้นถัดไปเอง
+  const scallion = page.locator('[data-seed="scallion"]');
+  await scallion.click();
+  await expect(scallion).toHaveClass(/is-selected/);
+  await standOnFirstPlot(page);
+  const act = page.locator('#action-button');
+  await expect(act).toHaveAttribute('aria-label', /ปลูก/);
+  const before = order.indexOf('scallion');
+  await act.click();
+  await expect.poll(async () => (await plot0(page)).crop?.id, { timeout: 30000 }).toBe('scallion');
+  await expect(bar).toHaveAttribute('data-mode', 'seeds');
+  await expect(page.locator('[data-seed="scallion"]')).toHaveCount(0);
+  await expect(page.locator(`#toolbar .food-slot:not([hidden])`).nth(before)).toHaveClass(/is-selected/);
+  // ปุ่ม 1–5 เลือกในแถบเมล็ด
+  await page.keyboard.press('1');
+  await expect(page.locator('#toolbar .food-slot:not([hidden])').first()).toHaveClass(/is-selected/);
+  // ปุ่มสลับกลับแถบเครื่องมือ ถุงเมล็ดยังเลือกอยู่
+  await page.locator('#toolbar-mode').click();
+  await expect(bar).toHaveAttribute('data-mode', 'tools');
+  await expect(page.locator('[data-tool="seeds"]')).toHaveClass(/is-selected/);
 });
 
 test('tool icons show at their real size, never shrunk to fit the slot', async ({ page }) => {

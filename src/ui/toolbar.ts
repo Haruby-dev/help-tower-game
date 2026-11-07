@@ -3,7 +3,7 @@ import { t, type TextKey } from '../core/i18n';
 import { gameState, type Tool } from '../core/state';
 import { registry } from '../core/assets';
 import { cosmeticTable } from '../systems/chests';
-import { countOf, cropOfItem, isFertilizer, isSeed, sowItem } from '../systems/farm';
+import { countOf, crops, cropOfItem, fertilizerItems, isFertilizer, seedItem, sowItem } from '../systems/farm';
 import { baits, chosenBait } from '../systems/fishing';
 import { bagArtId, cornerBadge, itemImage, itemName } from './inventory';
 import { artUrl, pixelDisc, stickerIcon } from './pixelArt';
@@ -100,51 +100,8 @@ function createBaitStrip(uiRoot: HTMLElement): { show(open: boolean): void; refr
     refresh,
   };
 }
-const PICKER_WINDOW = 'seed-picker';
 const CONFIRM_WINDOW = 'dig-confirm';
 const FERTILIZE_WINDOW = 'fertilize-confirm';
-
-function createSeedPicker(uiRoot: HTMLElement): () => void {
-  const backdrop = document.createElement('div');
-  backdrop.id = 'seed-picker';
-  backdrop.hidden = true;
-  const panel = document.createElement('div');
-  panel.className = 'seed-picker__panel';
-  backdrop.append(panel);
-  uiRoot.append(backdrop);
-
-  const close = (): void => {
-    backdrop.hidden = true;
-    gameState.setWindowOpen(PICKER_WINDOW, false);
-  };
-  backdrop.addEventListener('click', (event) => {
-    if (event.target === backdrop) close();
-  });
-
-  return () => {
-    panel.replaceChildren();
-    // ปุ๋ยเลือกจากหน้าเดียวกับเมล็ด ใส่แปลงด้วยช่องถุงเมล็ด
-    const seeds = gameState.world.bag.filter((stack) => isSeed(stack.item) || isFertilizer(stack.item));
-    if (seeds.length === 0) {
-      panel.append(Object.assign(document.createElement('p'), { textContent: t('bag.no_seeds') }));
-    }
-    for (const stack of seeds) {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'seed-choice';
-      const choice = isFertilizer(stack.item) ? stack.item : cropOfItem(stack.item);
-      button.dataset.seed = choice;
-      button.append(itemImage(stack.item, false), Object.assign(document.createElement('small'), { textContent: `${itemName(stack.item)} ×${stack.count}` }));
-      button.addEventListener('click', () => {
-        gameState.setSelectedSeed(choice);
-        close();
-      });
-      panel.append(button);
-    }
-    backdrop.hidden = false;
-    gameState.setWindowOpen(PICKER_WINDOW, true);
-  };
-}
 
 function createDigConfirm(uiRoot: HTMLElement): void {
   const backdrop = document.createElement('div');
@@ -226,21 +183,43 @@ function createFertilizeConfirm(uiRoot: HTMLElement): void {
   no.addEventListener('click', close);
 }
 
+/** โหมดของแถบล่าง: เครื่องมือ · อาหาร (ปุ่มสลับซ้าย) · เมล็ด (แตะช่องถุงเมล็ด) */
+type BarMode = 'tools' | 'food' | 'seeds';
+/** ของในช่องแถบอาหารและแถบเมล็ด key คือค่าที่เลือก (อาหาร = รหัสของ · เมล็ด = ชนิดพืชหรือรหัสปุ๋ย) */
+interface BarItem {
+  item: string;
+  count: number;
+  key: string;
+}
+
+const seedChoice = (item: string): string => (isFertilizer(item) ? item : cropOfItem(item));
+
+/** แถบเมล็ด: เมล็ดทุกชนิดในกระเป๋าตามลำดับใน crops.json แล้วต่อด้วยปุ๋ยระดับต่ำไปสูง */
+function seedItems(bag: BagStack[]): BarItem[] {
+  const seeds = Object.keys(crops).map(seedItem);
+  return [...seeds, ...fertilizerItems()]
+    .map((item) => ({ item, count: countOf(bag, item), key: seedChoice(item) }))
+    .filter((entry) => entry.count > 0);
+}
+
+const foodItems = (bag: BagStack[]): BarItem[] => edibleStacks(bag).map((stack) => ({ item: stack.item, count: stack.count, key: stack.item }));
+
 /**
- * แถบเครื่องมือกลางล่าง ปุ่ม 1–5 บนคอม แตะได้บนมือถือ ถุงเมล็ดเปิดหน้าเลือกเมล็ด คันเบ็ดเปิดแถบเหยื่อ
- * ปุ่มกลมทางซ้ายสลับทั้งแถบเป็นแถบอาหาร (ผู้ใช้เลือกแบบ B 7 พ.ย. 2026): 5 ช่องคืออาหารในกระเป๋า แถบ › ทางขวาเปลี่ยนหน้า
- * เลือกอาหารแล้วปุ่มกระทำเป็น "กิน"
+ * แถบเครื่องมือกลางล่าง ปุ่ม 1–5 บนคอม แตะได้บนมือถือ คันเบ็ดเปิดแถบเหยื่อ
+ * ปุ่มกลมทางซ้ายสลับทั้งแถบเป็นแถบอาหาร (ผู้ใช้เลือกแบบ B 7 พ.ย. 2026) · แตะถุงเมล็ด ทั้งแถบเป็นแถบเมล็ด (ผู้ใช้อนุมัติ 7 พ.ย. 2026)
+ * แถบอาหารและแถบเมล็ดหน้าตาเดียวกัน 5 ช่อง แถบ › ทางขวาเปลี่ยนหน้า ปุ่ม 1–5 เลือก · ปุ่มบนแถบไม่มีตัวหนังสือ
  */
 export function createToolbar(uiRoot: HTMLElement): void {
   const bar = document.createElement('div');
   bar.id = 'toolbar';
-  const openPicker = createSeedPicker(uiRoot);
   createDigConfirm(uiRoot);
   createFertilizeConfirm(uiRoot);
   const baitStrip = createBaitStrip(uiRoot);
   let stripOpen = false;
-  let foodMode = false;
-  let foodPage = 0;
+  let mode: BarMode = 'tools';
+  let page = 0;
+  /** ตำแหน่งของเมล็ดที่เลือกในแถบเมล็ด เมล็ดหมดแล้วเลือกชิ้นที่เลื่อนมาแทนที่ (ชิ้นถัดไป) */
+  let seedIndex = 0;
 
   let seedIcon: HTMLImageElement | null = null;
   let canIcon: HTMLImageElement | null = null;
@@ -248,7 +227,7 @@ export function createToolbar(uiRoot: HTMLElement): void {
   pill.className = 'tool-slot__count';
   pill.hidden = true;
 
-  // ปุ่มสลับ: โหมดเครื่องมือแสดงช้อนส้อม · โหมดอาหารแสดงจอบ · ไอคอนอย่างเดียว ไม่มีป้ายตัวหนังสือ (ผู้ใช้ตัดสิน) ชื่ออยู่ใน aria-label
+  // ปุ่มสลับ: โหมดเครื่องมือแสดงช้อนส้อม · โหมดอาหารและโหมดเมล็ดแสดงจอบ · ไอคอนอย่างเดียว ไม่มีป้ายตัวหนังสือ (ผู้ใช้ตัดสิน) ชื่ออยู่ใน aria-label
   const modeButton = document.createElement('button');
   modeButton.type = 'button';
   modeButton.id = 'toolbar-mode';
@@ -264,7 +243,6 @@ export function createToolbar(uiRoot: HTMLElement): void {
   pageTab.id = 'food-next';
   pageTab.className = 'toolbar-page';
   pageTab.textContent = '›';
-  pageTab.setAttribute('aria-label', t('food.next_page'));
   // ปุ่มกระเป๋าปลายขวาแถบ (ผู้ใช้เลือกจุด B 6 พ.ย. 2026) สติกเกอร์แบบเดียวกับปุ่มตั้งค่า อยู่ต่อจากแถบ › เมื่อแถบนั้นขึ้น
   const bagButton = document.createElement('button');
   bagButton.type = 'button';
@@ -298,8 +276,8 @@ export function createToolbar(uiRoot: HTMLElement): void {
     bar.append(button);
     return button;
   });
-  // ช่องอาหาร 5 ช่องอยู่ที่เดียวกับช่องเครื่องมือ สลับกันแสดง
-  const foodSlots = Array.from({ length: SLOTS }, (_, index) => {
+  // ช่องของ 5 ช่อง (อาหารหรือเมล็ด) อยู่ที่เดียวกับช่องเครื่องมือ สลับกันแสดง
+  const itemSlots = Array.from({ length: SLOTS }, (_, index) => {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'food-slot';
@@ -308,91 +286,120 @@ export function createToolbar(uiRoot: HTMLElement): void {
     badge.className = 'food-slot__key';
     badge.textContent = String(index + 1);
     button.append(badge);
-    button.addEventListener('click', () => pickFood(index));
+    button.addEventListener('click', () => pick(index));
     bar.append(button);
     return button;
   });
   bar.append(modeButton, pageTab, bagButton);
   uiRoot.append(bar);
 
+  const items = (): BarItem[] => {
+    if (!gameState.started || mode === 'tools') return [];
+    return mode === 'food' ? foodItems(gameState.world.bag) : seedItems(gameState.world.bag);
+  };
+  const chosenKey = (): string | null => (mode === 'food' ? gameState.selectedFood : gameState.selectedSeed);
+  const setChosen = (key: string | null): void => {
+    if (mode === 'food') gameState.setSelectedFood(key);
+    else gameState.setSelectedSeed(key);
+  };
+  /** เปิดหน้าที่มีของที่เลือกอยู่ */
+  const pageOf = (list: BarItem[], key: string | null): number => Math.max(0, Math.floor(list.findIndex((entry) => entry.key === key) / SLOTS));
+
   function choose(tool: Tool): void {
     const again = gameState.selectedTool === tool;
     stripOpen = tool === 'rod' && !(again && stripOpen);
     gameState.setSelectedTool(tool);
-    if (tool === 'seeds' && (again || gameState.selectedSeed === null)) openPicker();
+    // แตะถุงเมล็ด: ทั้งแถบเป็นแถบเมล็ด เครื่องมือยังเป็นถุงเมล็ดตลอด ปุ่มกระทำจึงปลูกและใส่ปุ๋ยได้เหมือนเดิม
+    if (tool === 'seeds') setMode('seeds');
   }
 
-  const foods = (): BagStack[] => (gameState.started ? edibleStacks(gameState.world.bag) : []);
-
-  function pickFood(index: number): void {
-    const stack = foods()[foodPage * SLOTS + index];
-    if (stack) gameState.setSelectedFood(stack.item);
+  function pick(index: number): void {
+    const entry = items()[page * SLOTS + index];
+    if (!entry) return;
+    if (mode === 'seeds') seedIndex = page * SLOTS + index;
+    setChosen(entry.key);
   }
 
-  /** ช่องอาหาร: ภาพในกระเป๋าขนาดจริง จำนวนมุมขวาล่าง ป้ายดาวมุมซ้ายล่าง */
-  const renderFood = (): void => {
-    const list = foods();
+  /** ช่องของ: ภาพในกระเป๋าขนาดจริง จำนวนมุมขวาล่าง ป้ายดาวมุมซ้ายล่างเฉพาะอาหารกับผักที่มีดาว */
+  const renderItems = (): void => {
+    const list = items();
     const pages = Math.max(1, Math.ceil(list.length / SLOTS));
-    foodPage = Math.min(foodPage, pages - 1);
-    // อาหารที่เลือกหมดแล้ว เลือกชิ้นแรกที่ยังมีแทน
-    let chosen = gameState.selectedFood;
-    if (foodMode && (!chosen || !list.some((stack) => stack.item === chosen))) {
-      chosen = list[foodPage * SLOTS]?.item ?? list[0]?.item ?? null;
-      gameState.setSelectedFood(chosen);
+    page = Math.min(page, pages - 1);
+    let chosen = chosenKey();
+    if (mode === 'food' && (!chosen || !list.some((entry) => entry.key === chosen))) {
+      // อาหารที่เลือกหมดแล้ว เลือกชิ้นแรกของหน้านี้แทน
+      chosen = list[page * SLOTS]?.key ?? list[0]?.key ?? null;
+      if (chosen !== gameState.selectedFood) gameState.setSelectedFood(chosen);
+    } else if (mode === 'seeds') {
+      const at = list.findIndex((entry) => entry.key === chosen);
+      if (at >= 0) seedIndex = at;
+      else {
+        // เมล็ดที่เลือกหมดแล้ว เลือกชิ้นถัดไปในแถบ ไม่เหลืออะไรเลยช่องว่างทั้งแถบ แถบยังเปิดอยู่จนกว่าจะแตะปุ่มสลับ
+        chosen = list[Math.min(seedIndex, list.length - 1)]?.key ?? null;
+        page = pageOf(list, chosen);
+        // เปลี่ยนเฉพาะเมื่อต่างจากเดิม การเลือกส่ง tool-changed กลับมาที่นี่ ถ้าตั้งค่าเดิมซ้ำจะวนไม่จบ
+        if (chosen !== gameState.selectedSeed) gameState.setSelectedSeed(chosen);
+      }
     }
-    foodSlots.forEach((button, index) => {
-      const stack = list[foodPage * SLOTS + index];
-      button.querySelectorAll('img, .item-missing, .food-slot__count').forEach((node) => node.remove());
-      button.classList.toggle('is-selected', Boolean(stack && stack.item === chosen));
-      button.classList.toggle('is-empty', !stack);
-      button.disabled = !stack;
+    itemSlots.forEach((button, index) => {
+      const entry = list[page * SLOTS + index];
+      button.querySelectorAll('img, .item-missing, .food-slot__count, .star-badge').forEach((node) => node.remove());
+      button.classList.toggle('is-selected', Boolean(entry && entry.key === chosen));
+      button.classList.toggle('is-empty', !entry);
+      button.disabled = !entry;
       delete button.dataset.food;
-      button.setAttribute('aria-label', stack ? itemName(stack.item) : t('food.empty'));
-      if (!stack) return;
-      button.dataset.food = stack.item;
-      const art = bagArtId(stack.item);
+      delete button.dataset.seed;
+      button.setAttribute('aria-label', entry ? itemName(entry.item) : t('food.empty'));
+      if (!entry) return;
+      if (mode === 'food') button.dataset.food = entry.item;
+      else button.dataset.seed = entry.key;
+      const art = bagArtId(entry.item);
       if (art) {
         const icon = document.createElement('img');
         icon.className = 'pixel-img';
         icon.alt = '';
         setNativeIcon(icon, art);
         button.prepend(icon);
-      } else button.prepend(itemImage(stack.item, false));
+      } else button.prepend(itemImage(entry.item, false));
       const count = document.createElement('span');
       count.className = 'food-slot__count';
-      count.textContent = '×' + String(stack.count);
+      count.textContent = '×' + String(entry.count);
       button.append(count);
-      cornerBadge(button, stack.item);
+      if (mode === 'food') cornerBadge(button, entry.item);
     });
-    pageTab.hidden = !foodMode || list.length <= SLOTS;
+    pageTab.hidden = mode === 'tools' || list.length <= SLOTS;
+    pageTab.setAttribute('aria-label', t(mode === 'seeds' ? 'seedbar.next_page' : 'food.next_page'));
     bar.classList.toggle('has-page-tab', !pageTab.hidden);
   };
 
-  const showMode = (): void => {
-    bar.dataset.mode = foodMode ? 'food' : 'tools';
-    setNativeIcon(modeIcon, foodMode ? 'tool_hoe' : 'ui_icon_spoon_fork');
-    modeButton.setAttribute('aria-label', t(foodMode ? 'food.switch_to_tools' : 'food.switch_to_food'));
-    for (const button of buttons) button.hidden = foodMode;
-    for (const button of foodSlots) button.hidden = !foodMode;
-    if (foodMode) {
+  function setMode(next: BarMode): void {
+    mode = next;
+    bar.dataset.mode = mode;
+    setNativeIcon(modeIcon, mode === 'tools' ? 'ui_icon_spoon_fork' : 'tool_hoe');
+    modeButton.setAttribute('aria-label', t(mode === 'tools' ? 'food.switch_to_food' : 'food.switch_to_tools'));
+    for (const button of buttons) button.hidden = mode !== 'tools';
+    for (const button of itemSlots) button.hidden = mode === 'tools';
+    if (mode !== 'tools') {
       stripOpen = false;
       baitStrip.show(false);
-    } else gameState.setSelectedFood(null);
-    renderFood();
-  };
-  modeButton.addEventListener('click', () => {
-    foodMode = !foodMode;
-    foodPage = 0;
-    showMode();
-  });
+    }
+    if (mode !== 'food') gameState.setSelectedFood(null);
+    page = mode === 'seeds' ? pageOf(items(), gameState.selectedSeed) : 0;
+    renderItems();
+  }
+
+  // โหมดเครื่องมือ → แถบอาหาร · แถบอาหารหรือแถบเมล็ด → กลับแถบเครื่องมือ (ถุงเมล็ดยังเลือกอยู่)
+  modeButton.addEventListener('click', () => setMode(mode === 'tools' ? 'food' : 'tools'));
   pageTab.addEventListener('click', () => {
-    const pages = Math.max(1, Math.ceil(foods().length / SLOTS));
-    foodPage = (foodPage + 1) % pages;
-    gameState.setSelectedFood(foods()[foodPage * SLOTS]?.item ?? null);
-    renderFood();
+    const list = items();
+    const pages = Math.max(1, Math.ceil(list.length / SLOTS));
+    page = (page + 1) % pages;
+    // แถบอาหารเลือกชิ้นแรกของหน้าใหม่ แถบเมล็ดเปลี่ยนแค่หน้า เมล็ดที่เลือกไว้ยังเหมือนเดิม
+    if (mode === 'food') gameState.setSelectedFood(list[page * SLOTS]?.key ?? null);
+    renderItems();
   });
 
-  /** ช่องเมล็ดแสดงถุงของเมล็ดที่เลือกพร้อมจำนวน */
+  /** ช่องเมล็ดในแถบเครื่องมือแสดงถุงของเมล็ดที่เลือกพร้อมจำนวน */
   const showSeed = (): void => {
     const seed = gameState.selectedSeed;
     if (seedIcon) setNativeIcon(seedIcon, seed ? sowItem(seed) : 'tool_seed_bag');
@@ -402,12 +409,19 @@ export function createToolbar(uiRoot: HTMLElement): void {
   const show = (): void => {
     baitStrip.refresh();
     buttons.forEach((button, index) => button.classList.toggle('is-selected', TOOLS[index]!.id === gameState.selectedTool));
-    if (gameState.selectedTool !== 'rod' || foodMode) stripOpen = false;
+    if (gameState.selectedTool !== 'rod' || mode !== 'tools') stripOpen = false;
     baitStrip.show(stripOpen);
     showSeed();
+    if (mode === 'seeds') {
+      // เครื่องมือเปลี่ยนจากที่อื่น (ไม่ใช่ถุงเมล็ดแล้ว) แถบกลับเป็นแถบเครื่องมือ
+      if (gameState.selectedTool !== 'seeds') setMode('tools');
+      else renderItems();
+    }
   };
   eventBus.on('tool-changed', show);
-  eventBus.on('food-changed', renderFood);
+  eventBus.on('food-changed', () => {
+    if (mode === 'food') renderItems();
+  });
   let shownBag: unknown = null;
   let shownSkin = '';
   eventBus.on('world-changed', ({ bag, cosmetics }) => {
@@ -420,15 +434,15 @@ export function createToolbar(uiRoot: HTMLElement): void {
     shownBag = bag;
     showSeed();
     baitStrip.refresh();
-    renderFood();
+    renderItems();
   });
   show();
-  showMode();
+  setMode('tools');
 
   document.addEventListener('keydown', (event) => {
     const index = Number(event.key) - 1;
     if (!gameState.clockRunning || !Number.isInteger(index) || index < 0 || index >= SLOTS) return;
-    if (foodMode) pickFood(index);
-    else choose(TOOLS[index]!.id);
+    if (mode === 'tools') choose(TOOLS[index]!.id);
+    else pick(index);
   });
 }

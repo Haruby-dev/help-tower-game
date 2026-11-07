@@ -822,8 +822,7 @@ canvas {
 }
 
 .tool-slot,
-.bag-slot,
-.seed-choice {
+.bag-slot {
   position: relative;
   display: grid;
   place-items: center;
@@ -865,7 +864,6 @@ canvas {
   text-shadow: 1px 0 #fff, -1px 0 #fff, 0 1px #fff, 0 -1px #fff;
 }
 
-#seed-picker,
 #land-confirm,
 #fertilize-confirm,
 #dig-confirm {
@@ -877,14 +875,13 @@ canvas {
   pointer-events: auto;
 }
 
-#seed-picker[hidden],
 #land-confirm[hidden],
 #fertilize-confirm[hidden],
 #dig-confirm[hidden] {
   display: none;
 }
 
-.seed-picker__panel,
+.chest-panel,
 .dig-confirm__panel {
   display: flex;
   max-width: min(460px, calc(100vw - 24px));
@@ -904,15 +901,6 @@ canvas {
   margin: 0 0 6px;
   text-align: center;
   font-weight: 700;
-}
-
-.seed-choice {
-  width: 84px;
-  padding: 4px 2px;
-}
-
-.seed-choice small {
-  font-size: 10px;
 }
 
 /* ภาพโทรศัพท์จริง v3 จากฝั่งวางแผน เขียนทับกรอบชั่วคราว */
