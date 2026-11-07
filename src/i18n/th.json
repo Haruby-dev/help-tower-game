@@ -117,7 +117,7 @@
   "tool.sickle": "เคียว",
   "tool.seeds": "ถุงเมล็ด",
   "bag.seed_prefix": "เมล็ด",
-  "bag.hint": "แตะของเพื่อดู แปลงผักเป็นเมล็ดเพื่อปลูก",
+  "bag.hint": "แตะของเพื่อดูรายละเอียด",
   "album.title": "แมวเลียของจีโอ",
   "album.count": "เก็บแล้ว {n}/{total} รส",
   "album.locked": "???",
