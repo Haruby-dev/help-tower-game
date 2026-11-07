@@ -25,7 +25,7 @@ const TABS: { id: BagTab; label: TextKey }[] = [
 /** ภาพเคสและวอลเปเปอร์ใหญ่กว่าช่อง จึงแสดงเป็นชื่อแทน ห้ามย่อ */
 const MAX_SLOT_ART_PX = 40;
 /** ของแต่งที่ใช้แล้วเห็นผลในเกม ช่องอื่นเก็บธงไว้จนกว่าระบบจะมา */
-const EQUIPPABLE = { canSkins: 'canSkin', cases: 'case' } as const;
+const EQUIPPABLE = { canSkins: 'canSkin' } as const;
 
 type CollectionKind = 'cosmetic' | 'toy' | 'stash';
 interface CollectionItem {
@@ -277,7 +277,7 @@ export function createInventoryPage(): PhonePage {
   /** ของแต่ง ของเล่น และของที่ยังไม่มีระบบ ไม่กินช่องกระเป๋า */
   const collectionOf = (): CollectionItem[] => {
     const { cosmetics, toys, stash } = gameState.world;
-    const order = ['canSkins', 'cases', 'wallpapers', 'charms', 'clips'] as const;
+    const order = ['canSkins', 'wallpapers', 'charms', 'clips'] as const;
     return [
       ...order.flatMap((slot) => cosmetics.owned[slot].map((id): CollectionItem => ({ id, kind: 'cosmetic', count: 1 }))),
       ...toys.map((id): CollectionItem => ({ id, kind: 'toy', count: 1 })),
@@ -293,7 +293,7 @@ export function createInventoryPage(): PhonePage {
     const flavour = entry.kind === 'cosmetic' ? 'bag.flavour_cosmetic' : entry.kind === 'toy' ? 'bag.flavour_toy' : 'bag.flavour_stash';
     const slot = cosmeticTable[entry.id]?.slot;
     let button: HTMLButtonElement | null = null;
-    if (entry.kind === 'cosmetic' && (slot === 'canSkins' || slot === 'cases')) {
+    if (entry.kind === 'cosmetic' && slot === 'canSkins') {
       const key = EQUIPPABLE[slot];
       const { cosmetics } = gameState.world;
       const wearing = cosmetics.equipped[key] === entry.id;

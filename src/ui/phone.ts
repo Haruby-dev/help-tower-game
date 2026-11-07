@@ -2,7 +2,6 @@ import { eventBus, type GameEvents } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
 import { gameState, type Weather, type World } from '../core/state';
 import balance from '../data/balance.json';
-import { cosmeticTable } from '../systems/chests';
 import { dayOfMonth, encouragementFor, monthOf, stuckTime, weekStrip, weekdayIndex } from '../systems/phoneCalendar';
 import { formatClock } from './hud';
 import { createInventoryPage } from './inventory';
@@ -48,7 +47,6 @@ const APPS: PhoneApp[] = [
 ];
 
 const PHONE_WINDOW = 'phone';
-const FLIP_MS = 160;
 const SWIPE_UP_PX = 30;
 /** ไอคอนอากาศเปลี่ยนตามอากาศของวัน */
 const WEATHER_ICONS: Record<Weather, string> = { sunny: 'ui_weather_sun', rain: 'ui_weather_rain', cloudy: 'ui_weather_cloud' };
@@ -194,24 +192,6 @@ function createToday(): { root: HTMLElement; update: (world: World) => void } {
   };
 }
 
-function createBack(): { root: HTMLElement; flip: HTMLButtonElement; showCase: (id: string) => void } {
-  const root = element('div', 'pw-back');
-  root.id = 'phone-back-side';
-  const name = element('small', 'pw-back__name', t('phone.case_default'));
-  const flip = element('button', 'pw-btn pw-back__flip', t('phone.flip_back'));
-  flip.type = 'button';
-  const caseArt = phoneArt(cosmeticTable.case_pink_cat!.art, 'pw-back__case');
-  root.append(caseArt, name, flip);
-  /** เคสที่เลือกในแอปกระเป๋า แท็บสะสม */
-  const showCase = (id: string): void => {
-    const chosen = cosmeticTable[id];
-    if (!chosen) return;
-    caseArt.src = artUrl(chosen.art);
-    name.textContent = t(`cosmetic.${id}.name` as TextKey);
-  };
-  return { root, flip, showCase };
-}
-
 const ctrlButton = (id: string, text: string, label: TextKey): HTMLButtonElement => {
   const button = element('button', 'pw-ctrl__btn', text);
   button.id = id;
@@ -235,10 +215,10 @@ export function createPhone(uiRoot: HTMLElement): void {
   const phone = element('div', 'pw');
   phone.id = 'phone';
   phone.dataset.state = 'lock';
-  phone.dataset.side = 'front';
   phone.setAttribute('role', 'dialog');
   phone.setAttribute('aria-label', t('phone.open'));
   phone.style.setProperty('--wallpaper', `url("${artUrl('ui_v3_wallpaper_sky')}")`);
+  phone.style.setProperty('--paper-glass', `url("${artUrl('ui_paper_glass')}")`);
 
   const sbar = element('div', 'pw-sbar');
   const clock = element('span', 'pw-sbar__time');
@@ -250,14 +230,12 @@ export function createPhone(uiRoot: HTMLElement): void {
   const ctrl = element('div', 'pw-ctrl');
   const home = ctrlButton('phone-back', '‹', 'phone.back');
   const fold = ctrlButton('phone-fold', '⇆', 'phone.fold');
-  const flip = ctrlButton('phone-flip', '↻', 'phone.flip');
   const close = ctrlButton('phone-close', '✕', 'ui.close');
-  ctrl.append(home, fold, flip, close);
+  ctrl.append(home, fold, close);
   const front = element('div', 'pw-front');
   front.append(sbar, left, right, ctrl);
 
-  const back = createBack();
-  phone.append(element('i', 'pw-case'), element('i', 'pw-rim'), element('i', 'pw-glint'), lock.root, front, back.root, phoneArt('ui_cat_peek', 'pw-peek', '--m4'));
+  phone.append(element('i', 'pw-case'), element('i', 'pw-rim'), element('i', 'pw-glint'), lock.root, front, phoneArt('ui_cat_peek', 'pw-peek', '--m4'));
   backdrop.append(phone);
   uiRoot.append(mini.root, backdrop);
 
@@ -293,7 +271,6 @@ export function createPhone(uiRoot: HTMLElement): void {
 
   const showHome = (): void => {
     delete phone.dataset.app;
-    phone.dataset.side = 'front';
     left.replaceChildren(grid);
     right.replaceChildren(today.root);
     home.hidden = true;
@@ -329,7 +306,6 @@ export function createPhone(uiRoot: HTMLElement): void {
   const openPhone = (): void => {
     if (!backdrop.hidden) return;
     backdrop.hidden = false;
-    phone.dataset.side = 'front';
     delete phone.dataset.app;
     setState('lock');
     revealWhenReady(backdrop);
@@ -362,16 +338,6 @@ export function createPhone(uiRoot: HTMLElement): void {
     swipeStartY = null;
   });
 
-  const flipSide = (): void => {
-    phone.classList.add('is-flipping');
-    window.setTimeout(() => {
-      phone.dataset.side = phone.dataset.side === 'front' ? 'back' : 'front';
-      phone.classList.remove('is-flipping');
-    }, FLIP_MS);
-  };
-  flip.addEventListener('click', flipSide);
-  back.flip.addEventListener('click', flipSide);
-
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closePhone();
     if (event.key === 'Tab') {
@@ -395,7 +361,6 @@ export function createPhone(uiRoot: HTMLElement): void {
     mini.date.textContent = `${t(`weekday.compact_${weekdayIndex(world.day)}` as TextKey)} ${world.day}`;
     clock.textContent = time;
     for (const icon of document.querySelectorAll<HTMLImageElement>('[data-weather-icon]')) icon.src = artUrl(WEATHER_ICONS[world.weather]);
-    back.showCase(world.cosmetics.equipped.case);
     lock.update(world);
     today.update(world);
   });

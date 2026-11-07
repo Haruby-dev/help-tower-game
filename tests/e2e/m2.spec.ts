@@ -161,7 +161,7 @@ test('opens from the mini phone, to the small lock screen, to home with 10 apps 
   await expect(page.locator('#phone')).toBeHidden();
 });
 
-test('home shows the calendar and stuck counter, folds back to the lock screen, and flips to the case', async ({ page }) => {
+test('home shows the calendar and stuck counter, folds back to the lock screen, and has no flip button', async ({ page }) => {
   await open(page);
   await page.locator('#phone-button').click();
   await page.locator('#lock-open').click();
@@ -172,9 +172,24 @@ test('home shows the calendar and stuck counter, folds back to the lock screen, 
   await expect(page.locator('#phone')).toHaveAttribute('data-state', 'lock');
   await expect(page.locator('#lock-screen')).toBeVisible();
   await page.locator('#lock-open').click();
-  await page.locator('#phone-flip').click();
-  await expect(page.locator('#phone')).toHaveAttribute('data-side', 'back');
-  await expect(page.locator('#phone-back-side')).toBeVisible();
+  // ปุ่มพลิกและด้านหลังเครื่องเอาออกแล้ว การ์ดขวาเหลือแค่ ⇆ กับ ✕ (phone update 2026-11-07c)
+  await expect(page.locator('#phone-flip')).toHaveCount(0);
+  await expect(page.locator('#phone-back-side')).toHaveCount(0);
+  await expect(page.locator('.pw-ctrl__btn:visible')).toHaveCount(2);
+  // การ์ดยื่นขึ้นไปทับแถบบน ขอบบนเท่าขอบซ้ายและล่าง กระดาษเป็นกระจกฝ้าไม่มีสีพื้น
+  const measure = (): Promise<{ top: number; left: number; bottom: number; image: string; colour: string }> => page.evaluate(() => {
+    const window = document.querySelector('#phone')!.getBoundingClientRect();
+    const card = document.querySelector('.pw-card--l')!.getBoundingClientRect();
+    const style = getComputedStyle(document.querySelector('.pw-card--l')!);
+    return { top: card.top - window.top, left: card.left - window.left, bottom: window.bottom - card.bottom, image: style.backgroundImage, colour: style.backgroundColor };
+  });
+  // หน้าต่างค่อย ๆ ขยายจากจอล็อก รอให้ขยายเสร็จก่อนวัด
+  await expect.poll(async () => { const now = await measure(); return Math.abs(now.bottom - now.left) < 1.5; }).toBe(true);
+  const layout = await measure();
+  expect(Math.abs(layout.top - layout.left)).toBeLessThan(1.5);
+  expect(Math.abs(layout.bottom - layout.left)).toBeLessThan(1.5);
+  expect(layout.image).toContain('paper_glass');
+  expect(layout.colour).toBe('rgba(0, 0, 0, 0)');
 });
 
 test('money shows a floating number and the wallet log, with no pill on screen', async ({ page }) => {

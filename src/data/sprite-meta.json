@@ -4944,6 +4944,51 @@
       "default": 80
     }
   },
+  "album_mpol_b_puinun_met": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_b_popcorn_met": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_b_mookmik_met": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_b_toomtia_met": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_b_yaibaimai_met": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_b_wingwing_met": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_b_tubpong_met": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_b_jaotungtong_met": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_b_puefaotung_met": {
+    "footY": {
+      "default": 80
+    }
+  },
   "album_mpol_s_unknown": {
     "footY": {
       "default": 62
@@ -5129,6 +5174,31 @@
       "default": 100
     }
   },
+  "pets_sil_boomboom": {
+    "footY": {
+      "default": 34
+    }
+  },
+  "pets_sil_bubble": {
+    "footY": {
+      "default": 33
+    }
+  },
+  "pets_sil_mumu": {
+    "footY": {
+      "default": 51
+    }
+  },
+  "pets_sil_nuebnub": {
+    "footY": {
+      "default": 37
+    }
+  },
+  "pets_sil_pangpok": {
+    "footY": {
+      "default": 31
+    }
+  },
   "pets_scene_nuebnub": {
     "footY": {
       "default": 100
@@ -5282,6 +5352,11 @@
   "ui_cat_peek": {
     "footY": {
       "default": 19
+    }
+  },
+  "ui_paper_glass": {
+    "footY": {
+      "default": 40
     }
   }
 }

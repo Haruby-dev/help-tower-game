@@ -1,3 +1,4 @@
+import { registry } from '../core/assets';
 import { eventBus } from '../core/events';
 import { t } from '../core/i18n';
 import { gameState } from '../core/state';
@@ -17,6 +18,17 @@ const CARD_ROWS = [62, 124, 186];
 const PER_ROW = 5;
 
 type PetState = 'notmet' | 'unknown' | 'locked';
+
+/**
+ * ยังไม่เจอ: เงาบนกระดาษ ไม่มีกรอบทุ่ง (art update 2026-11-07b) กลางที่ x 148 เท้าที่ y 120
+ * สัตว์ตัวเล็กขยาย 2 เท่า มูมู่เมฆตัวใหญ่ 1 เท่า บึ้มบึ้มลอยอยู่ เท้าที่ y 110 · "?" อยู่เหนือหัว 30 พิกเซล
+ */
+const SIL_X = 148;
+const SIL_FEET_Y = 120;
+const SIL_SCALE: Record<string, number> = { mumu: 1 };
+const SIL_FEET: Record<string, number> = { boomboom: 110 };
+const SIL_Q_GAP = 30;
+const DEFAULT_SIL_SCALE = 2;
 
 const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className: string, text?: string): HTMLElementTagNameMap[K] => {
   const node = document.createElement(tag);
@@ -76,12 +88,7 @@ export function createPetsBook(uiRoot: HTMLElement): void {
       );
       return;
     }
-    // ยังไม่เจอ: เงาในทุ่งพร้อม "?" (มูมู่เมฆมีฉากเงาของตัวเอง ตัวอื่นใช้เงาการ์ดขยาย 2 เท่า)
-    const scene = at(element('div', 'pt-scene'), 22, 22);
-    if (pet.id === 'mumu') scene.append(pageArt('pets_scene_mumu_sil', 0, 0));
-    else if (pet.art) scene.append(pageArt(`pets_card_${pet.id}_sil`, 82, 12, '', '', 2));
-    else scene.append(pageArt('pets_card_unknown', 82, 12, '', '', 2));
-    scene.append(element('b', 'pt-scene-q', '?'));
+    const picture = silhouette(pet.id);
     const nameRow = at(element('div', 'pt-nmrow'), 24, 130);
     nameRow.append(element('span', 'pt-nm', '???'));
     const kind = element('span', 'pt-kd');
@@ -89,7 +96,19 @@ export function createPetsBook(uiRoot: HTMLElement): void {
     nameRow.append(kind);
     const when = at(element('div', 'pt-row'), 24, 160);
     when.append(element('span', 'pt-lab2', t('pets.will_meet')), element('span', '', `${t('pets.after_gate')} ${pet.gate}`));
-    shell.right.replaceChildren(scene, nameRow, when, bookNote('pt-note', t(pet.art ? 'pets.wait_note' : 'pets.no_art_note'), TAPE, 22, 190));
+    shell.right.replaceChildren(...picture, nameRow, when, bookNote('pt-note', t(pet.art ? 'pets.wait_note' : 'pets.no_art_note'), TAPE, 22, 190));
+  }
+
+  /** เงาสัตว์บนกระดาษพร้อม "?" เหนือหัว · สัตว์ที่ยังไม่มีภาพ มีแค่ "?" ตัวใหญ่ */
+  function silhouette(id: string): HTMLElement[] {
+    const entry = registry[`pets_sil_${id}`];
+    if (entry?.type !== 'local') return [element('b', 'pt-q-big', '?')];
+    const scale = SIL_SCALE[id] ?? DEFAULT_SIL_SCALE;
+    const feet = SIL_FEET[id] ?? SIL_FEET_Y;
+    const height = entry.height * scale;
+    const art = pageArt(`pets_sil_${id}`, SIL_X - (entry.width * scale) / 2, feet - height, 'pt-sil', '', scale);
+    const question = at(element('b', 'pt-q-sil', '?'), 0, feet - height - SIL_Q_GAP);
+    return [art, question];
   }
 
   eventBus.on('app-open', (app) => {

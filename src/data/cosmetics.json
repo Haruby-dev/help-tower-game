@@ -15,9 +15,6 @@
   "clip_star": { "slot": "clips", "art": "clip_star" },
   "clip_cat": { "slot": "clips", "art": "clip_cat" },
   "clip_bow": { "slot": "clips", "art": "clip_bow" },
-  "case_pink_cat": { "slot": "cases", "art": "ui_v3_case_back_pink" },
-  "case_mint": { "slot": "cases", "art": "ui_v3_case_back_mint" },
-  "case_gio": { "slot": "cases", "art": "ui_v3_case_back_gio" },
   "wallpaper_sky_cats": { "slot": "wallpapers", "art": "ui_v3_wallpaper_sky" },
   "wallpaper_gio": { "slot": "wallpapers", "art": "ui_v3_wallpaper_gio" }
 }

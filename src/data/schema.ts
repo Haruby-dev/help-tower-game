@@ -559,13 +559,11 @@ export const saveFileSchema = z.strictObject({
     recipes: z.strictObject({ known: z.array(z.string().min(1)), bestStars: z.record(z.string(), z.number().int().positive()) }),
     cosmetics: z.strictObject({
       equipped: z.strictObject({
-        case: z.string().min(1),
         charm: z.string().min(1).nullable(),
         wallpaper: z.string().min(1),
         canSkin: z.string().min(1),
       }),
       owned: z.strictObject({
-        cases: z.array(z.string()),
         charms: z.array(z.string()),
         wallpapers: z.array(z.string()),
         canSkins: z.array(z.string()),
@@ -741,7 +739,7 @@ export type Rarity = z.infer<typeof raritySchema>;
 
 export const cosmeticsSchema = z.record(
   z.string().regex(/^[a-z_]+$/),
-  z.strictObject({ slot: z.enum(['canSkins', 'charms', 'clips', 'cases', 'wallpapers']), art: z.string().min(1) }),
+  z.strictObject({ slot: z.enum(['canSkins', 'charms', 'clips', 'wallpapers']), art: z.string().min(1) }),
 );
 export type CosmeticTable = z.infer<typeof cosmeticsSchema>;
 

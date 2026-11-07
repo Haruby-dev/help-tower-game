@@ -1,3 +1,4 @@
+import { footY } from '../core/assets';
 import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
 import { gameState, type World } from '../core/state';
@@ -20,8 +21,12 @@ const TOWER_X = 64;
 const TOWER_Y = 46;
 const TOWER_TOP = 6;
 const FLOOR_PX = 20;
-/** ภาพ tower_zone1 วาดชั้นเปิดไว้ถึงชั้น 6 ชั้น 7–10 ที่เปิดแล้วยังไม่มีภาพ จึงเป็นหินมืดไปก่อน */
-const OPEN_ART_UP_TO = 6;
+/** หน้าขวา: มอนสเตอร์ประจำชั้นยืนบนกระดาษ ไม่มีกรอบฉาก (art update 2026-11-07b) กลางที่ x 148 เท้าที่ y 118 */
+const OWNER_X = 148;
+const OWNER_FEET_Y = 118;
+/** ชั้นที่ยังไม่เปิด: กุญแจอย่างเดียวในที่เดียวกัน ขยาย 2 เท่า */
+const LOCK_SCALE = 2;
+const LOCK_CENTRE_Y = 76;
 const LABEL_X = 92;
 const DOT_X = 210;
 
@@ -76,8 +81,8 @@ export function createGateBook(uiRoot: HTMLElement): void {
     for (let index = 0; index < FLOORS; index += 1) {
       const number = first + index;
       const open = opened(world, number);
-      // ชั้นที่เปิดแล้ว: ตัดแถวชั้นนั้นจากภาพหอคอยที่เปิดไว้ (มีถึงชั้น 6)
-      if (open && index < OPEN_ART_UP_TO) {
+      // ชั้นที่เปิดแล้ว: ตัดแถวชั้นนั้นจากภาพหอคอยที่วาดเปิดไว้ครบ 10 ชั้น
+      if (open) {
         const strip = at(element('i', 'gt-open'), TOWER_X, TOWER_Y + TOWER_TOP + (FLOORS - 1 - index) * FLOOR_PX);
         strip.style.backgroundImage = `url("${artUrl('gate_tower_zone1')}")`;
         strip.style.backgroundPosition = `0 ${-(TOWER_TOP + (FLOORS - 1 - index) * FLOOR_PX)}px`;
@@ -110,9 +115,9 @@ export function createGateBook(uiRoot: HTMLElement): void {
     const gate = data.gates.find((entry) => entry.floor === floor)!;
     const owner = ownerOf(floor);
     const open = opened(world, floor);
-    const scene = at(element('div', `gt-scene${open ? '' : ' is-shut'}`), 22, 22);
-    scene.append(pageArt(gate.scene, 0, 0));
-    if (!open) scene.append(pageArt('book_gate_padlock', 121, 37, 'gt-scene-lock', '', 1));
+    // ภาพฉากเกต (gate.scene) พักไว้ ไม่แสดงตอนนี้ (ผู้ใช้ตัดสิน) ไฟล์ยังอยู่
+    void gate;
+    const picture = open && owner ? ownerStand(owner) : padlock();
     const name = at(element('div', 'gt-nmrow', `${t('stuck.floor')} ${floor}`), 24, 128);
     name.append(element('b', '', open ? t(`gate.${floor}.name` as TextKey) : '???'));
     const row = (top: number, label: TextKey, ...content: (Node | string)[]): HTMLElement => {
@@ -130,7 +135,26 @@ export function createGateBook(uiRoot: HTMLElement): void {
     const forage = row(202, 'gate.forage', open ? `${t(`gate.${floor}.forage` as TextKey)} ` : '???');
     if (open) forage.append(element('span', 'gt-gold-text', `● ${t('gate.forage_ready')}`));
     const note = open ? `${t('gate.note')} ${data.stayHours} ${t('gate.note_hours')}` : t('gate.note_shut');
-    shell.right.replaceChildren(scene, name, ownerRow, reward, forage, bookNote('gt-note', note, TAPE, 22, 222));
+    shell.right.replaceChildren(picture, name, ownerRow, reward, forage, bookNote('gt-note', note, TAPE, 22, 222));
+  }
+
+  /** เฟรมแรก (หันหน้าลง) ของท่ายืนตอนหวาน ขนาดจริง ชั้น 5 เป็นแฝดพี่ */
+  function ownerStand(owner: string): HTMLElement {
+    const art = monsterTable[owner]!.art!;
+    const sheet = `${art.sheet}_sweet_stand`;
+    const line = art.feetRow !== undefined ? art.feetRow + 1 : footY(sheet);
+    const frame = at(element('i', 'gt-owner'), OWNER_X - art.frame / 2, OWNER_FEET_Y - line);
+    frame.dataset.art = sheet;
+    frame.style.width = `${art.frame}px`;
+    frame.style.height = `${art.frame}px`;
+    frame.style.backgroundImage = `url("${artUrl(sheet)}")`;
+    frame.style.backgroundSize = `${art.frame * 4}px ${art.frame}px`;
+    return frame;
+  }
+
+  function padlock(): HTMLElement {
+    const lock = pageArt('book_gate_padlock', 0, 0, 'gt-lock', '', LOCK_SCALE);
+    return at(lock, OWNER_X - (11 * LOCK_SCALE) / 2, LOCK_CENTRE_Y - (13 * LOCK_SCALE) / 2);
   }
 
   function turn(step: number): void {

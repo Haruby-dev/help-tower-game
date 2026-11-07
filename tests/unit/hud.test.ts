@@ -99,7 +99,7 @@ describe('save migration', () => {
       world: { day: 3, hour: 6, gauges: gauges(50, 60, 70), player: { x: 1, y: 2 } },
     };
     const parsed = parseSaveFile(old);
-    expect(SAVE_VERSION).toBe(15);
+    expect(SAVE_VERSION).toBe(16);
     expect(parsed?.version).toBe(SAVE_VERSION);
     expect(parsed?.world.day).toBe(3);
     expect(parsed?.world.wallet).toEqual(emptyWallet());
@@ -116,7 +116,8 @@ describe('save migration', () => {
     expect(parsed?.version).toBe(SAVE_VERSION);
     // เซฟก่อนเวอร์ชัน 8 เหรียญถูกคูณ 10 ตอนแปลง อำนาจซื้อเท่าเดิม
     expect(parsed?.world.wallet.coins).toBe(500);
-    expect(parsed?.world.cosmetics.equipped.case).toBe('case_pink_cat');
+    // เวอร์ชัน 16 ทิ้งช่องเคสโทรศัพท์
+    expect(parsed?.world.cosmetics).toEqual(defaultCosmetics());
   });
 });
 

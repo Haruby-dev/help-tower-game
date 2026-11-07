@@ -86,6 +86,8 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   createRotatePrompt(uiRoot);
   initSettings(appRoot);
   createToolbar(uiRoot);
+  // ปุ่มจัดวางอยู่ในชั้นเดียวกับ HUD หน้าต่าง สมุด และการ์ดที่สร้างทีหลังจึงทับปุ่มนี้ได้
+  createArrange(uiRoot);
   createCookingWindow(uiRoot);
   createGioWindows(uiRoot);
   createTrayWindow(uiRoot);
@@ -103,7 +105,6 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   createSupportCard(uiRoot);
   createUpdateCheck(uiRoot);
   createLandConfirm(uiRoot);
-  createArrange(uiRoot);
   createSound();
 }
 

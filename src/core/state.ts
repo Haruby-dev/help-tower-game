@@ -38,13 +38,13 @@ export const emptyWallet = (): Wallet => ({ coins: 0, stars: 0, log: [], daily: 
 
 /** ของแต่งเป็นความสวยล้วน เก็บธงไว้ก่อน ระบบร้านค้าและหีบมาทีหลัง */
 export interface Cosmetics {
-  equipped: { case: string; charm: string | null; wallpaper: string; canSkin: string };
-  owned: { cases: string[]; charms: string[]; wallpapers: string[]; canSkins: string[]; clips: string[] };
+  equipped: { charm: string | null; wallpaper: string; canSkin: string };
+  owned: { charms: string[]; wallpapers: string[]; canSkins: string[]; clips: string[] };
 }
 
 export const defaultCosmetics = (): Cosmetics => ({
-  equipped: { case: 'case_pink_cat', charm: null, wallpaper: 'wallpaper_sky_cats', canSkin: 'can_blue' },
-  owned: { cases: ['case_pink_cat'], charms: [], wallpapers: ['wallpaper_sky_cats'], canSkins: ['can_blue'], clips: [] },
+  equipped: { charm: null, wallpaper: 'wallpaper_sky_cats', canSkin: 'can_blue' },
+  owned: { charms: [], wallpapers: ['wallpaper_sky_cats'], canSkins: ['can_blue'], clips: [] },
 });
 
 export interface CropState {

@@ -10469,6 +10469,96 @@
     "lazy": true,
     "note": "twins before the reveal, not 100%"
   },
+  "album_mpol_b_puinun_met": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_puinun_met.png",
+    "file": "ui/app_pages/album/mpol_b_puinun_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "met, not 100% yet (art update 2026-11-07b)"
+  },
+  "album_mpol_b_popcorn_met": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_popcorn_met.png",
+    "file": "ui/app_pages/album/mpol_b_popcorn_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "met, not 100% yet (art update 2026-11-07b)"
+  },
+  "album_mpol_b_mookmik_met": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_mookmik_met.png",
+    "file": "ui/app_pages/album/mpol_b_mookmik_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "met, not 100% yet (art update 2026-11-07b)"
+  },
+  "album_mpol_b_toomtia_met": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_tumtia_met.png",
+    "file": "ui/app_pages/album/mpol_b_tumtia_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "met, not 100% yet (art update 2026-11-07b)"
+  },
+  "album_mpol_b_yaibaimai_met": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_yai_met.png",
+    "file": "ui/app_pages/album/mpol_b_yai_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "met, not 100% yet (art update 2026-11-07b)"
+  },
+  "album_mpol_b_wingwing_met": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_wingwing_met.png",
+    "file": "ui/app_pages/album/mpol_b_wingwing_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "met, not 100% yet (art update 2026-11-07b)"
+  },
+  "album_mpol_b_tubpong_met": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_tubpong_met.png",
+    "file": "ui/app_pages/album/mpol_b_tubpong_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "met, not 100% yet (art update 2026-11-07b)"
+  },
+  "album_mpol_b_jaotungtong_met": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_jtt_met.png",
+    "file": "ui/app_pages/album/mpol_b_jtt_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "met, not 100% yet (art update 2026-11-07b)"
+  },
+  "album_mpol_b_puefaotung_met": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_pft_met.png",
+    "file": "ui/app_pages/album/mpol_b_pft_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "met, not 100% yet (art update 2026-11-07b)"
+  },
   "album_mpol_s_unknown": {
     "type": "local",
     "width": 50,
@@ -10804,7 +10894,58 @@
     "source": "public/assets/ui/app_pages/pets/scene_mumu_sil.png",
     "file": "ui/app_pages/pets/scene_mumu_sil.png",
     "jade_tone": false,
-    "lazy": true
+    "lazy": true,
+    "note": "no longer used (art update 2026-11-07b): not-met page draws pets_sil_* on the paper"
+  },
+  "pets_sil_boomboom": {
+    "type": "local",
+    "width": 37,
+    "height": 34,
+    "source": "public/assets/ui/app_pages/pets/sil_boomboom.png",
+    "file": "ui/app_pages/pets/sil_boomboom.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "not-met silhouette on the paper, S3 #7aae96 (art update 2026-11-07b)"
+  },
+  "pets_sil_bubble": {
+    "type": "local",
+    "width": 35,
+    "height": 33,
+    "source": "public/assets/ui/app_pages/pets/sil_bubble.png",
+    "file": "ui/app_pages/pets/sil_bubble.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "not-met silhouette on the paper, S3 #7aae96 (art update 2026-11-07b)"
+  },
+  "pets_sil_mumu": {
+    "type": "local",
+    "width": 56,
+    "height": 51,
+    "source": "public/assets/ui/app_pages/pets/sil_mumu.png",
+    "file": "ui/app_pages/pets/sil_mumu.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "not-met silhouette on the paper, S3 #7aae96 (art update 2026-11-07b)"
+  },
+  "pets_sil_nuebnub": {
+    "type": "local",
+    "width": 34,
+    "height": 37,
+    "source": "public/assets/ui/app_pages/pets/sil_nuebnub.png",
+    "file": "ui/app_pages/pets/sil_nuebnub.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "not-met silhouette on the paper, S3 #7aae96 (art update 2026-11-07b)"
+  },
+  "pets_sil_pangpok": {
+    "type": "local",
+    "width": 28,
+    "height": 31,
+    "source": "public/assets/ui/app_pages/pets/sil_pangpok.png",
+    "file": "ui/app_pages/pets/sil_pangpok.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "not-met silhouette on the paper, S3 #7aae96 (art update 2026-11-07b)"
   },
   "pets_scene_nuebnub": {
     "type": "local",
@@ -11087,5 +11228,15 @@
     "jade_tone": false,
     "lazy": true,
     "note": "แมวสามสีโผล่ขอบบนโทรศัพท์ จาก mock_src/cat_peek2.png ในภาพที่ผู้ใช้อนุมัติ (FINAL_lock, FINAL_home)"
+  },
+  "ui_paper_glass": {
+    "type": "local",
+    "width": 40,
+    "height": 40,
+    "source": "public/assets/ui/phone_v3/paper_glass.png",
+    "file": "ui/phone_v3/paper_glass.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "frosted-glass card paper tile, tiled at the app-icon scale (phone update 2026-11-07c)"
   }
 }

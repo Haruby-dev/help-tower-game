@@ -188,7 +188,10 @@ test('opens a golden chest from the bag, pops out the rewards and keeps the cosm
   await page.locator('#chest-take').click();
   await expect(page.locator('#chest-window')).toBeHidden();
   await page.locator('[data-bag-tab="collection"]').click();
-  expect(await page.locator('[data-collection="cosmetic"]').count()).toBeGreaterThanOrEqual(4);
+  // เกมใหม่มีวอลเปเปอร์กับบัวสีน้ำเงิน (เคสโทรศัพท์ไม่เป็นของแล้ว) หีบทองให้ของแต่งเสมอ และของแต่งในหีบมีแค่สีบัวรดน้ำ
+  expect(await page.locator('[data-collection="cosmetic"]').count()).toBeGreaterThanOrEqual(3);
+  const cosmetics = (await state(page)) as unknown as { cosmetics: { owned: { canSkins: string[] } } };
+  expect(cosmetics.cosmetics.owned.canSkins.length).toBeGreaterThanOrEqual(2);
 });
 
 test('shows the day weather on the phone and draws rain', async ({ page }) => {
