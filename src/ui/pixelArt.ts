@@ -8,6 +8,23 @@ export function artUrl(id: string): string {
   return sliceUrl(id) ?? assetUrl(entry.file);
 }
 
+/**
+ * ภาพขนาดจริงคูณหน่วยพิกเซลของที่ที่วาง (ค่าเริ่มต้น --px) ไม่ย่อขยายทีละชิ้น ขนาดจุดภาพจึงเท่ากันทั้งหน้าจอ
+ * ในโทรศัพท์ สมุด และการ์ด --px ถูกตั้งเป็นพิกเซลภาพหนึ่งจุดของที่นั้นแล้ว
+ */
+export function sizedArt(id: string, className: string, unit = '--px', scale = 1): HTMLImageElement {
+  const entry = registry[id];
+  if (entry?.type !== 'local') throw new Error(`${id} is not a local image`);
+  const image = document.createElement('img');
+  image.className = `pixel-img ${className}`;
+  image.src = artUrl(id);
+  image.alt = '';
+  image.dataset.art = id;
+  image.style.width = `calc(var(${unit}) * ${entry.width * scale})`;
+  image.style.height = `calc(var(${unit}) * ${entry.height * scale})`;
+  return image;
+}
+
 function loadImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const image = new Image();

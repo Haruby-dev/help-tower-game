@@ -6,26 +6,39 @@ import shopJson from '../data/shop.json';
 import type { ShopData } from '../data/schema';
 import { registry } from '../core/assets';
 import { recipes } from '../systems/cooking';
+import { crops, cropOfItem } from '../systems/farm';
+import { formatMoney } from '../systems/economy';
 import { buyOffer, maxQuantity, offersFor, tasteOfTreat, type Offer, type ShopGroup } from '../systems/shop';
 import { itemImage, itemName } from './inventory';
-import { setMoney } from './money';
-import { artUrl } from './pixelArt';
+import { coinIcon, setMoney } from './money';
+import type { PhonePage } from './phone';
+import { sizedArt } from './pixelArt';
 
-type Tab = 'daily' | 'random' | 'equipment' | 'farm';
-const TABS: { id: Tab; label: TextKey }[] = [
-  { id: 'daily', label: 'shop.tab_daily' },
-  { id: 'random', label: 'shop.tab_random' },
-  { id: 'equipment', label: 'shop.tab_equipment' },
-  { id: 'farm', label: 'shop.tab_farm' },
+/** หมวดในร้าน (จีโอมาร์ท แบบ E ผู้ใช้เลือก 6 พ.ย. 2026) หนึ่งหน้าต่อหนึ่งหมวด */
+type Category = 'treats' | 'seeds' | 'fertilizer' | 'recipes' | 'equipment' | 'farm';
+const CATEGORIES: { id: Category; label: TextKey; icon: string; tile: string; groups: ShopGroup[] }[] = [
+  { id: 'treats', label: 'shop.cat_treats', icon: 'treat_tuna', tile: '#ffe3ee', groups: ['treats'] },
+  { id: 'seeds', label: 'shop.cat_seeds', icon: 'ui_action_icon_plant', tile: '#e2f5ea', groups: ['seeds', 'random_seeds'] },
+  { id: 'fertilizer', label: 'shop.cat_fertilizer', icon: 'shop_item_fertilizer_2', tile: '#fff1d6', groups: ['fertilizer'] },
+  { id: 'recipes', label: 'shop.cat_recipes', icon: 'shop_item_recipe_scroll_sweet', tile: '#e9e1fb', groups: ['recipes'] },
+  { id: 'equipment', label: 'shop.cat_equipment', icon: 'ui_action_icon_cook', tile: '#dcecff', groups: [] },
+  { id: 'farm', label: 'shop.cat_farm', icon: 'shop_item_farm_expand', tile: '#ffe6d8', groups: [] },
 ];
-const GROUP_LABEL: Record<ShopGroup, TextKey> = {
-  treats: 'shop.group_treats',
-  seeds: 'shop.group_seeds',
-  fertilizer: 'shop.group_fertilizer',
-  random_seeds: 'shop.group_random_seeds',
-  recipes: 'shop.group_recipes',
+/** พื้นช่องภาพของแต่ละแถว (ภาพตัวอย่างใช้สีอ่อนตามของ) */
+const ROW_TILES: Record<Category, string> = {
+  treats: '#ffe6e6',
+  seeds: '#e9f6ec',
+  fertilizer: '#fff3dc',
+  recipes: '#efe6ff',
+  equipment: '#e7f0ff',
+  farm: '#ffeede',
 };
-const TASTE_LABEL = { like: 'shop.taste_like', love: 'shop.taste_love', special: 'shop.taste_special' } as const;
+const ROWS_PER_PAGE = 4;
+/** หน้าที่มีของแค่สองชิ้นมีโน้ตเกร็ดจีโอ */
+const TIP_UNDER = 3;
+const TASTE_TAG = { like: 'shop.taste_like', love: 'shop.taste_love', special: 'shop.taste_special' } as const;
+const REVIEW_STARS: Record<Category, number> = { treats: 5, seeds: 4, fertilizer: 5, recipes: 4, equipment: 5, farm: 5 };
+const PERCENT = 100;
 
 const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className: string, text?: string): HTMLElementTagNameMap[K] => {
   const node = document.createElement(tag);
@@ -38,84 +51,128 @@ const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className: strin
 const scrollFor = (recipe: string): string =>
   recipes[recipe]?.category === 'savory' ? 'shop_item_recipe_scroll_savory' : 'shop_item_recipe_scroll_sweet';
 
-function artImage(id: string, scale: number): HTMLElement {
-  const entry = registry[id];
-  if (entry?.type !== 'local') throw new Error(`${id} is not local art`);
-  const image = element('img', 'pixel-img');
-  image.src = artUrl(id);
-  image.alt = '';
-  image.style.width = `calc(var(--px) * ${entry.width * scale})`;
-  image.style.height = `calc(var(--px) * ${entry.height * scale})`;
-  return image;
-}
-
 /**
- * ภาพของบนชั้น สูตรเป็นม้วนกระดาษตามหมวด ของที่มีภาพบนชั้นร้านแยก (ปุ๋ย อุปกรณ์ครัว ถาด) ใช้ภาพนั้น ของที่ยังไม่มีภาพใช้กล่องสี
+ * ภาพของในร้าน สูตรเป็นม้วนกระดาษตามหมวด ของที่มีภาพบนชั้นร้านแยกใช้ภาพนั้น ของที่ยังไม่มีภาพใช้กล่องสี
  * ภาพบนชั้นต้องหน้าตาเหมือนของที่ได้จริง (ผู้ใช้ตัดสิน 5 พ.ย. 2026)
  */
-const offerImage = (offer: Offer, scale = 1): HTMLElement => {
-  if (offer.kind === 'recipe') return artImage(scrollFor(offer.target), scale);
+const offerImage = (offer: Offer, scale: number, unit: string): HTMLElement => {
+  if (offer.kind === 'recipe') return sizedArt(scrollFor(offer.target), '', unit, scale);
   const shelf = (shopJson as ShopData).shelfArt[offer.target] ?? `shop_item_${offer.target}`;
-  return registry[shelf]?.type === 'local' ? artImage(shelf, scale) : itemImage(offer.target, false, scale);
+  if (registry[shelf]?.type === 'local') return sizedArt(shelf, '', unit, scale);
+  const image = itemImage(offer.target, false, scale);
+  if (image instanceof HTMLImageElement) {
+    image.style.width = image.style.width.replace('var(--px)', `var(${unit})`);
+    image.style.height = image.style.height.replace('var(--px)', `var(${unit})`);
+  }
+  return image;
 };
 
-const offerName = (offer: Offer): string => (offer.kind === 'recipe' ? t(`dish.${offer.target}.name` as TextKey) : itemName(offer.target));
+const offerName = (offer: Offer): string =>
+  offer.kind === 'recipe' ? `${t('shop.recipe_prefix')}${t(`dish.${offer.target}.name` as TextKey)}` : itemName(offer.target);
 
-/** ข้อความใต้ชื่อในการ์ดขวา แมวเลียบอกว่าจีโอชอบแค่ไหนและความสุขที่ได้จากซองแรกของวัน */
-function offerNotes(offer: Offer): string[] {
+const categoryOf = (offer: Offer): Category => CATEGORIES.find((entry) => entry.groups.includes(offer.group))?.id ?? 'treats';
+const isRandom = (offer: Offer): boolean => offer.tab === 'random';
+
+/** บรรทัดใต้ชื่อในหน้าสินค้า ตัวเลขมาจากไฟล์ข้อมูลเสมอ */
+function descriptionOf(offer: Offer): string {
+  const sold = t(isRandom(offer) ? 'shop.sold_random' : 'shop.sold_daily');
   if (offer.group === 'treats') {
     const taste = tasteOfTreat(offer.target)!;
     const gain = taste === 'special' ? balance.gioCare.specialWeeklyGain : balance.gioCare.treatGains[0]!;
-    return [t(TASTE_LABEL[taste]), `${t('shop.happiness')} +${gain}`];
+    return `${t('shop.desc_treat')} ${balance.gioCare.treatsPerDay} ${t('shop.desc_treat_unit')} · ${t('shop.happiness')} +${gain}`;
   }
-  if (offer.group === 'fertilizer') return [t('shop.fertilizer_note')];
-  return [t(offer.kind === 'recipe' ? 'shop.recipe_note' : 'shop.seed_note')];
+  if (offer.kind === 'recipe') return `${t('shop.recipe_note')} · ${sold}`;
+  if (offer.group === 'fertilizer') return `${t('shop.fertilizer_note_short')} · ${sold}`;
+  const crop = crops[cropOfItem(offer.target)];
+  return crop ? `${t('shop.seed_note')} · ${t('shop.desc_grow')} ${crop.growDays} ${t('shop.desc_days')} · ${sold}` : sold;
 }
 
-/** ร้านค้าระบบเต็มจอโทรศัพท์ จีโอถูมือหลังเคาน์เตอร์ ป้ายแท็บไม้ 4 อัน ชั้นวางของ และการ์ดของที่เลือก */
-export function createShopPage(): HTMLElement {
-  const page = element('div', 'shop-page');
-  const awning = element('div', 'shop-awning');
-  const sign = element('h2', 'shop-sign', t('shop.title'));
-  const purse = element('b', 'shop-purse');
+/** โน้ตจีโอ สูตรบอกวัตถุดิบจริงจากไฟล์สูตร */
+function gioNoteOf(offer: Offer): string {
+  if (offer.kind === 'recipe') {
+    const parts = Object.entries(recipes[offer.target]?.ingredients ?? {}).map(([item, count]) => `${itemName(item)} ${count}`);
+    return `${t('shop.gnote_recipe')} ${parts.join(' ')}`;
+  }
+  if (offer.group === 'treats') return t(`shop.gnote_${offer.target}` as TextKey);
+  if (offer.group === 'fertilizer') return t(isRandom(offer) ? 'shop.gnote_fertilizer_random' : 'shop.gnote_fertilizer');
+  return t('shop.gnote_seeds');
+}
+
+/** เกร็ดจีโอบนหน้าที่มีของน้อย: ปุ๋ยบอกโอกาสได้ดาวจากไฟล์สมดุล · สูตรบอกว่าสุ่มวันละกี่เมนู */
+function tipOf(category: Category): { title: string; lines: string[] } | null {
+  if (category === 'fertilizer') {
+    const rolls = balance.stars.rolls as Record<string, number[]>;
+    const odds = (level: string): string =>
+      (rolls[level] ?? [])
+        .map((chance, index) => ({ chance, stars: index + 1 }))
+        .filter(({ chance, stars }) => chance > 0 && stars > 1)
+        .map(({ chance, stars }) => `${stars} ${t('shop.tip_stars')} ${Math.round(chance * PERCENT)}%`)
+        .join(' · ');
+    return {
+      title: t('shop.tip_fertilizer'),
+      lines: [t('shop.tip_fertilizer_none'), `${t('shop.tip_level')} 2 → ${odds('2')}`, `${t('shop.tip_level')} 3 → ${odds('3')}`],
+    };
+  }
+  if (category === 'recipes') {
+    return {
+      title: `${t('shop.tip_recipes')} ${(shopJson as ShopData).randomRecipes} ${t('shop.tip_recipes_unit')}`,
+      lines: [t('shop.tip_recipes_1'), t('shop.tip_recipes_2')],
+    };
+  }
+  return null;
+}
+
+/** ร้านค้าระบบ "จีโอมาร์ท" แบบ E: การ์ดซ้ายรายการหน้าละ 4 แถว เรียงถูกไปแพง · การ์ดขวาหน้าสินค้า */
+export function createShopPage(): PhonePage {
+  const left = element('div', 'pz ps shop-page');
+  const top = element('div', 'ps-top');
+  const logo = element('span', 'pw-logo', t('shop.logo_a'));
+  logo.append(element('b', '', t('shop.logo_b')));
+  const purse = element('b', 'ps-purse');
   purse.id = 'shop-coins';
-  awning.append(sign, purse);
+  top.append(logo, purse);
+  const chips = element('div', 'ps-chips');
+  const list = element('div', 'ps-list');
+  const pager = element('div', 'ps-pager');
+  left.append(top, chips, list, pager);
 
-  const side = element('div', 'shop-side');
-  const bubble = element('p', 'shop-bubble', t('shop.greet'));
-  const gio = element('img', 'pixel-img shop-gio');
-  gio.src = artUrl('ui_shop_gio');
-  gio.alt = '';
-  const counter = element('i', 'shop-counter');
-  const tabs = element('div', 'shop-tabs');
-  side.append(bubble, gio, counter, tabs);
+  const right = element('div', 'pz ps-card');
+  right.id = 'shop-card';
 
-  const shelves = element('div', 'shop-shelves');
-  const card = element('div', 'shop-card');
-  card.id = 'shop-card';
-  const body = element('div', 'shop-body');
-  body.append(side, shelves, card);
-  page.append(awning, body);
-
-  let tab: Tab = 'daily';
+  let category: Category = 'treats';
+  let page = 0;
   let picked: string | null = null;
   let quantity = 1;
 
-  const renderCard = (offers: Offer[]): void => {
-    const offer = offers.find((entry) => entry.id === picked);
+  const renderCard = (offer: Offer | undefined, closed: boolean): void => {
     if (!offer) {
-      card.replaceChildren(element('small', 'shop-card__hint', t('shop.pick')));
+      right.replaceChildren(element('p', 'ps-hint', t(closed ? 'shop.closed_tab' : 'shop.pick')));
       return;
     }
     const world = gameState.world;
     const most = maxQuantity(world, offer);
     quantity = Math.min(Math.max(1, quantity), Math.max(1, most));
-    const picture = element('div', 'shop-card__picture');
-    picture.append(offerImage(offer, 2));
-    const notes = offerNotes(offer).map((note) => element('small', 'shop-card__note', note));
-    const stepper = element('div', 'shop-card__stepper');
+    const hero = element('div', 'ps-hero');
+    hero.style.background = ROW_TILES[categoryOf(offer)];
+    hero.append(offerImage(offer, 2, '--px'));
+    const tag = element(
+      'span',
+      'ps-hot',
+      offer.group === 'treats' ? t(TASTE_TAG[tasteOfTreat(offer.target)!]) : t('shop.hot'),
+    );
+    const name = element('div', 'ps-name', offerName(offer));
+    const price = element('div', 'ps-price');
+    setMoney(price, offer.price);
+    const review = element('div', 'ps-rev');
+    const head = element('div', 'h', `${t(`shop.review_by_${categoryOf(offer)}` as TextKey)} `);
+    head.append(element('b', '', '★'.repeat(REVIEW_STARS[categoryOf(offer)]) + '☆'.repeat(5 - REVIEW_STARS[categoryOf(offer)])));
+    review.append(head, element('p', '', `“${t(`shop.review_${categoryOf(offer)}` as TextKey)}”`));
+    const note = element('div', 'ps-gnote', `${t('shop.gnote')} “${gioNoteOf(offer)}”`);
+
+    const buttons = element('div', 'ps-btns');
+    const stepper = element('div', 'ps-stepper');
     const step = (text: string, label: TextKey, id: string, delta: number, disabled: boolean): HTMLButtonElement => {
-      const button = element('button', 'phone-tool shop-step', text);
+      const button = element('button', 'ps-step', text);
       button.type = 'button';
       button.id = id;
       button.disabled = disabled;
@@ -126,18 +183,18 @@ export function createShopPage(): HTMLElement {
       });
       return button;
     };
-    const count = element('b', 'shop-card__count', String(quantity));
+    const count = element('b', 'ps-qty', String(quantity));
     count.id = 'shop-qty';
     const single = offer.kind === 'recipe';
     stepper.append(step('−', 'shop.less', 'shop-less', -1, single || quantity <= 1), count, step('+', 'shop.more', 'shop-more', 1, single || quantity >= most));
-    const buy = element('button', 'phone-tool shop-buy');
+    const buy = element('button', 'ps-buy');
     buy.type = 'button';
     buy.id = 'shop-buy';
     const known = offer.kind === 'recipe' && world.recipes.known.includes(offer.target);
     buy.disabled = most < 1;
     if (known) buy.textContent = t('shop.known');
     else if (most < 1) buy.textContent = t('shop.no_money');
-    else setMoney(buy, offer.price * quantity, `${t('shop.buy')} `);
+    else setMoney(buy, offer.price * quantity, `${t('shop.buy_now')} `);
     buy.addEventListener('click', () => {
       const next = buyOffer(gameState.world, offer, quantity);
       if (!next) {
@@ -147,20 +204,23 @@ export function createShopPage(): HTMLElement {
       gameState.setWorld(next);
       quantity = 1;
     });
-    card.replaceChildren(picture, element('b', 'shop-card__name', offerName(offer)), ...notes, stepper, buy);
+    buttons.append(stepper, buy);
+    right.replaceChildren(hero, tag, name, price, element('div', 'ps-desc', descriptionOf(offer)), review, note, buttons);
   };
 
-  const shelfItem = (offer: Offer): HTMLElement => {
-    const button = element('button', `shop-item${offer.id === picked ? ' is-selected' : ''}`);
+  const row = (offer: Offer): HTMLElement => {
+    const button = element('button', `ps-row${offer.id === picked ? ' is-selected' : ''}`);
     button.type = 'button';
     button.dataset.offer = offer.id;
     button.setAttribute('aria-label', offerName(offer));
-    const holder = element('span', 'shop-item__art');
-    holder.append(offerImage(offer));
-    if (offer.target === 'treat_special') holder.append(element('small', 'shop-item__badge', t('shop.special_badge')));
-    const price = element('b', 'shop-item__price');
-    setMoney(price, offer.price);
-    button.append(holder, price);
+    const tile = element('span', 'ps-rimg');
+    tile.style.background = ROW_TILES[categoryOf(offer)];
+    tile.append(offerImage(offer, 1, '--px2'));
+    const name = element('span', 'ps-rn', offerName(offer));
+    if (isRandom(offer)) name.append(element('span', 'ps-today', t('shop.today_tag')));
+    const price = element('span', 'ps-rprice', formatMoney(offer.price));
+    price.append(coinIcon('coin-icon--small'));
+    button.append(tile, name, price);
     button.addEventListener('click', () => {
       if (picked !== offer.id) quantity = 1;
       picked = offer.id;
@@ -173,45 +233,73 @@ export function createShopPage(): HTMLElement {
     if (!gameState.started) return;
     const world = gameState.world;
     setMoney(purse, world.wallet.coins);
-    tabs.replaceChildren(
-      ...TABS.map(({ id, label }) => {
-        const button = element('button', `shop-tab${id === tab ? ' is-active' : ''}`, t(label));
-        button.type = 'button';
-        button.dataset.shopTab = id;
-        button.addEventListener('click', () => {
-          tab = id;
-          picked = null;
+    chips.replaceChildren(
+      ...CATEGORIES.map((entry) => {
+        const chip = element('button', `ps-chip${entry.id === category ? ' is-active' : ''}`);
+        chip.type = 'button';
+        chip.dataset.shopTab = entry.id;
+        const icon = element('span', 'ps-cic');
+        icon.style.background = entry.tile;
+        icon.append(sizedArt(entry.icon, '', '--px2'));
+        chip.append(icon, element('span', '', t(entry.label)));
+        chip.addEventListener('click', () => {
+          if (category !== entry.id) {
+            category = entry.id;
+            page = 0;
+            picked = null;
+          }
           render();
         });
-        return button;
+        return chip;
       }),
     );
-    const offers = offersFor(world).filter((offer) => !(offer.kind === 'recipe' && world.recipes.known.includes(offer.target)));
-    if (tab === 'equipment' || tab === 'farm') {
-      shelves.replaceChildren(element('p', 'shop-closed', t('shop.closed_tab')));
-      card.replaceChildren();
-      return;
+    const groups = CATEGORIES.find((entry) => entry.id === category)!.groups;
+    // ของทั้งหมวดเรียงถูกไปแพง (ผู้ใช้ตัดสิน) ราคาเท่ากันเรียงตามลำดับเดิม
+    const shown = offersFor(world)
+      .filter((offer) => groups.includes(offer.group) && !(offer.kind === 'recipe' && world.recipes.known.includes(offer.target)))
+      .map((offer, index) => ({ offer, index }))
+      .sort((a, b) => a.offer.price - b.offer.price || a.index - b.index)
+      .map(({ offer }) => offer);
+    const pages = Math.max(1, Math.ceil(shown.length / ROWS_PER_PAGE));
+    page = Math.min(page, pages - 1);
+    if (!picked || !shown.some((offer) => offer.id === picked)) picked = shown[page * ROWS_PER_PAGE]?.id ?? null;
+    const onPage = shown.slice(page * ROWS_PER_PAGE, (page + 1) * ROWS_PER_PAGE);
+    list.replaceChildren(...onPage.map(row));
+    if (shown.length === 0) list.append(element('p', 'ps-closed', t('shop.closed_tab')));
+    const tip = shown.length > 0 && shown.length < TIP_UNDER ? tipOf(category) : null;
+    if (tip) {
+      const card = element('div', 'ps-tip');
+      card.append(element('i', 'ps-tip__tape'), element('b', '', `${t('shop.tip')}: ${tip.title}`));
+      for (const line of tip.lines) card.append(element('p', '', line));
+      list.append(card);
     }
-    const shown = offers.filter((offer) => offer.tab === tab);
-    if (!picked || !shown.some((offer) => offer.id === picked)) picked = shown[0]?.id ?? null;
-    const groups = [...new Set(shown.map((offer) => offer.group))];
-    shelves.replaceChildren(
-      ...groups.map((group) => {
-        const shelf = element('section', 'shop-shelf');
-        const row = element('div', 'shop-shelf__row');
-        row.append(...shown.filter((offer) => offer.group === group).map(shelfItem));
-        shelf.append(element('h3', 'shop-shelf__label', t(GROUP_LABEL[group])), row, element('i', 'shop-shelf__board'));
-        return shelf;
-      }),
+    const arrow = (text: string, id: string, label: TextKey, delta: number): HTMLButtonElement => {
+      const button = element('button', 'ps-arrow', text);
+      button.type = 'button';
+      button.id = id;
+      button.setAttribute('aria-label', t(label));
+      button.disabled = page + delta < 0 || page + delta >= pages;
+      button.addEventListener('click', () => {
+        page = Math.min(pages - 1, Math.max(0, page + delta));
+        picked = shown[page * ROWS_PER_PAGE]?.id ?? null;
+        quantity = 1;
+        render();
+      });
+      return button;
+    };
+    const dots = element('span', 'ps-dots');
+    for (let index = 0; index < pages; index += 1) dots.append(element('span', index === page ? 'on' : ''));
+    pager.replaceChildren(arrow('‹', 'shop-prev', 'book.prev', -1), dots, element('span', '', `${t('shop.page')} ${page + 1}/${pages}`), arrow('›', 'shop-next', 'book.next', 1));
+    renderCard(
+      shown.find((offer) => offer.id === picked),
+      shown.length === 0,
     );
-    renderCard(shown);
   }
 
   render();
   // ร้านวาดใหม่เฉพาะตอนเปิดอยู่ ไม่วาดทุกเฟรมตอนเดินเล่น
   eventBus.on('world-changed', () => {
-    if (page.isConnected) render();
+    if (left.isConnected) render();
   });
-  page.addEventListener('phone-page-shown', render);
-  return page;
+  return { left, right, shown: render };
 }

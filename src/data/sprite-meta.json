@@ -4688,5 +4688,580 @@
     "footY": {
       "default": 18
     }
+  },
+  "book_album_arrow_left": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "book_album_arrow_right": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "book_album_cloth": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "book_album_divider": {
+    "footY": {
+      "default": 4
+    }
+  },
+  "book_album_frame_9slice": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "book_album_ribbon": {
+    "footY": {
+      "default": 34
+    }
+  },
+  "book_album_slot": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "book_album_tab": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "book_album_tab_active": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "book_album_tape": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "book_album_padlock": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "album_polaroid_treat_tuna": {
+    "footY": {
+      "default": 76
+    }
+  },
+  "album_polaroid_treat_chicken": {
+    "footY": {
+      "default": 76
+    }
+  },
+  "album_polaroid_treat_salmon": {
+    "footY": {
+      "default": 76
+    }
+  },
+  "album_polaroid_treat_special": {
+    "footY": {
+      "default": 76
+    }
+  },
+  "album_polaroid_locked": {
+    "footY": {
+      "default": 76
+    }
+  },
+  "album_mpol_s_puinun": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_s_puinun_met": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_b_puinun": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_s_popcorn": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_s_popcorn_met": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_b_popcorn": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_s_mookmik": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_s_mookmik_met": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_b_mookmik": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_s_toomtia": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_s_toomtia_met": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_b_toomtia": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_s_tangkrading": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_s_tangkrading_met": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_b_tangkrading": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_s_yaibaimai": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_s_yaibaimai_met": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_b_yaibaimai": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_s_wingwing": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_s_wingwing_met": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_b_wingwing": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_s_tubpong": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_s_tubpong_met": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_b_tubpong": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_s_jaotungtong": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_s_jaotungtong_met": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_b_jaotungtong": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_s_puefaotung": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_s_puefaotung_met": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_b_puefaotung": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_b_tangkrading_met": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "album_mpol_s_unknown": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_s_locked": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_s_selfie": {
+    "footY": {
+      "default": 62
+    }
+  },
+  "album_mpol_b_selfie": {
+    "footY": {
+      "default": 80
+    }
+  },
+  "pets_card_boomboom": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_boomboom_sick": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_boomboom_sil": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_bubble": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_bubble_sick": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_bubble_sil": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_locked": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_mumu": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_mumu_sick": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_mumu_sil": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_nuebnub": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_nuebnub_sick": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_nuebnub_sil": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_pangpok": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_pangpok_sick": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_pangpok_sil": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_card_unknown": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "pets_check_off": {
+    "footY": {
+      "default": 9
+    }
+  },
+  "pets_check_on": {
+    "footY": {
+      "default": 9
+    }
+  },
+  "pets_heart_off": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "pets_heart_on": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "book_pet_cloth": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "book_pet_divider": {
+    "footY": {
+      "default": 4
+    }
+  },
+  "book_pet_frame_9slice": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "book_pet_padlock": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "book_pet_ribbon": {
+    "footY": {
+      "default": 34
+    }
+  },
+  "book_pet_slot": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "book_pet_tape": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "pets_scene_boomboom": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "pets_scene_boomboom_heal": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "pets_scene_bubble": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "pets_scene_mumu": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "pets_scene_mumu_sil": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "pets_scene_nuebnub": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "pets_scene_pangpok": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "book_gate_arrow_left": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "book_gate_arrow_right": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "book_gate_cloth": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "book_gate_frame_9slice": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "book_gate_padlock": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "book_gate_ribbon": {
+    "footY": {
+      "default": 34
+    }
+  },
+  "book_gate_tape": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "gate_scene_gate1": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "gate_scene_gate10": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "gate_scene_gate2": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "gate_scene_gate3": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "gate_scene_gate4": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "gate_scene_gate5": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "gate_scene_gate6": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "gate_scene_gate7": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "gate_scene_gate8": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "gate_scene_gate9": {
+    "footY": {
+      "default": 100
+    }
+  },
+  "gate_tower_locked": {
+    "footY": {
+      "default": 206
+    }
+  },
+  "gate_tower_zone1": {
+    "footY": {
+      "default": 206
+    }
+  },
+  "mail_bottle": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "mail_bottle_sil": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "book_mail_cloth": {
+    "footY": {
+      "default": 40
+    }
+  },
+  "book_mail_frame_9slice": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "book_mail_padlock": {
+    "footY": {
+      "default": 13
+    }
+  },
+  "book_mail_ribbon": {
+    "footY": {
+      "default": 34
+    }
+  },
+  "book_mail_tape": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "ui_sugar_star": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "ui_icon_spoon_fork": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "ui_cat_peek": {
+    "footY": {
+      "default": 19
+    }
   }
 }

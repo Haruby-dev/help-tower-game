@@ -45,7 +45,7 @@ test('grows a scallion from seed to harvest in 3 game days and saves it', async 
   await page.locator('#phone-button').click();
   await page.locator('#lock-open').click();
   await page.locator('[data-app="inventory"]').click();
-  await expect(page.locator('.bag-slot')).toHaveCount(30);
+  await expect(page.locator('.pb-slot')).toHaveCount(30);
   await page.locator('[data-item="produce_scallion"]').click();
   await expect(page.locator('#bag-convert')).toHaveCount(0);
   await page.locator('#phone-close').click();
@@ -156,15 +156,16 @@ test('the bag opens unfolded with 30 slots and survives an item with no art', as
   await page.locator('#lock-open').click();
   await page.locator('[data-app="inventory"]').click();
   await expect(page.locator('#phone')).toHaveAttribute('data-app', 'inventory');
-  await expect(page.locator('#phone')).toHaveAttribute('data-fold', 'unfolded');
-  await expect(page.locator('.bag-grid .bag-slot')).toHaveCount(30);
+  await expect(page.locator('#phone')).toHaveAttribute('data-state', 'open');
+  await expect(page.locator('.bag-grid .pb-slot')).toHaveCount(30);
   await expect(page.locator('#bag-used')).toHaveText('16/30');
   await expect(page.locator('[data-item="produce_not_made_yet"] .item-missing')).toHaveCount(1);
   await page.locator('[data-bag-tab="seeds"]').click();
-  await expect(page.locator('.bag-slot[data-item]')).toHaveCount(0);
+  await expect(page.locator('.pb-slot[data-item]')).toHaveCount(0);
   await page.locator('[data-bag-tab="produce"]').click();
   await page.locator('[data-item="produce_tomato"]').click();
-  await expect(page.locator('#bag-sell')).toBeDisabled();
+  // ใส่ถาดขายเอาออกแล้ว ขายผ่านหน้าต่างฝากจีโอขาย (ผู้ใช้ตัดสิน 6 พ.ย. 2026)
+  await expect(page.locator('#bag-sell')).toHaveCount(0);
   await expect(page.locator('#bag-convert')).toHaveCount(0);
 });
 

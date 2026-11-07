@@ -8,6 +8,7 @@ import { beadFills, isAlert, isDirty, isPulsing, moodOf, type Mood } from '../sy
 import { artUrl, bubbleImage, drawSpeechBubble, type NineSlice } from './pixelArt';
 import { formatMoney } from '../systems/economy';
 import { setMoney } from './money';
+import { bagArtId, itemName } from './inventory';
 
 const REST_MESSAGE: Record<RestCause, TextKey> = {
   sleep: 'rest.sleep',
@@ -239,6 +240,10 @@ function createActionControls(uiRoot: HTMLElement): void {
   const icon = document.createElement('img');
   icon.className = 'action-button__icon';
   icon.alt = '';
+  // ป้าย "กิน" ใต้ปุ่มเฉพาะตอนเลือกอาหารในแถบอาหาร (ภาพตัวอย่าง eat_swap_B) ท่าอื่นยังไม่มีป้ายตามเดิม
+  const eatLabel = document.createElement('span');
+  eatLabel.className = 'action-button__label';
+  eatLabel.textContent = t('action.eat');
   button.append(frame, pressed, icon);
   if (!isTouch) {
     const key = document.createElement('span');
@@ -249,13 +254,29 @@ function createActionControls(uiRoot: HTMLElement): void {
   button.addEventListener('click', () => eventBus.emit('action-pressed', undefined));
   uiRoot.append(button);
 
+  /** ปุ่มกินแสดงภาพอาหารที่เลือก (ภาพในกระเป๋าขนาดจริง) */
+  const showFood = (): void => {
+    const food = gameState.selectedFood;
+    const art = food ? bagArtId(food) : null;
+    centredIcon(icon, art ?? 'ui_action_icon_cook');
+    button.setAttribute('aria-label', food ? `${t('action.eat')} ${itemName(food)}` : t('action.eat'));
+  };
   eventBus.on('action-changed', (action) => {
     button.hidden = action === null;
     if (!action) return;
     button.dataset.icon = action.icon;
-    centredIcon(icon, `ui_action_icon_${action.icon}`);
     button.dataset.action = action.label;
+    if (action.icon === 'eat') button.append(eatLabel);
+    else eatLabel.remove();
+    if (action.icon === 'eat') {
+      showFood();
+      return;
+    }
+    centredIcon(icon, `ui_action_icon_${action.icon}`);
     button.setAttribute('aria-label', t(action.label));
+  });
+  eventBus.on('food-changed', () => {
+    if (button.dataset.icon === 'eat') showFood();
   });
 }
 

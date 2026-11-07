@@ -159,10 +159,11 @@ test('the Gio album opens a photo for each treat flavour he has eaten', async ({
   await page.locator('#phone-button').click();
   await page.locator('#lock-open').click();
   await page.locator('[data-app="album"]').click();
-  await expect(page.locator('.album-card')).toHaveCount(4);
-  await expect(page.locator('.album-card[data-album="treat_tuna"]')).not.toHaveClass(/is-locked/);
-  await expect(page.locator('.album-card[data-album="treat_salmon"]')).toHaveClass(/is-locked/);
-  await expect(page.locator('.album-count')).toContainText('1/4');
+  await expect(page.locator('#album-book')).toBeVisible();
+  await expect(page.locator('.al-pol')).toHaveCount(4);
+  await expect(page.locator('.al-pol[data-album="treat_tuna"]')).not.toHaveClass(/is-locked/);
+  await expect(page.locator('.al-pol[data-album="treat_salmon"]')).toHaveClass(/is-locked/);
+  await expect(page.locator('.al-count')).toContainText('1/4');
 });
 
 test('the test button in settings gives sugar stars and logs them', async ({ page }) => {

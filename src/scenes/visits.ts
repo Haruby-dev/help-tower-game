@@ -31,6 +31,7 @@ import {
   revealDue,
   scheduleReveal,
   takePlate,
+  noteTasted,
   tierOf,
   twinA,
   twinB,
@@ -430,6 +431,9 @@ export class Visits {
       }
       yield { kind: 'ms', left: rules.browseMs };
       if (plan.pouts.includes(index)) {
+        // จำว่าเคยเสิร์ฟเมนูนี้แล้ว อัลบั้มจะได้เปิดช่อง "ไม่ชอบ"
+        const pouted = gameState.world.tray.plates[index];
+        if (pouted) gameState.setWorld(noteTasted(gameState.world, id, parseDish(pouted.item).recipe));
         // เส้นเลือดงอนขึ้นก่อน บทพูดไม่ชอบ (ถ้าสุ่มได้) ตามมาหลังเส้นเลือดจาง จะได้ไม่ทับกัน
         monster.pout();
         yield { kind: 'ms', left: POUT_MS };

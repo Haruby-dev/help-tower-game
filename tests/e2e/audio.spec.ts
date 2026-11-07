@@ -118,14 +118,16 @@ test('eating or drinking plays one crunchy bite each time, no voice', async ({ p
   await open(page);
   await skipWithoutWebAudio(page);
   await change(page, { bag: [{ item: 'dish_home_kaprao_1', count: 3 }, { item: 'dish_tomato_juice_1', count: 1 }] });
-  await openBag(page);
-  await page.locator('[data-item="dish_home_kaprao_1"]').click();
-  await page.locator('#bag-eat').click();
-  await page.locator('[data-item="dish_tomato_juice_1"]').click();
-  await page.locator('#bag-eat').click();
-  await page.locator('[data-item="dish_home_kaprao_1"]').click();
-  await page.locator('#bag-eat').click();
-  await expect.poll(async () => (await log(page)).filter((key) => key === 'eat_crunch').length).toBe(3);
+  await page.locator('#toolbar-mode').click();
+  const act = page.locator('#action-button');
+  const bites = async (): Promise<number> => (await log(page)).filter((key) => key === 'eat_crunch').length;
+  // กินทีละคำจากแถบอาหาร รอเสียงคำก่อนแล้วค่อยกดคำถัดไป
+  for (const [index, food] of ['dish_home_kaprao_1', 'dish_tomato_juice_1', 'dish_home_kaprao_1'].entries()) {
+    await page.locator(`.food-slot[data-food="${food}"]`).click();
+    await expect(act).toHaveAttribute('data-action', 'action.eat');
+    await act.click();
+    await expect.poll(bites).toBe(index + 1);
+  }
   expect((await log(page)).some((key) => key.startsWith('eat_rapid_') || key.startsWith('voice_'))).toBe(false);
 });
 

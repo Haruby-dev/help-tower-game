@@ -67,7 +67,7 @@ test('Thai text uses the bundled Mali font', async ({ page }) => {
   expect(fontLoaded).toBe(true);
 });
 
-test('Fullscreen button is at least 44px, or absent where fullscreen is unsupported', async ({ page }) => {
+test('Fullscreen button is at least 44px, or absent where fullscreen is unsupported', async ({ page, isMobile }) => {
   await openGame(page);
   await page.locator('#settings-button').click();
   const button = page.locator('#fullscreen-button');
@@ -76,8 +76,10 @@ test('Fullscreen button is at least 44px, or absent where fullscreen is unsuppor
     return;
   }
   const box = await button.boundingBox();
+  // การ์ดตั้งค่าตามภาพตัวอย่าง: จอคอมแถวละ 44 พิกเซลพอดี มือถือปุ่มแตะได้เต็มแถวของตัวเอง (มือถือแถวละราว 17–22 พิกเซล เล็กกว่า 44 แจ้งผู้ใช้แล้ว)
+  const tall = isMobile ? 16 : 44;
   expect(box?.width).toBeGreaterThanOrEqual(44);
-  expect(box?.height).toBeGreaterThanOrEqual(44);
+  expect(box?.height).toBeGreaterThanOrEqual(tall);
 });
 
 test('Portrait pauses the game on touch screens and landscape resumes it', async ({ page, isMobile }) => {

@@ -58,7 +58,6 @@ test('buys cat treats and seeds in the system shop, and the money is logged', as
   await page.locator('#lock-open').click();
   await page.locator('[data-app="shop"]').click();
   await expect(page.locator('#phone')).toHaveAttribute('data-app', 'shop');
-  await expect(page.locator('#phone-close')).toBeHidden();
   await expect(page.locator('#shop-coins')).toHaveText('2,000');
   await page.locator('[data-offer="treats:treat_salmon"]').click();
   await page.locator('#shop-more').click();
@@ -67,15 +66,22 @@ test('buys cat treats and seeds in the system shop, and the money is logged', as
   await page.locator('#shop-buy').click();
   await expect.poll(() => count(page, 'treat_salmon')).toBe(2);
   await expect(page.locator('#shop-coins')).toHaveText('1,600');
+  await page.locator('[data-shop-tab="seeds"]').click();
   await page.locator('[data-offer="seeds:scallion"]').click();
   await page.locator('#shop-buy').click();
   await expect.poll(() => count(page, 'seed_scallion')).toBe(1);
   expect((await state(page)).wallet.coins).toBe(1520);
-  await page.locator('[data-shop-tab="random"]').click();
-  // ปุ๋ยระดับ 3 ขายเฉพาะบางวัน (M7a) จึงไม่นับ
-  await expect(page.locator('.shop-item:not([data-offer^="fertilizer:"])')).toHaveCount(5);
+  // หมวดเมล็ด: เมล็ดเริ่มเกม 6 ชนิด + สุ่มวันนี้ 3 ชนิด หน้าละ 4 แถว เรียงถูกไปแพง
+  await expect(page.locator('.ps-row')).toHaveCount(4);
+  await expect(page.locator('.ps-pager')).toContainText('1/3');
+  const prices = await page.locator('.ps-rprice').allInnerTexts();
+  const values = prices.map((text) => Number(text.replace(/[^\d]/g, '')));
+  expect([...values].sort((a, b) => a - b)).toEqual(values);
+  await page.locator('[data-shop-tab="recipes"]').click();
+  await expect(page.locator('.ps-row')).toHaveCount(2);
+  await expect(page.locator('.ps-tip')).toBeVisible();
   await page.locator('[data-shop-tab="equipment"]').click();
-  await expect(page.locator('.shop-closed')).toBeVisible();
+  await expect(page.locator('.ps-closed')).toBeVisible();
 });
 
 test('Gio stays home all day when nothing is consigned, where she can talk, give a treat and pet him', async ({ page }) => {

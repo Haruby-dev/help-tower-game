@@ -157,6 +157,8 @@ export function createSound(): void {
     uiSound(open ? 'ui_open' : 'ui_close');
   });
 
+  // กินจากแถบอาหาร: เสียงกรุบเสียงเดียว (ชุด 3)
+  eventBus.on('player-ate', () => eatSound());
   eventBus.on('player-says', (line) => {
     if (line === 'bagFull' || line === 'noBait' || line === 'baitRanOut' || line === 'noMoney') uiSound('ui_error');
   });

@@ -6,7 +6,8 @@ import { t } from '../core/i18n';
 import { gameState } from '../core/state';
 import { isHomeScreenApp } from '../core/viewport';
 import display from '../data/display.json';
-import { stickerIcon } from './pixelArt';
+import { artUrl, sizedArt, stickerIcon } from './pixelArt';
+import { createCard } from './book';
 import { createSaveRow } from './saves';
 import { itemName } from './inventory';
 import { uiSound } from './sound';
@@ -261,9 +262,12 @@ function createVolumeRow(group: SoundGroup, labelKey: (typeof VOLUME_ROWS)[numbe
   slider.value = String(Math.round(sound.volume(group) * PERCENT));
   slider.setAttribute('aria-label', t(labelKey));
   const value = Object.assign(document.createElement('b'), { className: 'settings-volume__value', textContent: slider.value });
+  const showFill = (): void => slider.style.setProperty('--fill', `${slider.value}%`);
+  showFill();
   slider.addEventListener('input', () => {
     sound.setVolume(group, Number(slider.value) / PERCENT);
     value.textContent = slider.value;
+    showFill();
   });
   // ปล่อยนิ้วแล้วเล่นเสียงตัวอย่างของกลุ่มนั้น จะได้รู้ว่าดังแค่ไหน · เสียงบรรยากาศวนอยู่แล้วในเกม จึงไม่มีเสียงตัวอย่าง
   slider.addEventListener('change', () => {
@@ -271,45 +275,6 @@ function createVolumeRow(group: SoundGroup, labelKey: (typeof VOLUME_ROWS)[numbe
     if (group === 'voice') sound.say(audioSettings.voiceTakes[0]!);
   });
   row.append(label, slider, value);
-  return row;
-}
-
-/** ปุ่มลับช่วงทดสอบ ให้ดาวน้ำตาลไว้ลองของพรีเมียม ต้องเอาออกก่อนปล่อยจริง (CLAUDE.md หัวข้อลานเล่นมอนสเตอร์) */
-function createTestStarsRow(): HTMLElement {
-  const row = document.createElement('div');
-  row.className = 'settings-row settings-test';
-  const label = document.createElement('span');
-  const name = Object.assign(document.createElement('b'), { textContent: t('settings.test_stars') });
-  const note = Object.assign(document.createElement('small'), { textContent: t('settings.test_stars_note') });
-  label.append(name, note);
-  const button = document.createElement('button');
-  button.id = 'test-stars';
-  button.type = 'button';
-  button.className = 'settings-button';
-  button.textContent = `+${balance.test.stars} ★`;
-  button.addEventListener('click', () => {
-    if (!gameState.started) return;
-    gameState.setWorld(applyTransaction(gameState.world, 'stars', balance.test.stars, 'wallet.test_stars', 'wallet.category_test'));
-  });
-  row.append(label, button);
-  return row;
-}
-
-/** ปุ่มลับช่วงทดสอบ เรียกมอนสเตอร์ที่มาได้ตัวแรกมาเยี่ยมตอนนี้เลย ไม่ต้องรอจีโอเร่ขาย ต้องเอาออกก่อนปล่อยจริง */
-function createTestMonsterRow(): HTMLElement {
-  const row = document.createElement('div');
-  row.className = 'settings-row settings-test';
-  const label = document.createElement('span');
-  const name = Object.assign(document.createElement('b'), { textContent: t('settings.test_monster') });
-  const note = Object.assign(document.createElement('small'), { textContent: t('settings.test_stars_note') });
-  label.append(name, note);
-  const button = document.createElement('button');
-  button.id = 'test-monster';
-  button.type = 'button';
-  button.className = 'settings-button';
-  button.textContent = t('settings.test_monster');
-  button.addEventListener('click', () => eventBus.emit('monster-summon', undefined));
-  row.append(label, button);
   return row;
 }
 
@@ -390,16 +355,12 @@ export function initSettings(appRoot: HTMLElement): void {
   gameState.setAutoRebait(readStoredFlag(AUTO_REBAIT_KEY));
 }
 
-function createSettingsPage(): HTMLElement {
-  const page = document.createElement('div');
-  page.className = 'phone-page';
-  const title = document.createElement('h2');
-  title.textContent = t('ui.settings');
-
+/** สวิตช์เปิดปิดแสงในหน้าจอ */
+function createLightingRow(): HTMLElement {
   const row = document.createElement('div');
   row.className = 'settings-row';
   const label = document.createElement('span');
-  label.textContent = t('settings.lighting');
+  label.textContent = t('settings.light_short');
   const toggle = document.createElement('button');
   toggle.id = 'lighting-toggle';
   toggle.type = 'button';
@@ -417,19 +378,88 @@ function createSettingsPage(): HTMLElement {
     showToggle();
   });
   row.append(label, toggle);
+  return row;
+}
 
-  const rebait = createAutoRebaitRow();
-  const volumes = VOLUME_ROWS.map(({ group, label: key }) => createVolumeRow(group, key));
-  page.append(title, ...volumes, row, createAutoFishRow(rebait.sync), rebait.row, createZoomRow(), createSaveRow());
+/** iPhone: ปุ่ม "วิธีเต็มจอ" เปิดขั้นตอนเพิ่มไปยังหน้าจอโฮมในการ์ด */
+function createHowToRow(card: HTMLElement): HTMLElement {
+  const row = document.createElement('div');
+  row.className = 'settings-row';
+  const label = Object.assign(document.createElement('span'), { textContent: t('settings.fullscreen') });
+  const button = document.createElement('button');
+  button.id = 'fullscreen-howto-button';
+  button.type = 'button';
+  button.className = 'settings-button st-purple';
+  button.textContent = t('settings.fullscreen_howto');
+  const howTo = createHomeScreenHowTo();
+  howTo.classList.add('st-howto');
+  howTo.hidden = true;
+  button.addEventListener('click', () => {
+    howTo.hidden = !howTo.hidden;
+  });
+  card.append(howTo);
+  row.append(label, button);
+  return row;
+}
+
+const box = (className: string, title: string, x: number, y: number, width: number, height: number): HTMLElement => {
+  const node = document.createElement('div');
+  node.className = `st-box ${className}`;
+  node.style.cssText = `left:${x}px;top:${y}px;width:${width}px;height:${height}px`;
+  node.append(Object.assign(document.createElement('div'), { className: 'st-bh', textContent: title }));
+  return node;
+};
+
+/** ปุ่มลับช่วงทดสอบแบบสั้นในกรอบเส้นประ ต้องเอาออกก่อนปล่อยจริง */
+function testButton(id: string, text: string, onClick: () => void): HTMLButtonElement {
+  const button = document.createElement('button');
+  button.id = id;
+  button.type = 'button';
+  button.className = 'st-tb';
+  button.textContent = text;
+  button.addEventListener('click', onClick);
+  return button;
+}
+
+/**
+ * การ์ดตั้งค่าใบเดียวบนเกมที่มืดลง (settings_card): เสียง · หน้าจอ · การเล่น · ไฟล์เซฟ
+ * และกรอบเส้นประ "สำหรับทดสอบ · เอาออกก่อนปล่อยจริง" รอบปุ่มทดสอบ
+ */
+function createSettingsCard(card: HTMLElement): HTMLElement[] {
+  const sound = box('st-snd', t('settings.sound'), 16, 36, 166, 182);
+  sound.append(...VOLUME_ROWS.map(({ group, label: key }) => createVolumeRow(group, key)));
+  const screen = box('st-scr', t('settings.screen'), 190, 36, 166, 90);
+  screen.append(createZoomRow(), createLightingRow());
   const fullscreen = appRootForPage ? createFullscreenRow(appRootForPage) : null;
-  if (fullscreen) page.append(fullscreen);
-  page.append(createTestStarsRow(), createTestMonsterRow(), createTestSpawnRow());
-  return page;
+  if (fullscreen?.id === 'fullscreen-howto') screen.append(createHowToRow(card));
+  else if (fullscreen) screen.append(fullscreen);
+  const play = box('st-ply', t('settings.play'), 190, 132, 166, 86);
+  const rebait = createAutoRebaitRow();
+  play.append(createAutoFishRow(rebait.sync), rebait.row, createSaveRow());
+
+  const test = document.createElement('div');
+  test.className = 'st-test';
+  test.append(Object.assign(document.createElement('div'), { className: 'st-th', textContent: t('settings.test_box') }));
+  const spawn = createTestSpawnRow();
+  spawn.hidden = true;
+  test.append(
+    testButton('test-stars', `${t('settings.test_stars')} +${balance.test.stars}`, () => {
+      if (!gameState.started) return;
+      gameState.setWorld(applyTransaction(gameState.world, 'stars', balance.test.stars, 'wallet.test_stars', 'wallet.category_test'));
+    }),
+    testButton('test-monster', t('settings.test_monster'), () => eventBus.emit('monster-summon', undefined)),
+    testButton('test-spawn-open', t('settings.test_spawn'), () => {
+      spawn.hidden = !spawn.hidden;
+      card.classList.toggle('is-spawning', !spawn.hidden);
+    }),
+    spawn,
+  );
+  return [sound, screen, play, test];
 }
 
 const SETTINGS_WINDOW = 'settings';
 
-/** ปุ่มตั้งค่าอยู่มุมขวาบนข้างโทรศัพท์ แยกจากแอปในโทรศัพท์ */
+/** ปุ่มตั้งค่าอยู่มุมขวาบนข้างโทรศัพท์ และเป็นแอปในโทรศัพท์ด้วย ทั้งสองทางเปิดการ์ดใบเดียวกัน */
 export function createSettings(uiRoot: HTMLElement): void {
   const button = document.createElement('button');
   button.id = 'settings-button';
@@ -437,38 +467,38 @@ export function createSettings(uiRoot: HTMLElement): void {
   button.setAttribute('aria-label', t('ui.settings'));
   button.append(stickerIcon('ui_app_settings'));
 
-  const backdrop = document.createElement('div');
-  backdrop.id = 'settings-backdrop';
-  backdrop.hidden = true;
-  const panel = document.createElement('div');
-  panel.id = 'settings-window';
-  panel.setAttribute('role', 'dialog');
-  panel.setAttribute('aria-label', t('ui.settings'));
-  const close = document.createElement('button');
-  close.id = 'settings-close';
-  close.type = 'button';
-  close.className = 'phone-tool';
-  close.textContent = '×';
-  close.setAttribute('aria-label', t('ui.close'));
-  backdrop.append(panel);
-  uiRoot.append(button, backdrop);
+  const card = createCard(uiRoot, 'settings-window', 'st-card', SETTINGS_WINDOW);
+  card.body.style.setProperty('--paw', `url("${artUrl('ui_joystick_knob_paw')}")`);
+  uiRoot.append(button);
 
-  const hide = (): void => {
-    if (backdrop.hidden) return;
-    backdrop.hidden = true;
-    gameState.setWindowOpen(SETTINGS_WINDOW, false);
-  };
-  button.addEventListener('click', () => {
+  const open = (): void => {
     // สร้างใหม่ทุกครั้งที่เปิด ค่าที่แสดงจึงตรงกับปัจจุบันเสมอ
-    panel.replaceChildren(close, createSettingsPage());
-    backdrop.hidden = false;
-    gameState.setWindowOpen(SETTINGS_WINDOW, true);
+    card.body.classList.remove('is-spawning');
+    card.fill([Object.assign(document.createElement('div'), { className: 'st-tt', textContent: t('ui.settings') }), ...createSettingsCard(card.body)]);
+    card.show();
+  };
+  button.addEventListener('click', open);
+  eventBus.on('app-open', (app) => {
+    if (app === 'settings') open();
   });
-  close.addEventListener('click', hide);
-  backdrop.addEventListener('click', (event) => {
-    if (event.target === backdrop) hide();
-  });
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') hide();
+}
+
+/** การ์ดสนับสนุนเดฟ (support_card): ข้อความของผู้ใช้ตามภาพตัวอย่าง ไม่มีปุ่มจ่ายเงิน */
+export function createSupportCard(uiRoot: HTMLElement): void {
+  const card = createCard(uiRoot, 'support-window', 'su-card', 'support');
+  eventBus.on('app-open', (app) => {
+    if (app !== 'support') return;
+    const face = sizedArt('ui_gio_gio_face_happy', 'su-gio');
+    const line = (className: string, key: Parameters<typeof t>[0]): HTMLElement => {
+      const node = document.createElement('div');
+      node.className = className;
+      for (const [index, part] of t(key).split('\n').entries()) {
+        if (index > 0) node.append(document.createElement('br'));
+        node.append(part);
+      }
+      return node;
+    };
+    card.fill([face, line('su-tt', 'support.title'), line('su-t1', 'support.body'), line('su-t2', 'support.thanks'), Object.assign(document.createElement('span'), { className: 'su-soon', textContent: t('support.soon') })]);
+    card.show();
   });
 }

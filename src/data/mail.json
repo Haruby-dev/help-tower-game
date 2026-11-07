@@ -1,0 +1,25 @@
+{
+  "homesick": 5,
+  "letters": [
+    { "number": 1, "zone": 1, "paper": "kid" },
+    { "number": 2, "zone": 1, "paper": "plain" },
+    { "number": 3, "zone": 3, "paper": "plain" },
+    { "number": 4, "zone": 4, "paper": "plain" },
+    { "number": 5, "zone": 4, "paper": "plain" },
+    { "number": 6, "zone": 6, "paper": "old" },
+    { "number": 7, "zone": 6, "paper": "kid" },
+    { "number": 8, "zone": 8, "paper": "old" },
+    { "number": 9, "zone": 9, "paper": "plain" },
+    { "number": 10, "zone": 10, "paper": "old" },
+    { "number": 11, "zone": 2, "paper": "plain" },
+    { "number": 12, "zone": 2, "paper": "plain" },
+    { "number": 13, "zone": 3, "paper": "plain" },
+    { "number": 14, "zone": 5, "paper": "plain" },
+    { "number": 15, "zone": 5, "paper": "old" },
+    { "number": 16, "zone": 7, "paper": "plain" },
+    { "number": 17, "zone": 7, "paper": "plain" },
+    { "number": 18, "zone": 8, "paper": "old" },
+    { "number": 19, "zone": 9, "paper": "kid" },
+    { "number": 20, "zone": 10, "paper": "tower" }
+  ]
+}

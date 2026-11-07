@@ -17,7 +17,7 @@ import { autoHooks, baits, catchItem, chosenBait, finishCast, rollCatch, type Ca
 import { countOf, seedItem } from '../systems/farm';
 import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, isWithered, produceItem, type FarmAction } from '../systems/farm';
 import { withStars } from '../systems/stars';
-import { MYSTERY, collectDish, isCooked } from '../systems/cooking';
+import { MYSTERY, collectDish, eatItem, isCooked } from '../systems/cooking';
 import { advanceClock, goToSleep } from '../systems/time';
 import balance from '../data/balance.json';
 import display from '../data/display.json';
@@ -611,6 +611,11 @@ export class BaseScene extends Phaser.Scene {
       this.player.finishCooking();
       return;
     }
+    const food = gameState.selectedFood;
+    if (food) {
+      this.eat(food);
+      return;
+    }
     const plot = this.targetPlot();
     if (this.landSignWins()) eventBus.emit('land-requested', this.nearLandSign()!);
     else if (plot !== null && this.farmActionAt(plot)) this.useFarm(plot);
@@ -621,6 +626,14 @@ export class BaseScene extends Phaser.Scene {
       if (gameState.selectedTool === 'rod') this.startFishing();
       else this.startBath();
     } else if (this.nearDoor() && !this.player.busy) goToSleep(this.door);
+  }
+
+  /** กินอาหารที่เลือกในแถบอาหาร ของในกระเป๋าลด เติมเกจอิ่มเหมือนเดิม · ท่ากินของตัวเอกรอภาพ (art-src/girl_eat_faint_1107) ต่อที่ 'player-ate' */
+  private eat(item: string): void {
+    const next = eatItem(gameState.world, item);
+    if (!next) return;
+    gameState.setWorld(next);
+    eventBus.emit('player-ate', item);
   }
 
   /** วันที่ฝากขาย จีโอเดินไปมุดโพรงตอนเที่ยงและโผล่ออกมาตอนหกโมงเย็น เดินให้เห็นเฉพาะตอนกล้องมองเห็นและเพิ่งถึงเวลา */
@@ -1154,6 +1167,8 @@ export class BaseScene extends Phaser.Scene {
     }
     if (this.bath) return { icon: 'bath', label: 'action.stop' };
     if (this.player.isCooking) return { icon: 'cook', label: 'action.stop' };
+    // แถบอาหาร: เลือกอาหารแล้วปุ่มกระทำเป็น "กิน" (ผู้ใช้เลือกแบบ B 7 พ.ย. 2026)
+    if (gameState.selectedFood) return { icon: 'eat', label: 'action.eat' };
     if (this.landSignWins()) return { icon: 'buy', label: 'action.buy_land' };
     if (farm) return { icon: FARM_ICON[farm], label: ACTION_LABEL[farm] };
     const fire = this.campfireAction();

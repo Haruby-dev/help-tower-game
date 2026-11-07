@@ -1,0 +1,20 @@
+{
+  "bondLevels": [30, 80, 150, 250],
+  "pets": [
+    { "id": "pangpok", "gate": 2, "art": true, "homePrice": 6000, "treatDays": 2 },
+    { "id": "nuebnub", "gate": 4, "art": true, "homePrice": null, "treatDays": 3 },
+    { "id": "boomboom", "gate": 5, "art": true, "homePrice": 12000, "treatDays": 3 },
+    { "id": "bubble", "gate": 6, "art": true, "homePrice": null, "treatDays": 2 },
+    { "id": "mumu", "gate": 8, "art": true, "homePrice": 20000, "treatDays": 4 },
+    { "id": "pokpaek", "gate": 10, "art": false, "homePrice": null, "treatDays": null },
+    { "id": "fishy", "gate": 12, "art": false, "homePrice": null, "treatDays": null },
+    { "id": "salt_crab", "gate": 15, "art": false, "homePrice": null, "treatDays": null },
+    { "id": "fufu", "gate": 20, "art": false, "homePrice": null, "treatDays": null },
+    { "id": "firefly", "gate": 25, "art": false, "homePrice": null, "treatDays": null },
+    { "id": "mochi_moon", "gate": 28, "art": false, "homePrice": null, "treatDays": null },
+    { "id": "puff", "gate": 33, "art": false, "homePrice": null, "treatDays": null },
+    { "id": "puyhang", "gate": 38, "art": false, "homePrice": null, "treatDays": null },
+    { "id": "oodood", "gate": 42, "art": false, "homePrice": null, "treatDays": null },
+    { "id": "snowkid", "gate": 53, "art": false, "homePrice": null, "treatDays": null }
+  ]
+}

@@ -113,47 +113,52 @@ test('exports a save file', async ({ page }) => {
   expect((await download).suggestedFilename()).toContain('help-tower-save-1-day-1');
 });
 
-test('opens from the mini lock screen, to the lock screen, to home with 10 apps', async ({ page }) => {
+test('opens from the mini phone, to the small lock screen, to home with 10 apps and no outfit app', async ({ page }) => {
   await open(page);
   await expect(page.locator('#phone-cover-day')).toHaveText('เสาร์ 1');
   await page.locator('#phone-button').click();
   await expect(page.locator('#lock-screen')).toBeVisible();
-  await expect(page.locator('.lock__line')).not.toBeEmpty();
-  await expect(page.locator('.lock__cat')).toHaveCount(4);
+  await expect(page.locator('#phone')).toHaveAttribute('data-state', 'lock');
+  await expect(page.locator('.pl-card p')).not.toBeEmpty();
   await page.locator('#lock-open').click();
-  await expect(page.locator('#phone')).toBeVisible();
+  await expect(page.locator('#phone')).toHaveAttribute('data-state', 'open');
   await expect(page.locator('.phone-app')).toHaveCount(10);
-  await expect(page.locator('[data-app="settings"]')).toHaveCount(0);
-  await expect(page.locator('.phone-app__name')).toHaveCount(8);
+  await expect(page.locator('[data-app="outfit"]')).toHaveCount(0);
+  await expect(page.locator('[data-app="settings"]')).toHaveCount(1);
+  await expect(page.locator('.phone-app__name')).toHaveCount(10);
   await expect(page.locator('[data-app="support"]')).toBeInViewport();
-  const sizes = await page.locator('.phone-app').evaluateAll((apps) =>
-    apps.map((app) => ({ width: (app as HTMLElement).offsetWidth, height: (app as HTMLElement).offsetHeight })),
-  );
-  for (const size of sizes) {
-    expect(size.width).toBeGreaterThanOrEqual(44);
-    expect(size.height).toBeGreaterThanOrEqual(44);
+  // แตะแอปได้ง่าย กว้างและสูงอย่างน้อย 44 พิกเซล
+  for (const app of await page.locator('.phone-app').all()) {
+    const box = (await app.boundingBox())!;
+    expect(box.width).toBeGreaterThanOrEqual(44);
+    expect(box.height).toBeGreaterThanOrEqual(44);
   }
-  // ร้านค้าเปิดแล้วใน M6a
+  // ร้านค้าเปิดในหน้าต่างโทรศัพท์ ส่วนสนับสนุนเดฟเป็นการ์ดใบเดียวบนเกม ไม่มีปุ่มจ่ายเงิน ปิดแล้วกลับมาที่หน้าหลัก
   await page.locator('[data-app="shop"]').click();
   await expect(page.locator('.shop-page')).toBeVisible();
   await page.locator('#phone-back').click();
   await page.locator('[data-app="support"]').click();
-  await expect(page.locator('.phone-page__empty')).toBeVisible();
-  await page.locator('#phone-back').click();
+  await expect(page.locator('#support-window')).toBeVisible();
+  await expect(page.locator('#support-window')).toContainText('สนับสนุนเดฟ');
+  await expect(page.locator('#support-window button')).toHaveCount(0);
+  await expect(page.locator('#phone')).toBeHidden();
+  await page.locator('#support-window-close').click();
+  await expect(page.locator('#phone')).toBeVisible();
   await page.locator('#phone-close').click();
   await expect(page.locator('#phone')).toBeHidden();
 });
 
-test('unfolds with the calendar and stuck counter, and flips to the case', async ({ page }) => {
+test('home shows the calendar and stuck counter, folds back to the lock screen, and flips to the case', async ({ page }) => {
   await open(page);
   await page.locator('#phone-button').click();
   await page.locator('#lock-open').click();
-  await expect(page.locator('#stuck-counter')).toBeHidden();
-  await page.locator('#phone-unfold').click();
-  await expect(page.locator('#phone')).toHaveAttribute('data-fold', 'unfolded');
   await expect(page.locator('#stuck-counter')).toBeVisible();
   await expect(page.locator('#tower-calendar')).toContainText('เดือนที่ 1');
   await expect(page.locator('#phone')).not.toContainText('ฤดู');
+  await page.locator('#phone-fold').click();
+  await expect(page.locator('#phone')).toHaveAttribute('data-state', 'lock');
+  await expect(page.locator('#lock-screen')).toBeVisible();
+  await page.locator('#lock-open').click();
   await page.locator('#phone-flip').click();
   await expect(page.locator('#phone')).toHaveAttribute('data-side', 'back');
   await expect(page.locator('#phone-back-side')).toBeVisible();
@@ -178,8 +183,7 @@ test('money shows a floating number and the wallet log, with no pill on screen',
   await page.locator('.wallet-entry').last().scrollIntoViewIfNeeded();
   await expect(page.locator('.wallet-entry').last()).toBeInViewport({ ratio: 0.9 });
   await expect(page.locator('#phone-back')).toBeInViewport();
-  const contentHeight = await page.locator('.phone-content').evaluate((node) => (node as HTMLElement).offsetHeight);
-  expect(contentHeight).toBeGreaterThan(120);
+  expect((await page.locator('.pw-card--l').boundingBox())!.height).toBeGreaterThan(120);
   await expect(page.locator('#wallet-net')).toHaveText('+1,250');
 });
 
@@ -262,10 +266,10 @@ test('a short screen with the Safari bars still fits every app without clipping'
   await page.locator('#phone-button').click();
   await page.locator('#lock-open').click();
   await expect(page.locator('[data-app="support"]')).toBeInViewport({ ratio: 1 });
-  await page.locator('#phone-unfold').click();
   await expect(page.locator('[data-app="album"]')).toBeInViewport({ ratio: 1 });
+  await expect(page.locator('#phone')).toBeInViewport({ ratio: 1 });
   await page.locator('[data-app="wallet"]').click();
-  const clipped = await page.locator('.phone-content').evaluate((node) => node.scrollWidth > node.clientWidth);
+  const clipped = await page.locator('#wallet-log').evaluate((node) => node.scrollWidth > node.clientWidth);
   expect(clipped).toBe(false);
 });
 

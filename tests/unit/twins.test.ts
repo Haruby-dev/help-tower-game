@@ -21,7 +21,7 @@ import {
   wantsSignature,
 } from '../../src/systems/monsters';
 import { gainTips, nextTips, tipText } from '../../src/systems/news';
-import { parseSaveFile, toSaveFile } from '../../src/systems/save';
+import { SAVE_VERSION, parseSaveFile, toSaveFile } from '../../src/systems/save';
 
 const A = 'tangkrading';
 const B = 'tangkrading_b';
@@ -131,7 +131,7 @@ describe('twins on floor 5 (GDD "แฝดขี้แกล้ง")', () => {
     const file = toSaveFile(newWorld());
     const old = { ...file, version: 13, world: { ...file.world, monsters: { affection: { tangkrading: { points: 12, signature: false } }, plannedDay: 0, arrivals: [] } } };
     const parsed = parseSaveFile(old)!;
-    expect(parsed.version).toBe(14);
+    expect(parsed.version).toBe(SAVE_VERSION);
     expect(parsed.world.monsters.twins).toEqual({ revealed: false, revealDay: 0, quizWon: false });
     expect(parsed.world.monsters.affection[A]).toEqual({ points: 12, signature: false });
   });

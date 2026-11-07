@@ -101,6 +101,8 @@ export interface Monsters {
   /** แขกของวันนี้และพรุ่งนี้ */
   arrivals: Arrival[];
   twins: Twins;
+  /** เมนูที่เคยเสิร์ฟให้แต่ละตัวแล้ว (หยิบกินหรืองอน) อัลบั้มมอนสเตอร์เปิดรสนิยมตามนี้ */
+  tasted: Record<string, string[]>;
 }
 
 export interface Farm {
@@ -132,7 +134,7 @@ export interface RecipeBook {
 export type Tool = 'hoe' | 'can' | 'sickle' | 'seeds' | 'rod';
 
 /** ไอคอนบนปุ่มกระทำปุ่มเดียว เปลี่ยนตามจุดที่ยืนและของที่ถือ */
-export type ActionIcon = 'fish' | 'bath' | 'water' | 'till' | 'plant' | 'harvest' | 'cook' | 'sleep' | 'chest' | 'talk' | 'buy' | 'tray';
+export type ActionIcon = 'fish' | 'bath' | 'water' | 'till' | 'plant' | 'harvest' | 'cook' | 'sleep' | 'chest' | 'talk' | 'buy' | 'tray' | 'eat';
 
 export interface ContextAction {
   icon: ActionIcon;
@@ -232,6 +234,7 @@ class GameState {
   private currentSlot: number | null = null;
   private currentAction: ContextAction | null = null;
   private currentBait: string | null = null;
+  private currentFood: string | null = null;
   private currentAutoRebait = false;
   private openWindows = new Set<string>();
   private currentPlayerScreen: Point = { x: 0, y: 0 };
@@ -340,6 +343,17 @@ class GameState {
   setSelectedBait(bait: string | null): void {
     this.currentBait = bait;
     eventBus.emit('tool-changed', this.currentTool);
+  }
+
+  /** อาหารที่เลือกในแถบอาหาร (สลับแถบเครื่องมือเป็นแถบอาหาร) ปุ่มกระทำเป็น "กิน" · null คือโหมดเครื่องมือหรือไม่มีของกิน */
+  get selectedFood(): string | null {
+    return this.currentFood;
+  }
+
+  setSelectedFood(item: string | null): void {
+    if (item === this.currentFood) return;
+    this.currentFood = item;
+    eventBus.emit('food-changed', item);
   }
 
   /** ตกปลาอัตโนมัติแล้วเหวี่ยงเบ็ดใหม่ด้วยเหยื่อเดิมจนกว่าเหยื่อหมด */

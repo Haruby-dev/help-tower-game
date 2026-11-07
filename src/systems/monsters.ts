@@ -23,7 +23,28 @@ export type Taste = 'favourite' | 'like' | 'neutral' | 'dislike' | 'belowRank';
 export type Tier = 'hungry' | 'warm' | 'close';
 
 export const newTwins = (): Twins => ({ revealed: false, revealDay: 0, quizWon: false });
-export const newMonsters = (): Monsters => ({ affection: {}, plannedDay: 0, arrivals: [], twins: newTwins() });
+export const newMonsters = (): Monsters => ({ affection: {}, plannedDay: 0, arrivals: [], twins: newTwins(), tasted: {} });
+
+/** จำว่าเคยเสิร์ฟเมนูนี้ให้ตัวนี้แล้ว (หยิบกินหรืองอน) อัลบั้มจะได้เปิดรสนิยมข้อนั้น */
+export function noteTasted(world: World, id: string, recipe: string): World {
+  const known = world.monsters.tasted[id] ?? [];
+  if (known.includes(recipe)) return world;
+  return { ...world, monsters: { ...world.monsters, tasted: { ...world.monsters.tasted, [id]: [...known, recipe] } } };
+}
+
+/** รสนิยมข้อนี้ผู้เล่นรู้แล้วหรือยัง: เคยเสิร์ฟเมนูนั้น หรือจีโอเล่าในข่าว (เมนูโปรด เครื่องดื่มโปรด) */
+export function tasteKnown(world: World, id: string, recipe: string): boolean {
+  if ((world.monsters.tasted[id] ?? []).includes(recipe)) return true;
+  const monster = monsterTable[id];
+  if (!monster) return false;
+  return world.gio.tips.some(
+    (tip) =>
+      tip.monster === id &&
+      ((tip.kind === 'favourite' && monster.favourite.includes(recipe)) ||
+        (tip.kind === 'drink' && monster.favouriteDrink === recipe) ||
+        (tip.kind === 'signature' && monster.signature.recipe === recipe)),
+  );
+}
 
 /** รหัสแขกแต่ละครั้ง ฉากใช้จำว่าตัวไหนออกมาแล้ว */
 export const arrivalKey = (arrival: Arrival): string => `${arrival.day}:${arrival.hour.toFixed(4)}:${arrival.monster}`;
@@ -150,6 +171,9 @@ export const twinA = twinRule.a;
 export const twinB = twinRule.b;
 /** พี่ครบ 100% แล้ว ประตูยังไม่เปิด หลอดสลับเป็นของน้อง */
 export const twinsSwitched = (world: World): boolean => isCleared(world, twinRule.a);
+
+/** ประตูชั้นของมอนสเตอร์ตัวนี้เปิดแล้ว: ครบ 100% · แฝดชั้น 5 เปิดหลังฉากเฉลยจบ */
+export const floorOpen = (world: World, id: string): boolean => (isTwin(id) ? world.monsters.twins.revealed : isCleared(world, id));
 /** น้องครบ 100% แล้วแต่ยังไม่ได้เล่นฉากเฉลย */
 export const revealDue = (world: World): boolean => !world.monsters.twins.revealed && isCleared(world, twinRule.b);
 /** เฉลยแล้วและทายถูกแล้ว ชั้น 5 ไม่มาเยี่ยมอีก */
@@ -358,10 +382,11 @@ export interface Taken {
 /** หยิบจากจานแล้วกินทีละที่ ความชอบเข้าทันที (ภาพค่อย ๆ เล่นตามทีหลัง) · ครบเซ็ตครั้งแรกได้โบนัส (setBonus − 1) × ความชอบของคู่นั้น */
 export function takePlate(world: World, id: string, take: PlateTake, memo: VisitMemo): Taken {
   const removed = removeFromPlate(world.tray, take.plate, take.item, take.count);
+  const recipe = parseDish(take.item).recipe;
   let next: World = { ...world, tray: removed.tray };
+  if (removed.taken > 0) next = noteTasted(next, id, recipe);
   const gains: number[] = [];
   let cleared = false;
-  const recipe = parseDish(take.item).recipe;
   for (let serving = 0; serving < removed.taken; serving += 1) {
     const fed = feed(next, id, take.item, memo.eaten[recipe] ?? 0);
     next = fed.world;
@@ -405,7 +430,12 @@ export function settleVisits(world: World): World {
     // แฝดแวะมาแกล้ง ฉากเฉลย และชวนทายไม่กินจากถาด ฉากเฉลยที่ไม่ได้เห็นยังรออยู่ ชั้น 5 ครั้งหน้าจะเป็นฉากเฉลย
     if (arrival.kind || isCleared(next, arrival.monster)) return;
     const memo = newVisitMemo();
-    for (const take of planVisit(next, arrival.monster, createRng(world.seed + arrival.day * SETTLE_MIX + index)).takes) {
+    const plan = planVisit(next, arrival.monster, createRng(world.seed + arrival.day * SETTLE_MIX + index));
+    for (const plate of plan.pouts) {
+      const item = next.tray.plates[plate]?.item;
+      if (item) next = noteTasted(next, arrival.monster, parseDish(item).recipe);
+    }
+    for (const take of plan.takes) {
       next = takePlate(next, arrival.monster, take, memo).world;
     }
   });

@@ -61,15 +61,18 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
     const s = (window as unknown as { __state: TestState }).__state;
     s.setWorld({ ...s.world, gauges: { ...s.world.gauges, fullness: 30 } });
   });
+  // กินจากแถบอาหาร: ปุ่มกลมซ้ายของแถบเครื่องมือสลับเป็นอาหาร เลือกแล้วปุ่มกระทำเป็น "กิน"
+  await expect(page.locator('#bag-eat')).toHaveCount(0);
+  await page.locator('#toolbar-mode').click();
+  await page.locator(`.food-slot[data-food="${dish}"]`).click();
+  await expect(act).toHaveAttribute('data-action', 'action.eat');
+  await act.click();
+  await expect.poll(() => count(page, dish)).toBe(0);
+  expect((await state(page)).gauges.fullness).toBeGreaterThanOrEqual(49);
+  await page.locator('#toolbar-mode').click();
+
   await page.locator('#phone-button').click();
   await page.locator('#lock-open').click();
-  await page.locator('[data-app="inventory"]').click();
-  await page.locator(`[data-item="${dish}"]`).click();
-  await page.locator('#bag-eat').click();
-  expect(await count(page, dish)).toBe(0);
-  expect((await state(page)).gauges.fullness).toBeGreaterThanOrEqual(49);
-
-  await page.locator('#phone-back').click();
   await page.locator('[data-app="recipes"]').click();
   const book = page.locator('.book-page');
   await expect(book).toHaveAttribute('data-recipe', 'home_kaprao');
@@ -89,8 +92,10 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
   await page.locator('#book-next').click();
   await expect(page.locator('.book-title')).toHaveText('ชากะเพรา');
   await expect(page.locator('.book-steam')).toHaveCount(1);
-  await page.locator('#book-close').click();
+  await page.locator('#recipe-book-close').click();
   await expect(page.locator('#recipe-book')).toBeHidden();
+  // ปิดสมุดแล้วกลับมาที่หน้าหลักของโทรศัพท์
+  await expect(page.locator('#phone')).toBeVisible();
 });
 
 test('a wrong mix makes mystery food and the player says so', async ({ page }) => {

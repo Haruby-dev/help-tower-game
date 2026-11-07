@@ -9937,5 +9937,1083 @@
     "file": "food/mini16/strawberry_juice.png",
     "jade_tone": false,
     "note": "ไอคอนอาหารในฟองความคิด \"อยากกิน\" วางกลางที่จุด (13,13) ของฟอง"
+  },
+  "book_album_arrow_left": {
+    "type": "local",
+    "width": 12,
+    "height": 13,
+    "source": "public/assets/ui/app_pages/album/album_arrow_left.png",
+    "file": "ui/app_pages/album/album_arrow_left.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_album_arrow_right": {
+    "type": "local",
+    "width": 12,
+    "height": 13,
+    "source": "public/assets/ui/app_pages/album/album_arrow_right.png",
+    "file": "ui/app_pages/album/album_arrow_right.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_album_cloth": {
+    "type": "local",
+    "width": 40,
+    "height": 40,
+    "source": "public/assets/ui/app_pages/album/album_cloth.png",
+    "file": "ui/app_pages/album/album_cloth.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_album_divider": {
+    "type": "local",
+    "width": 48,
+    "height": 5,
+    "source": "public/assets/ui/app_pages/album/album_divider.png",
+    "file": "ui/app_pages/album/album_divider.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_album_frame_9slice": {
+    "type": "local",
+    "width": 24,
+    "height": 24,
+    "source": "public/assets/ui/app_pages/album/album_frame_9slice.png",
+    "file": "ui/app_pages/album/album_frame_9slice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_album_ribbon": {
+    "type": "local",
+    "width": 44,
+    "height": 44,
+    "source": "public/assets/ui/app_pages/album/album_ribbon.png",
+    "file": "ui/app_pages/album/album_ribbon.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_album_slot": {
+    "type": "local",
+    "width": 22,
+    "height": 22,
+    "source": "public/assets/ui/app_pages/album/album_slot.png",
+    "file": "ui/app_pages/album/album_slot.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_album_tab": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/app_pages/album/album_tab.png",
+    "file": "ui/app_pages/album/album_tab.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_album_tab_active": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/ui/app_pages/album/album_tab_active.png",
+    "file": "ui/app_pages/album/album_tab_active.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_album_tape": {
+    "type": "local",
+    "width": 16,
+    "height": 7,
+    "source": "public/assets/ui/app_pages/album/album_tape.png",
+    "file": "ui/app_pages/album/album_tape.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_album_padlock": {
+    "type": "local",
+    "width": 11,
+    "height": 13,
+    "source": "public/assets/ui/app_pages/album/padlock.png",
+    "file": "ui/app_pages/album/padlock.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "album_polaroid_treat_tuna": {
+    "type": "local",
+    "width": 64,
+    "height": 76,
+    "source": "public/assets/ui/app_pages/album/polaroid_tuna.png",
+    "file": "ui/app_pages/album/polaroid_tuna.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "Gio photo 64x76 (photo 56x52 at 4,4)"
+  },
+  "album_polaroid_treat_chicken": {
+    "type": "local",
+    "width": 64,
+    "height": 76,
+    "source": "public/assets/ui/app_pages/album/polaroid_chicken.png",
+    "file": "ui/app_pages/album/polaroid_chicken.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "Gio photo 64x76 (photo 56x52 at 4,4)"
+  },
+  "album_polaroid_treat_salmon": {
+    "type": "local",
+    "width": 64,
+    "height": 76,
+    "source": "public/assets/ui/app_pages/album/polaroid_salmon.png",
+    "file": "ui/app_pages/album/polaroid_salmon.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "Gio photo 64x76 (photo 56x52 at 4,4)"
+  },
+  "album_polaroid_treat_special": {
+    "type": "local",
+    "width": 64,
+    "height": 76,
+    "source": "public/assets/ui/app_pages/album/polaroid_special.png",
+    "file": "ui/app_pages/album/polaroid_special.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "Gio photo 64x76 (photo 56x52 at 4,4)"
+  },
+  "album_polaroid_locked": {
+    "type": "local",
+    "width": 64,
+    "height": 76,
+    "source": "public/assets/ui/app_pages/album/polaroid_locked.png",
+    "file": "ui/app_pages/album/polaroid_locked.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "flavour never fed"
+  },
+  "album_mpol_s_puinun": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_puinun.png",
+    "file": "ui/app_pages/album/mpol_s_puinun.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster slot 50x62 (photo 44x46 at 3,3)"
+  },
+  "album_mpol_s_puinun_met": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_puinun_met.png",
+    "file": "ui/app_pages/album/mpol_s_puinun_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "visited, not 100% yet"
+  },
+  "album_mpol_b_puinun": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_puinun.png",
+    "file": "ui/app_pages/album/mpol_b_puinun.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster detail 64x80, shown at 2x"
+  },
+  "album_mpol_s_popcorn": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_popcorn.png",
+    "file": "ui/app_pages/album/mpol_s_popcorn.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster slot 50x62 (photo 44x46 at 3,3)"
+  },
+  "album_mpol_s_popcorn_met": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_popcorn_met.png",
+    "file": "ui/app_pages/album/mpol_s_popcorn_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "visited, not 100% yet"
+  },
+  "album_mpol_b_popcorn": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_popcorn.png",
+    "file": "ui/app_pages/album/mpol_b_popcorn.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster detail 64x80, shown at 2x"
+  },
+  "album_mpol_s_mookmik": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_mookmik.png",
+    "file": "ui/app_pages/album/mpol_s_mookmik.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster slot 50x62 (photo 44x46 at 3,3)"
+  },
+  "album_mpol_s_mookmik_met": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_mookmik_met.png",
+    "file": "ui/app_pages/album/mpol_s_mookmik_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "visited, not 100% yet"
+  },
+  "album_mpol_b_mookmik": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_mookmik.png",
+    "file": "ui/app_pages/album/mpol_b_mookmik.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster detail 64x80, shown at 2x"
+  },
+  "album_mpol_s_toomtia": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_tumtia.png",
+    "file": "ui/app_pages/album/mpol_s_tumtia.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster slot 50x62 (photo 44x46 at 3,3)"
+  },
+  "album_mpol_s_toomtia_met": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_tumtia_met.png",
+    "file": "ui/app_pages/album/mpol_s_tumtia_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "visited, not 100% yet"
+  },
+  "album_mpol_b_toomtia": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_tumtia.png",
+    "file": "ui/app_pages/album/mpol_b_tumtia.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster detail 64x80, shown at 2x"
+  },
+  "album_mpol_s_tangkrading": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_hangkradueng.png",
+    "file": "ui/app_pages/album/mpol_s_hangkradueng.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster slot 50x62 (photo 44x46 at 3,3)"
+  },
+  "album_mpol_s_tangkrading_met": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_hangkradueng_met.png",
+    "file": "ui/app_pages/album/mpol_s_hangkradueng_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "visited, not 100% yet"
+  },
+  "album_mpol_b_tangkrading": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_hangkradueng.png",
+    "file": "ui/app_pages/album/mpol_b_hangkradueng.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster detail 64x80, shown at 2x"
+  },
+  "album_mpol_s_yaibaimai": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_yai.png",
+    "file": "ui/app_pages/album/mpol_s_yai.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster slot 50x62 (photo 44x46 at 3,3)"
+  },
+  "album_mpol_s_yaibaimai_met": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_yai_met.png",
+    "file": "ui/app_pages/album/mpol_s_yai_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "visited, not 100% yet"
+  },
+  "album_mpol_b_yaibaimai": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_yai.png",
+    "file": "ui/app_pages/album/mpol_b_yai.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster detail 64x80, shown at 2x"
+  },
+  "album_mpol_s_wingwing": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_wingwing.png",
+    "file": "ui/app_pages/album/mpol_s_wingwing.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster slot 50x62 (photo 44x46 at 3,3)"
+  },
+  "album_mpol_s_wingwing_met": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_wingwing_met.png",
+    "file": "ui/app_pages/album/mpol_s_wingwing_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "visited, not 100% yet"
+  },
+  "album_mpol_b_wingwing": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_wingwing.png",
+    "file": "ui/app_pages/album/mpol_b_wingwing.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster detail 64x80, shown at 2x"
+  },
+  "album_mpol_s_tubpong": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_tubpong.png",
+    "file": "ui/app_pages/album/mpol_s_tubpong.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster slot 50x62 (photo 44x46 at 3,3)"
+  },
+  "album_mpol_s_tubpong_met": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_tubpong_met.png",
+    "file": "ui/app_pages/album/mpol_s_tubpong_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "visited, not 100% yet"
+  },
+  "album_mpol_b_tubpong": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_tubpong.png",
+    "file": "ui/app_pages/album/mpol_b_tubpong.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster detail 64x80, shown at 2x"
+  },
+  "album_mpol_s_jaotungtong": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_jtt.png",
+    "file": "ui/app_pages/album/mpol_s_jtt.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster slot 50x62 (photo 44x46 at 3,3)"
+  },
+  "album_mpol_s_jaotungtong_met": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_jtt_met.png",
+    "file": "ui/app_pages/album/mpol_s_jtt_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "visited, not 100% yet"
+  },
+  "album_mpol_b_jaotungtong": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_jtt.png",
+    "file": "ui/app_pages/album/mpol_b_jtt.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster detail 64x80, shown at 2x"
+  },
+  "album_mpol_s_puefaotung": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_pft.png",
+    "file": "ui/app_pages/album/mpol_s_pft.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster slot 50x62 (photo 44x46 at 3,3)"
+  },
+  "album_mpol_s_puefaotung_met": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_pft_met.png",
+    "file": "ui/app_pages/album/mpol_s_pft_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "visited, not 100% yet"
+  },
+  "album_mpol_b_puefaotung": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_pft.png",
+    "file": "ui/app_pages/album/mpol_b_pft.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "monster detail 64x80, shown at 2x"
+  },
+  "album_mpol_b_tangkrading_met": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_hangkradueng_met.png",
+    "file": "ui/app_pages/album/mpol_b_hangkradueng_met.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "twins before the reveal, not 100%"
+  },
+  "album_mpol_s_unknown": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_unknown.png",
+    "file": "ui/app_pages/album/mpol_s_unknown.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "never met"
+  },
+  "album_mpol_s_locked": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_locked.png",
+    "file": "ui/app_pages/album/mpol_s_locked.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "zone not open"
+  },
+  "album_mpol_s_selfie": {
+    "type": "local",
+    "width": 50,
+    "height": 62,
+    "source": "public/assets/ui/app_pages/album/mpol_s_selfie.png",
+    "file": "ui/app_pages/album/mpol_s_selfie.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "twins after the reveal"
+  },
+  "album_mpol_b_selfie": {
+    "type": "local",
+    "width": 64,
+    "height": 80,
+    "source": "public/assets/ui/app_pages/album/mpol_b_selfie.png",
+    "file": "ui/app_pages/album/mpol_b_selfie.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "twins after the reveal"
+  },
+  "pets_card_boomboom": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_boomboom.png",
+    "file": "ui/app_pages/pets/card_boomboom.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_boomboom_sick": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_boomboom_sick.png",
+    "file": "ui/app_pages/pets/card_boomboom_sick.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_boomboom_sil": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_boomboom_sil.png",
+    "file": "ui/app_pages/pets/card_boomboom_sil.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_bubble": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_bubble.png",
+    "file": "ui/app_pages/pets/card_bubble.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_bubble_sick": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_bubble_sick.png",
+    "file": "ui/app_pages/pets/card_bubble_sick.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_bubble_sil": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_bubble_sil.png",
+    "file": "ui/app_pages/pets/card_bubble_sil.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_locked": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_locked.png",
+    "file": "ui/app_pages/pets/card_locked.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_mumu": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_mumu.png",
+    "file": "ui/app_pages/pets/card_mumu.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_mumu_sick": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_mumu_sick.png",
+    "file": "ui/app_pages/pets/card_mumu_sick.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_mumu_sil": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_mumu_sil.png",
+    "file": "ui/app_pages/pets/card_mumu_sil.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_nuebnub": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_nuebnub.png",
+    "file": "ui/app_pages/pets/card_nuebnub.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_nuebnub_sick": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_nuebnub_sick.png",
+    "file": "ui/app_pages/pets/card_nuebnub_sick.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_nuebnub_sil": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_nuebnub_sil.png",
+    "file": "ui/app_pages/pets/card_nuebnub_sil.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_pangpok": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_pangpok.png",
+    "file": "ui/app_pages/pets/card_pangpok.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_pangpok_sick": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_pangpok_sick.png",
+    "file": "ui/app_pages/pets/card_pangpok_sick.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_pangpok_sil": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_pangpok_sil.png",
+    "file": "ui/app_pages/pets/card_pangpok_sil.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_card_unknown": {
+    "type": "local",
+    "width": 44,
+    "height": 38,
+    "source": "public/assets/ui/app_pages/pets/card_unknown.png",
+    "file": "ui/app_pages/pets/card_unknown.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_check_off": {
+    "type": "local",
+    "width": 9,
+    "height": 9,
+    "source": "public/assets/ui/app_pages/pets/check_off.png",
+    "file": "ui/app_pages/pets/check_off.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_check_on": {
+    "type": "local",
+    "width": 9,
+    "height": 9,
+    "source": "public/assets/ui/app_pages/pets/check_on.png",
+    "file": "ui/app_pages/pets/check_on.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_heart_off": {
+    "type": "local",
+    "width": 9,
+    "height": 8,
+    "source": "public/assets/ui/app_pages/pets/heart_off.png",
+    "file": "ui/app_pages/pets/heart_off.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_heart_on": {
+    "type": "local",
+    "width": 9,
+    "height": 8,
+    "source": "public/assets/ui/app_pages/pets/heart_on.png",
+    "file": "ui/app_pages/pets/heart_on.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_pet_cloth": {
+    "type": "local",
+    "width": 40,
+    "height": 40,
+    "source": "public/assets/ui/app_pages/pets/pet_cloth.png",
+    "file": "ui/app_pages/pets/pet_cloth.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_pet_divider": {
+    "type": "local",
+    "width": 48,
+    "height": 5,
+    "source": "public/assets/ui/app_pages/pets/pet_divider.png",
+    "file": "ui/app_pages/pets/pet_divider.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_pet_frame_9slice": {
+    "type": "local",
+    "width": 24,
+    "height": 24,
+    "source": "public/assets/ui/app_pages/pets/pet_frame_9slice.png",
+    "file": "ui/app_pages/pets/pet_frame_9slice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_pet_padlock": {
+    "type": "local",
+    "width": 11,
+    "height": 13,
+    "source": "public/assets/ui/app_pages/pets/pet_padlock.png",
+    "file": "ui/app_pages/pets/pet_padlock.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_pet_ribbon": {
+    "type": "local",
+    "width": 44,
+    "height": 44,
+    "source": "public/assets/ui/app_pages/pets/pet_ribbon.png",
+    "file": "ui/app_pages/pets/pet_ribbon.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_pet_slot": {
+    "type": "local",
+    "width": 22,
+    "height": 22,
+    "source": "public/assets/ui/app_pages/pets/pet_slot.png",
+    "file": "ui/app_pages/pets/pet_slot.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_pet_tape": {
+    "type": "local",
+    "width": 16,
+    "height": 7,
+    "source": "public/assets/ui/app_pages/pets/pet_tape.png",
+    "file": "ui/app_pages/pets/pet_tape.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_scene_boomboom": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/pets/scene_boomboom.png",
+    "file": "ui/app_pages/pets/scene_boomboom.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_scene_boomboom_heal": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/pets/scene_boomboom_heal.png",
+    "file": "ui/app_pages/pets/scene_boomboom_heal.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_scene_bubble": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/pets/scene_bubble.png",
+    "file": "ui/app_pages/pets/scene_bubble.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_scene_mumu": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/pets/scene_mumu.png",
+    "file": "ui/app_pages/pets/scene_mumu.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_scene_mumu_sil": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/pets/scene_mumu_sil.png",
+    "file": "ui/app_pages/pets/scene_mumu_sil.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_scene_nuebnub": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/pets/scene_nuebnub.png",
+    "file": "ui/app_pages/pets/scene_nuebnub.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "pets_scene_pangpok": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/pets/scene_pangpok.png",
+    "file": "ui/app_pages/pets/scene_pangpok.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_gate_arrow_left": {
+    "type": "local",
+    "width": 12,
+    "height": 13,
+    "source": "public/assets/ui/app_pages/gate/gate_arrow_left.png",
+    "file": "ui/app_pages/gate/gate_arrow_left.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_gate_arrow_right": {
+    "type": "local",
+    "width": 12,
+    "height": 13,
+    "source": "public/assets/ui/app_pages/gate/gate_arrow_right.png",
+    "file": "ui/app_pages/gate/gate_arrow_right.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_gate_cloth": {
+    "type": "local",
+    "width": 40,
+    "height": 40,
+    "source": "public/assets/ui/app_pages/gate/gate_cloth.png",
+    "file": "ui/app_pages/gate/gate_cloth.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_gate_frame_9slice": {
+    "type": "local",
+    "width": 24,
+    "height": 24,
+    "source": "public/assets/ui/app_pages/gate/gate_frame_9slice.png",
+    "file": "ui/app_pages/gate/gate_frame_9slice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_gate_padlock": {
+    "type": "local",
+    "width": 11,
+    "height": 13,
+    "source": "public/assets/ui/app_pages/gate/gate_padlock.png",
+    "file": "ui/app_pages/gate/gate_padlock.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_gate_ribbon": {
+    "type": "local",
+    "width": 44,
+    "height": 44,
+    "source": "public/assets/ui/app_pages/gate/gate_ribbon.png",
+    "file": "ui/app_pages/gate/gate_ribbon.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_gate_tape": {
+    "type": "local",
+    "width": 16,
+    "height": 7,
+    "source": "public/assets/ui/app_pages/gate/gate_tape.png",
+    "file": "ui/app_pages/gate/gate_tape.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "gate_scene_gate1": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/gate/scene_gate1.png",
+    "file": "ui/app_pages/gate/scene_gate1.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "gate_scene_gate10": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/gate/scene_gate10.png",
+    "file": "ui/app_pages/gate/scene_gate10.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "gate_scene_gate2": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/gate/scene_gate2.png",
+    "file": "ui/app_pages/gate/scene_gate2.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "gate_scene_gate3": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/gate/scene_gate3.png",
+    "file": "ui/app_pages/gate/scene_gate3.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "gate_scene_gate4": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/gate/scene_gate4.png",
+    "file": "ui/app_pages/gate/scene_gate4.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "gate_scene_gate5": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/gate/scene_gate5.png",
+    "file": "ui/app_pages/gate/scene_gate5.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "gate_scene_gate6": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/gate/scene_gate6.png",
+    "file": "ui/app_pages/gate/scene_gate6.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "gate_scene_gate7": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/gate/scene_gate7.png",
+    "file": "ui/app_pages/gate/scene_gate7.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "gate_scene_gate8": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/gate/scene_gate8.png",
+    "file": "ui/app_pages/gate/scene_gate8.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "gate_scene_gate9": {
+    "type": "local",
+    "width": 253,
+    "height": 100,
+    "source": "public/assets/ui/app_pages/gate/scene_gate9.png",
+    "file": "ui/app_pages/gate/scene_gate9.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "gate_tower_locked": {
+    "type": "local",
+    "width": 170,
+    "height": 208,
+    "source": "public/assets/ui/app_pages/gate/tower_locked.png",
+    "file": "ui/app_pages/gate/tower_locked.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "gate_tower_zone1": {
+    "type": "local",
+    "width": 170,
+    "height": 208,
+    "source": "public/assets/ui/app_pages/gate/tower_zone1.png",
+    "file": "ui/app_pages/gate/tower_zone1.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mail_bottle": {
+    "type": "local",
+    "width": 16,
+    "height": 24,
+    "source": "public/assets/ui/app_pages/mail/bottle.png",
+    "file": "ui/app_pages/mail/bottle.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mail_bottle_sil": {
+    "type": "local",
+    "width": 16,
+    "height": 24,
+    "source": "public/assets/ui/app_pages/mail/bottle_sil.png",
+    "file": "ui/app_pages/mail/bottle_sil.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_mail_cloth": {
+    "type": "local",
+    "width": 40,
+    "height": 40,
+    "source": "public/assets/ui/app_pages/mail/mail_cloth.png",
+    "file": "ui/app_pages/mail/mail_cloth.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_mail_frame_9slice": {
+    "type": "local",
+    "width": 24,
+    "height": 24,
+    "source": "public/assets/ui/app_pages/mail/mail_frame_9slice.png",
+    "file": "ui/app_pages/mail/mail_frame_9slice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_mail_padlock": {
+    "type": "local",
+    "width": 11,
+    "height": 13,
+    "source": "public/assets/ui/app_pages/mail/mail_padlock.png",
+    "file": "ui/app_pages/mail/mail_padlock.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_mail_ribbon": {
+    "type": "local",
+    "width": 44,
+    "height": 44,
+    "source": "public/assets/ui/app_pages/mail/mail_ribbon.png",
+    "file": "ui/app_pages/mail/mail_ribbon.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "book_mail_tape": {
+    "type": "local",
+    "width": 16,
+    "height": 7,
+    "source": "public/assets/ui/app_pages/mail/mail_tape.png",
+    "file": "ui/app_pages/mail/mail_tape.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ui_sugar_star": {
+    "type": "local",
+    "width": 24,
+    "height": 24,
+    "source": "public/assets/ui/icons/sugar_star.png",
+    "file": "ui/icons/sugar_star.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "Sugar Star currency icon (final, jelly5). Beside numbers: same icon at 2x"
+  },
+  "ui_icon_spoon_fork": {
+    "type": "local",
+    "width": 22,
+    "height": 22,
+    "source": "public/assets/ui/hud_v2/icon_spoon_fork.png",
+    "file": "ui/hud_v2/icon_spoon_fork.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "food-mode switch icon on the tool bar"
+  },
+  "ui_cat_peek": {
+    "type": "local",
+    "width": 26,
+    "height": 20,
+    "source": "public/assets/ui/phone_v3/cat_peek.png",
+    "file": "ui/phone_v3/cat_peek.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "แมวสามสีโผล่ขอบบนโทรศัพท์ จาก mock_src/cat_peek2.png ในภาพที่ผู้ใช้อนุมัติ (FINAL_lock, FINAL_home)"
   }
 }

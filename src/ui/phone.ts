@@ -1,40 +1,50 @@
-import { eventBus } from '../core/events';
+import { eventBus, type GameEvents } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
 import { gameState, type Weather, type World } from '../core/state';
 import balance from '../data/balance.json';
 import { cosmeticTable } from '../systems/chests';
-import { dayOfMonth, encouragementFor, monthOf, stuckTime, weekStrip, weekdayIndex, weekdayName, weekdayShort } from '../systems/phoneCalendar';
+import { dayOfMonth, encouragementFor, monthOf, stuckTime, weekStrip, weekdayIndex } from '../systems/phoneCalendar';
 import { formatClock } from './hud';
 import { createInventoryPage } from './inventory';
-import { artUrl, stickerIcon } from './pixelArt';
+import { artUrl, sizedArt } from './pixelArt';
 import { createShopPage } from './shop';
 import { createWalletPage } from './wallet';
-import { createAlbumPage } from './album';
 import { revealWhenReady } from './preload';
+
+/** แอปในหน้าต่างโทรศัพท์ขนาดกลาง ใส่เนื้อหาในการ์ดกระดาษซ้ายและขวา */
+export interface PhonePage {
+  left: HTMLElement;
+  right: HTMLElement;
+  /** เรียกทุกครั้งที่เปิดแอปนี้ */
+  shown?: () => void;
+}
+
+type BookApp = GameEvents['app-open'];
 
 interface PhoneApp {
   id: string;
   name: TextKey;
   icon: string;
-  place: 'grid' | 'dock';
-  /** แอปใหญ่กางจอให้เอง */
-  big?: boolean;
-  /** แอปที่เปิดหน้าต่างของตัวเองแทนหน้าในโทรศัพท์ */
-  opens?: 'book-open';
-  page?: () => HTMLElement;
+  /** สีพื้นวงกลมสติกเกอร์ใต้ไอคอน */
+  plate: string;
+  /** แอปที่อยู่ในหน้าต่างโทรศัพท์ (การ์ดสองใบ) */
+  page?: () => PhonePage;
+  /** แอปที่เปิดเป็นสมุดหรือการ์ดของตัวเองบนเกมที่มืดลง */
+  opens?: 'book-open' | BookApp;
 }
 
+/** 10 แอปตามภาพ home_10apps (ผู้ใช้เอาแอปชุดออก 7 พ.ย. 2026 ชุดจะไปอยู่ตู้เสื้อผ้าในบ้านทีหลัง) */
 const APPS: PhoneApp[] = [
-  { id: 'inventory', name: 'app.inventory', icon: 'ui_app_bag', place: 'grid', big: true, page: createInventoryPage },
-  { id: 'shop', name: 'app.shop', icon: 'ui_app_shop', place: 'grid', big: true, page: createShopPage },
-  { id: 'recipes', name: 'app.recipes', icon: 'ui_app_recipe', place: 'grid', opens: 'book-open' },
-  { id: 'album', name: 'app.album', icon: 'ui_app_album', place: 'grid', page: createAlbumPage },
-  { id: 'pets', name: 'app.pets', icon: 'ui_app_pets', place: 'grid' },
-  { id: 'gate', name: 'app.gate', icon: 'ui_app_gate', place: 'grid' },
-  { id: 'outfit', name: 'app.outfit', icon: 'ui_app_outfit', place: 'grid' },
-  { id: 'support', name: 'app.support', icon: 'ui_app_support', place: 'grid' },
-  { id: 'wallet', name: 'app.wallet', icon: 'ui_app_wallet', place: 'dock', big: true, page: createWalletPage },
-  { id: 'mail', name: 'app.mail', icon: 'ui_app_mail', place: 'dock' },
+  { id: 'inventory', name: 'app.inventory', icon: 'ui_app_bag', plate: '#ffe3ee', page: createInventoryPage },
+  { id: 'wallet', name: 'app.wallet', icon: 'ui_app_wallet', plate: '#e2f5ea', page: createWalletPage },
+  { id: 'shop', name: 'app.shop', icon: 'ui_app_shop', plate: '#fff1d6', page: createShopPage },
+  { id: 'recipes', name: 'app.recipes', icon: 'ui_app_recipe', plate: '#e9e1fb', opens: 'book-open' },
+  { id: 'album', name: 'app.album', icon: 'ui_app_album', plate: '#ffe3ee', opens: 'album' },
+  { id: 'pets', name: 'app.pets', icon: 'ui_app_pets', plate: '#dcecff', opens: 'pets' },
+  { id: 'gate', name: 'app.gate', icon: 'ui_app_gate', plate: '#e9e1fb', opens: 'gate' },
+  { id: 'mail', name: 'app.mail', icon: 'ui_app_mail', plate: '#fff1d6', opens: 'mail' },
+  { id: 'support', name: 'app.support', icon: 'ui_app_support', plate: '#ffe3ee', opens: 'support' },
+  { id: 'settings', name: 'app.settings', icon: 'ui_app_settings', plate: '#e9e1fb', opens: 'settings' },
 ];
 
 const PHONE_WINDOW = 'phone';
@@ -42,12 +52,6 @@ const FLIP_MS = 160;
 const SWIPE_UP_PX = 30;
 /** ไอคอนอากาศเปลี่ยนตามอากาศของวัน */
 const WEATHER_ICONS: Record<Weather, string> = { sunny: 'ui_weather_sun', rain: 'ui_weather_rain', cloudy: 'ui_weather_cloud' };
-const weatherArt = (className: string): HTMLImageElement => {
-  const image = art(WEATHER_ICONS.sunny, className);
-  image.dataset.weatherIcon = '';
-  return image;
-};
-const LOCK_CATS = ['ui_cat_orange', 'ui_cat_calico', 'ui_cat_gio', 'ui_cat_grey'];
 const MINI_CATS = ['ui_cat_orange', 'ui_cat_gio'];
 
 const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className?: string, text?: string): HTMLElementTagNameMap[K] => {
@@ -57,20 +61,26 @@ const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className?: stri
   return node;
 };
 
-const art = (id: string, className: string): HTMLImageElement => {
-  const image = element('img', `pixel-img ${className}`);
-  image.src = artUrl(id);
-  image.alt = '';
+/** ภาพขนาดจริงคูณหน่วยพิกเซลของที่ที่วาง (--px ในการ์ดคือพิกเซลภาพหนึ่งจุด) */
+export const phoneArt = (id: string, className: string, unit = '--px'): HTMLImageElement => sizedArt(id, className, unit);
+
+const weatherArt = (className: string): HTMLImageElement => {
+  const image = phoneArt(WEATHER_ICONS.sunny, className);
+  image.dataset.weatherIcon = '';
   return image;
 };
 
-const punchHole = (): HTMLImageElement => art('ui_v3_punch_hole', 'punch-hole');
-
-function placeholderPage(app: PhoneApp): HTMLElement {
-  const page = element('div', 'phone-page');
-  page.append(element('h2', undefined, t(app.name)));
-  page.append(element('p', 'phone-page__empty', t(app.id === 'support' ? 'app.support_note' : 'app.not_open')));
-  return page;
+/** ไม่มีสัญญาณ (ติดอยู่ในหอคอย โทรออกไม่ได้) กับแบตเตอรี่ วาดด้วย CSS */
+function statusIcons(): HTMLElement {
+  const holder = element('span', 'sb-icons');
+  const signal = element('span', 'sb-signal');
+  for (let bar = 0; bar < 4; bar += 1) signal.append(element('i'));
+  signal.append(element('b', undefined, '×'));
+  const battery = element('span', 'sb-battery');
+  battery.append(element('span', 'sb-battery__body'), element('span', 'sb-battery__tip'));
+  battery.firstElementChild!.append(element('i'));
+  holder.append(signal, battery);
+  return holder;
 }
 
 function createMini(): { root: HTMLButtonElement; time: HTMLElement; date: HTMLElement } {
@@ -84,127 +94,113 @@ function createMini(): { root: HTMLButtonElement; time: HTMLElement; date: HTMLE
   const time = element('b', 'mini__time');
   time.id = 'phone-cover-time';
   const cats = element('span', 'mini__cats');
-  cats.append(...MINI_CATS.map((id) => art(id, 'mini__cat')));
-  screen.append(weatherArt('mini__weather'), date, punchHole(), time, cats);
+  const miniArt = (id: string, className: string): HTMLImageElement => {
+    const image = element('img', `pixel-img ${className}`);
+    image.src = artUrl(id);
+    image.alt = '';
+    return image;
+  };
+  cats.append(...MINI_CATS.map((id) => miniArt(id, 'mini__cat')));
+  const weather = miniArt(WEATHER_ICONS.sunny, 'mini__weather');
+  weather.dataset.weatherIcon = '';
+  screen.append(weather, date, miniArt('ui_v3_punch_hole', 'punch-hole'), time, cats);
   root.append(screen);
   return { root, time, date };
 }
 
-function createLock(): { root: HTMLElement; time: HTMLElement; date: HTMLElement; weather: HTMLElement; line: HTMLElement; open: HTMLButtonElement } {
-  const root = element('div');
+/** จอล็อกโทรศัพท์เล็ก (lock_S3A) วอลเปเปอร์ฟ้าอยู่ใต้กระจกใส */
+function createLock(): { root: HTMLElement; update: (world: World) => void; open: HTMLButtonElement } {
+  const root = element('div', 'pl');
   root.id = 'lock-screen';
-  root.append(punchHole());
-  const date = element('p', 'lock__date');
-  const time = element('p', 'lock__time');
-  const weather = element('p', 'lock__weather');
-  const line = element('p', 'lock__line');
-  LOCK_CATS.forEach((id, index) => root.append(art(id, `lock__cat lock__cat--${index}`)));
-  const card = element('div', 'lock__card');
-  card.append(art('ui_cat_gio', 'lock__card-cat'), line);
-  const open = element('button');
+  const date = element('div', 'pl-date tape');
+  const time = element('div', 'pl-time');
+  const weather = element('div', 'pl-pill');
+  const status = element('div', 'pl-status');
+  status.append(statusIcons());
+  const card = element('div', 'pl-card');
+  const line = element('p');
+  const open = element('button', 'pl-go', '›');
   open.id = 'lock-open';
   open.type = 'button';
   open.setAttribute('aria-label', t('phone.unlock'));
-  open.append(art('ui_v3_paw_button', 'lock__paw'));
-  const top = element('div', 'lock__top');
-  top.append(date, weatherArt('lock__sun'));
-  root.append(top, time, weather, card, open);
-  return { root, time, date, weather, line, open };
-}
-
-function createDateWidget(): { root: HTMLElement; update: (world: World) => void } {
-  const root = element('div', 'widget-date');
-  const faces = element('div', 'widget-date__faces', '◡ ◡');
-  const name = element('b');
-  const detail = element('small');
-  const heading = element('div', 'widget-date__heading');
-  heading.append(faces, name, detail);
-  const strip = element('div', 'widget-date__strip');
-  const cells = Array.from({ length: 7 }, () => {
-    const cell = element('span');
-    strip.append(cell);
-    return cell;
-  });
-  root.append(heading, strip);
+  card.append(phoneArt('ui_v3_paw_button', 'pl-paw', '--m4'), line, open);
+  root.append(status, date, weatherArt('pl-sun die'), time, weather, phoneArt('ui_cat_grey', 'pl-cat die', '--m4'), element('i', 'pl-shine'), card);
   return {
     root,
-    update: ({ day }) => {
-      name.textContent = t(weekdayName(day));
-      detail.textContent = `${t('hud.day')} ${day} · ${t('calendar.month')} ${monthOf(day)}`;
-      weekStrip(day).forEach((value, index) => {
-        const cell = cells[index] as HTMLElement;
-        cell.textContent = '';
-        cell.append(element('small', undefined, t(`weekday.short_${index}` as TextKey)), element('b', undefined, value >= 1 ? String(value) : '–'));
-        cell.classList.toggle('is-today', value === day);
-      });
+    open,
+    update: (world) => {
+      date.textContent = `${t(`weekday.compact_${weekdayIndex(world.day)}` as TextKey)} ${world.day}`;
+      time.textContent = formatClock(world.hour);
+      weather.textContent = t(`weather.${world.weather}` as TextKey);
+      line.textContent = encouragementFor(world.day);
     },
   };
 }
 
-function createTasksWidget(): HTMLElement {
-  const root = element('div', 'widget-tasks');
-  root.append(element('b', undefined, t('tasks.title')), element('small', undefined, t('tasks.empty')));
-  return root;
-}
-
-function createCalendarWidget(): { root: HTMLElement; update: (world: World) => void } {
-  const root = element('div', 'widget-calendar');
-  root.id = 'tower-calendar';
-  const title = element('b', 'widget-calendar__title');
-  const grid = element('div', 'widget-calendar__grid');
-  const cells = Array.from({ length: balance.calendar.daysPerMonth }, (_, index) => {
-    const cell = element('span', undefined, String(index + 1));
-    grid.append(cell);
-    return cell;
-  });
-  const today = element('div', 'widget-calendar__today');
-  today.append(element('b', undefined, t('calendar.today')), element('small', undefined, t('calendar.no_event')));
-  const body = element('div', 'widget-calendar__body');
-  body.append(grid, today);
-  root.append(title, body);
-  return {
-    root,
-    update: ({ day }) => {
-      title.textContent = `${t('calendar.month')} ${monthOf(day)}`;
-      cells.forEach((cell, index) => cell.classList.toggle('is-today', index + 1 === dayOfMonth(day)));
-    },
-  };
-}
-
-function createStuckWidget(): { root: HTMLElement; update: (world: World) => void } {
-  const root = element('div', 'widget-stuck');
-  root.id = 'stuck-counter';
-  const heading = element('div', 'widget-stuck__heading');
-  const floor = element('small');
-  heading.append(element('b', undefined, t('stuck.title')), floor);
-  const values = element('div', 'widget-stuck__values');
-  const parts = (['stuck.months', 'stuck.days', 'stuck.hours'] as const).map((label) => {
-    const part = element('div');
+/** หน้าหลักการ์ดขวา: ตราวันที่ แถบสัปดาห์ งานวันนี้ และตัวนับติดอยู่ในหอคอย */
+function createToday(): { root: HTMLElement; update: (world: World) => void } {
+  const root = element('div', 'pz ph-today');
+  root.append(element('i', 'tape ph-tape'));
+  const stamp = element('div', 'ph-stamp');
+  const dayName = element('div', 'ph-dn');
+  const month = element('div', 'ph-mn');
+  const weatherText = element('div', 'ph-wt');
+  const week = element('div', 'ph-week');
+  const cells = Array.from({ length: 7 }, (_, index) => {
+    const cell = element('div');
     const number = element('b');
-    part.append(number, element('small', undefined, t(label)));
-    values.append(part);
-    return number;
+    cell.append(element('i', undefined, t(`weekday.short_${index}` as TextKey)), number);
+    week.append(cell);
+    return { cell, number };
   });
-  root.append(heading, values);
+  const tasks = element('div', 'ph-task', t('tasks.empty'));
+  tasks.id = 'today-tasks';
+  const stuck = element('div', 'ph-stk');
+  stuck.id = 'stuck-counter';
+  const floor = element('div', 'ph-flr');
+  root.append(
+    stamp,
+    dayName,
+    month,
+    weatherArt('ph-sun die'),
+    weatherText,
+    week,
+    element('i', 'ph-rule'),
+    element('div', 'ph-h ph-h--tasks', t('tasks.title')),
+    tasks,
+    element('div', 'ph-h ph-h--stuck', t('stuck.title')),
+    stuck,
+    floor,
+    phoneArt('ui_cat_gio', 'ph-gio', '--px4'),
+  );
+  root.id = 'tower-calendar';
+  const number = (value: number): HTMLElement => element('b', undefined, String(value));
   return {
     root,
-    update: ({ day, hour }) => {
-      const { months, days, hours } = stuckTime(day, hour);
-      [months, days, hours].forEach((value, index) => {
-        (parts[index] as HTMLElement).textContent = String(value);
+    update: (world) => {
+      stamp.textContent = String(dayOfMonth(world.day));
+      dayName.textContent = t(`weekday.compact_${weekdayIndex(world.day)}` as TextKey);
+      month.textContent = `${t('calendar.month')} ${monthOf(world.day)}`;
+      weatherText.textContent = t(`weather.${world.weather}` as TextKey);
+      weekStrip(world.day).forEach((value, index) => {
+        const { cell, number: label } = cells[index]!;
+        label.textContent = value >= 1 ? String(dayOfMonth(value)) : '–';
+        cell.className = value === world.day ? 'on' : value < world.day ? 'past' : '';
       });
-      floor.textContent = `${t('stuck.floor')} ${balance.calendar.currentFloorPlaceholder} / ${balance.calendar.totalFloors}`;
+      const { months, days, hours } = stuckTime(world.day, world.hour);
+      stuck.replaceChildren(number(months), ` ${t('stuck.months')} `, number(days), ` ${t('stuck.days')} `, number(hours), ` ${t('stuck.hours')}`);
+      floor.textContent = `${t('stuck.floor')} ${balance.calendar.currentFloorPlaceholder}`;
     },
   };
 }
 
 function createBack(): { root: HTMLElement; flip: HTMLButtonElement; showCase: (id: string) => void } {
-  const root = element('div', 'phone-back');
+  const root = element('div', 'pw-back');
   root.id = 'phone-back-side';
-  const name = element('small', 'phone-back__name', t('phone.case_default'));
-  const flip = element('button', 'phone-tool', t('phone.flip_back'));
+  const name = element('small', 'pw-back__name', t('phone.case_default'));
+  const flip = element('button', 'pw-btn pw-back__flip', t('phone.flip_back'));
   flip.type = 'button';
-  const caseArt = art(cosmeticTable.case_pink_cat!.art, 'phone-back__case');
+  const caseArt = phoneArt(cosmeticTable.case_pink_cat!.art, 'pw-back__case');
   root.append(caseArt, name, flip);
   /** เคสที่เลือกในแอปกระเป๋า แท็บสะสม */
   const showCase = (id: string): void => {
@@ -216,6 +212,18 @@ function createBack(): { root: HTMLElement; flip: HTMLButtonElement; showCase: (
   return { root, flip, showCase };
 }
 
+const ctrlButton = (id: string, text: string, label: TextKey): HTMLButtonElement => {
+  const button = element('button', 'pw-ctrl__btn', text);
+  button.id = id;
+  button.type = 'button';
+  button.setAttribute('aria-label', t(label));
+  return button;
+};
+
+/**
+ * โทรศัพท์ (ผู้ใช้อนุมัติ 6–7 พ.ย. 2026): แตะโทรศัพท์ย่อมุมจอ → จอล็อกโทรศัพท์เล็กกลางจอ → ค่อย ๆ ขยายเป็นหน้าต่างกระจกขนาดกลาง
+ * หน้าหลักและแอปกระเป๋า กระเป๋าเงิน ร้านค้า อยู่ในหน้าต่างนี้ · สมุดและการ์ดเปิดบนเกมที่มืดลงแทน
+ */
 export function createPhone(uiRoot: HTMLElement): void {
   const mini = createMini();
   const lock = createLock();
@@ -224,147 +232,133 @@ export function createPhone(uiRoot: HTMLElement): void {
   backdrop.id = 'phone-backdrop';
   backdrop.hidden = true;
 
-  const phone = element('div');
+  const phone = element('div', 'pw');
   phone.id = 'phone';
-  phone.dataset.fold = 'folded';
+  phone.dataset.state = 'lock';
   phone.dataset.side = 'front';
   phone.setAttribute('role', 'dialog');
   phone.setAttribute('aria-label', t('phone.open'));
-  phone.hidden = true;
-  phone.append(art('ui_v3_phone_ear', 'phone-ear phone-ear--left'), art('ui_v3_phone_ear', 'phone-ear phone-ear--right'));
+  phone.style.setProperty('--wallpaper', `url("${artUrl('ui_v3_wallpaper_sky')}")`);
 
-  const front = element('div', 'phone-front');
-  const bar = element('div', 'phone-bar');
-  const clock = element('span');
+  const sbar = element('div', 'pw-sbar');
+  const clock = element('span', 'pw-sbar__time');
   clock.id = 'phone-time';
-  const status = element('span');
-  status.id = 'phone-status';
-  const unfold = element('button', 'phone-tool', t('phone.unfold'));
-  unfold.id = 'phone-unfold';
-  unfold.type = 'button';
-  const flip = element('button', 'phone-tool', t('phone.flip'));
-  flip.id = 'phone-flip';
-  flip.type = 'button';
-  const close = element('button', 'phone-tool', '×');
-  close.id = 'phone-close';
-  close.type = 'button';
-  close.setAttribute('aria-label', t('ui.close'));
-  bar.append(clock, status, unfold, flip, close, punchHole());
+  sbar.append(clock, statusIcons());
 
-  const main = element('div', 'phone-main');
-  const date = createDateWidget();
-  const grid = element('div', 'phone-apps');
-  const gioWidget = element('div', 'widget-gio');
-  const gio = element('div', 'widget-gio__sprite');
-  gio.style.backgroundImage = `url("${artUrl('gio_sit')}")`;
-  gioWidget.append(gio, element('small', undefined, t('phone.gio')));
-  const tasks = createTasksWidget();
-  main.append(date.root, grid, tasks);
-
-  const extra = element('div', 'phone-extra');
-  const calendar = createCalendarWidget();
-  const stuck = createStuckWidget();
-  extra.append(calendar.root, stuck.root);
-
-  const content = element('div', 'phone-content');
-  content.hidden = true;
-  const backButton = element('button', 'phone-tool', t('phone.back'));
-  backButton.id = 'phone-back';
-  backButton.type = 'button';
-  const pageHolder = element('div', 'phone-content__page');
-  content.append(backButton, pageHolder);
-
-  const dock = element('div', 'phone-dock');
-  const screen = element('div', 'phone-screen');
-  screen.append(main, extra, content, dock);
-  front.append(bar, screen, element('div', 'phone-dots', '● ○ ○'));
+  const left = element('div', 'pw-card pw-card--l');
+  const right = element('div', 'pw-card pw-card--r');
+  const ctrl = element('div', 'pw-ctrl');
+  const home = ctrlButton('phone-back', '‹', 'phone.back');
+  const fold = ctrlButton('phone-fold', '⇆', 'phone.fold');
+  const flip = ctrlButton('phone-flip', '↻', 'phone.flip');
+  const close = ctrlButton('phone-close', '✕', 'ui.close');
+  ctrl.append(home, fold, flip, close);
+  const front = element('div', 'pw-front');
+  front.append(sbar, left, right, ctrl);
 
   const back = createBack();
-  phone.append(front, back.root);
-  backdrop.append(lock.root, phone);
+  phone.append(element('i', 'pw-case'), element('i', 'pw-rim'), element('i', 'pw-glint'), lock.root, front, back.root, phoneArt('ui_cat_peek', 'pw-peek', '--m4'));
+  backdrop.append(phone);
   uiRoot.append(mini.root, backdrop);
 
-  const pages = new Map<string, HTMLElement>();
-  const appButton = (app: PhoneApp, withLabel: boolean): HTMLButtonElement => {
+  // หน้าหลัก
+  const grid = element('div', 'pz ph-apps');
+  const today = createToday();
+  const appButton = (app: PhoneApp): HTMLButtonElement => {
     const button = element('button', `phone-app phone-app--${app.id}`);
     button.type = 'button';
     button.dataset.app = app.id;
     button.setAttribute('aria-label', t(app.name));
-    button.append(stickerIcon(app.icon));
-    if (withLabel) button.append(element('span', 'phone-app__name', t(app.name)));
+    const plate = element('span', 'phone-app__plate');
+    plate.style.background = app.plate;
+    plate.append(phoneArt(app.icon, 'phone-app__icon'));
+    button.append(plate, element('span', 'phone-app__name', t(app.name)));
     button.addEventListener('click', () => openApp(app));
     return button;
   };
-  APPS.filter((app) => app.place === 'grid').forEach((app, index) => {
-    grid.append(appButton(app, true));
-    // วิดเจ็ตจีโออยู่ตรงกลางตารางตามภาพตัวอย่าง
-    if (index === 5) grid.append(gioWidget);
-  });
-  APPS.filter((app) => app.place === 'dock').forEach((app) => dock.append(appButton(app, false)));
+  const appGrid = element('div', 'ph-grid');
+  appGrid.append(...APPS.map(appButton));
+  grid.append(appGrid);
 
-  const setFold = (fold: 'folded' | 'unfolded'): void => {
-    phone.dataset.fold = fold;
-    unfold.textContent = t(fold === 'folded' ? 'phone.unfold' : 'phone.fold');
+  const pages = new Map<string, PhonePage>();
+  let state: 'lock' | 'open' = 'lock';
+  /** เปิดสมุดหรือการ์ดจากโทรศัพท์: ซ่อนโทรศัพท์ไว้ (นาฬิกายังหยุด) ปิดสมุดแล้วกลับมาที่หน้าหลัก */
+  let suspended = false;
+
+  const setState = (next: 'lock' | 'open'): void => {
+    state = next;
+    phone.dataset.state = next;
+    uiRoot.classList.toggle('phone-wide', next === 'open' && !backdrop.hidden);
+  };
+
+  const showHome = (): void => {
+    delete phone.dataset.app;
+    phone.dataset.side = 'front';
+    left.replaceChildren(grid);
+    right.replaceChildren(today.root);
+    home.hidden = true;
+    fold.hidden = false;
+    setState('open');
+    revealWhenReady(phone);
   };
 
   function openApp(app: PhoneApp): void {
     if (app.opens) {
-      eventBus.emit(app.opens, undefined);
+      // สมุดและการ์ดเปิดบนเกมแทนหน้าต่างโทรศัพท์ ปิดแล้วกลับมาที่หน้าหลักเหมือนเดิม
+      suspended = true;
+      backdrop.hidden = true;
+      uiRoot.classList.remove('phone-wide');
+      if (app.opens === 'book-open') eventBus.emit('book-open', undefined);
+      else eventBus.emit('app-open', app.opens);
       return;
     }
     let page = pages.get(app.id);
     if (!page) {
-      page = app.page ? app.page() : placeholderPage(app);
+      page = app.page!();
       pages.set(app.id, page);
     }
-    pageHolder.replaceChildren(page);
-    page.dispatchEvent(new Event('phone-page-shown'));
-    content.hidden = false;
-    revealWhenReady(content);
+    left.replaceChildren(page.left);
+    right.replaceChildren(page.right);
+    page.shown?.();
     phone.dataset.app = app.id;
-    if (app.big) setFold('unfolded');
+    home.hidden = false;
+    fold.hidden = true;
+    revealWhenReady(phone);
   }
 
-  const closeApp = (): void => {
-    content.hidden = true;
-    delete phone.dataset.app;
-  };
-  backButton.addEventListener('click', closeApp);
-
-  const showHome = (): void => {
-    lock.root.hidden = true;
-    phone.hidden = false;
-  };
   const openPhone = (): void => {
     if (!backdrop.hidden) return;
     backdrop.hidden = false;
-    lock.root.hidden = false;
-    phone.hidden = true;
-    closeApp();
-    setFold('folded');
     phone.dataset.side = 'front';
+    delete phone.dataset.app;
+    setState('lock');
     revealWhenReady(backdrop);
     gameState.setWindowOpen(PHONE_WINDOW, true);
   };
-  const closePhone = (): void => {
-    if (backdrop.hidden) return;
+  function closePhone(): void {
+    if (backdrop.hidden || suspended) return;
     backdrop.hidden = true;
+    uiRoot.classList.remove('phone-wide');
     gameState.setWindowOpen(PHONE_WINDOW, false);
-  };
+  }
 
   mini.root.addEventListener('click', openPhone);
   close.addEventListener('click', closePhone);
-  unfold.addEventListener('click', () => setFold(phone.dataset.fold === 'folded' ? 'unfolded' : 'folded'));
+  home.addEventListener('click', showHome);
+  fold.addEventListener('click', () => setState('lock'));
   backdrop.addEventListener('click', (event) => {
     if (event.target === backdrop) closePhone();
   });
-  lock.root.addEventListener('click', showHome);
+  lock.root.addEventListener('click', (event) => {
+    if (state === 'lock' && event.target !== lock.open) showHome();
+  });
+  lock.open.addEventListener('click', showHome);
   let swipeStartY: number | null = null;
   lock.root.addEventListener('pointerdown', (event) => {
     swipeStartY = event.clientY;
   });
   lock.root.addEventListener('pointerup', (event) => {
-    if (swipeStartY !== null && swipeStartY - event.clientY > SWIPE_UP_PX) showHome();
+    if (swipeStartY !== null && swipeStartY - event.clientY > SWIPE_UP_PX && state === 'lock') showHome();
     swipeStartY = null;
   });
 
@@ -382,27 +376,27 @@ export function createPhone(uiRoot: HTMLElement): void {
     if (event.key === 'Escape') closePhone();
     if (event.key === 'Tab') {
       event.preventDefault();
+      if (suspended) return;
       if (backdrop.hidden) openPhone();
       else closePhone();
     }
   });
 
+  eventBus.on('app-closed', () => {
+    if (!suspended) return;
+    suspended = false;
+    backdrop.hidden = false;
+    showHome();
+  });
+
   eventBus.on('world-changed', (world) => {
     const time = formatClock(world.hour);
-    const short = `${t(`weekday.compact_${weekdayIndex(world.day)}` as TextKey)} ${world.day}`;
     mini.time.textContent = time;
-    mini.date.textContent = short;
-    lock.time.textContent = time;
-    lock.date.textContent = short;
-    const weather = t(`weather.${world.weather}` as TextKey);
-    lock.weather.textContent = weather;
+    mini.date.textContent = `${t(`weekday.compact_${weekdayIndex(world.day)}` as TextKey)} ${world.day}`;
+    clock.textContent = time;
     for (const icon of document.querySelectorAll<HTMLImageElement>('[data-weather-icon]')) icon.src = artUrl(WEATHER_ICONS[world.weather]);
     back.showCase(world.cosmetics.equipped.case);
-    lock.line.textContent = encouragementFor(world.day);
-    clock.textContent = time;
-    status.textContent = `${t(weekdayShort(world.day))} ${world.day} · ${weather}`;
-    date.update(world);
-    calendar.update(world);
-    stuck.update(world);
+    lock.update(world);
+    today.update(world);
   });
 }

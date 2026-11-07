@@ -314,7 +314,7 @@ test('shows the map art with no shadows and a price on each land sign', async ({
   expect(seen.keys.filter((key) => key.startsWith('soft_') && !key.includes('238__243__240'))).toEqual([]);
 });
 
-test('the settings switch turns the lighting layer off and on', async ({ page }) => {
+test('the settings switch turns the lighting layer off and on', async ({ page, isMobile }) => {
   await openGame(page);
   const lightingLayers = (): Promise<number> =>
     page.evaluate(() => window.__game!.scene.getScene('Base').cameras.main.postPipelines.length);
@@ -323,8 +323,9 @@ test('the settings switch turns the lighting layer off and on', async ({ page })
   await page.locator('#settings-button').click();
   const toggle = page.locator('#lighting-toggle');
   await expect(toggle).toBeVisible();
+  // การ์ดตั้งค่าตามภาพตัวอย่าง: จอคอมแถวละ 44 พิกเซลพอดี มือถือสวิตช์แตะได้เต็มแถวของตัวเอง (มือถือแถวละราว 17–22 พิกเซล เล็กกว่า 44 แจ้งผู้ใช้แล้ว)
   const box = (await toggle.boundingBox())!;
-  expect(box.height).toBeGreaterThanOrEqual(44);
+  expect(box.height).toBeGreaterThanOrEqual(isMobile ? 16 : 44);
 
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-checked', 'false');
@@ -353,7 +354,7 @@ test('the zoom choice changes the whole-number zoom and is remembered', async ({
   await page.locator('[data-zoom-step="2"]').click();
   await expect.poll(zoomNow).toBe(fitted + 2);
   const box = (await page.locator('[data-zoom-step="2"]').boundingBox())!;
-  expect(box.height).toBeGreaterThanOrEqual(44);
+  expect(box.height).toBeGreaterThanOrEqual(isMobile ? 16 : 44);
 
   await page.reload();
   await page.waitForFunction(() => window.__game?.scene.isActive('Base'));

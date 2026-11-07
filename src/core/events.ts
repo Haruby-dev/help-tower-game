@@ -28,6 +28,14 @@ export interface GameEvents {
   'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut' | 'noMoney';
   'cook-open': undefined;
   'book-open': undefined;
+  /** แอปในโทรศัพท์ที่เปิดเป็นสมุดหรือการ์ดบนเกมที่มืดลง */
+  'app-open': 'album' | 'pets' | 'gate' | 'mail' | 'support' | 'settings';
+  /** สมุดหรือการ์ดปิดแล้ว (ชื่อหน้าต่าง) โทรศัพท์ที่เปิดค้างไว้กลับมาที่หน้าหลัก */
+  'app-closed': string;
+  /** กินของจากแถบอาหาร (ปุ่มกระทำ "กิน") ใช้เล่นท่ากินเมื่อภาพมาถึง */
+  'player-ate': string;
+  /** เลือกอาหารในแถบอาหาร (null คือกลับเป็นแถบเครื่องมือ) */
+  'food-changed': string | null;
   /** ไอเท็มหีบในกระเป๋าที่จะเปิด */
   'chest-open': string;
   /** กดคุยกับจีโอ */

@@ -187,6 +187,7 @@ test('the test spawn button in settings puts the chosen item, stars and count in
   test.skip(info.project.name !== 'desktop', 'a quick desktop check is enough for a test-only button');
   await open(page);
   await page.locator('#settings-button').click();
+  await page.locator('#test-spawn-open').click();
   await page.locator('#test-spawn-item').selectOption('produce_strawberry');
   await page.locator('#test-spawn-stars').selectOption('3');
   await page.locator('#test-spawn-count').selectOption('5');

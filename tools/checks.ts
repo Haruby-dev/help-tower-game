@@ -14,6 +14,9 @@ import {
   cosmeticsSchema,
   cropsSchema,
   dialogueSchema,
+  gatesSchema,
+  mailSchema,
+  petsSchema,
   fishSchema,
   monstersSchema,
   ingredientsSchema,
@@ -85,6 +88,9 @@ export function checkProject(): string[] {
   checkSchema('src/data/shop.json', shopSchema, problems);
   checkSchema('src/data/monsters.json', monstersSchema, problems);
   checkSchema('src/data/dialogue.json', dialogueSchema, problems);
+  checkSchema('src/data/pets.json', petsSchema, problems);
+  checkSchema('src/data/gates.json', gatesSchema, problems);
+  checkSchema('src/data/mail.json', mailSchema, problems);
   checkSchema('src/data/audio.json', audioSchema, problems);
   checkSchema('public/assets/audio/_audio_index.json', audioIndexSchema, problems);
   checkSchema('src/data/sprite-meta.json', spriteMetaSchema, problems);

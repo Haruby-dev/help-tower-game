@@ -90,11 +90,15 @@
     "vignetteRadius": 0.62
   },
   "bookDesign": {
-    "width": 225,
-    "height": 318
+    "width": 680,
+    "height": 324
   },
   "titleDesign": {
     "width": 640,
     "height": 360
+  },
+  "phoneDesign": {
+    "width": 674,
+    "height": 325
   }
 }

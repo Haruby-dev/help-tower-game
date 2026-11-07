@@ -1,0 +1,16 @@
+{
+  "stayHours": 2,
+  "zones": [{ "zone": 1, "weather": "ui_weather_sun" }],
+  "gates": [
+    { "floor": 1, "scene": "gate_scene_gate1" },
+    { "floor": 2, "scene": "gate_scene_gate2" },
+    { "floor": 3, "scene": "gate_scene_gate3" },
+    { "floor": 4, "scene": "gate_scene_gate4" },
+    { "floor": 5, "scene": "gate_scene_gate5" },
+    { "floor": 6, "scene": "gate_scene_gate6" },
+    { "floor": 7, "scene": "gate_scene_gate7" },
+    { "floor": 8, "scene": "gate_scene_gate8" },
+    { "floor": 9, "scene": "gate_scene_gate9" },
+    { "floor": 10, "scene": "gate_scene_gate10" }
+  ]
+}

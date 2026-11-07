@@ -12,7 +12,11 @@ import { createPhone } from './phone';
 import { createRecipeBook } from './recipeBook';
 import { createUpdateCheck } from './update';
 import { createSaves } from './saves';
-import { createSettings, initSettings } from './settings';
+import { createSettings, createSupportCard, initSettings } from './settings';
+import { createAlbum } from './album';
+import { createPetsBook } from './petsBook';
+import { createGateBook } from './gateBook';
+import { createMailBook } from './mailBook';
 import { createSound } from './sound';
 import { createLandConfirm } from './land';
 import { createArrange } from './arrange';
@@ -21,6 +25,9 @@ import { createGioWindows } from './gio';
 import { createTrayWindow } from './tray';
 import { createWorldBubbles } from './bubbles';
 import { createTwinQuiz } from './twinQuiz';
+
+/** ภาพตัวอย่างของฝั่งวางแผนวาดที่ 3 จุดจอต่อพิกเซลภาพ (2796×1290) */
+const MOCK_SCALE = 3;
 
 function createRotatePrompt(uiRoot: HTMLElement): void {
   const gio = registry.gio_sit;
@@ -59,7 +66,20 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
     const pixel = uiZoomFor(viewport, display.uiDesign) / window.devicePixelRatio;
     uiRoot.style.setProperty('--px', `${pixel}px`);
     uiRoot.style.setProperty('--tpx', `${uiZoomFor(viewport, display.titleDesign) / window.devicePixelRatio}px`);
-    uiRoot.style.setProperty('--bpx', `${uiZoomFor(viewport, display.bookDesign) / window.devicePixelRatio}px`);
+    // โทรศัพท์ สมุด และการ์ดเขียนเป็นพิกเซลของภาพตัวอย่าง (3 จุดจอต่อพิกเซลภาพบน iPhone แนวนอน) แล้วย่อขยายทั้งก้อนด้วย zoom
+    const dpr = window.devicePixelRatio;
+    const phone = uiZoomFor(viewport, display.phoneDesign);
+    const book = uiZoomFor(viewport, display.bookDesign);
+    uiRoot.style.setProperty('--bpx', `${book / dpr}px`);
+    // พื้นที่แตะอย่างน้อย 44 พิกเซลจอในการ์ด (หน่วยในการ์ดคือพิกเซลภาพ จึงหารด้วยขนาดพิกเซลภาพ)
+    uiRoot.style.setProperty('--bpxn', String(book / dpr));
+    uiRoot.style.setProperty('--bz', String(book / MOCK_SCALE / dpr));
+    uiRoot.style.setProperty('--pz', String(phone / MOCK_SCALE / dpr));
+    // ภาพที่ภาพตัวอย่างวาด 2 หรือ 4 จุดต่อพิกเซล: ปัดให้เป็นจำนวนเต็มของจุดจอเสมอ ภาพจึงคมทุกขนาดจอ (iPhone ได้เท่าภาพตัวอย่างพอดี)
+    const mockPx = (dots: number): string => `${(dots * MOCK_SCALE) / phone}px`;
+    uiRoot.style.setProperty('--m2', mockPx(Math.max(1, Math.round((2 * phone) / MOCK_SCALE))));
+    uiRoot.style.setProperty('--m4', mockPx(Math.max(1, Math.round((4 * phone) / MOCK_SCALE))));
+    uiRoot.style.setProperty('--m4cover', mockPx(Math.ceil((4 * phone) / MOCK_SCALE)));
   });
   createHud(uiRoot);
   createJoystick(uiRoot);
@@ -76,6 +96,11 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   createPhone(uiRoot);
   createSaves(uiRoot);
   createRecipeBook(uiRoot);
+  createAlbum(uiRoot);
+  createPetsBook(uiRoot);
+  createGateBook(uiRoot);
+  createMailBook(uiRoot);
+  createSupportCard(uiRoot);
   createUpdateCheck(uiRoot);
   createLandConfirm(uiRoot);
   createArrange(uiRoot);

@@ -12,8 +12,10 @@ export const displaySchema = z.strictObject({
   }),
   /** ขนาดที่หน้าจอโทรศัพท์ต้องใส่ได้ เป็นพิกเซลเกม */
   uiDesign: z.strictObject({ width: z.number().positive(), height: z.number().positive() }),
-  /** ขนาดที่หน้าสมุดสูตร 201×300 ต้องใส่ได้ พร้อมขอบ */
+  /** ขนาดที่สมุดสองหน้า (หน้าละ 297×268 พร้อมปกและปุ่มปิด) ต้องใส่ได้ เป็นพิกเซลเกม · iPhone แนวนอนได้ 3 เท่าตามภาพตัวอย่าง */
   bookDesign: z.strictObject({ width: z.number().positive(), height: z.number().positive() }),
+  /** ขนาดที่หน้าต่างโทรศัพท์ขนาดกลาง (620×299 พิกเซลเกม) ต้องใส่ได้พร้อมขอบ · iPhone แนวนอนได้ 3 เท่าตามภาพตัวอย่าง */
+  phoneDesign: z.strictObject({ width: z.number().positive(), height: z.number().positive() }),
   /** หน้าเริ่มเกมวาดที่ 640×360 */
   titleDesign: z.strictObject({ width: z.number().positive(), height: z.number().positive() }),
   zoomSteps: z.array(z.number().int().nonnegative()).min(1),
@@ -614,6 +616,8 @@ export const saveFileSchema = z.strictObject({
       ),
       /** แฝดชั้น 5: เฉลยแล้วหรือยัง (วันไหน) และทายถูกแล้วหรือยัง */
       twins: z.strictObject({ revealed: z.boolean(), revealDay: z.number().int().nonnegative(), quizWon: z.boolean() }),
+      /** เมนูที่ผู้เล่นเคยเสิร์ฟให้แต่ละตัวแล้ว (หยิบกินหรืองอน) รสนิยมในอัลบั้มเปิดตามนี้ */
+      tasted: z.record(z.string().min(1), z.array(z.string().min(1))),
     }),
   }),
 });
@@ -767,6 +771,44 @@ export const linesSchema = z.strictObject({
   }),
   encouragement: z.array(z.string().min(1)).min(1),
 });
+
+/**
+ * สมุดดูแลสัตว์ (ข้อมูลนิ่งจาก GDD ระบบสัตว์เลี้ยงมาใน M8) สัตว์ 15 ตัวเรียงตามเกตที่ต้องปลด
+ * art = มีภาพการ์ดและฉากแล้ว · homePrice ราคาบ้านในร้าน (เหรียญ ×10 แล้ว) null = ไม่ต้องมีบ้าน · ความผูกพันระดับ 2–5 ต้องการแต้มตาม bondLevels
+ */
+export const petsSchema = z.strictObject({
+  bondLevels: z.array(z.number().int().positive()).length(4),
+  pets: z
+    .array(
+      z.strictObject({
+        id: z.string().regex(/^[a-z_]+$/),
+        gate: z.number().int().positive(),
+        art: z.boolean(),
+        homePrice: z.number().int().positive().nullable(),
+        treatDays: z.number().int().positive().nullable(),
+      }),
+    )
+    .length(15),
+});
+
+/** แผนที่หอคอย (ข้อมูลนิ่ง ระบบเข้าเกตมาใน M8) ฉากในเกตต่อชั้น และไอคอนอากาศของโซน */
+export const gatesSchema = z.strictObject({
+  stayHours: z.number().positive(),
+  zones: z.array(z.strictObject({ zone: z.number().int().positive(), weather: z.string().min(1) })).min(1),
+  gates: z.array(z.strictObject({ floor: z.number().int().positive(), scene: z.string().min(1) })).length(10),
+});
+
+/** ขวดจดหมาย 20 ฉบับ (ข้อมูลนิ่ง ระบบตกขวดมาทีหลัง) โซนที่เริ่มตกได้ และกระดาษตามคนเขียน */
+export const mailSchema = z.strictObject({
+  homesick: z.number().int().positive(),
+  letters: z
+    .array(z.strictObject({ number: z.number().int().positive(), zone: z.number().int().min(1).max(10), paper: z.enum(['kid', 'old', 'tower', 'plain']) }))
+    .length(20),
+});
+
+export type PetsData = z.infer<typeof petsSchema>;
+export type GatesData = z.infer<typeof gatesSchema>;
+export type MailData = z.infer<typeof mailSchema>;
 
 export const translationsSchema = z.record(z.string().min(1), z.string().min(1));
 

@@ -578,52 +578,7 @@ canvas {
   pointer-events: auto;
 }
 
-#settings-backdrop {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgb(92 48 76 / 40%);
-  pointer-events: auto;
-}
-
-#settings-backdrop[hidden] {
-  display: none;
-}
-
-#settings-window {
-  position: relative;
-  width: min(420px, calc(100vw - 24px));
-  max-height: calc(100% - 12px);
-  overflow-y: auto;
-  padding: 10px 12px;
-  background: #fffafc;
-  touch-action: pan-y;
-  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--outline), 0 calc(var(--px) * 1) 0 0 var(--outline), calc(var(--px) * -1) 0 0 0 var(--outline), calc(var(--px) * 1) 0 0 0 var(--outline);
-}
-
-#settings-close {
-  position: absolute;
-  top: 6px;
-  right: 8px;
-}
-
-#settings-window h2 {
-  line-height: 44px;
-}
-
 /* จอเตี้ยตอนมีแถบ Safari เอาที่ของวิดเจ็ตจีโอให้แอปครบทุกอันโดยไม่ต้องเลื่อน */
-@media (max-height: 360px) {
-  #phone .widget-gio {
-    display: none;
-  }
-}
-
-.settings-howto {
-  margin: 0;
-  padding-left: 18px;
-  font-size: 13px;
-}
 
 #phone-button {
   position: absolute;
@@ -672,15 +627,6 @@ canvas {
   color: var(--outline);
 }
 
-.punch-hole {
-  position: absolute;
-  top: calc(var(--px) * 2);
-  right: calc(var(--px) * 2);
-  width: calc(var(--px) * 3);
-  height: calc(var(--px) * 3);
-  background: #231a2c;
-}
-
 .mini__time {
   position: absolute;
   top: calc(var(--px) * 20);
@@ -705,203 +651,15 @@ canvas {
   height: calc(var(--px) * 15);
 }
 
-#phone-backdrop {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgb(92 48 76 / 40%);
-  pointer-events: auto;
-}
-
-#phone-backdrop[hidden] {
-  display: none;
-}
-
 /* จอล็อก */
-#lock-screen {
-  position: relative;
-  width: calc(var(--px) * 124);
-  height: min(calc(var(--px) * 176), calc(100vh - 16px));
-  overflow: hidden;
-  background: linear-gradient(#b6cdf6 0 70%, #dfe2f6 70%);
-  color: #fff;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 calc(var(--px) * -3) 0 0 #f7efdf, 0 calc(var(--px) * 3) 0 0 #f7efdf, calc(var(--px) * -3) 0 0 0 #f7efdf, calc(var(--px) * 3) 0 0 0 #f7efdf;
-  animation: lock-rise 0.22s steps(5);
-}
-
-#lock-screen[hidden],
-#phone[hidden] {
-  display: none;
-}
 
 @keyframes lock-rise {
   from { transform: translateY(calc(var(--px) * 30)); }
 }
 
-.lock__top {
-  position: absolute;
-  top: calc(var(--px) * 6);
-  left: calc(var(--px) * 26);
-  display: flex;
-  align-items: center;
-  gap: calc(var(--px) * 3);
-  color: #fff;
-  font-size: calc(var(--px) * 8);
-  text-shadow: 1px 0 #7ca6ea, -1px 0 #7ca6ea, 0 1px #7ca6ea, 0 -1px #7ca6ea;
-}
-
-.lock__top p {
-  margin: 0;
-}
-
-.lock__sun {
-  width: calc(var(--px) * 25);
-  height: calc(var(--px) * 24);
-  object-fit: contain;
-}
-
-.lock__time {
-  position: absolute;
-  top: calc(var(--px) * 30);
-  left: 0;
-  right: 0;
-  margin: 0;
-  font-size: calc(var(--px) * 26);
-  line-height: 1;
-  text-align: center;
-  text-shadow: 2px 0 #7ca6ea, -2px 0 #7ca6ea, 0 2px #7ca6ea, 0 -2px #7ca6ea;
-}
-
-.lock__weather {
-  position: absolute;
-  top: calc(var(--px) * 60);
-  left: 0;
-  right: 0;
-  margin: 0;
-  font-size: calc(var(--px) * 8);
-  text-align: center;
-  text-shadow: 1px 0 #7ca6ea, -1px 0 #7ca6ea, 0 1px #7ca6ea, 0 -1px #7ca6ea;
-}
-
-.lock__cat {
-  position: absolute;
-  width: calc(var(--px) * 19);
-  height: calc(var(--px) * 15);
-}
-
-.lock__cat--0 { top: calc(var(--px) * 7); left: calc(var(--px) * 5); }
-.lock__cat--1 { top: calc(var(--px) * 70); right: calc(var(--px) * 8); }
-.lock__cat--2 { top: calc(var(--px) * 90); left: calc(var(--px) * 8); }
-.lock__cat--3 { top: calc(var(--px) * 110); left: calc(var(--px) * 66); }
-
-.lock__card {
-  position: absolute;
-  right: calc(max(44px, var(--px) * 30) + var(--px) * 6);
-  bottom: calc(var(--px) * 10);
-  left: calc(var(--px) * 5);
-  display: flex;
-  align-items: center;
-  gap: calc(var(--px) * 2);
-  min-height: calc(var(--px) * 26);
-  padding: calc(var(--px) * 2);
-  background: #fff;
-  color: #d9608a;
-  font-size: max(10px, calc(var(--px) * 7));
-  line-height: 1.2;
-  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--pink), 0 calc(var(--px) * 1) 0 0 var(--pink), calc(var(--px) * -1) 0 0 0 var(--pink), calc(var(--px) * 1) 0 0 0 var(--pink);
-}
-
-.lock__card p {
-  margin: 0;
-}
-
-.lock__card-cat {
-  width: calc(var(--px) * 19);
-  height: calc(var(--px) * 15);
-  flex: none;
-}
-
-#lock-open {
-  position: absolute;
-  right: calc(var(--px) * 3);
-  bottom: calc(var(--px) * 11);
-  width: max(44px, calc(var(--px) * 30));
-  height: max(44px, calc(var(--px) * 16));
-  padding: 0;
-  border: 0;
-  background: #fff;
-  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--pink), 0 calc(var(--px) * 1) 0 0 var(--pink), calc(var(--px) * -1) 0 0 0 var(--pink), calc(var(--px) * 1) 0 0 0 var(--pink);
-  cursor: pointer;
-}
-
-#lock-open .pixel-img {
-  width: calc(var(--px) * 28);
-  height: calc(var(--px) * 22);
-  margin: auto;
-}
-
 /* ตัวโทรศัพท์ */
-#phone {
-  position: relative;
-  width: max(calc(var(--px) * 196), 300px);
-  height: min(calc(var(--px) * 270), calc(100vh - 12px));
-  max-width: calc(100vw - 12px);
-  padding: calc(var(--px) * 5);
-  background: #fde3ee;
-  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--outline), 0 calc(var(--px) * 1) 0 0 var(--outline), calc(var(--px) * -1) 0 0 0 var(--outline), calc(var(--px) * 1) 0 0 0 var(--outline);
-  transition: transform 0.16s steps(4);
-}
 
 /* ปุ่ม 44px กับตัวหนังสือขั้นต่ำไม่ลดตามซูม จอเตี้ยจึงต้องกางกว้างกว่าสัดส่วนซูม */
-#phone[data-fold='unfolded'] {
-  width: min(max(calc(var(--px) * 396), 640px), calc(100vw - 12px));
-}
-
-#phone.is-flipping {
-  transform: scaleX(0.04);
-}
-
-.phone-ear {
-  position: absolute;
-  top: calc(var(--px) * -6);
-  width: calc(var(--px) * 6);
-  height: calc(var(--px) * 5);
-  background: var(--outline);
-}
-
-.phone-ear--left { left: calc(var(--px) * 12); }
-.phone-ear--right { right: calc(var(--px) * 12); }
-
-.phone-front {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-  padding: calc(var(--px) * 3);
-  background: #f3dff2;
-}
-
-#phone[data-side='back'] .phone-front {
-  display: none;
-}
-
-.phone-bar {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex: none;
-  font-size: max(11px, calc(var(--px) * 7));
-  font-weight: 700;
-}
-
-#phone-status {
-  flex: 1;
-  overflow: hidden;
-  white-space: nowrap;
-}
 
 .phone-tool {
   min-width: 44px;
@@ -916,322 +674,13 @@ canvas {
   margin: 1px;
 }
 
-.phone-screen {
-  display: grid;
-  min-height: 0;
-  flex: 1;
-  gap: calc(var(--px) * 3);
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: minmax(0, 1fr);
-}
-
-#phone[data-fold='unfolded'] .phone-screen {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
-}
-
-.phone-main { grid-column: 1; grid-row: 1; }
-.phone-extra { grid-column: 2; grid-row: 1; }
-.phone-dock { grid-column: -2; grid-row: 1; }
-
-.phone-main,
-.phone-extra,
-.phone-content {
-  min-width: 0;
-  min-height: 0;
-  overflow-y: auto;
-  touch-action: pan-y;
-}
-
-.phone-main {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--px) * 3);
-}
-
-.phone-extra {
-  display: none;
-  flex-direction: column;
-  gap: calc(var(--px) * 3);
-  padding-left: calc(var(--px) * 3);
-  border-left: 1px solid #e6cfe6;
-}
-
-#phone[data-fold='unfolded'] .phone-extra {
-  display: flex;
-}
-
 /* เปิดแอปตอนกาง ใช้หน้าขวา ตอนพับใช้เต็มจอ */
-.phone-content {
-  grid-column: 1;
-  grid-row: 1;
-  background: #fffafc;
-  padding: calc(var(--px) * 3);
-}
-
-.phone-content[hidden] {
-  display: none;
-}
 
 /* เลื่อนรายการยาวแล้วปุ่มกลับยังอยู่ให้กดได้ */
-#phone-back {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
-#phone[data-fold='unfolded'] .phone-content {
-  grid-column: 2;
-}
-
-#phone[data-app]:not([data-fold='unfolded']) .phone-main,
-#phone[data-fold='unfolded'][data-app] .phone-extra {
-  visibility: hidden;
-}
-
-.phone-dock {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  gap: 2px;
-  padding: 2px;
-  background: #fff;
-}
-
-.phone-dots {
-  flex: none;
-  color: var(--outline);
-  font-size: 8px;
-  text-align: center;
-}
-
-.phone-apps {
-  display: grid;
-  gap: 1px;
-  grid-template-columns: repeat(4, minmax(44px, 1fr));
-}
-
-#phone[data-fold='unfolded'] .widget-gio {
-  display: none;
-}
-
-.phone-app {
-  display: flex;
-  min-width: 44px;
-  min-height: 44px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-.phone-app canvas {
-  display: block;
-  max-width: 100%;
-  object-fit: contain;
-}
-
-.phone-app__name {
-  font-size: max(10px, calc(var(--px) * 6));
-  white-space: nowrap;
-}
-
-.widget-gio {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  grid-column: 3 / span 2;
-  grid-row: 2 / span 2;
-  background: #ffd6e6;
-  font-size: max(10px, calc(var(--px) * 6));
-}
-
-.widget-gio__sprite {
-  width: calc(var(--px) * 56);
-  height: calc(var(--px) * 56);
-  background-repeat: no-repeat;
-  background-size: calc(var(--px) * 448) calc(var(--px) * 224);
-  image-rendering: pixelated;
-}
-
-.widget-date,
-.widget-tasks,
-.widget-calendar {
-  padding: calc(var(--px) * 3);
-  background: #fff;
-  box-shadow: 0 calc(var(--px) * -1) 0 0 #efdcef, 0 calc(var(--px) * 1) 0 0 #efdcef, calc(var(--px) * -1) 0 0 0 #efdcef, calc(var(--px) * 1) 0 0 0 #efdcef;
-  margin: 1px;
-}
-
-.widget-date {
-  flex: none;
-  font-size: max(10px, calc(var(--px) * 6));
-}
-
-.widget-date__heading {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  color: #e0709a;
-}
-
-.widget-date__faces {
-  color: var(--outline);
-}
-
-.widget-date__strip {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  text-align: center;
-}
-
-.widget-date__strip span {
-  display: grid;
-}
 
 .is-today {
   background: #f5b75a;
   color: #fff;
-}
-
-.widget-tasks {
-  display: none;
-  flex: none;
-  gap: 2px;
-  font-size: max(10px, calc(var(--px) * 7));
-}
-
-#phone[data-fold='unfolded'] .widget-tasks {
-  display: grid;
-}
-
-.widget-calendar {
-  font-size: max(10px, calc(var(--px) * 6));
-}
-
-.widget-calendar__body {
-  display: flex;
-  gap: 4px;
-}
-
-.widget-calendar__grid {
-  display: grid;
-  flex: 1;
-  grid-template-columns: repeat(7, 1fr);
-  text-align: center;
-}
-
-.widget-calendar__today {
-  display: grid;
-  width: 34%;
-  align-content: center;
-  padding: 2px;
-  background: var(--pink);
-  color: #fff;
-  text-align: center;
-}
-
-.widget-stuck {
-  padding: calc(var(--px) * 3);
-  background: #76609a;
-  color: #fff;
-}
-
-.widget-stuck__heading {
-  display: flex;
-  justify-content: space-between;
-  font-size: max(10px, calc(var(--px) * 7));
-}
-
-.widget-stuck__values {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  text-align: center;
-}
-
-.widget-stuck__values div {
-  display: grid;
-}
-
-.widget-stuck__values b {
-  font-size: calc(var(--px) * 14);
-}
-
-.widget-stuck__values small {
-  font-size: max(10px, calc(var(--px) * 6));
-}
-
-.phone-back {
-  display: none;
-  position: relative;
-  height: 100%;
-  background-color: #ffd0e0;
-  background-image: radial-gradient(#f5a9c4 1px, transparent 1px);
-  background-size: calc(var(--px) * 14) calc(var(--px) * 14);
-}
-
-#phone[data-side='back'] .phone-back {
-  display: block;
-}
-
-.phone-back__cameras {
-  position: absolute;
-  top: calc(var(--px) * 8);
-  left: calc(var(--px) * 8);
-  display: flex;
-  gap: calc(var(--px) * 3);
-  padding: calc(var(--px) * 3);
-  background: #fff;
-  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--outline), 0 calc(var(--px) * 1) 0 0 var(--outline), calc(var(--px) * -1) 0 0 0 var(--outline), calc(var(--px) * 1) 0 0 0 var(--outline);
-}
-
-.phone-back__cameras i {
-  width: calc(var(--px) * 12);
-  height: calc(var(--px) * 12);
-  background: #2f2740;
-}
-
-.phone-back__face {
-  position: absolute;
-  top: 45%;
-  left: 0;
-  right: 0;
-  margin: 0;
-  color: var(--outline);
-  font-size: calc(var(--px) * 12);
-  text-align: center;
-}
-
-.phone-back__name {
-  position: absolute;
-  bottom: calc(var(--px) * 26);
-  left: 0;
-  right: 0;
-  text-align: center;
-}
-
-.phone-back .phone-tool {
-  position: absolute;
-  right: calc(var(--px) * 4);
-  bottom: calc(var(--px) * 4);
-}
-
-.phone-page {
-  display: grid;
-  gap: 6px;
-}
-
-.phone-page h2 {
-  margin: 0;
-  font-size: max(14px, calc(var(--px) * 9));
-}
-
-.phone-page__empty {
-  margin: 6px 0;
-  font-size: 13px;
 }
 
 .settings-row {
@@ -1264,156 +713,13 @@ canvas {
   background: var(--pink);
 }
 
-.wallet-cards {
-  display: grid;
-  gap: 6px;
-  grid-template-columns: 1fr 1fr;
-}
-
-.wallet-card {
-  display: grid;
-  margin: 1px;
-  padding: 4px 8px;
-  font-size: 12px;
-  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--outline), 0 calc(var(--px) * 1) 0 0 var(--outline), calc(var(--px) * -1) 0 0 0 var(--outline), calc(var(--px) * 1) 0 0 0 var(--outline);
-}
-
-.wallet-card b {
-  font-size: 16px;
-}
-
-.wallet-card--coins {
-  background: #fff4d2;
-}
-
-.wallet-card--stars {
-  background: var(--light-pink);
-}
-
-.wallet-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px;
-}
-
-.wallet-tab {
-  min-height: 44px;
-  flex: 1;
-  margin: 1px;
-  padding: 0 6px;
-  border: 0;
-  white-space: nowrap;
-  background: var(--light-pink);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--pink), 0 calc(var(--px) * 1) 0 0 var(--pink), calc(var(--px) * -1) 0 0 0 var(--pink), calc(var(--px) * 1) 0 0 0 var(--pink);
-}
-
-.wallet-tab--active {
-  background: var(--outline);
-  color: #fff;
-}
-
-#wallet-net {
-  min-width: 44px;
-  margin-left: auto;
-  text-align: right;
-}
-
-.wallet-entry {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin: 2px 1px 4px;
-  padding: 3px 6px;
-  background: #fff;
-  font-size: 12px;
-  box-shadow: 0 calc(var(--px) * -1) 0 0 var(--light-pink), 0 calc(var(--px) * 1) 0 0 var(--light-pink), calc(var(--px) * -1) 0 0 0 var(--light-pink), calc(var(--px) * 1) 0 0 0 var(--light-pink);
-}
-
-.wallet-entry span {
-  display: grid;
-}
-
-.wallet-entry small {
-  font-size: 10px;
-}
-
-.wallet-entry--in .wallet-entry__amount {
-  color: #2f8a55;
-}
-
-.wallet-entry--out .wallet-entry__amount {
-  color: #c93f3e;
-}
-
 /* กรอบพิกเซลมุมมน ภาพวาดใน Krita ยืดแบบ 9 ช่องตาม --px จุดพิกเซลจึงเท่ากับโลกเกม */
-#phone,
-#settings-window {
-  border: calc(var(--px) * 2) solid transparent;
-  border-image: url('/assets/ui/phone/phone_frame.png') 13 fill / calc(var(--px) * 13) stretch;
-  background: none;
-  box-shadow: none;
-}
-
-#phone {
-  padding: calc(var(--px) * 8);
-}
-
-#settings-window {
-  padding: calc(var(--px) * 10) calc(var(--px) * 12);
-}
-
-.phone-front {
-  padding: 0;
-  background: none;
-}
-
-.phone-ear {
-  top: calc(var(--px) * -8);
-  width: calc(var(--px) * 9);
-  height: calc(var(--px) * 7);
-  background: none;
-}
-
-.phone-ear--left { left: calc(var(--px) * 18); }
-.phone-ear--right { right: calc(var(--px) * 18); }
 
 /* บานพับกลางเครื่องตอนกาง */
-#phone[data-fold='unfolded']::after {
-  position: absolute;
-  top: calc(var(--px) * -2);
-  bottom: calc(var(--px) * -2);
-  left: calc(50% - var(--px));
-  width: calc(var(--px) * 2);
-  background: linear-gradient(#e8b5cc 0 calc(var(--px) * 8), transparent 0 calc(100% - var(--px) * 8), #e8b5cc 0);
-  content: '';
-  pointer-events: none;
-}
-
-.punch-hole {
-  width: calc(var(--px) * 5);
-  height: calc(var(--px) * 5);
-  background: none;
-}
-
-.phone-bar .punch-hole {
-  flex: none;
-  margin: 0 calc(var(--px) * 2);
-}
-
-.phone-bar {
-  padding: 0 calc(var(--px) * 2);
-  min-height: 0;
-}
 
 .phone-tool,
 .settings-button,
-.wallet-tab,
-.slot-button {
+.slot-button  {
   border: calc(var(--px) * 1) solid transparent;
   border-image: url('/assets/ui/phone/card_btn.png') 5 fill / calc(var(--px) * 5) stretch;
   background: none;
@@ -1434,81 +740,10 @@ canvas {
   background: none;
 }
 
-.wallet-tab--active {
-  border-image-source: url('/assets/ui/phone/card_dark.png');
-  background: none;
-}
-
-.widget-date,
-.widget-tasks,
-.widget-calendar,
-.phone-dock,
-.phone-content,
-.wallet-entry,
-.lock__card,
-#lock-open,
-.phone-back__cameras {
-  border: calc(var(--px) * 1) solid transparent;
-  border-image: url('/assets/ui/phone/card_white.png') 5 fill / calc(var(--px) * 5) stretch;
-  background: none;
-  box-shadow: none;
-}
-
-.widget-gio {
-  border: calc(var(--px) * 1) solid transparent;
-  border-image: url('/assets/ui/phone/card_gio.png') 5 fill / calc(var(--px) * 5) stretch;
-  background: none;
-}
-
-.widget-calendar__today {
-  border: calc(var(--px) * 1) solid transparent;
-  border-image: url('/assets/ui/phone/card_pink.png') 5 fill / calc(var(--px) * 5) stretch;
-  background: none;
-}
-
-.widget-stuck {
-  border: calc(var(--px) * 1) solid transparent;
-  border-image: url('/assets/ui/phone/card_purple.png') 5 fill / calc(var(--px) * 5) stretch;
-  background: none;
-}
-
 .is-today {
   border: calc(var(--px) * 1) solid transparent;
   border-image: url('/assets/ui/phone/card_gold.png') 5 fill / calc(var(--px) * 3) stretch;
   background: none;
-}
-
-.wallet-card {
-  border: calc(var(--px) * 1) solid transparent;
-  background: none;
-  box-shadow: none;
-}
-
-.wallet-card--coins {
-  border-image: url('/assets/ui/phone/card_coin.png') 5 fill / calc(var(--px) * 5) stretch;
-  background: none;
-}
-
-.wallet-card--stars {
-  border-image: url('/assets/ui/phone/card_star.png') 5 fill / calc(var(--px) * 5) stretch;
-  background: none;
-}
-
-.phone-extra {
-  border-left: 0;
-}
-
-.phone-dock {
-  padding: calc(var(--px) * 3) calc(var(--px) * 1);
-}
-
-.phone-back {
-  background-color: transparent;
-}
-
-.phone-back__camera {
-  width: calc(var(--px) * 12);
-  height: calc(var(--px) * 12);
 }
 
 /* โทรศัพท์ย่อและจอล็อก: พื้นตัดมุมอยู่ใต้กรอบครีม ภาพกรอบกลางโปร่งจึงเห็นวอลเปเปอร์ */
@@ -1518,8 +753,7 @@ canvas {
   box-shadow: none;
 }
 
-#phone-button::after,
-#lock-screen::after {
+#phone-button::after {
   position: absolute;
   inset: 0;
   border: calc(var(--px) * 1) solid transparent;
@@ -1528,8 +762,7 @@ canvas {
   pointer-events: none;
 }
 
-.mini__screen,
-#lock-screen::before {
+.mini__screen {
   clip-path: polygon(
     calc(var(--px) * 7) calc(var(--px) * 2),
     calc(100% - var(--px) * 7) calc(var(--px) * 2),
@@ -1542,19 +775,6 @@ canvas {
   );
 }
 
-#lock-screen {
-  overflow: visible;
-  background: none;
-  box-shadow: none;
-}
-
-#lock-screen::before {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(#b6cdf6 0 70%, #dfe2f6 70%);
-  content: '';
-}
-
 #run-button img {
   pointer-events: none;
   -webkit-touch-callout: none;
@@ -1565,16 +785,7 @@ canvas {
   touch-action: none;
 }
 
-.phone-bar .punch-hole {
-  position: static;
-}
-
 /* เว้นของบนจอย่อและจอล็อกให้พ้นกรอบครีม */
-.mini__screen .punch-hole,
-#lock-screen > .punch-hole {
-  top: calc(var(--px) * 6);
-  right: calc(var(--px) * 6);
-}
 
 .mini__weather {
   top: calc(var(--px) * 5);
@@ -1592,30 +803,12 @@ canvas {
   left: calc(var(--px) * 4);
 }
 
-#settings-close {
-  top: calc(var(--px) * 8);
-  right: calc(var(--px) * 10);
-}
-
 /* เวลาบนหน้าปกเปลี่ยนทุกนาทีเกม ถ้านิ้วโดนตัวหนังสือพอดี Safari อาจทิ้งการแตะ จึงให้แตะโดนตัวปุ่มเสมอ */
 #phone-button * {
   pointer-events: none;
 }
 
 /* หลังเคสสีชมพู ตัดมุมให้เข้ากับกรอบ */
-.phone-back {
-  background-color: #ffd0e0;
-  clip-path: polygon(
-    calc(var(--px) * 4) 0,
-    calc(100% - var(--px) * 4) 0,
-    100% calc(var(--px) * 4),
-    100% calc(100% - var(--px) * 4),
-    calc(100% - var(--px) * 4) 100%,
-    calc(var(--px) * 4) 100%,
-    0 calc(100% - var(--px) * 4),
-    0 calc(var(--px) * 4)
-  );
-}
 
 /* แถบเครื่องมือกลางล่าง */
 #toolbar {
@@ -1655,12 +848,6 @@ canvas {
   border-image-source: url('/assets/ui/phone/card_pink.png');
 }
 
-.bag-grid {
-  display: grid;
-  gap: 2px;
-  grid-template-columns: repeat(auto-fill, minmax(max(44px, calc(var(--px) * 38)), 1fr));
-}
-
 .bag-slot {
   aspect-ratio: 1;
 }
@@ -1676,15 +863,6 @@ canvas {
   bottom: 0;
   font-size: max(10px, calc(var(--px) * 7));
   text-shadow: 1px 0 #fff, -1px 0 #fff, 0 1px #fff, 0 -1px #fff;
-}
-
-.bag-detail {
-  display: flex;
-  min-height: 34px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  font-size: 12px;
 }
 
 #seed-picker,
@@ -1738,142 +916,22 @@ canvas {
 }
 
 /* ภาพโทรศัพท์จริง v3 จากฝั่งวางแผน เขียนทับกรอบชั่วคราว */
-#phone {
-  border: 0;
-  border-image: none;
-  background: none;
-  padding: calc(var(--px) * 10);
-}
 
 /* พื้นจอตัดมุมอยู่ใต้กรอบ กรอบกลางโปร่งจึงวาดทับเนื้อหาเป็นชั้นบนสุด */
-#phone::before {
-  position: absolute;
-  inset: calc(var(--px) * 4);
-  background: #f3dff2;
-  content: '';
-}
-
-#phone::after,
-#phone[data-fold='unfolded']::after {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  width: auto;
-  border: calc(var(--px) * 1) solid transparent;
-  border-image: url('/assets/ui/phone_v3/phone_case_9slice.png') 12 / calc(var(--px) * 12) stretch;
-  background: none;
-  content: '';
-  pointer-events: none;
-}
-
-.phone-front {
-  position: relative;
-  z-index: 1;
-}
-
-#phone[data-fold='unfolded'] .phone-front::after {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: calc(var(--px) * 1);
-  background: #e6cfe6;
-  content: '';
-  pointer-events: none;
-}
-
-.phone-ear {
-  top: calc(var(--px) * -9);
-  width: calc(var(--px) * 17);
-  height: calc(var(--px) * 11);
-}
-
-.phone-ear--left { left: calc(var(--px) * 22); }
-.phone-ear--right { right: calc(var(--px) * 22); }
-
-.widget-date,
-.widget-tasks,
-.widget-calendar,
-.phone-dock,
-.phone-content,
-.wallet-entry,
-.lock__card {
-  border-image: url('/assets/ui/phone_v3/note_card_9slice.png') 6 fill / calc(var(--px) * 6) stretch;
-}
 
 /* หลังเครื่องเป็นภาพเดียวทั้งใบ รวมหู กล้อง และสายห้อย */
-#phone[data-side='back']::before,
-#phone[data-side='back']::after,
-#phone[data-side='back'] .phone-ear {
-  display: none;
-}
-
-#phone[data-side='back'] .phone-back {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  background: none;
-  clip-path: none;
-}
-
-.phone-back__case {
-  width: calc(var(--px) * 111);
-  height: calc(var(--px) * 140);
-}
-
-.phone-back__name {
-  position: static;
-  color: #fff;
-  font-weight: 700;
-  text-shadow: 1px 0 #5c304c, -1px 0 #5c304c, 0 1px #5c304c, 0 -1px #5c304c;
-}
-
-.phone-back .phone-tool {
-  position: static;
-}
 
 /* จอย่อและจอล็อกใช้วอลเปเปอร์ขนาดจริงกับขอบครีม */
-#phone-button::after,
-#lock-screen::after {
+#phone-button::after {
   border-image: url('/assets/ui/phone_v3/lock_rim_9slice.png') 6 / calc(var(--px) * 6) stretch;
 }
 
-.mini__screen,
-#lock-screen::before {
+.mini__screen {
   background: url('/assets/ui/phone_v3/wallpaper_sky.png') center top / calc(var(--px) * 108) calc(var(--px) * 138) no-repeat #dfe2f6;
   image-rendering: pixelated;
 }
 
-#lock-screen {
-  width: calc(var(--px) * 116);
-  height: calc(var(--px) * 146);
-}
-
-.lock__cat--1 { top: calc(var(--px) * 66); right: calc(var(--px) * 8); transform: scaleX(-1); }
-.lock__cat--2 { top: calc(var(--px) * 78); left: calc(var(--px) * 8); }
-.lock__cat--3 { top: calc(var(--px) * 80); left: calc(var(--px) * 60); transform: scaleX(-1); }
-
-#lock-open {
-  border: 0;
-  border-image: none;
-  background: none;
-}
-
-#lock-open .pixel-img {
-  width: calc(var(--px) * 16);
-  height: calc(var(--px) * 16);
-}
-
 /* รอยพับอยู่ระหว่างหน้าซ้ายกับขวา ไม่พาดทับตัวหนังสือ */
-#phone[data-fold='unfolded'] .phone-front::after {
-  display: none;
-}
-
-#phone[data-fold='unfolded'] .phone-extra {
-  border-left: 1px solid #e6cfe6;
-}
 
 /* แถบเครื่องมือชุดเหรียญ ถาด 230×48 ช่อง 42×37 ห้าช่อง ไอคอนขนาดจริงวางกลางช่อง */
 #toolbar {
@@ -1943,43 +1001,6 @@ canvas {
 }
 
 /* กระเป๋าใช้ทั้งสองหน้าของเครื่องที่กาง */
-#phone[data-fold='unfolded'][data-app='inventory'] .phone-main {
-  visibility: hidden;
-}
-
-#phone[data-fold='unfolded'][data-app='inventory'] .phone-content {
-  position: relative;
-  grid-column: 1 / 3;
-  padding: 0;
-  border: 0;
-  border-image: none;
-  background: none;
-}
-
-#phone[data-app='inventory'] #phone-back {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.bag-page {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--px) * 2);
-}
-
-.bag-header {
-  display: flex;
-  min-height: max(30px, calc(var(--px) * 18));
-  align-items: center;
-  gap: calc(var(--px) * 4);
-  padding-left: max(50px, calc(var(--px) * 34));
-}
-
-.bag-header h2 {
-  margin: 0;
-  font-size: max(13px, calc(var(--px) * 9));
-}
 
 .bag-tabs {
   display: flex;
@@ -2003,24 +1024,6 @@ canvas {
   border-image-source: url('/assets/ui/bag/tab_active.png');
 }
 
-#bag-used {
-  padding: 0 calc(var(--px) * 3);
-  font-size: max(11px, calc(var(--px) * 7));
-}
-
-.bag-body {
-  display: flex;
-  align-items: flex-start;
-  gap: calc(var(--px) * 3);
-}
-
-.bag-grid {
-  display: grid;
-  flex: none;
-  gap: 0;
-  grid-template-columns: repeat(6, max(44px, calc(var(--px) * 36)));
-}
-
 .bag-slot {
   width: max(44px, calc(var(--px) * 36));
   height: max(44px, calc(var(--px) * 36));
@@ -2041,34 +1044,6 @@ canvas {
   right: calc(var(--px) * 1);
   bottom: 0;
   text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff, 1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
-}
-
-.bag-detail {
-  display: flex;
-  min-width: 0;
-  min-height: calc(var(--px) * 120);
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: calc(var(--px) * 2);
-  padding: calc(var(--px) * 6) calc(var(--px) * 3);
-  border: calc(var(--px) * 1) solid transparent;
-  border-image: url('/assets/ui/phone_v3/note_card_9slice.png') 6 fill / calc(var(--px) * 6) stretch;
-  text-align: center;
-}
-
-.bag-detail .phone-tool {
-  width: 100%;
-}
-
-.bag-detail .phone-tool:disabled {
-  opacity: 0.55;
-  cursor: default;
-}
-
-.bag-detail__count {
-  color: #d9608a;
 }
 
 .item-missing {
@@ -2208,146 +1183,17 @@ canvas {
 }
 
 /* สมุดสูตรเก่า กระดาษครีม */
-#recipe-book {
-  min-height: 100%;
-  padding: 6px;
-  background: #fbf1dc;
-}
-
-.book-list {
-  display: grid;
-  gap: 4px;
-}
-
-.book-entry {
-  position: relative;
-  display: grid;
-  padding: 4px 6px;
-  border-bottom: 1px dashed #c9a97a;
-  font-size: 13px;
-}
-
-.book-entry small,
-.book-note {
-  font-size: 11px;
-}
-
-.book-entry.is-locked {
-  color: #8d7a66;
-}
-
-.book-stamp {
-  position: absolute;
-  top: 4px;
-  right: 6px;
-  color: #d9608a;
-  font-weight: 700;
-}
-
-.book-note {
-  color: #6b8f4e;
-}
 
 /* สมุดสูตร v4 ผ้าลายตารางตามหมวด หน้า 201×300 ขยายจำนวนเต็มด้วย --bpx */
-#recipe-book {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  display: grid;
-  place-items: center;
-  background: rgb(92 48 76 / 45%);
-  pointer-events: auto;
-}
-
-#recipe-book[hidden] {
-  display: none;
-}
-
-.book-page {
-  --book-text: #965024;
-  --book-ad: #a06030;
-  position: relative;
-  width: calc(var(--bpx) * 201);
-  height: calc(var(--bpx) * 300);
-  overflow: hidden;
-  color: #54382c;
-  image-rendering: pixelated;
-}
-
-.book-page[data-theme='sweet'] {
-  --book-text: #aa466e;
-  --book-ad: #b25276;
-}
-
-.book-page[data-theme='drink'] {
-  --book-text: #38764a;
-  --book-ad: #408052;
-}
-
-.book-page > *,
-.book-float > * {
-  position: absolute;
-}
-
-.book-sprite {
-  display: block;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  image-rendering: pixelated;
-  pointer-events: none;
-}
-
-.book-layer {
-  inset: 0;
-  pointer-events: none;
-}
-
-.book-cloth {
-  background-repeat: repeat;
-  background-size: calc(var(--bpx) * 40) calc(var(--bpx) * 40);
-}
-
-.book-frame {
-  border: calc(var(--bpx) * 8) solid transparent;
-  border-image-slice: 8;
-  border-image-width: calc(var(--bpx) * 8);
-}
-
-.book-ribbon--flip {
-  transform: scaleY(-1);
-}
 
 /* แผ่นหลายเฟรม เลื่อนภาพทีละเฟรมเต็ม ๆ ไม่เกลี่ย */
 @keyframes book-sheet {
   to { background-position-x: calc(var(--sheet) * -1); }
 }
 
-.book-sheet {
-  background-size: auto 100%;
-}
-
-.book-light {
-  left: 0;
-  top: 0;
-  animation: book-sheet 8s steps(16) infinite, book-breathe 6s ease-in-out infinite alternate;
-}
-
 @keyframes book-breathe {
   from { opacity: 0.85; }
   to { opacity: 1; }
-}
-
-.book-deco {
-  animation: book-sheet 1.33s steps(8) infinite;
-}
-
-.book-deco--2 { animation-delay: -0.5s; }
-.book-deco--3 { animation-delay: -0.9s; }
-
-.book-float {
-  inset: 0;
-  pointer-events: none;
-  animation: book-float 2.4s infinite;
 }
 
 @keyframes book-float {
@@ -2357,292 +1203,13 @@ canvas {
   75%, 100% { transform: translateY(calc(var(--bpx) * -1)); animation-timing-function: step-end; }
 }
 
-.book-shadow,
-.book-steam {
-  animation: book-sheet 2.4s steps(8) infinite;
-}
-
-.book-sparkle {
-  animation: book-sheet 2.4s steps(8) infinite;
-}
-
-.book-sparkle--1 { animation-delay: -0.9s; }
-.book-sparkle--2 { animation-delay: -1.8s; }
-
-.book-silhouette {
-  width: calc(var(--bpx) * 48);
-  height: calc(var(--bpx) * 48);
-  background: var(--book-ad);
-  opacity: 0.6;
-  -webkit-mask: var(--icon) center / 100% 100% no-repeat;
-  mask: var(--icon) center / 100% 100% no-repeat;
-}
-
-.book-question {
-  width: calc(var(--bpx) * 48);
-  height: calc(var(--bpx) * 48);
-  display: grid;
-  place-items: center;
-  color: #fffaf4;
-  font-size: calc(var(--bpx) * 20);
-  text-shadow: 1px 0 var(--book-ad), -1px 0 var(--book-ad), 0 1px var(--book-ad), 0 -1px var(--book-ad);
-}
-
-.book-tabs {
-  display: flex;
-  gap: calc(var(--bpx) * 3);
-  height: calc(var(--bpx) * 15);
-}
-
-.book-tab {
-  position: relative;
-  min-width: calc(var(--bpx) * 32);
-  height: calc(var(--bpx) * 15);
-  padding: 0 calc(var(--bpx) * 5);
-  border: calc(var(--bpx) * 1) solid transparent;
-  border-image-slice: 5 fill;
-  border-image-width: calc(var(--bpx) * 5);
-  background: none;
-  color: var(--book-text);
-  font-size: calc(var(--bpx) * 7);
-  font-weight: 700;
-  line-height: 1;
-  cursor: pointer;
-}
-
 /* ปุ่มเล็กตามแบบ แต่พื้นที่กดอย่างน้อย 44px */
-.book-tab::before,
-.book-arrow::before {
-  position: absolute;
-  inset: max(-15px, calc(50% - 22px));
-  content: '';
-}
-
-.book-tab.is-active {
-  color: #fffaf4;
-}
-
-.book-number {
-  color: var(--book-text);
-  font-size: calc(var(--bpx) * 7);
-}
-
-.book-title {
-  width: 100%;
-  margin: 0;
-  font-size: calc(var(--bpx) * 12);
-  text-align: center;
-}
-
-.book-page.is-locked .book-title {
-  color: var(--book-text);
-}
-
-.book-divider {
-  right: calc(var(--bpx) * 14);
-  height: calc(var(--bpx) * 5);
-  background-repeat: repeat-x;
-  background-size: calc(var(--bpx) * 48) calc(var(--bpx) * 5);
-  pointer-events: none;
-}
-
-.book-label {
-  color: var(--book-text);
-  font-size: calc(var(--bpx) * 8);
-}
-
-.book-ingredients {
-  inset: 0;
-  pointer-events: none;
-}
-
-.book-ing > *,
-.book-stars > * {
-  position: absolute;
-}
-
-.book-ing__label {
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: calc(var(--bpx) * 4);
-  line-height: 1;
-  text-align: center;
-}
-
-.book-badge,
-.book-bullet {
-  display: grid;
-  place-items: center;
-  font-size: calc(var(--bpx) * 6);
-  font-weight: 700;
-  line-height: 1;
-}
-
-.book-badge {
-  color: #fff;
-}
-
-.book-bullet {
-  color: var(--book-ad);
-}
-
-.book-step {
-  font-size: calc(var(--bpx) * 7);
-  line-height: calc(var(--bpx) * 12);
-  white-space: nowrap;
-}
-
-.book-step.is-hidden {
-  width: calc(var(--bpx) * 140);
-  height: calc(var(--bpx) * 5);
-  margin-top: calc(var(--bpx) * 4);
-  background: #d6cce2;
-  opacity: 0.6;
-}
-
-.book-note {
-  right: calc(var(--bpx) * 22);
-  margin: 0;
-  padding: calc(var(--bpx) * 3) calc(var(--bpx) * 6);
-  border: calc(var(--bpx) * 1) solid transparent;
-  border-image: url('/assets/ui/book/book_note_9slice.png') 5 fill / calc(var(--bpx) * 5) stretch;
-  color: #60503a;
-  font-size: calc(var(--bpx) * 7);
-}
-
-.book-note--hint {
-  border-image: none;
-  color: var(--book-text);
-}
-
-.book-arrow {
-  width: calc(var(--bpx) * 12);
-  height: calc(var(--bpx) * 13);
-  padding: 0;
-  border: 0;
-  background: none no-repeat center / 100% 100%;
-  image-rendering: pixelated;
-  cursor: pointer;
-}
-
-.book-dots {
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  gap: calc(var(--bpx) * 2);
-  pointer-events: none;
-}
-
-.book-dots > * {
-  position: static;
-}
-
-.book-close {
-  position: absolute;
-  top: max(8px, env(safe-area-inset-top));
-  right: max(8px, env(safe-area-inset-right));
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .book-light,
-  .book-float,
-  .book-shadow,
-  .book-steam,
-  .book-sparkle {
-    animation: none;
-  }
-
-  .book-deco {
-    margin-top: calc(var(--bpx) * 2);
-    background-image: var(--still) !important;
-    background-size: 100% 100% !important;
-    animation: none;
-  }
-
-  .book-steam {
-    display: none;
-  }
-}
-
-.book-ingredients > *,
-.book-note > * {
-  position: absolute;
-}
 
 /* ปก สัน และขอบกระดาษของสมุดสูตร ทึบทั้งหมด วาดเป็นพิกเซล */
-.book-volume {
-  --cover: #d9965a;
-  --cover-dark: #a06030;
-  --stitch: #fff1dc;
-  position: relative;
-  width: calc(var(--bpx) * 201);
-  height: calc(var(--bpx) * 300);
-}
-
-.book-volume[data-theme='sweet'] {
-  --cover: #e996b4;
-  --cover-dark: #b25276;
-  --stitch: #fff0f5;
-}
-
-.book-volume[data-theme='drink'] {
-  --cover: #86c497;
-  --cover-dark: #408052;
-  --stitch: #f0fff4;
-}
-
-.book-cover,
-.book-edges,
-.book-spine {
-  position: absolute;
-  display: block;
-  pointer-events: none;
-}
-
-.book-cover {
-  top: calc(var(--bpx) * -6);
-  left: calc(var(--bpx) * -12);
-  width: calc(var(--bpx) * 221);
-  height: calc(var(--bpx) * 314);
-  background: var(--cover-dark);
-}
 
 /* ผิวปกอยู่ใน ขอบเข้ม 1 พิกเซลรอบนอก */
-.book-cover::after {
-  position: absolute;
-  inset: calc(var(--bpx) * 1);
-  background: var(--cover);
-  clip-path: inherit;
-  content: '';
-}
-
-.book-spine {
-  top: calc(var(--bpx) * -2);
-  left: calc(var(--bpx) * -9);
-  width: calc(var(--bpx) * 5);
-  height: calc(var(--bpx) * 304);
-  background: repeating-linear-gradient(
-    to bottom,
-    var(--stitch) 0 calc(var(--bpx) * 4),
-    transparent calc(var(--bpx) * 4) calc(var(--bpx) * 8)
-  ) center / calc(var(--bpx) * 1) 100% no-repeat,
-    var(--cover-dark);
-  z-index: 1;
-}
 
 /* กระดาษหลายแผ่นซ้อนกันโผล่ด้านขวาและด้านล่าง */
-.book-edges {
-  top: 0;
-  left: 0;
-  width: calc(var(--bpx) * 205);
-  height: calc(var(--bpx) * 304);
-  background:
-    repeating-linear-gradient(to right, #fffaf0 0 calc(var(--bpx) * 1), #e3d6bf calc(var(--bpx) * 1) calc(var(--bpx) * 2)) right / calc(var(--bpx) * 4) 100% no-repeat,
-    repeating-linear-gradient(to bottom, #fffaf0 0 calc(var(--bpx) * 1), #e3d6bf calc(var(--bpx) * 1) calc(var(--bpx) * 2)) bottom / 100% calc(var(--bpx) * 4) no-repeat,
-    #e3d6bf;
-}
 
 #update-button {
   position: absolute;
@@ -2947,8 +1514,6 @@ canvas {
   width: min(max(calc(var(--px) * 300), 470px), calc(100vw - 24px));
   height: min(max(calc(var(--px) * 206), 290px), calc(100% - 12px));
 }
-
-
 
 .cook-panel .cook-detail {
   align-items: stretch;
@@ -3337,270 +1902,9 @@ canvas {
 }
 
 /* ===== M6a ร้านค้าระบบ: เต็มจอโทรศัพท์ที่กาง กันสาดลายชมพูครีม จีโอหลังเคาน์เตอร์ ชั้นวางของ การ์ดของที่เลือก ===== */
-#phone[data-fold='unfolded'][data-app='shop'] .phone-main {
-  visibility: hidden;
-}
 
-#phone[data-fold='unfolded'][data-app='shop'] .phone-content {
-  position: relative;
-  grid-column: 1 / 3;
-  padding: 0;
-  border: 0;
-  border-image: none;
-  background: none;
-}
-
-#phone[data-app='shop'] #phone-back {
-  position: absolute;
-  top: calc(var(--px) * 2);
-  left: calc(var(--px) * 2);
-  z-index: 2;
-}
-
-.shop-page {
-  --edge: var(--outline);
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  background: repeating-linear-gradient(90deg, #fff6f0 0 calc(var(--px) * 6), #ffeaf1 calc(var(--px) * 6) calc(var(--px) * 12));
-  color: var(--outline);
-}
-
-.shop-page .pixel-box,
-.shop-bubble,
-.shop-item__price,
-.shop-card,
-.shop-buy,
-.shop-tab.is-active,
-.gio-heart__track {
+.gio-heart__track  {
   box-shadow: 0 calc(var(--px) * -1) 0 0 var(--outline), 0 calc(var(--px) * 1) 0 0 var(--outline), calc(var(--px) * -1) 0 0 0 var(--outline), calc(var(--px) * 1) 0 0 0 var(--outline);
-}
-
-.shop-awning {
-  position: relative;
-  display: flex;
-  height: calc(var(--px) * 22);
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  background: repeating-linear-gradient(90deg, #f8789a 0 calc(var(--px) * 10), #fff6f0 calc(var(--px) * 10) calc(var(--px) * 20));
-  box-shadow: 0 calc(var(--px) * 1) 0 0 var(--outline);
-}
-
-.shop-sign,
-.shop-tab {
-  background: #a8673e;
-  box-shadow: 0 calc(var(--px) * -1) 0 0 #6b3b22, 0 calc(var(--px) * 1) 0 0 #6b3b22, calc(var(--px) * -1) 0 0 0 #6b3b22, calc(var(--px) * 1) 0 0 0 #6b3b22;
-  color: #fff6f0;
-}
-
-.shop-sign {
-  margin: 0;
-  padding: 0 calc(var(--px) * 10);
-  font-size: max(13px, calc(var(--px) * 9));
-  line-height: calc(var(--px) * 16);
-}
-
-.shop-purse {
-  position: absolute;
-  top: calc(var(--px) * 4);
-  right: calc(var(--px) * 4);
-  min-width: calc(var(--px) * 50);
-  padding: 0 calc(var(--px) * 4) 0 calc(var(--px) * 12);
-  background: #fff3c4 linear-gradient(#f2b632, #f2b632) calc(var(--px) * 3) 50% / calc(var(--px) * 6) calc(var(--px) * 6) no-repeat;
-  box-shadow: 0 calc(var(--px) * -1) 0 0 #e0a020, 0 calc(var(--px) * 1) 0 0 #e0a020, calc(var(--px) * -1) 0 0 0 #e0a020, calc(var(--px) * 1) 0 0 0 #e0a020;
-  font-size: max(11px, calc(var(--px) * 7));
-  line-height: calc(var(--px) * 13);
-  text-align: right;
-}
-
-.shop-body {
-  display: grid;
-  min-height: 0;
-  flex: 1;
-  grid-template-columns: calc(var(--px) * 88) 1fr calc(var(--px) * 96);
-  gap: calc(var(--px) * 4);
-  padding: calc(var(--px) * 4);
-}
-
-.shop-side {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: calc(var(--px) * 2);
-}
-
-.shop-bubble {
-  margin: 0;
-  padding: calc(var(--px) * 3) calc(var(--px) * 4);
-  background: #fff;
-  font-size: max(10px, calc(var(--px) * 6));
-  font-weight: 700;
-  text-align: center;
-}
-
-.shop-gio {
-  width: calc(var(--px) * 64);
-  height: calc(var(--px) * 64);
-  margin-bottom: calc(var(--px) * -8);
-}
-
-.shop-counter {
-  display: block;
-  width: 100%;
-  height: calc(var(--px) * 12);
-  background: linear-gradient(#c98a5c 0 calc(var(--px) * 3), #f8b4cc calc(var(--px) * 3) calc(var(--px) * 6), #a8673e calc(var(--px) * 6));
-  box-shadow: 0 calc(var(--px) * 1) 0 0 #6b3b22;
-}
-
-.shop-tabs {
-  display: grid;
-  width: 100%;
-  grid-template-columns: 1fr 1fr;
-  gap: calc(var(--px) * 2);
-}
-
-.shop-tab {
-  min-height: 44px;
-  padding: 0 calc(var(--px) * 1);
-  border: 0;
-  font-size: max(10px, calc(var(--px) * 6));
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.shop-tab.is-active {
-  background: #f8789a;
-}
-
-.shop-shelves {
-  display: flex;
-  min-height: 0;
-  flex-direction: column;
-  gap: calc(var(--px) * 4);
-  overflow-y: auto;
-}
-
-.shop-shelf__label {
-  margin: 0;
-  font-size: max(10px, calc(var(--px) * 6));
-  opacity: 0.8;
-}
-
-.shop-shelf__row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: calc(var(--px) * 2) calc(var(--px) * 4);
-}
-
-.shop-shelf__board {
-  display: block;
-  height: calc(var(--px) * 3);
-  margin-top: calc(var(--px) * -2);
-  background: #c98a5c;
-  box-shadow: 0 calc(var(--px) * 1) 0 0 #6b3b22;
-}
-
-.shop-item {
-  display: flex;
-  min-width: 44px;
-  flex-direction: column;
-  align-items: center;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--outline);
-  cursor: pointer;
-}
-
-.shop-item__art {
-  position: relative;
-  display: grid;
-  width: calc(var(--px) * 34);
-  height: calc(var(--px) * 34);
-  place-items: end center;
-}
-
-.shop-item__badge {
-  position: absolute;
-  top: 0;
-  right: calc(var(--px) * -6);
-  padding: 0 calc(var(--px) * 2);
-  background: #f8789a;
-  color: #fff;
-  font-size: max(9px, calc(var(--px) * 5));
-  font-weight: 700;
-}
-
-.shop-item__price {
-  min-width: calc(var(--px) * 26);
-  margin-top: calc(var(--px) * 3);
-  background: #fff;
-  font-size: max(10px, calc(var(--px) * 6));
-  line-height: calc(var(--px) * 10);
-}
-
-.shop-item.is-selected .shop-item__price {
-  background: #fff3a8;
-}
-
-.shop-closed {
-  margin: auto;
-  font-size: max(11px, calc(var(--px) * 7));
-  text-align: center;
-}
-
-.shop-card {
-  display: flex;
-  min-height: 0;
-  flex-direction: column;
-  align-items: center;
-  gap: calc(var(--px) * 2);
-  padding: calc(var(--px) * 4);
-  background: #fffdf8;
-  text-align: center;
-}
-
-.shop-card__picture {
-  display: grid;
-  width: calc(var(--px) * 68);
-  height: calc(var(--px) * 68);
-  place-items: center;
-  background: #ffeaf1;
-}
-
-.shop-card__name {
-  font-size: max(11px, calc(var(--px) * 7));
-}
-
-.shop-card__note,
-.shop-card__hint {
-  color: #b8578a;
-  font-size: max(10px, calc(var(--px) * 6));
-  font-weight: 700;
-}
-
-.shop-card__stepper {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--px) * 3);
-  margin-top: auto;
-}
-
-.shop-card__count {
-  min-width: calc(var(--px) * 10);
-  font-size: max(12px, calc(var(--px) * 8));
-}
-
-.shop-buy {
-  width: 100%;
-  background: #f8789a;
-  color: #fff;
-}
-
-.shop-buy:disabled,
-.shop-step:disabled {
-  opacity: 0.5;
 }
 
 /* ===== M6a คุยกับจีโอ ฝากขาย และสรุปยอด ===== */
@@ -3877,19 +2181,9 @@ canvas {
 }
 
 /* ร้านค้าใช้ทั้งจอโทรศัพท์ ไม่มีแถบบนและแถบแอปขวา มีแค่ปุ่มกลับมุมซ้ายบน (ผู้ใช้อนุมัติ 4 พ.ย. 2026) */
-#phone[data-app='shop'] .phone-bar,
-#phone[data-app='shop'] .phone-dock,
-#phone[data-app='shop'] .phone-dots {
-  display: none;
-}
-
-#phone[data-fold='unfolded'][data-app='shop'] .phone-content {
-  grid-column: 1 / -1;
-}
 
 /* ปุ่มหลักสีชมพูเข้ม ใช้การ์ดชมพูของโทรศัพท์ */
-.shop-page .shop-buy,
-.consign-panel .consign-go {
+.consign-panel .consign-go  {
   border-image-source: url('/assets/ui/phone/card_pink.png');
   box-shadow: none;
   color: var(--outline);
@@ -3897,16 +2191,6 @@ canvas {
 }
 
 /* หน้าร้านยืดเต็มความสูงจอโทรศัพท์ */
-#phone[data-app='shop'] .phone-content:not([hidden]) {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-#phone[data-app='shop'] .phone-content__page {
-  min-height: 0;
-  flex: 1;
-}
 
 /* ===== M6 ภาพจริง: เหรียญอุ้งเท้า หน้าต่างคุยจีโอ ใบสรุปยอด (ผู้ใช้อนุมัติ 5 พ.ย. 2026) ===== */
 .money {
@@ -3919,13 +2203,6 @@ canvas {
   width: calc(var(--px) * 12);
   height: calc(var(--px) * 12);
   flex: none;
-}
-
-.shop-purse {
-  display: flex;
-  justify-content: flex-end;
-  padding-left: calc(var(--px) * 4);
-  background: #fff3c4;
 }
 
 #money-pop p.money {
@@ -4497,14 +2774,6 @@ canvas {
 }
 
 /* แถบเลื่อนระดับเสียง ทรงพิกเซลเหลี่ยม ทึบ ไม่มีมุมมน */
-.settings-volume {
-  flex-wrap: nowrap;
-  min-height: 44px;
-}
-
-.settings-volume > span {
-  min-width: 84px;
-}
 
 .settings-slider {
   flex: 1;
@@ -4546,12 +2815,6 @@ canvas {
   border: 2px solid #5c304c;
   border-radius: 0;
   background: #f8b4cc;
-}
-
-.settings-volume__value {
-  min-width: 28px;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
 }
 
 .dig-confirm__panel .land-confirm__price {
@@ -4614,66 +2877,6 @@ canvas {
 }
 
 /* อัลบั้มจีโอ กรอบรูปยังไม่มีภาพ ใช้กรอบพิกเซลสีแทน */
-.album-count {
-  margin: 0 0 6px;
-  font-weight: 700;
-}
-
-.album-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: calc(var(--px) * 6);
-}
-
-.album-card {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  gap: 2px;
-  padding: calc(var(--px) * 4);
-  background: #fff6f0;
-  box-shadow: 0 calc(var(--px) * -1) 0 0 #5c304c, 0 calc(var(--px) * 1) 0 0 #5c304c, calc(var(--px) * -1) 0 0 0 #5c304c, calc(var(--px) * 1) 0 0 0 #5c304c;
-  font-size: 11px;
-}
-
-.album-photo {
-  display: block;
-  width: calc(var(--px) * var(--size));
-  height: calc(var(--px) * var(--size));
-  background-repeat: no-repeat;
-  background-size: calc(var(--px) * var(--size) * var(--frames)) calc(var(--px) * var(--size));
-  background-position: calc(var(--px) * var(--size) * var(--frame) * -1) 0;
-  image-rendering: pixelated;
-}
-
-.album-frame {
-  display: block;
-  background: #ffdce8;
-}
-
-.album-treat {
-  position: absolute;
-  top: calc(var(--px) * 2);
-  right: calc(var(--px) * 2);
-  width: calc(var(--px) * 32);
-  height: calc(var(--px) * 32);
-  image-rendering: pixelated;
-}
-
-.album-card.is-locked .album-photo,
-.album-card.is-locked .album-treat {
-  filter: brightness(0);
-  opacity: 0.35;
-}
-
-.settings-test span {
-  display: grid;
-}
-
-.settings-test small {
-  font-size: 10px;
-  color: #a05a7a;
-}
 
 /* ---------- M7a ป้ายดาว (ภาพ 1–3 ดาว ขนาดจริงคูณจำนวนเต็มเท่านั้น) ---------- */
 .star-badge {
