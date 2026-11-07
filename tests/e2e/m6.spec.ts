@@ -166,9 +166,8 @@ test('consigns produce to Gio, and the next evening he pays after commission and
 test('the bag no longer has the turn-into-seeds button and cat treats say they are Gio snacks', async ({ page }) => {
   await open(page);
   await change(page, { bag: [{ item: 'produce_tomato', count: 2 }, { item: 'treat_chicken', count: 1 }] });
-  await page.locator('#phone-button').click();
-  await page.locator('#lock-open').click();
-  await page.locator('[data-app="inventory"]').click();
+  // กระเป๋าเปิดจากปุ่มปลายขวาแถบเครื่องมือ ไม่ได้อยู่ในโทรศัพท์แล้ว
+  await page.locator('#bag-button').click();
   await page.locator('[data-item="produce_tomato"]').click();
   await expect(page.locator('#bag-convert')).toHaveCount(0);
   await page.locator('[data-bag-tab="goods"]').click();

@@ -30,6 +30,8 @@ export interface GameEvents {
   'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut' | 'noMoney';
   'cook-open': undefined;
   'book-open': undefined;
+  /** ปุ่มกระเป๋าปลายขวาแถบเครื่องมือ เปิดหน้ากระเป๋าในหน้าต่างโทรศัพท์ขนาดกลาง */
+  'bag-open': undefined;
   /** แอปในโทรศัพท์ที่เปิดเป็นสมุดหรือการ์ดบนเกมที่มืดลง */
   'app-open': 'album' | 'pets' | 'gate' | 'mail' | 'support' | 'settings';
   /** สมุดหรือการ์ดปิดแล้ว (ชื่อหน้าต่าง) โทรศัพท์ที่เปิดค้างไว้กลับมาที่หน้าหลัก */

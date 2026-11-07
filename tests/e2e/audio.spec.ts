@@ -57,9 +57,8 @@ async function skipWithoutWebAudio(page: Page): Promise<void> {
 }
 
 async function openBag(page: Page): Promise<void> {
-  await page.locator('#phone-button').click();
-  await page.locator('#lock-open').click();
-  await page.locator('[data-app="inventory"]').click();
+  // กระเป๋าเปิดจากปุ่มปลายขวาแถบเครื่องมือ ไม่ได้อยู่ในโทรศัพท์แล้ว
+  await page.locator('#bag-button').click();
 }
 
 test('the title plays its own music, and the farm plays day music with birds, then night music with crickets from 18:00', async ({ page }) => {

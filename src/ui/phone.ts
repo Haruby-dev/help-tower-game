@@ -32,9 +32,12 @@ interface PhoneApp {
   opens?: 'book-open' | BookApp;
 }
 
-/** 10 แอปตามภาพ home_10apps (ผู้ใช้เอาแอปชุดออก 7 พ.ย. 2026 ชุดจะไปอยู่ตู้เสื้อผ้าในบ้านทีหลัง) */
+/**
+ * 8 แอป สองแถว แถวละ 4 (ผู้ใช้ตัดสิน 6 พ.ย. 2026 ใส่กลับ 7 พ.ย.): กระเป๋าย้ายไปเป็นปุ่มปลายขวาแถบเครื่องมือ
+ * ตั้งค่าเปิดจากปุ่มตั้งค่ามุมจอเท่านั้น · ไม่มีแอปชุด (ไปอยู่ตู้เสื้อผ้าในบ้านทีหลัง)
+ */
+const BAG_APP: PhoneApp = { id: 'inventory', name: 'app.inventory', icon: 'ui_app_bag', plate: '#ffe3ee', page: createInventoryPage };
 const APPS: PhoneApp[] = [
-  { id: 'inventory', name: 'app.inventory', icon: 'ui_app_bag', plate: '#ffe3ee', page: createInventoryPage },
   { id: 'wallet', name: 'app.wallet', icon: 'ui_app_wallet', plate: '#e2f5ea', page: createWalletPage },
   { id: 'shop', name: 'app.shop', icon: 'ui_app_shop', plate: '#fff1d6', page: createShopPage },
   { id: 'recipes', name: 'app.recipes', icon: 'ui_app_recipe', plate: '#e9e1fb', opens: 'book-open' },
@@ -43,7 +46,6 @@ const APPS: PhoneApp[] = [
   { id: 'gate', name: 'app.gate', icon: 'ui_app_gate', plate: '#e9e1fb', opens: 'gate' },
   { id: 'mail', name: 'app.mail', icon: 'ui_app_mail', plate: '#fff1d6', opens: 'mail' },
   { id: 'support', name: 'app.support', icon: 'ui_app_support', plate: '#ffe3ee', opens: 'support' },
-  { id: 'settings', name: 'app.settings', icon: 'ui_app_settings', plate: '#e9e1fb', opens: 'settings' },
 ];
 
 const PHONE_WINDOW = 'phone';
@@ -319,6 +321,14 @@ export function createPhone(uiRoot: HTMLElement): void {
   }
 
   mini.root.addEventListener('click', openPhone);
+  // ปุ่มกระเป๋าบนแถบเครื่องมือ: เปิดหน้าต่างขนาดกลางที่หน้ากระเป๋าเลย ไม่ผ่านจอล็อก ปิดด้วย ✕ หรือ Esc
+  eventBus.on('bag-open', () => {
+    if (!backdrop.hidden || suspended) return;
+    openPhone();
+    setState('open');
+    openApp(BAG_APP);
+    home.hidden = true;
+  });
   close.addEventListener('click', closePhone);
   home.addEventListener('click', showHome);
   fold.addEventListener('click', () => setState('lock'));

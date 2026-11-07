@@ -126,7 +126,7 @@ test('exports a save file', async ({ page }) => {
   expect((await download).suggestedFilename()).toContain('help-tower-save-1-day-1');
 });
 
-test('opens from the mini phone, to the small lock screen, to home with 10 apps and no outfit app', async ({ page }) => {
+test('opens from the mini phone, to the small lock screen, to home with 8 apps (no bag, settings or outfit app)', async ({ page }) => {
   await open(page);
   await expect(page.locator('#phone-cover-day')).toHaveText('เสาร์ 1');
   await page.locator('#phone-button').click();
@@ -135,10 +135,14 @@ test('opens from the mini phone, to the small lock screen, to home with 10 apps 
   await expect(page.locator('.pl-card p')).not.toBeEmpty();
   await page.locator('#lock-open').click();
   await expect(page.locator('#phone')).toHaveAttribute('data-state', 'open');
-  await expect(page.locator('.phone-app')).toHaveCount(10);
+  await expect(page.locator('.phone-app')).toHaveCount(8);
   await expect(page.locator('[data-app="outfit"]')).toHaveCount(0);
-  await expect(page.locator('[data-app="settings"]')).toHaveCount(1);
-  await expect(page.locator('.phone-app__name')).toHaveCount(10);
+  await expect(page.locator('[data-app="settings"]')).toHaveCount(0);
+  await expect(page.locator('[data-app="inventory"]')).toHaveCount(0);
+  await expect(page.locator('.phone-app__name')).toHaveCount(8);
+  // สองแถว แถวละ 4
+  const tops = await page.locator('.phone-app').evaluateAll((apps) => apps.map((app) => Math.round(app.getBoundingClientRect().top)));
+  expect(new Set(tops).size).toBe(2);
   await expect(page.locator('[data-app="support"]')).toBeInViewport();
   // แตะแอปได้ง่าย กว้างและสูงอย่างน้อย 44 พิกเซล
   for (const app of await page.locator('.phone-app').all()) {

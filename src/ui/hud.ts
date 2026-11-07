@@ -240,10 +240,7 @@ function createActionControls(uiRoot: HTMLElement): void {
   const icon = document.createElement('img');
   icon.className = 'action-button__icon';
   icon.alt = '';
-  // ป้าย "กิน" ใต้ปุ่มเฉพาะตอนเลือกอาหารในแถบอาหาร (ภาพตัวอย่าง eat_swap_B) ท่าอื่นยังไม่มีป้ายตามเดิม
-  const eatLabel = document.createElement('span');
-  eatLabel.className = 'action-button__label';
-  eatLabel.textContent = t('action.eat');
+  // ปุ่มบน HUD เป็นไอคอนอย่างเดียว ไม่มีป้ายตัวหนังสือทุกท่ารวมทั้ง "กิน" (ผู้ใช้ตัดสิน 4 พ.ย. ย้ำ 7 พ.ย. 2026) ชื่อท่าอยู่ใน aria-label
   button.append(frame, pressed, icon);
   if (!isTouch) {
     const key = document.createElement('span');
@@ -266,8 +263,6 @@ function createActionControls(uiRoot: HTMLElement): void {
     if (!action) return;
     button.dataset.icon = action.icon;
     button.dataset.action = action.label;
-    if (action.icon === 'eat') button.append(eatLabel);
-    else eatLabel.remove();
     if (action.icon === 'eat') {
       showFood();
       return;

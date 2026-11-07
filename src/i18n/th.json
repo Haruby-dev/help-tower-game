@@ -447,7 +447,6 @@
   "twins.pick_left": "แฝดตัวซ้าย",
   "twins.pick_right": "แฝดตัวขวา",
   "twins.chime_reward": "ทายถูก! ได้ของตกแต่ง \"กระดิ่งลมแฝด\" แขวนไว้ที่ลานหน้าบ้านแล้ว ย้ายได้ในโหมดจัดวาง",
-  "app.settings": "ตั้งค่า",
   "bag.fact_full": "อิ่ม",
   "bag.fact_have": "มี",
   "bag.slots_word": "ช่อง",
@@ -714,8 +713,6 @@
   "action.eat": "กิน",
   "food.next_page": "อาหารหน้าถัดไป",
   "food.empty": "ช่องว่าง",
-  "food.mode_food": "อาหาร",
-  "food.mode_tools": "เครื่องมือ",
   "food.switch_to_food": "สลับเป็นแถบอาหาร",
   "food.switch_to_tools": "สลับเป็นแถบเครื่องมือ",
   "wallet.day": "วัน"

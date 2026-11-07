@@ -6,7 +6,7 @@ import { cosmeticTable } from '../systems/chests';
 import { countOf, cropOfItem, isFertilizer, isSeed, sowItem } from '../systems/farm';
 import { baits, chosenBait } from '../systems/fishing';
 import { bagArtId, cornerBadge, itemImage, itemName } from './inventory';
-import { artUrl, pixelDisc } from './pixelArt';
+import { artUrl, pixelDisc, stickerIcon } from './pixelArt';
 import { fullnessOf, isDish } from '../systems/cooking';
 import type { BagStack } from '../core/state';
 
@@ -248,7 +248,7 @@ export function createToolbar(uiRoot: HTMLElement): void {
   pill.className = 'tool-slot__count';
   pill.hidden = true;
 
-  // ปุ่มสลับ: โหมดเครื่องมือแสดงช้อนส้อม "อาหาร" · โหมดอาหารแสดงจอบ "เครื่องมือ"
+  // ปุ่มสลับ: โหมดเครื่องมือแสดงช้อนส้อม · โหมดอาหารแสดงจอบ · ไอคอนอย่างเดียว ไม่มีป้ายตัวหนังสือ (ผู้ใช้ตัดสิน) ชื่ออยู่ใน aria-label
   const modeButton = document.createElement('button');
   modeButton.type = 'button';
   modeButton.id = 'toolbar-mode';
@@ -256,17 +256,24 @@ export function createToolbar(uiRoot: HTMLElement): void {
   const modeIcon = document.createElement('img');
   modeIcon.className = 'pixel-img toolbar-mode__icon';
   modeIcon.alt = '';
-  const modeLabel = document.createElement('span');
-  modeLabel.className = 'toolbar-mode__label';
   const disc = pixelDisc(SWITCH_PX, '#FFF6F0', '#F8B4CC');
   disc.classList.add('toolbar-mode__disc');
-  modeButton.append(disc, modeIcon, modeLabel);
+  modeButton.append(disc, modeIcon);
   const pageTab = document.createElement('button');
   pageTab.type = 'button';
   pageTab.id = 'food-next';
   pageTab.className = 'toolbar-page';
   pageTab.textContent = '›';
   pageTab.setAttribute('aria-label', t('food.next_page'));
+  // ปุ่มกระเป๋าปลายขวาแถบ (ผู้ใช้เลือกจุด B 6 พ.ย. 2026) สติกเกอร์แบบเดียวกับปุ่มตั้งค่า อยู่ต่อจากแถบ › เมื่อแถบนั้นขึ้น
+  const bagButton = document.createElement('button');
+  bagButton.type = 'button';
+  bagButton.id = 'bag-button';
+  bagButton.setAttribute('aria-label', t('app.inventory'));
+  bagButton.append(stickerIcon('ui_app_bag'));
+  bagButton.addEventListener('click', () => {
+    if (gameState.started) eventBus.emit('bag-open', undefined);
+  });
 
   const buttons = TOOLS.map((tool, index) => {
     const button = document.createElement('button');
@@ -305,7 +312,7 @@ export function createToolbar(uiRoot: HTMLElement): void {
     bar.append(button);
     return button;
   });
-  bar.append(modeButton, pageTab);
+  bar.append(modeButton, pageTab, bagButton);
   uiRoot.append(bar);
 
   function choose(tool: Tool): void {
@@ -358,12 +365,12 @@ export function createToolbar(uiRoot: HTMLElement): void {
       cornerBadge(button, stack.item);
     });
     pageTab.hidden = !foodMode || list.length <= SLOTS;
+    bar.classList.toggle('has-page-tab', !pageTab.hidden);
   };
 
   const showMode = (): void => {
     bar.dataset.mode = foodMode ? 'food' : 'tools';
     setNativeIcon(modeIcon, foodMode ? 'tool_hoe' : 'ui_icon_spoon_fork');
-    modeLabel.textContent = t(foodMode ? 'food.mode_tools' : 'food.mode_food');
     modeButton.setAttribute('aria-label', t(foodMode ? 'food.switch_to_tools' : 'food.switch_to_food'));
     for (const button of buttons) button.hidden = foodMode;
     for (const button of foodSlots) button.hidden = !foodMode;

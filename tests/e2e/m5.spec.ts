@@ -141,9 +141,8 @@ test('the bait strip shows the real bait pictures, counts, and greys out bait sh
 
 test('makes normal bait from a vegetable and bathes at the pond', async ({ page }) => {
   await open(page);
-  await page.locator('#phone-button').click();
-  await page.locator('#lock-open').click();
-  await page.locator('[data-app="inventory"]').click();
+  // กระเป๋าเปิดจากปุ่มปลายขวาแถบเครื่องมือ ไม่ได้อยู่ในโทรศัพท์แล้ว
+  await page.locator('#bag-button').click();
   await page.locator('[data-item="produce_scallion"]').click();
   await page.locator('#bag-make-bait').click();
   expect(await count(page, 'bait_normal')).toBe(3);
@@ -174,9 +173,8 @@ test('makes normal bait from a vegetable and bathes at the pond', async ({ page 
 test('opens a golden chest from the bag, pops out the rewards and keeps the cosmetics in the collection tab', async ({ page }) => {
   await open(page);
   await change(page, { bag: [{ item: 'chest_golden', count: 1 }] });
-  await page.locator('#phone-button').click();
-  await page.locator('#lock-open').click();
-  await page.locator('[data-app="inventory"]').click();
+  // กระเป๋าเปิดจากปุ่มปลายขวาแถบเครื่องมือ ไม่ได้อยู่ในโทรศัพท์แล้ว
+  await page.locator('#bag-button').click();
   await page.locator('[data-item="chest_golden"]').click();
   await page.locator('#bag-open-chest').click();
   await expect(page.locator('#chest-window')).toBeVisible();
@@ -209,4 +207,35 @@ test('the action button has no text label under it, only the icon, and still nam
   await expect(button).toHaveAttribute('aria-label', 'อาบน้ำ');
   await expect(button.locator('.action-button__label')).toHaveCount(0);
   await expect(button).toHaveText(/^E?$/);
+});
+
+test('HUD buttons are icons only: the tool/food switch and the eat button have no visible text, and the bag sticker sits at the right end of the tool bar', async ({ page }) => {
+  await open(page);
+  await change(page, { bag: [{ item: 'dish_home_kaprao_1', count: 2 }] });
+  const mode = page.locator('#toolbar-mode');
+  const bag = page.locator('#bag-button');
+  await expect(mode).toHaveText('');
+  await expect(mode).toHaveAttribute('aria-label', /.+/);
+  await expect(bag).toHaveText('');
+  await expect(bag.locator('canvas')).toHaveCount(1);
+  const rightOf = async (): Promise<boolean> => {
+    const [tray, sticker] = await Promise.all([page.locator('#toolbar').boundingBox(), bag.boundingBox()]);
+    return sticker!.x >= tray!.x + tray!.width - 1;
+  };
+  expect(await rightOf()).toBe(true);
+  // โหมดอาหาร: ปุ่มกินมีแค่ภาพอาหาร ไม่มีป้าย "กิน" ปุ่มกระเป๋ายังอยู่ปลายขวา
+  await mode.click();
+  await page.locator('.food-slot[data-food="dish_home_kaprao_1"]').click();
+  const action = page.locator('#action-button');
+  await expect(action).toHaveAttribute('data-icon', 'eat');
+  await expect(action.locator('.action-button__label')).toHaveCount(0);
+  await expect(action).toHaveText(/^E?$/);
+  await expect(action).toHaveAttribute('aria-label', /กิน/);
+  expect(await rightOf()).toBe(true);
+  // แตะปุ่มกระเป๋า: หน้าต่างโทรศัพท์ขนาดกลางเปิดที่หน้ากระเป๋าเลย
+  await bag.click();
+  await expect(page.locator('#phone')).toHaveAttribute('data-app', 'inventory');
+  await expect(page.locator('.pb-slot').first()).toBeVisible();
+  await page.locator('#phone-close').click();
+  await expect(page.locator('#phone')).toBeHidden();
 });
