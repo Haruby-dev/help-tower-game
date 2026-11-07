@@ -9,6 +9,8 @@ export interface GameEvents {
   'rotation-required-changed': boolean;
   'lighting-changed': boolean;
   'zoom-step-changed': number;
+  /** กดปุ่มเต็มจอ ส่งก่อนจอขยาย เพื่อจำขนาดภาพก่อนเต็มจอ */
+  'fullscreen-requested': undefined;
   'world-changed': World;
   'game-started': World;
   'player-moved': Point;

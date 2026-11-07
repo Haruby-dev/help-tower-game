@@ -3,7 +3,7 @@ import { t } from './core/i18n';
 import { eventBus } from './core/events';
 import { sound } from './core/audio';
 import { gameState } from './core/state';
-import { computeViewport, homeScreenAppSize, isHomeScreenApp, type Viewport } from './core/viewport';
+import { computeViewport, fitZoom, homeScreenAppSize, isHomeScreenApp, type Viewport, type ViewportInput } from './core/viewport';
 import display from './data/display.json';
 import { BaseScene } from './scenes/BaseScene';
 import { BootScene } from './scenes/BootScene';
@@ -20,21 +20,36 @@ const gameRoot = document.getElementById('game')!;
 const uiRoot = document.getElementById('ui')!;
 
 function fitHomeScreenApp(): void {
-  if (!isHomeScreenApp()) return;
+  if (!isHomeScreenApp()) {
+    // ออกจากเต็มจอ (เช่นกด F11 ซ้ำ) แล้วกลับไปใช้ขนาดหน้าต่าง ไม่ค้างขนาดจอเต็มจนเกมล้นหน้าต่าง
+    appRoot.style.width = '';
+    appRoot.style.height = '';
+    return;
+  }
   const size = homeScreenAppSize(window.screen.width, window.screen.height, window.innerWidth >= window.innerHeight);
   appRoot.style.width = `${size.width}px`;
   appRoot.style.height = `${size.height}px`;
 }
 
-function readViewport(): Viewport {
-  return computeViewport({
+function screenInput(): ViewportInput {
+  return {
     cssWidth: appRoot.clientWidth,
     cssHeight: appRoot.clientHeight,
     devicePixelRatio: window.devicePixelRatio,
     baseWidth: display.baseWidth,
     baseHeight: display.baseHeight,
     zoomStep: gameState.zoomStep,
-  });
+  };
+}
+
+/**
+ * ขนาดภาพก่อนกดปุ่มเต็มจอ ใช้ต่อจนออกจากเต็มจอ ตัวละครจึงไม่ใหญ่ขึ้นตอนเต็มจอ เห็นฉากกว้างขึ้นแทน (ผู้ใช้เลือก 7 พ.ย. 2026)
+ * จำตอนกดปุ่ม ไม่ใช่ตอนจอเปลี่ยน เพราะเบราว์เซอร์อาจขยายจอก่อนบอกว่าเต็มจอแล้ว · เปิดเกมมาเต็มจออยู่แล้วใช้กฎเดิม
+ */
+let fullscreenFit: number | undefined;
+
+function readViewport(): Viewport {
+  return computeViewport({ ...screenInput(), fit: fullscreenFit });
 }
 
 function applyCanvasSize(game: Phaser.Game, viewport: Viewport): void {
@@ -82,6 +97,16 @@ game.events.once(Phaser.Core.Events.READY, () => {
   onScreenChanged();
   new ResizeObserver(onScreenChanged).observe(appRoot);
   eventBus.on('zoom-step-changed', onScreenChanged);
+  eventBus.on('fullscreen-requested', () => {
+    fullscreenFit = fitZoom(screenInput());
+  });
+  const forgetWhenWindowed = (): void => {
+    if (document.fullscreenElement) return;
+    fullscreenFit = undefined;
+    onScreenChanged();
+  };
+  document.addEventListener('fullscreenchange', forgetWhenWindowed);
+  document.addEventListener('fullscreenerror', forgetWhenWindowed);
   // จอย้ายไปจอที่ความหนาแน่นพิกเซลต่างกันโดยขนาดหน้าต่างไม่เปลี่ยน
   window.addEventListener('resize', onScreenChanged);
 });

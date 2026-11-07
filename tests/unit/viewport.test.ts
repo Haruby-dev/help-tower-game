@@ -23,6 +23,15 @@ describe('computeViewport', () => {
     expect(computeViewport({ ...screen, ...base }).zoom).toBe(zoom);
   });
 
+  it('uses a kept size (from before fullscreen) instead of growing, but never more than fits', () => {
+    const fullHd = { cssWidth: 1920, cssHeight: 1080, devicePixelRatio: 1, baseWidth: 640, baseHeight: 360 };
+    expect(computeViewport(fullHd).zoom).toBe(3);
+    expect(computeViewport({ ...fullHd, fit: 2 }).zoom).toBe(2);
+    expect(computeViewport({ ...fullHd, fit: 2, zoomStep: 1 }).zoom).toBe(3);
+    expect(computeViewport({ ...fullHd, cssHeight: 950 }).zoom).toBe(2);
+    expect(computeViewport({ ...fullHd, cssWidth: 900, cssHeight: 400, fit: 2 }).zoom).toBe(1);
+  });
+
   it('never drops below 1x on a tiny window', () => {
     expect(computeViewport({ cssWidth: 200, cssHeight: 100, devicePixelRatio: 1, ...base }).zoom).toBe(1);
   });

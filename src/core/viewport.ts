@@ -6,6 +6,11 @@ export interface ViewportInput {
   baseHeight: number;
   /** ขยายเพิ่มจากขนาดที่พอดีจอกี่เท่า เป็นจำนวนเต็มเพื่อให้ภาพยังคม */
   zoomStep?: number;
+  /**
+   * ใช้ขนาดพอดีจอนี้แทนค่าที่คิดจากจอตอนนี้ (ไม่เกินที่ใส่จอได้)
+   * ตอนกดเต็มจอใช้ขนาดก่อนกด ตัวละครจึงไม่ใหญ่ขึ้น เห็นฉากกว้างขึ้นแทน (ผู้ใช้เลือก 7 พ.ย. 2026)
+   */
+  fit?: number;
 }
 
 export interface Viewport {
@@ -19,11 +24,19 @@ export interface Viewport {
   zoom: number;
 }
 
+/** ขยายเต็มที่กี่เท่าที่ยังใส่จอได้ (ยังไม่รวมปุ่มซูม) */
+export function fitZoom(input: ViewportInput): number {
+  const canvasWidth = Math.max(1, Math.floor(input.cssWidth * input.devicePixelRatio));
+  const canvasHeight = Math.max(1, Math.floor(input.cssHeight * input.devicePixelRatio));
+  return Math.max(1, Math.floor(Math.min(canvasWidth / input.baseWidth, canvasHeight / input.baseHeight)));
+}
+
 export function computeViewport(input: ViewportInput): Viewport {
-  const { cssWidth, cssHeight, devicePixelRatio, baseWidth, baseHeight, zoomStep = 0 } = input;
+  const { cssWidth, cssHeight, devicePixelRatio, zoomStep = 0, fit } = input;
   const canvasWidth = Math.max(1, Math.floor(cssWidth * devicePixelRatio));
   const canvasHeight = Math.max(1, Math.floor(cssHeight * devicePixelRatio));
-  const zoom = Math.max(1, Math.floor(Math.min(canvasWidth / baseWidth, canvasHeight / baseHeight))) + zoomStep;
+  const fits = fitZoom(input);
+  const zoom = (fit === undefined ? fits : Math.max(1, Math.min(fit, fits))) + zoomStep;
 
   return {
     canvasWidth,
@@ -48,6 +61,8 @@ export function homeScreenAppSize(screenWidth: number, screenHeight: number, lan
 }
 
 export function isHomeScreenApp(): boolean {
+  // กดปุ่มเต็มจอในเบราว์เซอร์ก็นับเป็น display-mode: fullscreen ด้วย แต่นั่นไม่ใช่แอปจากหน้าจอโฮม
+  if (document.fullscreenElement) return false;
   return (
     window.matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches ||
     (navigator as Navigator & { standalone?: boolean }).standalone === true

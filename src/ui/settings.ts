@@ -229,6 +229,7 @@ async function toggleFullscreen(appRoot: HTMLElement): Promise<void> {
     await document.exitFullscreen();
     return;
   }
+  eventBus.emit('fullscreen-requested', undefined);
   await appRoot.requestFullscreen();
   // เบราว์เซอร์ที่ไม่รองรับการล็อกแนวจอจะแจ้งข้อผิดพลาด จอชวนหมุนยังทำงานแทนได้
   const orientation = screen.orientation as ScreenOrientation & { lock?: (type: string) => Promise<void> };

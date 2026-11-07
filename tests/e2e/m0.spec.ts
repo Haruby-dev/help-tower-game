@@ -82,6 +82,32 @@ test('Fullscreen button is at least 44px, or absent where fullscreen is unsuppor
   expect(box?.height).toBeGreaterThanOrEqual(tall);
 });
 
+test('Going fullscreen keeps the pixel size from before, showing more of the world instead', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'the fullscreen button is pressed on the computer here');
+  // หน้าต่างเบราว์เซอร์บนจอสูง 1,080 เหลือราว 950 หลังหักแถบด้านบน ขยายได้ 2 เท่า
+  await page.setViewportSize({ width: 1920, height: 950 });
+  await openGame(page);
+  const zoom = (): Promise<number> => page.evaluate(() => (window as unknown as { __state: { viewport: { zoom: number } } }).__state.viewport.zoom);
+  await expect.poll(zoom).toBe(2);
+  await page.locator('#settings-button').click();
+  await page.locator('#fullscreen-button').click();
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement !== null)).toBe(true);
+  // เต็มจอได้ 1,080 พอดี 3 เท่า แต่ยังใช้ 2 เท่าเหมือนก่อนกด
+  // (หน้าต่างทดสอบล็อกขนาดไว้ จึงขยายจอผ่าน Chrome โดยตรงแทนจอที่ขยายเองตอนเต็มจอ)
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send('Emulation.setDeviceMetricsOverride', { width: 1920, height: 1080, deviceScaleFactor: 1, mobile: false });
+  await expect.poll(() => page.evaluate(() => window.innerHeight)).toBe(1080);
+  await page.waitForTimeout(300);
+  expect(await zoom()).toBe(2);
+  // ออกจากเต็มจอแล้วกลับไปใช้กฎเดิม
+  await page.evaluate(() => document.exitFullscreen());
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement)).toBeNull();
+  await cdp.send('Emulation.setDeviceMetricsOverride', { width: 1920, height: 1080, deviceScaleFactor: 1, mobile: false });
+  await expect.poll(zoom).toBe(3);
+  // ออกจากเต็มจอแล้วพื้นที่เกมกลับมาเท่าหน้าต่าง ไม่ค้างขนาดจอเต็ม (เคยค้าง ทำให้ขอบล่างของเกมล้นหน้าต่าง)
+  expect(await page.evaluate(() => [document.getElementById('app')!.clientWidth, document.getElementById('app')!.clientHeight])).toEqual([1920, 1080]);
+});
+
 test('Portrait pauses the game on touch screens and landscape resumes it', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'touch screens only');
   await openGame(page);
