@@ -17,7 +17,11 @@ import { autoHooks, baits, catchItem, chosenBait, finishCast, rollCatch, type Ca
 import { countOf, seedItem } from '../systems/farm';
 import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, isWithered, produceItem, type FarmAction } from '../systems/farm';
 import { withStars } from '../systems/stars';
-import { MYSTERY, collectDish, eatItem, isCooked } from '../systems/cooking';
+import { MYSTERY, collectDish, eatItem, isCooked, isDish, isRawProduce, parseDish } from '../systems/cooking';
+import { baseItem } from '../systems/stars';
+import recipes from '../data/recipes.json';
+import { registerSlice } from '../core/atlas';
+import { foodArtKey } from './monsterArt';
 import { advanceClock, goToSleep } from '../systems/time';
 import balance from '../data/balance.json';
 import display from '../data/display.json';
@@ -178,6 +182,12 @@ export class BaseScene extends Phaser.Scene {
   private obstacles!: Phaser.Physics.Arcade.StaticGroup;
   private plotMarker!: Phaser.GameObjects.Sprite;
   private queuedPlot: number | null = null;
+  /** อาหารกับปลายนิ้วที่วาดทับท่ากิน มีค่าระหว่างกำลังกิน */
+  private eatArt: { dish: Phaser.GameObjects.Image | null; hands: Phaser.GameObjects.Image } | null = null;
+  /** กำลังเล่นท่าเป็นลมก่อนม่านขึ้น */
+  private fainting = false;
+  /** กินแล้วแต่ท่าอื่นยังไม่จบ รอเล่นท่ากิน */
+  private pendingEat: string | null = null;
   private campfire: Campfire | null = null;
   private trayView: TrayView | null = null;
   private visits: Visits | null = null;
@@ -429,7 +439,11 @@ export class BaseScene extends Phaser.Scene {
       x: (this.player.feetX - camera.worldView.x) * screenScale,
       y: (this.player.feetY - PLAYER_HEAD_PX - camera.worldView.y) * screenScale,
     });
-    advanceClock(deltaMs, this.door);
+    if (this.pendingEat && !this.player.busy && !this.fainting) {
+      this.playEat(this.pendingEat);
+      this.pendingEat = null;
+    }
+    advanceClock(deltaMs, this.door, (done) => this.playFaint(done));
     this.updateFarm();
     if (gameState.started) this.night.setFillStyle(this.night.fillColor, nightAlpha(gameState.world.hour));
     this.weatherFx.update(deltaMs, camera.worldView, gameState.started ? gameState.world.weather : null);
@@ -628,12 +642,86 @@ export class BaseScene extends Phaser.Scene {
     } else if (this.nearDoor() && !this.player.busy) goToSleep(this.door);
   }
 
-  /** กินอาหารที่เลือกในแถบอาหาร ของในกระเป๋าลด เติมเกจอิ่มเหมือนเดิม · ท่ากินของตัวเอกรอภาพ (art-src/girl_eat_faint_1107) ต่อที่ 'player-ate' */
+  /** กินอาหารที่เลือกในแถบอาหาร ของในกระเป๋าลด เติมเกจอิ่มทันที แล้วเล่นท่ากิน · แตะซ้ำระหว่างกินได้ ท่าเริ่มใหม่ */
   private eat(item: string): void {
+    if (this.fainting) return;
     const next = eatItem(gameState.world, item);
     if (!next) return;
     gameState.setWorld(next);
     eventBus.emit('player-ate', item);
+    // กำลังลุกจากกองไฟหรือทำสวนอยู่ ท่ากินเริ่มทันทีที่ท่านั้นจบ
+    if (this.player.busy && !this.eatArt) this.pendingEat = item;
+    else this.playEat(item);
+  }
+
+  /**
+   * ท่ากินมือว่าง โค้ดวาดอาหารจริงให้ก้นกลางจานอยู่ที่จุดของเฟรมนั้น แล้ววาดปลายนิ้วทับ (docs/girl_eat_faint_art_2026-11-07.md)
+   * อาหารใช้ภาพจิ๋วบนถาด ผักสดใช้ภาพผักจิ๋ว ไม่มีภาพก็กินมือเปล่า
+   */
+  private playEat(item: string): void {
+    this.clearEatArt();
+    const dishKey = this.eatDishKey(item);
+    const dish = dishKey ? this.add.image(0, 0, dishKey).setOrigin(0, 0).setVisible(false) : null;
+    const hands = this.add.image(0, 0, 'fx_eat_hands_south', 0).setOrigin(0, 0).setVisible(false);
+    this.eatArt = { dish, hands };
+    const entry = registry.anim_eat_south;
+    const anchors = entry?.type === 'local' ? (entry.anchors ?? {}) : {};
+    this.player.playOnce(
+      'anim_eat_south',
+      (frame) => {
+        const anchor = anchors[String(frame)];
+        const corner = this.player.frameCorner;
+        const depth = this.player.sprite.depth;
+        hands.setVisible(anchor !== undefined);
+        dish?.setVisible(anchor !== undefined);
+        if (!anchor) return;
+        dish?.setPosition(corner.x + anchor[0] - Math.floor(dish.width / 2), corner.y + anchor[1] - dish.height + 1).setDepth(depth + 0.01);
+        hands.setFrame(frame).setPosition(corner.x, corner.y).setDepth(depth + 0.02);
+      },
+      () => this.clearEatArt(),
+    );
+  }
+
+  private eatDishKey(item: string): string | null {
+    if (isDish(item)) {
+      const { recipe } = parseDish(item);
+      return foodArtKey(this, recipe, (recipes as Record<string, { icon?: string }>)[recipe]?.icon);
+    }
+    if (!isRawProduce(item)) return null;
+    const key = `ing_mini_${baseItem(item)}`;
+    return registerSlice(this.textures, key) ? key : null;
+  }
+
+  private clearEatArt(): void {
+    this.eatArt?.dish?.destroy();
+    this.eatArt?.hands.destroy();
+    this.eatArt = null;
+  }
+
+  /**
+   * เกจหมดแล้วล้มก่อน: หยุดทุกท่า หันหน้าลง เล่นท่าเป็นลมแล้วนอนค้าง นาฬิกาหยุดระหว่างนี้ แล้วม่านเป็นลมขึ้นตามเดิม
+   * ฉากจีโอแบกกลับบ้านยังไม่มีภาพ
+   */
+  private playFaint(done: () => void): void {
+    this.fainting = true;
+    this.pendingEat = null;
+    this.clearEatArt();
+    if (this.fishing) this.cancelFishing();
+    if (this.bath) this.endBath();
+    if (this.player.isCooking) this.player.finishCooking();
+    this.stopCookLoop();
+    this.player.playOnce(
+      'anim_faint_south',
+      () => undefined,
+      () => {
+        this.time.delayedCall(balance.player.faintHoldMs, () => {
+          this.fainting = false;
+          this.player.endOnce();
+          done();
+        });
+      },
+      true,
+    );
   }
 
   /** วันที่ฝากขาย จีโอเดินไปมุดโพรงตอนเที่ยงและโผล่ออกมาตอนหกโมงเย็น เดินให้เห็นเฉพาะตอนกล้องมองเห็นและเพิ่งถึงเวลา */

@@ -93,12 +93,25 @@ test('no action button away from the door', async ({ page }) => {
 });
 
 test('fainting wakes the player at home and skips time', async ({ page }) => {
+  test.setTimeout(120_000);
   await open(page);
+  // ล้มก่อน: บันทึกทุกเฟรมของท่าเป็นลม พร้อมสถานะม่านและนาฬิกาตอนเฟรมนั้น
   await page.evaluate(() => {
+    const sprite = window.__game!.scene.getScene('Base').children.getByName('player') as import('phaser').GameObjects.Sprite;
+    const seen: { frame: number; curtain: boolean; clock: boolean }[] = [];
+    (window as unknown as { __faint: typeof seen }).__faint = seen;
+    sprite.on('animationupdate', (animation: { key: string }, frame: { textureFrame: string | number }) => {
+      if (animation.key !== 'anim_faint_south') return;
+      seen.push({ frame: Number(frame.textureFrame), curtain: !document.querySelector<HTMLElement>('#rest-curtain')!.hidden, clock: window.__state!.clockRunning });
+    });
     const state = window.__state!;
     state.setWorld({ ...state.world, hour: 10, gauges: { ...state.world.gauges, fullness: 0.01 } });
   });
-  await expect(page.locator('#rest-curtain')).toBeVisible();
+  // ท่าเป็นลมราว 2 วินาที แต่ Phaser เดินท่าได้ไม่เกิน 1/60 วินาทีต่อภาพ WebKit จำลองบนเครื่องนี้เหลือราว 10–30 ภาพต่อวินาทีตอนรันทั้งชุด ท่าจึงช้าลงหลายเท่า
+  await expect(page.locator('#rest-curtain')).toBeVisible({ timeout: 60_000 });
+  const seen = await page.evaluate(() => (window as unknown as { __faint: { frame: number; curtain: boolean; clock: boolean }[] }).__faint);
+  expect(seen.map((entry) => entry.frame)).toContain(8);
+  expect(seen.every((entry) => !entry.curtain && !entry.clock)).toBe(true);
   const after = await world(page);
   expect(after.hour).toBeGreaterThanOrEqual(20);
   expect(after.fullness).toBeGreaterThanOrEqual(29);

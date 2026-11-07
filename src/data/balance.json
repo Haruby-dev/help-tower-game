@@ -2,7 +2,10 @@
   "player": {
     "speed": 96,
     "runSpeedMultiplier": 1.6,
-    "runAnimationMultiplier": 1.5
+    "runAnimationMultiplier": 1.5,
+    "eatFrameMs": [400, 150, 150, 150, 150, 150, 150, 150, 700],
+    "faintFrameMs": 150,
+    "faintHoldMs": 900
   },
   "time": {
     "realSecondsPerGameHour": 45,

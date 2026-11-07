@@ -66,9 +66,34 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
   await page.locator('#toolbar-mode').click();
   await page.locator(`.food-slot[data-food="${dish}"]`).click();
   await expect(act).toHaveAttribute('data-action', 'action.eat');
+  // ท่ากินมือว่าง อาหารจริงจิ๋ว (กะเพรา) อยู่ในมือ ปลายนิ้ววาดทับ แล้วกลับมายืนตามเดิม · บันทึกทุกเฟรมของเกม
+  await page.evaluate(() => {
+    const scene = (window as unknown as { __game: import('phaser').Game }).__game.scene.getScene('Base') as unknown as import('phaser').Scene & {
+      player: { sprite: import('phaser').GameObjects.Sprite };
+      eatArt: { dish: import('phaser').GameObjects.Image | null; hands: import('phaser').GameObjects.Image } | null;
+    };
+    const seen: { anim: string; held: boolean }[] = [];
+    (window as unknown as { __eat: typeof seen }).__eat = seen;
+    scene.events.on('postupdate', () => {
+      const art = scene.eatArt;
+      const sprite = scene.player.sprite;
+      const held =
+        art !== null &&
+        art.dish !== null &&
+        art.dish.visible &&
+        art.hands.visible &&
+        art.dish.texture.key === 'tray_mini_home_kaprao' &&
+        art.hands.depth > art.dish.depth &&
+        art.dish.depth > sprite.depth;
+      seen.push({ anim: sprite.anims.isPlaying ? (sprite.anims.currentAnim?.key ?? '') : '', held });
+    });
+  });
   await act.click();
   await expect.poll(() => count(page, dish)).toBe(0);
   expect((await state(page)).gauges.fullness).toBeGreaterThanOrEqual(49);
+  const eatLog = (): Promise<{ anim: string; held: boolean }[]> => page.evaluate(() => (window as unknown as { __eat: { anim: string; held: boolean }[] }).__eat);
+  await expect.poll(async () => (await eatLog()).some((entry) => entry.held && entry.anim === 'anim_eat_south'), { timeout: 60_000 }).toBe(true);
+  await expect.poll(async () => (await eatLog()).at(-1)?.anim, { timeout: 60_000 }).toBe('');
   await page.locator('#toolbar-mode').click();
 
   await page.locator('#phone-button').click();

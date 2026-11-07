@@ -80,7 +80,13 @@ test('buys the first land at its sign: the weeds go, the fence area becomes 9 fa
 
 test('moves the campfire on the grid: red where it cannot go, green where it can, and the spot is kept in the save', async ({ page }) => {
   await open(page);
-  await page.locator('#arrange-button').click();
+  // ปุ่มจัดวางเป็นสติกเกอร์รถเข็น ไม่มีกล่องตัวหนังสือแล้ว และไม่ทับปุ่มตั้งค่า
+  const arrange = page.locator('#arrange-button');
+  await expect(arrange.locator('canvas')).toHaveCount(1);
+  await expect(arrange).toHaveText('');
+  const [a, b] = await Promise.all([arrange.boundingBox(), page.locator('#settings-button').boundingBox()]);
+  expect(a!.x + a!.width).toBeLessThanOrEqual(b!.x + 0.5);
+  await arrange.click();
   // กล้องเลื่อนไปลานหน้าบ้านในเฟรมถัดไป รอก่อนแปลงตำแหน่งบนจอ
   await page.waitForTimeout(400);
   await expect(page.locator('#arrange-panel')).toBeVisible();

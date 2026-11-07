@@ -19,6 +19,8 @@ export class Player {
   private posing = false;
   /** ท่าเก่าที่ถูกยกเลิกไปแล้วจะไม่เรียกท่ารอต่อ */
   private poseToken = 0;
+  /** ตัวฟังของท่าเล่นครั้งเดียว (กิน เป็นลม) เล่นใหม่ก่อนจบต้องถอดของเก่าออก */
+  private onceListeners: { update: (...args: never[]) => void; complete: () => void; key: string } | null = null;
   /** เรียกทุกครั้งที่ท่าเดินเปลี่ยนเฟรม ส่งเลขเฟรมในท่า (0–7) ใช้เล่นเสียงเท้า */
   onWalkFrame: ((index: number) => void) | null = null;
 
@@ -63,15 +65,67 @@ export class Player {
     const key = `anim_${move}_${sheet}`;
     this.acting = true;
     this.sprite.anims.timeScale = 1;
+    this.clearOnce();
     const update = (_animation: unknown, frame: Phaser.Animations.AnimationFrame): void => onFrame(Number(frame.textureFrame));
-    this.sprite.on(Phaser.Animations.Events.ANIMATION_UPDATE, update);
-    this.sprite.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}${key}`, () => {
-      this.sprite.off(Phaser.Animations.Events.ANIMATION_UPDATE, update);
+    const complete = (): void => {
+      this.clearOnce();
       this.sprite.setFlipX(false);
       this.acting = false;
       onDone();
-    });
+    };
+    // เก็บตัวฟังไว้ที่เดียวกับท่าเล่นครั้งเดียว ถ้าเป็นลมกลางท่า ท่านี้ถูกยกเลิกและไม่เรียก onDone ทีหลัง
+    this.onceListeners = { update, complete, key };
+    this.sprite.on(Phaser.Animations.Events.ANIMATION_UPDATE, update);
+    this.sprite.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}${key}`, complete);
     this.sprite.play(key);
+  }
+
+  /**
+   * ท่าเล่นครั้งเดียวหันหน้าลง (กิน เป็นลม) ทุกทิศหันลงเหมือนท่าอาบน้ำ เดินไม่ได้ระหว่างเล่น
+   * เล่นซ้ำก่อนจบได้ ท่าเริ่มใหม่และไม่เรียก onDone ของรอบก่อน · hold = ค้างเฟรมสุดท้ายไว้จนเรียก endOnce
+   */
+  playOnce(key: string, onFrame: (frame: number) => void, onDone: () => void, hold = false): void {
+    this.clearOnce();
+    this.cooking = false;
+    this.posing = false;
+    this.poseToken += 1;
+    this.acting = true;
+    this.facing = 'south';
+    this.sprite.setFlipX(false);
+    this.sprite.setOrigin(0.5, footY(WALK_ID, 'south') / characterEntry(WALK_ID).frameHeight);
+    this.sprite.anims.timeScale = 1;
+    const update = (animation: Phaser.Animations.Animation, frame: Phaser.Animations.AnimationFrame): void => {
+      if (animation.key === key) onFrame(Number(frame.textureFrame));
+    };
+    const complete = (): void => {
+      this.clearOnce();
+      if (!hold) {
+        this.acting = false;
+        this.showStanding();
+      }
+      onDone();
+    };
+    this.onceListeners = { update, complete, key };
+    this.sprite.on(Phaser.Animations.Events.ANIMATION_UPDATE, update);
+    this.sprite.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}${key}`, complete);
+    this.sprite.play(key);
+    onFrame(0);
+  }
+
+  /** ลุกจากท่าที่ค้างไว้ (เป็นลมแล้วตื่นที่บ้าน) */
+  endOnce(): void {
+    this.clearOnce();
+    if (!this.acting) return;
+    this.acting = false;
+    this.showStanding();
+  }
+
+  private clearOnce(): void {
+    if (!this.onceListeners) return;
+    const { update, complete, key } = this.onceListeners;
+    this.sprite.off(Phaser.Animations.Events.ANIMATION_UPDATE, update);
+    this.sprite.off(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}${key}`, complete);
+    this.onceListeners = null;
   }
 
   /** ท่าตกปลาหรืออาบน้ำ เล่นท่าเริ่มครั้งเดียวแล้ววนท่ารอจนกว่าจะเรียก endPose · ทิศตะวันตกกลับด้านจากตะวันออก */

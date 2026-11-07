@@ -2821,23 +2821,20 @@ canvas {
   font-size: 16px;
 }
 
-/* ปุ่มจัดวางแถบบน ซ้ายของปุ่มตั้งค่า ไอคอนยังไม่มีภาพ ใช้กล่องสีพร้อมชื่อ */
+/* ปุ่มจัดวางแถบบน ซ้ายของปุ่มตั้งค่า สติกเกอร์รถเข็น (36×39 กับขอบ 3 พิกเซล) ปุ่มตั้งค่ากว้างเท่าสติกเกอร์ 42 พิกเซลภาพ */
 #arrange-button {
   position: absolute;
   top: max(4px, env(safe-area-inset-top));
-  right: calc(max(4px, env(safe-area-inset-right)) + max(56px, var(--px) * 50) + 6px + 44px + 4px);
+  right: calc(max(4px, env(safe-area-inset-right)) + max(56px, var(--px) * 50) + 6px + max(44px, var(--px) * 42) + 4px);
+  display: grid;
+  place-items: center;
   min-width: 44px;
   min-height: 44px;
-  padding: 0 4px;
+  padding: 0;
   border: 0;
-  background: #f8b4cc;
-  color: #5c304c;
-  font: inherit;
-  font-size: 11px;
-  font-weight: 700;
+  background: none;
   cursor: pointer;
   pointer-events: auto;
-  box-shadow: 0 -2px 0 0 #5c304c, 0 2px 0 0 #5c304c, -2px 0 0 0 #5c304c, 2px 0 0 0 #5c304c;
 }
 
 #arrange-panel {

@@ -59,6 +59,10 @@ export const balanceSchema = z.strictObject({
     speed: z.number().positive(),
     runSpeedMultiplier: z.number().positive(),
     runAnimationMultiplier: z.number().positive(),
+    /** ท่ากินเวลาต่อเฟรม (9 เฟรม) และท่าเป็นลม เวลาต่อเฟรมกับเวลานอนค้างก่อนม่านขึ้น */
+    eatFrameMs: z.array(z.number().positive()).length(9),
+    faintFrameMs: z.number().positive(),
+    faintHoldMs: z.number().nonnegative(),
   }),
   time: z.strictObject({
     realSecondsPerGameHour: z.number().positive(),

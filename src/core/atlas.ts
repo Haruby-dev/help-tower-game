@@ -99,3 +99,12 @@ export function registerAtlasGroup(textures: Phaser.Textures.TextureManager, gro
     }
   }
 }
+
+/** ใส่ภาพเดี่ยวที่ตัดแล้วเข้า Phaser ตอนต้องใช้ (เช่น ผักจิ๋วของหมวด ui ในมือตอนกิน) ยังไม่ได้ตัดตอบ false */
+export function registerSlice(textures: Phaser.Textures.TextureManager, id: string): boolean {
+  if (textures.exists(id)) return true;
+  const canvas = slices.get(id);
+  if (!canvas) return false;
+  textures.addCanvas(id, canvas);
+  return true;
+}

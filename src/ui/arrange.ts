@@ -1,18 +1,18 @@
 import { eventBus } from '../core/events';
 import { t } from '../core/i18n';
 import { gameState } from '../core/state';
+import { stickerIcon } from './pixelArt';
 
 /**
- * ปุ่มจัดวางอยู่แถบบนข้างปุ่มตั้งค่า (ผู้ใช้ขอ 5 พ.ย. 2026) ไอคอนยังไม่มีภาพ ใช้กล่องสีพร้อมชื่อแทน
+ * ปุ่มจัดวางอยู่แถบบนข้างปุ่มตั้งค่า (ผู้ใช้ขอ 5 พ.ย. 2026) ไอคอนรถเข็นขนกล่อง `ui_arrange_cart` ขอบสติกเกอร์แบบเดียวกับปุ่มตั้งค่า
  * ระหว่างจัดวางแถบล่างบอกวิธีและมีปุ่ม วางตรงนี้ · ยกเลิก · เสร็จ ส่วนปุ่มอื่นของ HUD ซ่อน
  */
 export function createArrange(uiRoot: HTMLElement): void {
   const button = document.createElement('button');
   button.id = 'arrange-button';
   button.type = 'button';
-  button.dataset.missingIcon = '';
   button.setAttribute('aria-label', t('arrange.open'));
-  button.textContent = t('arrange.icon_placeholder');
+  button.append(stickerIcon('ui_arrange_cart'));
 
   const panel = document.createElement('div');
   panel.id = 'arrange-panel';

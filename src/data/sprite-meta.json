@@ -3521,6 +3521,21 @@
       "default": 76
     }
   },
+  "anim_eat_south": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "fx_eat_hands_south": {
+    "footY": {
+      "default": 52
+    }
+  },
+  "anim_faint_south": {
+    "footY": {
+      "default": 75
+    }
+  },
   "ui_action_frame": {
     "footY": {
       "default": 48
@@ -3674,6 +3689,11 @@
   "ui_action_icon_talk": {
     "footY": {
       "default": 23
+    }
+  },
+  "ui_arrange_cart": {
+    "footY": {
+      "default": 39
     }
   },
   "ui_gio_talk_ear_left": {

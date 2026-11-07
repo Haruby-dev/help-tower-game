@@ -32,6 +32,9 @@ function nextMorning(world: World, restful: boolean): World {
   });
 }
 
+/** ชื่อหน้าต่างที่หยุดนาฬิการะหว่างท่าเป็นลม */
+const FAINTING_WINDOW = 'fainting';
+
 export type StepResult = { world: World; cause: RestCause | null };
 
 /** จีโอกลับมาพร้อมยอดขายและข่าว → วางแผนแขกพรุ่งนี้ · แขกที่เลยเวลาแล้วยังไม่ได้มาให้เห็น กินจากถาดเอง */
@@ -64,10 +67,26 @@ export function sleep(world: World): World {
   return settle(nextMorning(world, true));
 }
 
-/** ฉากเรียกทุกเฟรม ส่ง home มาเพราะเป็นตำแหน่งบนแผนที่ที่ระบบไม่รู้เอง */
-export function advanceClock(deltaMs: number, home: Point): void {
+/**
+ * ฉากเรียกทุกเฟรม ส่ง home มาเพราะเป็นตำแหน่งบนแผนที่ที่ระบบไม่รู้เอง
+ * playFaint: ฉากเล่นท่าเป็นลมก่อน นาฬิกาหยุดระหว่างนั้น เล่นจบแล้วเรียก done จึงข้ามเวลาและขึ้นม่าน
+ */
+export function advanceClock(deltaMs: number, home: Point, playFaint?: (done: () => void) => void): void {
   if (!gameState.clockRunning) return;
   const { world, cause } = stepClock(gameState.world, deltaMs);
+  if (cause === 'faint' && playFaint) {
+    // ระหว่างท่าเป็นลมโลกอาจเปลี่ยน (เลิกอาบน้ำ) จึงเป็นลมจากโลกตอนท่าจบ โดยใช้เกจที่ลดถึงจุดเป็นลมแล้ว
+    const fallen = decayAwake(gameState.world.gauges, deltaMs / MS_PER_HOUR);
+    gameState.setWindowOpen(FAINTING_WINDOW, true);
+    playFaint(() => {
+      gameState.setWindowOpen(FAINTING_WINDOW, false);
+      const now = gameState.world;
+      const gauges = { ...now.gauges, fullness: Math.min(now.gauges.fullness, fallen.fullness), happiness: Math.min(now.gauges.happiness, fallen.happiness) };
+      gameState.setWorld(faint({ ...now, gauges }));
+      finishRest('faint', home);
+    });
+    return;
+  }
   gameState.setWorld(world);
   if (cause === 'faint') finishRest('faint', home);
   else if (cause === 'passed_out') finishRest('passed_out', null);

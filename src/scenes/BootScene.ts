@@ -123,6 +123,12 @@ export class BootScene extends Phaser.Scene {
         this.createCookAnimations(id);
       } else if (entry.type === 'local' && (id.startsWith('anim_fish_') || id.startsWith('anim_wash_'))) {
         this.createPondAnimations(id, entry);
+      } else if (entry.type === 'local' && id === 'anim_eat_south') {
+        // ท่ากินค้างต้นและท้ายนานกว่า (docs/girl_eat_faint_art_2026-11-07.md)
+        const frames = this.anims.generateFrameNumbers(id).map((frame, index) => ({ ...frame, duration: balance.player.eatFrameMs[index] }));
+        this.anims.create({ key: id, frames, frameRate: 1, repeat: 0 });
+      } else if (entry.type === 'local' && id === 'anim_faint_south') {
+        this.anims.create({ key: id, frames: this.anims.generateFrameNumbers(id), frameRate: 1000 / balance.player.faintFrameMs, repeat: 0 });
       } else if (entry.type === 'local' && id.startsWith('anim_')) {
         this.anims.create({
           key: id,

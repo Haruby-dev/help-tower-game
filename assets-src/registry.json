@@ -7598,6 +7598,68 @@
     "frame_height": 88,
     "frames": 9
   },
+  "anim_eat_south": {
+    "type": "local",
+    "width": 792,
+    "height": 88,
+    "source": "public/assets/farm/anims/eat_south.png",
+    "file": "farm/anims/eat_south.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9,
+    "note": "ท่ากินมือว่าง โค้ดวาดอาหารจริงที่จุด anchors (ก้นกลางจาน) แล้ววาด fx_eat_hands_south ทับ (docs/girl_eat_faint_art_2026-11-07.md)",
+    "anchors": {
+      "2": [
+        43,
+        51
+      ],
+      "3": [
+        43,
+        44
+      ],
+      "4": [
+        43,
+        43
+      ],
+      "5": [
+        43,
+        42
+      ],
+      "6": [
+        43,
+        45
+      ],
+      "7": [
+        43,
+        51
+      ]
+    }
+  },
+  "fx_eat_hands_south": {
+    "type": "local",
+    "width": 792,
+    "height": 88,
+    "source": "public/assets/farm/anims/eat_hands_front_south.png",
+    "file": "farm/anims/eat_hands_front_south.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9,
+    "note": "ปลายนิ้วมือหน้าของท่ากิน วาดทับอาหาร เฟรมตรงกับ anim_eat_south"
+  },
+  "anim_faint_south": {
+    "type": "local",
+    "width": 792,
+    "height": 88,
+    "source": "public/assets/farm/anims/faint_south.png",
+    "file": "farm/anims/faint_south.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9,
+    "note": "ท่าเป็นลม ตาก้นหอย เล่นครั้งเดียวค้างเฟรม 8 (นอนคว่ำ) แล้วม่านเป็นลมขึ้น"
+  },
   "ui_action_frame": {
     "type": "local",
     "width": 48,
@@ -7899,6 +7961,16 @@
     "jade_tone": false,
     "lazy": true,
     "note": "ฟองคำพูดหูแมวมีหัวใจ"
+  },
+  "ui_arrange_cart": {
+    "type": "local",
+    "width": 36,
+    "height": 39,
+    "source": "public/assets/ui/hud_v2/icon_arrange_cart.png",
+    "file": "ui/hud_v2/icon_arrange_cart.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "ไอคอนปุ่มจัดวาง รถเข็นขนกล่อง แก้มือ 6 พ.ย. 2026 (art-src/phone_ui_1106/arrange_icon/README.md)"
   },
   "ui_gio_talk_ear_left": {
     "type": "local",
