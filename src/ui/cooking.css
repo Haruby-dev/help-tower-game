@@ -1,0 +1,595 @@
+/*
+ * หน้าต่างทำอาหาร K2 "หม้อกลางกองไฟ" ตามภาพตัวอย่าง art-src/cook_ui_1108/k2_mock_v3.png และ drink_1108/drink_k2_mock_v2.png
+ * ทุกตัวเลขเป็นพิกเซลของภาพตัวอย่าง (จอ 2796×1290) ย่อขยายทั้งก้อนด้วย zoom: var(--pz) เหมือนโทรศัพท์
+ * --px คือพิกเซลภาพหนึ่งจุด (3 จุดภาพตัวอย่าง) · --px2 คือภาพที่ภาพตัวอย่างวาด 2 จุดต่อพิกเซล
+ * สีครีมอุ่นกับไม้ เหมือนกันทุกแท็บ
+ */
+#cook-window {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+}
+
+#cook-window[hidden] {
+  display: none;
+}
+
+.ck {
+  --px: 3px;
+  --px2: var(--m2);
+  --ck-cream: #fffaf0;
+  --ck-line: #e2be96;
+  --ck-dark: #6e4628;
+  --ck-orange: #d68a44;
+  --ck-orange-edge: #aa6432;
+  --ck-orange-soft: #fae2c4;
+  --ck-grey: #beb4aa;
+  --ck-grey-edge: #a0968c;
+  --ck-scene: #fff4e2;
+  --ck-sub: #a06e46;
+  --ck-ok: #96d68c;
+  --ck-ok-ink: #5a965a;
+  --ck-ok-edge: #5a965a;
+  --ck-bad: #e87878;
+  --ck-bad-ink: #dc5a5a;
+  --ck-empty-ring: #ded4c8;
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: 1408px;
+  height: 868px;
+  zoom: var(--pz);
+  border: 6px solid var(--ck-line);
+  border-radius: 24px;
+  background: var(--ck-cream);
+  font-family: Mali, sans-serif;
+  color: var(--ck-dark);
+}
+
+.ck * {
+  box-sizing: border-box;
+}
+
+.ck img,
+.ck .pixel-img {
+  image-rendering: pixelated;
+}
+
+/* ตำแหน่งในหน้าต่างนับจากด้านในกรอบหนา 6 จึงลบ 6 จากตำแหน่งในภาพตัวอย่าง (การ์ดลบเส้นขอบ 3 ฉากลบ 3 ฟองลบ 4) */
+.ck-button {
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 4px solid var(--ck-line);
+  border-radius: 14px;
+  background: var(--ck-cream);
+  font-family: Mali, sans-serif;
+  font-weight: 700;
+  color: var(--ck-dark);
+  cursor: pointer;
+}
+
+.ck-button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.ck-tabs {
+  position: absolute;
+  top: 24px;
+  left: 30px;
+  display: flex;
+  gap: 14px;
+}
+
+.ck-tab {
+  width: 150px;
+  height: 80px;
+  font-size: 38px;
+  line-height: 1;
+}
+
+.ck-tab[data-cook-tab='drink'] {
+  width: 200px;
+}
+
+.ck-tab.is-active {
+  background: var(--ck-orange);
+  color: #ffffff;
+}
+
+.ck-close {
+  position: absolute;
+  top: 24px;
+  left: 1252px;
+  width: 114px;
+  height: 80px;
+  font-size: 40px;
+}
+
+/* ตารางเมนู 3 คอลัมน์ ทำได้ขึ้นก่อน เลื่อนดูต่อได้ */
+.ck-grid {
+  position: absolute;
+  top: 134px;
+  left: 30px;
+  display: grid;
+  width: 574px;
+  max-height: 664px;
+  grid-template-columns: repeat(3, 182px);
+  grid-auto-rows: 190px;
+  gap: 12px;
+  align-content: start;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  touch-action: pan-y;
+}
+
+.ck-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.ck-card {
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 3px solid var(--ck-line);
+  border-radius: 16px;
+  background: #ffffff;
+  font-family: Mali, sans-serif;
+  color: var(--ck-dark);
+  cursor: pointer;
+}
+
+.ck-card.is-selected {
+  border: 5px solid var(--ck-orange);
+  background: var(--ck-orange-soft);
+}
+
+.ck-card__art {
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ck-card.is-selected .ck-card__art {
+  top: 7px;
+}
+
+.ck-card__art--none {
+  width: 96px;
+  height: 96px;
+  background: var(--ck-grey);
+}
+
+.ck-card.is-missing .ck-card__art {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.ck-card__name {
+  position: absolute;
+  top: 147px;
+  left: 0;
+  width: 100%;
+  font-size: 28px;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  transform: translateY(-50%);
+}
+
+.ck-card.is-selected .ck-card__name {
+  top: 145px;
+}
+
+.ck-card__name[data-size='m'] {
+  font-size: 24px;
+}
+
+.ck-card__name[data-size='s'] {
+  font-size: 21px;
+}
+
+.ck-card__name[data-size='xs'] {
+  padding: 0 6px;
+  font-size: 21px;
+  line-height: 1.1;
+  white-space: normal;
+}
+
+.ck-card.is-missing .ck-card__name {
+  color: var(--ck-grey);
+}
+
+.ck-card__dot {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  width: 19px;
+  height: 19px;
+  border: 2px solid var(--ck-ok-edge);
+  border-radius: 50%;
+  background: var(--ck-ok);
+}
+
+.ck-card.is-selected .ck-card__dot {
+  top: 5px;
+  right: 6px;
+}
+
+.ck-empty {
+  grid-column: 1 / -1;
+  margin: 24px 0;
+  font-size: 28px;
+  text-align: center;
+  color: var(--ck-sub);
+}
+
+.ck-hint {
+  position: absolute;
+  bottom: 8px;
+  left: 30px;
+  width: 574px;
+  margin: 0;
+  font-size: 24px;
+  line-height: 1;
+  text-align: center;
+  color: var(--ck-grey);
+}
+
+.ck-hint[hidden] {
+  display: none;
+}
+
+/* ฉากกองไฟ ฟองความคิด และช่องวัตถุดิบรอบกองไฟ */
+.ck-scene {
+  position: absolute;
+  top: 134px;
+  left: 634px;
+  width: 732px;
+  height: 578px;
+  overflow: hidden;
+  border: 3px solid var(--ck-line);
+  border-radius: 20px;
+  background: var(--ck-scene);
+}
+
+/* ตำแหน่งในฉาก (รวมของที่ลอยและไอน้ำ) นับจากขอบนอกของกรอบฉากเหมือนภาพตัวอย่าง จึงเลื่อนกลับเท่าเส้นขอบ 3 */
+.ck-scene > * {
+  margin: -3px 0 0 -3px;
+}
+
+.ck-bubble {
+  position: absolute;
+  top: 25px;
+  left: 30px;
+  width: 300px;
+  height: 230px;
+  border: 4px solid var(--ck-line);
+  border-radius: 40px;
+  background: #ffffff;
+}
+
+.ck-bubble__art {
+  position: absolute;
+  top: 2px;
+  left: 74px;
+}
+
+.ck-bubble__art--none {
+  width: 144px;
+  height: 144px;
+  background: var(--ck-grey);
+}
+
+.ck-bubble__name,
+.ck-bubble__sub {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  transform: translateY(-50%);
+}
+
+.ck-bubble__name {
+  top: 161px;
+  font-size: 36px;
+}
+
+.ck-bubble__sub {
+  top: 201px;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--ck-sub);
+}
+
+.ck-bubble__sub[data-size='s'] {
+  font-size: 20px;
+}
+
+.ck-bubble__stars {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  display: flex;
+}
+
+.ck-bubble__tail {
+  position: absolute;
+  border: 3px solid var(--ck-line);
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.ck-bubble__tail--big {
+  top: 222px;
+  left: 232px;
+  width: 29px;
+  height: 29px;
+}
+
+.ck-bubble__tail--small {
+  top: 255px;
+  left: 262px;
+  width: 19px;
+  height: 19px;
+}
+
+.ck-slot {
+  position: absolute;
+  display: block;
+  width: 66px;
+  height: 100px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: Mali, sans-serif;
+  cursor: default;
+}
+
+.ck-slot.cook-star-pick {
+  cursor: pointer;
+}
+
+.ck-slot__ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  width: 66px;
+  height: 66px;
+  place-items: center;
+  border: 4px solid var(--ck-ok);
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.ck-slot.is-short .ck-slot__ring {
+  border-color: var(--ck-bad);
+}
+
+.ck-slot.is-gone .ck-slot__ring {
+  border-color: var(--ck-empty-ring);
+}
+
+.ck-slot.is-gone .ck-slot__art {
+  visibility: hidden;
+}
+
+.ck-slot__name {
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+  color: var(--ck-dark);
+}
+
+.ck-slot__stars {
+  position: absolute;
+  bottom: -6px;
+  left: -6px;
+}
+
+.ck-slot__count {
+  position: absolute;
+  top: 84px;
+  left: 0;
+  width: 66px;
+  font-size: 22px;
+  line-height: 1;
+  text-align: center;
+  color: var(--ck-ok-ink);
+  transform: translateY(-50%);
+}
+
+.ck-slot.is-short .ck-slot__count {
+  color: var(--ck-bad-ink);
+}
+
+.ck-tip {
+  position: absolute;
+  bottom: 18px;
+  left: 24px;
+  width: 240px;
+  font-size: 22px;
+  line-height: 1.25;
+  color: var(--ck-sub);
+}
+
+.ck-fire {
+  position: absolute;
+  width: 240px;
+  height: 258px;
+}
+
+/* แสงเรืองของไฟ ขอบนุ่มได้เพราะเป็นแสง ไม่ใช่ภาพ */
+.ck-fire__glow {
+  position: absolute;
+  top: 20px;
+  left: -60px;
+  width: 360px;
+  height: 300px;
+  background: radial-gradient(closest-side, rgb(255 190 110 / 45%), rgb(255 190 110 / 0%));
+  pointer-events: none;
+}
+
+.ck-fire__art,
+.ck-fire__vessel {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* วัตถุดิบลอยลงภาชนะตอนกดเริ่มทำ */
+.ck-flyer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.ck-steam {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.ck-steam i {
+  position: absolute;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  background: #ffffff;
+  box-shadow:
+    0 6px 0 #c4bcb8,
+    0 12px 0 #ffffff,
+    0 18px 0 #d6cec8,
+    6px 6px 0 #ffffff,
+    6px 12px 0 #c4bcb8;
+  opacity: 0;
+  animation: ck-steam var(--steam-ms, 0.45s) steps(6) forwards;
+}
+
+.ck-steam i:nth-child(1) {
+  left: -33px;
+  animation-delay: 0.05s;
+}
+
+.ck-steam i:nth-child(2) {
+  left: -6px;
+}
+
+.ck-steam i:nth-child(3) {
+  left: 21px;
+  animation-delay: 0.1s;
+}
+
+@keyframes ck-steam {
+  0% {
+    opacity: 1;
+    transform: translateY(-24px);
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-96px);
+  }
+}
+
+/* แถบล่าง: − n + · ของที่ใช้หรือของที่ขาด · เริ่มทำ */
+.ck-bar > * {
+  position: absolute;
+}
+
+.ck-step {
+  top: 740px;
+  width: 70px;
+  height: 76px;
+  font-size: 40px;
+  line-height: 1;
+}
+
+#cook-less {
+  left: 654px;
+}
+
+#cook-more {
+  left: 822px;
+}
+
+.ck-count {
+  top: 740px;
+  left: 738px;
+  display: grid;
+  width: 70px;
+  height: 76px;
+  place-items: center;
+  font-size: 40px;
+  line-height: 1;
+}
+
+.ck-need {
+  top: 734px;
+  left: 906px;
+  display: grid;
+  width: 254px;
+  height: 88px;
+  margin: 0;
+  place-items: center;
+  overflow: hidden;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  color: var(--ck-ok-ink);
+}
+
+.ck-need[data-size='s'] {
+  font-size: 22px;
+}
+
+.ck-need.is-short {
+  color: var(--ck-bad-ink);
+}
+
+.ck-go {
+  top: 734px;
+  right: 30px;
+  display: grid;
+  width: 200px;
+  height: 88px;
+  margin: 0;
+  padding: 0;
+  place-items: center;
+  border: 4px solid var(--ck-orange-edge);
+  border-radius: 16px;
+  background: var(--ck-orange);
+  font-family: Mali, sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.ck-go:disabled {
+  border-color: var(--ck-grey-edge);
+  background: var(--ck-grey);
+  cursor: default;
+}
+
+/* กำลังลอยลงภาชนะ: กดอะไรในหน้าต่างไม่ได้ */
+.ck.is-busy button {
+  pointer-events: none;
+}

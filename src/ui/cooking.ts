@@ -1,6 +1,7 @@
 import { registry } from '../core/assets';
 import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
+import { createRng } from '../core/rng';
 import { gameState } from '../core/state';
 import balance from '../data/balance.json';
 import type { Recipe } from '../data/schema';
@@ -10,6 +11,7 @@ import {
   batchMinutes,
   canCook,
   canUseCampfire,
+  cookMethodOf,
   haveFor,
   maxBatch,
   pickedStars,
@@ -18,23 +20,47 @@ import {
   stockFitting,
   type StarPicks,
 } from '../systems/cooking';
-import { createRng } from '../core/rng';
 import { carriesStars, starLevels } from '../systems/stars';
 import { itemName, starBadge } from './inventory';
-import { artUrl } from './pixelArt';
+import { sizedArt } from './pixelArt';
 import { revealWhenReady } from './preload';
 
+/**
+ * หน้าต่างทำอาหาร K2 "หม้อกลางกองไฟ" (docs/cook_ui_k2_2026-11-08.md ภาพตัวอย่าง art-src/cook_ui_1108/k2_mock_v3.png)
+ * ทุกขนาดเป็นพิกเซลของภาพตัวอย่าง (จอ 2796×1290) แล้วย่อขยายทั้งก้อนด้วย --pz เหมือนโทรศัพท์ · ตำแหน่งส่วนใหญ่อยู่ใน cooking.css
+ */
 const WINDOW = 'cooking';
-type Theme = Recipe['category'];
-type Tab = Theme;
-/** โหมดทดลองผสมเอาออกแล้ว (zone1 food update 1.6) แท็บที่ 4 "จัดชุด" มาในขั้นถัดไป */
+type Tab = Recipe['category'];
+/** แท็บที่ 4 "จัดชุด" มาในขั้นที่ 6 ของงานอาหารโซน 1 */
 const TABS: { id: Tab; label: TextKey }[] = [
   { id: 'savory', label: 'recipe.tab_savory' },
   { id: 'sweet', label: 'recipe.tab_sweet' },
   { id: 'drink', label: 'recipe.tab_drink' },
 ];
-/** กลางจานรองวัตถุดิบขนาด 22×22 */
-const PLATE_CENTER = { x: 11, y: 10 };
+
+/** ช่องวัตถุดิบรอบกองไฟ (พิกเซลภาพตัวอย่าง นับจากมุมซ้ายบนของฉาก) แถวละ 3 ช่อง */
+const SLOT = { left: 360, top: 35, stepX: 92, stepY: 112, size: 66, perRow: 3 } as const;
+/** กองไฟในฉาก ขยาย 2 เท่าของพิกเซลภาพ (6 จุดภาพตัวอย่างต่อพิกเซล) */
+const FIRE = { left: 286, top: 308, scale: 2 } as const;
+/** จุดที่วัตถุดิบตกลงภาชนะ นับเป็นพิกเซลภาพจากขอบบนซ้ายของภาพกองไฟ (ภาพตัวอย่าง cook_start_v2: ตกกลางกระทะ) ไอน้ำลอยจากเหนือขอบบนภาชนะ */
+const LAND = { x: 20, below: 6, grillY: 11, steamAbove: 2, grillSteamY: 4 } as const;
+/** จุดภาพตัวอย่างต่อพิกเซลภาพ (--px ในหน้าต่างนี้) */
+const MOCK_PER_ART = 3;
+/** วัตถุดิบลอยเป็นโค้งขึ้นเหนือจุดที่สูงกว่า 26 พิกเซลภาพ เหมือนภาพตัวอย่าง */
+const ARC_LIFT = 26 * MOCK_PER_ART;
+const ARC_STEPS = 10;
+/** ชื่อยาวลดขนาดตัวหนังสือตามภาพตัวอย่าง */
+const NAME_LONG = 10;
+/** ชื่อยาวกว่านี้ตัดเป็นสองบรรทัด */
+const NAME_WRAP = 18;
+const NAME_MEDIUM = 7;
+const BAR_TEXT_LONG = 16;
+const SUB_TEXT_LONG = 20;
+
+interface Point {
+  x: number;
+  y: number;
+}
 
 const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className: string, text?: string): HTMLElementTagNameMap[K] => {
   const node = document.createElement(tag);
@@ -43,68 +69,38 @@ const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className: strin
   return node;
 };
 
-const bookArt = (name: string): string => `url("${artUrl(`ui_book_${name}`)}")`;
+const hasArt = (id: string | null | undefined): id is string => !!id && registry[id]?.type === 'local';
 
 export const ingredientText = (items: Record<string, number>): string =>
   Object.entries(items)
     .map(([item, count]) => (count > 1 ? `${itemName(item)} ×${count}` : itemName(item)))
     .join(' · ');
 
-/** จานรองวัตถุดิบแบบสมุดสูตร มีไอคอนเล็กตรงกลาง ถ้ายังไม่มีภาพใช้ชื่อแทน */
-function ingredientPlate(item: string, theme: Theme, label: string, short: boolean): HTMLElement {
-  const plate = element('span', `cook-plate${short ? ' is-short' : ''}`);
-  plate.dataset.plate = item;
-  plate.style.backgroundImage = bookArt(`book_ing_slot_${theme}`);
-  // กลุ่มวัตถุดิบ (ปลาชนิดไหนก็ได้ ลูกชิ้น) แสดงของที่มีในกระเป๋า ถ้ายังไม่มีใช้ภาพของกลุ่ม
+const dishName = (id: string): string => t(`dish.${id}.name` as TextKey);
+
+/** ภาพเล็กของวัตถุดิบ กลุ่มวัตถุดิบ (ปลาชนิดไหนก็ได้ ลูกชิ้น) แสดงของที่มีในกระเป๋า ถ้ายังไม่มีใช้ภาพของกลุ่ม */
+function ingredientMini(item: string): string | null {
   const owned = gameState.started ? stockFitting(gameState.world.bag, item).find((stock) => stock !== item) : undefined;
-  const miniId = `ing_mini_${(owned ?? item).toLowerCase()}`;
-  const mini = registry[miniId];
-  if (mini?.type === 'local') {
-    const icon = element('i', 'cook-plate__icon');
-    icon.style.backgroundImage = `url("${artUrl(miniId)}")`;
-    icon.style.width = `calc(var(--px) * ${mini.width})`;
-    icon.style.height = `calc(var(--px) * ${mini.height})`;
-    // ภาพเล็กถูกตัดขอบมาแล้ว จึงวางกลางช่องด้วยจำนวนเต็ม ไม่ให้ตกครึ่งพิกเซล
-    icon.style.left = `calc(var(--px) * ${PLATE_CENTER.x - Math.floor(mini.width / 2)})`;
-    icon.style.top = `calc(var(--px) * ${PLATE_CENTER.y - Math.floor(mini.height / 2)})`;
-    icon.style.transform = 'none';
-    plate.append(icon);
-  } else {
-    plate.append(element('small', 'cook-plate__name', itemName(item)));
-  }
-  plate.append(element('b', 'cook-plate__count', label));
-  plate.setAttribute('aria-label', `${itemName(item)} ${label}`);
-  return plate;
+  const id = `ing_mini_${(owned ?? item).toLowerCase()}`;
+  return hasArt(id) ? id : null;
 }
 
-function dishPicture(recipe: Recipe | null, id: string | null, theme: Theme): HTMLElement {
-  const holder = element('div', 'cook-dish');
-  holder.style.backgroundImage = bookArt(`book_dish_halo_${theme}`);
-  const icon = recipe?.icon ? registry[recipe.icon] : undefined;
-  if (recipe?.icon && icon?.type === 'local') {
-    const picture = element('i', 'cook-dish__icon');
-    picture.style.backgroundImage = `url("${artUrl(recipe.icon)}")`;
-    holder.append(picture);
-  } else {
-    holder.append(element('b', 'cook-dish__unknown', id ? t(`dish.${id}.name` as TextKey) : '?'));
-  }
-  return holder;
-}
-
-/** หน้าต่างที่กองไฟ เลือกเมนูทางซ้าย ดูวัตถุดิบและเริ่มทำทางขวา นาฬิกาเกมหยุดระหว่างเปิด */
+/** หน้าต่างที่กองไฟ เลือกเมนูทางซ้าย ฉากกองไฟกับวัตถุดิบทางขวา แถบล่างเลือกจำนวนและเริ่มทำ นาฬิกาเกมหยุดระหว่างเปิด */
 export function createCookingWindow(uiRoot: HTMLElement): void {
   const backdrop = document.createElement('div');
   backdrop.id = 'cook-window';
   backdrop.hidden = true;
-  const panel = element('div', 'cook-panel');
-  const frame = element('i', 'cook-frame');
-  const close = element('button', 'phone-tool', '×');
+  const panel = element('div', 'ck cook-panel');
+  const tabs = element('div', 'ck-tabs');
+  const close = element('button', 'ck-button ck-close', '×');
   close.id = 'cook-close';
   close.type = 'button';
   close.setAttribute('aria-label', t('ui.close'));
-  const tabs = element('div', 'cook-tabs');
-  const body = element('div', 'cook-body');
-  panel.append(tabs, body, frame, close);
+  const grid = element('div', 'ck-grid');
+  const hint = element('p', 'ck-hint', t('cook.scroll_hint'));
+  const scene = element('div', 'ck-scene');
+  const bar = element('div', 'ck-bar');
+  panel.append(tabs, close, grid, hint, scene, bar);
   backdrop.append(panel);
   uiRoot.append(backdrop);
 
@@ -114,40 +110,34 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
   let batch = 1;
   /** ดาวผักที่เลือกต่อวัตถุดิบ ล้างทุกครั้งที่เปลี่ยนเมนู (ค่าเริ่มคือดาวต่ำสุดที่มีพอ ผักดีจะได้ไม่ถูกใช้โดยไม่ตั้งใจ) */
   let picks: StarPicks = {};
+  /** วัตถุดิบกำลังลอยลงภาชนะ กดอะไรในหน้าต่างไม่ได้จนหน้าต่างปิดเอง */
+  let busy = false;
   const rng = createRng(Date.now());
 
   const hide = (): void => {
+    if (busy) return;
     backdrop.hidden = true;
     gameState.setWindowOpen(WINDOW, false);
   };
 
-  const apply = (next: ReturnType<typeof startCooking>): void => {
-    if (!next) return;
-    gameState.setWorld(next);
-    hide();
-  };
-
-  const knownIn = (category: Theme): string[] =>
+  const knownIn = (category: Tab): string[] =>
     gameState.world.recipes.known.filter((id) => recipes[id]?.category === category && canUseCampfire(recipes[id]!));
 
-  const recipeCard = (id: string): HTMLElement => {
-    const card = element('button', `cook-card${id === selected ? ' is-selected' : ''}`);
+  const recipeCard = (id: string, ready: boolean): HTMLElement => {
+    const card = element('button', `ck-card${id === selected ? ' is-selected' : ''}${ready ? '' : ' is-missing'}`);
     card.type = 'button';
     card.dataset.recipe = id;
-    const ready = canCook(gameState.world, id, id === selected ? picks : {});
-    card.classList.toggle('is-missing', !ready);
     const recipe = recipes[id]!;
-    const art = recipe.bagIcon ? registry[recipe.bagIcon] : undefined;
-    const icon = element('i', 'cook-card__icon');
-    if (recipe.bagIcon && art?.type === 'local') {
-      icon.style.backgroundImage = `url("${artUrl(recipe.bagIcon)}")`;
-      icon.style.width = `calc(var(--px) * ${art.width})`;
-      icon.style.height = `calc(var(--px) * ${art.height})`;
-    }
-    const text = element('span', 'cook-card__text');
-    text.append(element('b', '', t(`dish.${id}.name` as TextKey)), element('small', '', t(ready ? 'cook.ready' : 'cook.missing')));
-    card.append(icon, text);
+    const name = dishName(id);
+    card.setAttribute('aria-label', `${name} ${t(ready ? 'cook.ready' : 'cook.missing')}`);
+    if (hasArt(recipe.icon)) card.append(sizedArt(recipe.icon, 'ck-card__art', '--px2'));
+    else card.append(element('i', 'ck-card__art ck-card__art--none'));
+    const label = element('span', 'ck-card__name', name);
+    label.dataset.size = name.length > NAME_WRAP ? 'xs' : name.length > NAME_LONG ? 's' : name.length > NAME_MEDIUM ? 'm' : 'l';
+    card.append(label);
+    if (ready) card.append(element('i', 'ck-card__dot'));
     card.addEventListener('click', () => {
+      if (busy) return;
       if (selected !== id) {
         batch = 1;
         picks = {};
@@ -158,132 +148,236 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     return card;
   };
 
-  const recipeDetail = (id: string, theme: Theme): HTMLElement => {
-    const recipe = recipes[id]!;
-    const { bag, gauges } = gameState.world;
-    const detail = element('div', 'cook-detail');
-    // ทำได้มากสุดเท่าชุดวัตถุดิบครบในกระเป๋า (ผักนับเฉพาะดาวที่เลือก) ของไม่ครบยังแสดง 1 จาน
-    const most = Math.max(1, maxBatch(bag, recipe, picks));
-    batch = Math.min(Math.max(1, batch), most);
-    const plates = element('div', 'cook-plates');
-    let choosing = false;
-    for (const [item, need] of Object.entries(batchIngredients(recipe, batch))) {
-      const have = haveFor(bag, item, picks, recipe.ingredients[item]!);
-      const plate = ingredientPlate(item, theme, `${have}/${need}`, have < need);
-      if (!carriesStars(item)) {
-        plates.append(plate);
-        continue;
-      }
-      // ผักมีดาว: ป้ายดาวที่ใช้อยู่มุมซ้ายล่างของจาน ถ้ามีหลายดาวแตะจานเพื่อเปลี่ยนดาว (เฉพาะดาวที่มีในกระเป๋า)
-      const levels = starLevels(bag, item);
-      const chosen = pickedStars(bag, item, recipe.ingredients[item]!, picks);
-      const badge = starBadge(chosen);
-      badge.classList.add('star-badge--corner');
-      plate.append(badge);
-      if (levels.length <= 1) {
-        plates.append(plate);
-        continue;
-      }
-      choosing = true;
-      const button = element('button', 'cook-star-pick');
-      button.type = 'button';
-      button.dataset.starPick = item;
-      button.dataset.stars = String(chosen);
-      button.setAttribute('aria-label', `${t('cook.star_pick')} ${itemName(item)}`);
-      button.append(plate);
-      button.addEventListener('click', () => {
-        const at = levels.findIndex((level) => level.stars === chosen);
-        picks = { ...picks, [item]: levels[(at + 1) % levels.length]!.stars };
-        render();
-      });
-      plates.append(button);
-    }
-    const facts = element('p', 'cook-facts');
-    const stars = element('span', 'cook-facts__stars');
+  /** ฟองความคิดของเมนูที่เลือก: ภาพอาหาร ชื่อ เวลาครั้งเดียว และภาชนะ ดาวของจานที่มุมขวาบน */
+  const bubble = (id: string, recipe: Recipe): HTMLElement => {
+    const box = element('div', 'ck-bubble');
+    if (hasArt(recipe.icon)) box.append(sizedArt(recipe.icon, 'ck-bubble__art'));
+    else box.append(element('i', 'ck-bubble__art ck-bubble__art--none'));
+    const sub = element('small', 'ck-bubble__sub', `${batchMinutes(recipe, batch)} ${t('cook.minutes')} · ${t(`cook.method.${recipe.method}` as TextKey)}`);
+    sub.dataset.size = (sub.textContent ?? '').length > SUB_TEXT_LONG ? 's' : 'l';
+    box.append(element('b', 'ck-bubble__name', dishName(id)), sub);
+    const stars = element('span', 'ck-bubble__stars');
     stars.id = 'cook-dish-stars';
-    stars.dataset.stars = String(baseDishStars(bag, recipe, picks));
-    stars.append(starBadge(baseDishStars(bag, recipe, picks)));
-    facts.append(element('span', '', `${batchMinutes(recipe, batch)} ${t('cook.minutes')}`), stars);
-    const go = element('button', 'phone-tool cook-go', t('cook.start'));
-    go.id = 'cook-go';
-    go.type = 'button';
-    go.disabled = !canCook(gameState.world, id, picks);
-    go.addEventListener('click', () => apply(startCooking(gameState.world, id, batch, picks, rng)));
-    detail.append(
-      dishPicture(recipe, id, theme),
-      element('h3', 'cook-detail__name', t(`dish.${id}.name` as TextKey)),
-      facts,
-      element('b', 'cook-label', t('book.ingredients')),
-      plates,
-      batchStepper(recipe, most, go),
-    );
-    if (choosing) detail.append(element('small', 'cook-tip', t('cook.star_rule')));
-    else if (gauges.happiness >= balance.stars.happyBonusFrom) detail.append(element('small', 'cook-tip', t('cook.star_tip')));
-    return detail;
+    const dishStars = baseDishStars(gameState.world.bag, recipe, picks);
+    stars.dataset.stars = String(dishStars);
+    stars.append(starBadge(dishStars));
+    box.append(stars, element('i', 'ck-bubble__tail ck-bubble__tail--big'), element('i', 'ck-bubble__tail ck-bubble__tail--small'));
+    return box;
   };
 
-  /** ปุ่ม "− n +" เลือกจำนวนจาน อยู่แถวเดียวกับปุ่มเริ่มทำ ใต้แถวบอกวัตถุดิบและเวลารวมทั้งรอบ จอมือถือจึงยังเห็นครบ */
-  const batchStepper = (recipe: Recipe, most: number, go: HTMLButtonElement): HTMLElement => {
-    const ready = !go.disabled;
-    const row = element('div', 'cook-batch');
-    const step = (text: string, label: TextKey, id: string, delta: number, disabled: boolean): HTMLButtonElement => {
-      const button = element('button', 'phone-tool cook-batch__step', text);
-      button.id = id;
+  /** ช่องวัตถุดิบวงกลม ขอบเขียวของพอ แดงไม่พอ ใต้ช่องบอก มี/ต้องใช้ ผักที่มีหลายดาวแตะเพื่อเปลี่ยนดาว */
+  const ingredientSlot = (recipe: Recipe, item: string, need: number, index: number): { slot: HTMLElement; choosing: boolean } => {
+    const { bag } = gameState.world;
+    const have = haveFor(bag, item, picks, recipe.ingredients[item]!);
+    const short = have < need;
+    const levels = carriesStars(item) ? starLevels(bag, item) : [];
+    const choosing = levels.length > 1;
+    const slot = element(choosing ? 'button' : 'span', `ck-slot cook-plate${short ? ' is-short' : ''}`);
+    slot.dataset.plate = item;
+    slot.style.left = `${SLOT.left + (index % SLOT.perRow) * SLOT.stepX}px`;
+    slot.style.top = `${SLOT.top + Math.floor(index / SLOT.perRow) * SLOT.stepY}px`;
+    slot.setAttribute('aria-label', `${itemName(item)} ${have}/${need}`);
+    const ring = element('i', 'ck-slot__ring');
+    const mini = ingredientMini(item);
+    if (mini) ring.append(sizedArt(mini, 'ck-slot__art'));
+    else ring.append(element('small', 'ck-slot__name', itemName(item)));
+    slot.append(ring, element('b', 'ck-slot__count', `${have}/${need}`));
+    if (carriesStars(item)) {
+      // ผักมีดาว: ป้ายดาวที่ใช้อยู่มุมซ้ายล่างของวง
+      const chosen = pickedStars(bag, item, recipe.ingredients[item]!, picks);
+      const badge = starBadge(chosen);
+      badge.classList.add('ck-slot__stars');
+      ring.append(badge);
+      if (choosing && slot instanceof HTMLButtonElement) {
+        slot.type = 'button';
+        slot.classList.add('cook-star-pick');
+        slot.dataset.starPick = item;
+        slot.dataset.stars = String(chosen);
+        slot.setAttribute('aria-label', `${t('cook.star_pick')} ${itemName(item)} ${have}/${need}`);
+        slot.addEventListener('click', () => {
+          if (busy) return;
+          const at = levels.findIndex((level) => level.stars === chosen);
+          picks = { ...picks, [item]: levels[(at + 1) % levels.length]!.stars };
+          render();
+        });
+      }
+    }
+    return { slot, choosing };
+  };
+
+  /** กองไฟเปล่า (ย่างใช้ภาพกองไฟกับตะแกรง) แสงเรืองนุ่มด้านหลัง และภาชนะตามวิธีทำวางกลางกองไฟ */
+  const campfire = (id: string): { fire: HTMLElement; land: Point; steam: Point } => {
+    const method = cookMethodOf(id);
+    const fire = element('div', 'ck-fire');
+    fire.style.left = `${FIRE.left}px`;
+    fire.style.top = `${FIRE.top}px`;
+    fire.append(element('i', 'ck-fire__glow'));
+    const fireArt = method?.fire && hasArt(method.fire) ? method.fire : 'cook_fire_plain';
+    fire.append(sizedArt(fireArt, 'ck-fire__art', '--px', FIRE.scale));
+    const fireEntry = registry[fireArt];
+    const fireWidth = fireEntry?.type === 'local' ? fireEntry.width : 0;
+    let landY: number = LAND.grillY;
+    let steamY: number = LAND.grillSteamY;
+    if (method?.vessel && hasArt(method.vessel)) {
+      const vessel = sizedArt(method.vessel, 'ck-fire__vessel', '--px', FIRE.scale);
+      const entry = registry[method.vessel];
+      const width = entry?.type === 'local' ? entry.width : 0;
+      const top = method.vesselY ?? 0;
+      vessel.style.left = `calc(var(--px) * ${FIRE.scale * Math.floor((fireWidth - width) / 2)})`;
+      vessel.style.top = `calc(var(--px) * ${FIRE.scale * top})`;
+      fire.append(vessel);
+      landY = top + LAND.below;
+      steamY = top - LAND.steamAbove;
+    }
+    const unit = MOCK_PER_ART * FIRE.scale;
+    const x = FIRE.left + LAND.x * unit;
+    return { fire, land: { x, y: FIRE.top + landY * unit }, steam: { x, y: FIRE.top + steamY * unit } };
+  };
+
+  /** แถบล่าง: − n + · ของที่ใช้กับเวลาครั้งเดียว (หรือของที่ขาด) · เริ่มทำ */
+  const bottomBar = (recipe: Recipe, most: number, ready: boolean, onStart: () => void): HTMLElement[] => {
+    const step = (text: string, label: TextKey, buttonId: string, delta: number, disabled: boolean): HTMLButtonElement => {
+      const button = element('button', 'ck-button ck-step', text);
+      button.id = buttonId;
       button.type = 'button';
       button.disabled = disabled;
       button.setAttribute('aria-label', t(label));
       button.addEventListener('click', () => {
+        if (busy) return;
         batch = Math.min(Math.max(1, batch + delta), most);
         render();
       });
       return button;
     };
-    const count = element('b', 'cook-batch__count', String(batch));
+    const count = element('b', 'ck-count', String(batch));
     count.id = 'cook-count';
-    const total = element('small', 'cook-batch__total', `${t('cook.batch_total')} ${ingredientText(batchIngredients(recipe, batch))} · ${batchMinutes(recipe, batch)} ${t('cook.minutes')}`);
+    const { bag } = gameState.world;
+    let text: string;
+    if (ready) {
+      text = `${t('cook.batch_total')} ${ingredientText(batchIngredients(recipe, batch))} · ${batchMinutes(recipe, batch)} ${t('cook.minutes')}`;
+    } else {
+      const lacking = Object.entries(recipe.ingredients)
+        .map(([item, need]) => [item, need - haveFor(bag, item, picks, need)] as const)
+        .filter(([, short]) => short > 0)
+        .map(([item, short]) => `${itemName(item)} ${short}`);
+      text = `${t('cook.lack')} ${lacking.join(' · ')}`;
+    }
+    const total = element('p', `ck-need${ready ? '' : ' is-short'}`, text);
     total.id = 'cook-batch-total';
-    row.append(
-      step('−', 'cook.batch_less', 'cook-less', -1, !ready || batch <= 1),
-      count,
-      step('+', 'cook.batch_more', 'cook-more', 1, !ready || batch >= most),
-      go,
-      total,
-    );
-    return row;
+    total.dataset.size = text.length > BAR_TEXT_LONG ? 's' : 'l';
+    const go = element('button', 'ck-go cook-go', t('cook.start'));
+    go.id = 'cook-go';
+    go.type = 'button';
+    go.disabled = !ready;
+    go.addEventListener('click', onStart);
+    return [step('−', 'cook.batch_less', 'cook-less', -1, !ready || batch <= 1), count, step('+', 'cook.batch_more', 'cook-more', 1, !ready || batch >= most), total, go];
   };
 
-  const renderRecipes = (category: Theme): void => {
-    const ids = knownIn(category);
-    if (!selected || !ids.includes(selected)) selected = ids.find((id) => canCook(gameState.world, id)) ?? ids[0] ?? null;
-    const list = element('div', 'cook-list');
-    list.append(...ids.map(recipeCard));
-    if (ids.length === 0) list.append(element('p', 'cook-empty', t('cook.none')));
-    body.replaceChildren(list, selected ? recipeDetail(selected, category) : element('div', 'cook-detail'));
+  /**
+   * กดเริ่มทำ: วัตถุดิบลอยเป็นโค้งจากช่องลงภาชนะทีละชิ้น แล้วไอน้ำลอย จึงหยิบของจากกระเป๋าและปิดหน้าต่าง
+   * (ตัวเอกเล่นท่าทำอาหารต่อในลาน) ผู้เล่นที่ปิดการเคลื่อนไหวในเครื่องได้ผลทันที
+   */
+  const startWith = (id: string, land: Point, steamAt: Point): void => {
+    if (busy || !canCook(gameState.world, id, picks)) return;
+    const cook = (): void => {
+      busy = false;
+      panel.classList.remove('is-busy');
+      const next = startCooking(gameState.world, id, batch, picks, rng);
+      if (!next) return;
+      gameState.setWorld(next);
+      hide();
+    };
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      cook();
+      return;
+    }
+    busy = true;
+    panel.classList.add('is-busy');
+    const { itemMs, gapMs, steamMs } = balance.cooking.float;
+    const slots = [...scene.querySelectorAll<HTMLElement>('.ck-slot')];
+    slots.forEach((slot, index) => {
+      const art = slot.querySelector<HTMLElement>('.ck-slot__art');
+      if (!art) return;
+      const flyer = art.cloneNode(true) as HTMLElement;
+      flyer.classList.add('ck-flyer');
+      scene.append(flyer);
+      const fromX = parseFloat(slot.style.left) + SLOT.size / 2;
+      const fromY = parseFloat(slot.style.top) + SLOT.size / 2;
+      const control = { x: (fromX + land.x) / 2, y: Math.min(fromY, land.y) - ARC_LIFT };
+      const frames: Keyframe[] = [];
+      for (let step = 0; step <= ARC_STEPS; step += 1) {
+        const at = step / ARC_STEPS;
+        const x = (1 - at) ** 2 * fromX + 2 * (1 - at) * at * control.x + at ** 2 * land.x;
+        const y = (1 - at) ** 2 * fromY + 2 * (1 - at) * at * control.y + at ** 2 * land.y;
+        frames.push({ offset: at, transform: `translate(${Math.round(x)}px, ${Math.round(y)}px) translate(-50%, -50%)`, opacity: at < 0.85 ? 1 : 0 });
+      }
+      const delay = index * gapMs;
+      flyer.animate(frames, { duration: itemMs, delay, easing: 'linear', fill: 'both' });
+      window.setTimeout(() => slot.classList.add('is-gone'), delay);
+    });
+    const landed = Math.max(0, slots.length - 1) * gapMs + itemMs;
+    window.setTimeout(() => {
+      const steam = element('div', 'ck-steam');
+      steam.style.left = `${steamAt.x}px`;
+      steam.style.top = `${steamAt.y}px`;
+      steam.style.setProperty('--steam-ms', `${steamMs}ms`);
+      steam.append(element('i', ''), element('i', ''), element('i', ''));
+      scene.append(steam);
+    }, landed);
+    window.setTimeout(cook, landed + steamMs);
+  };
+
+  const renderScene = (id: string): void => {
+    const recipe = recipes[id]!;
+    const { bag, gauges } = gameState.world;
+    // ทำได้มากสุดเท่าชุดวัตถุดิบครบในกระเป๋า (ผักนับเฉพาะดาวที่เลือก) ของไม่ครบยังแสดง 1 จาน
+    const most = Math.max(1, maxBatch(bag, recipe, picks));
+    batch = Math.min(Math.max(1, batch), most);
+    const ready = canCook(gameState.world, id, picks);
+    const { fire, land, steam } = campfire(id);
+    let choosing = false;
+    const slots = Object.entries(batchIngredients(recipe, batch)).map(([item, need], index) => {
+      const made = ingredientSlot(recipe, item, need, index);
+      choosing ||= made.choosing;
+      return made.slot;
+    });
+    scene.replaceChildren(fire, bubble(id, recipe), ...slots);
+    if (choosing) scene.append(element('small', 'ck-tip', t('cook.star_rule')));
+    else if (gauges.happiness >= balance.stars.happyBonusFrom) scene.append(element('small', 'ck-tip', t('cook.star_tip')));
+    bar.replaceChildren(...bottomBar(recipe, most, ready, () => startWith(id, land, steam)));
   };
 
   function render(): void {
-    const theme: Theme = tab;
-    panel.dataset.theme = theme;
     panel.dataset.tab = tab;
-    panel.style.setProperty('--cloth', bookArt(`book_cloth_${theme}`));
-    // ปุ่มในหน้าต่างใช้แท็บสีเดียวกับธีม ไม่ปนชมพูของโทรศัพท์
-    panel.style.setProperty('--theme-button', bookArt(`book_tab_active_${theme}`));
-    panel.style.setProperty('--theme-soft', bookArt(`book_tab_${theme}`));
-    frame.style.borderImageSource = bookArt(`book_frame_${theme}_9slice`);
+    panel.dataset.theme = tab;
     tabs.replaceChildren(
       ...TABS.map(({ id, label }) => {
-        const button = element('button', `cook-tab${id === tab ? ' is-active' : ''}`, t(label));
+        const button = element('button', `ck-button ck-tab${id === tab ? ' is-active' : ''}`, t(label));
         button.type = 'button';
         button.dataset.cookTab = id;
-        button.style.borderImageSource = bookArt(id === tab ? `book_tab_active_${theme}` : `book_tab_${theme}`);
         button.addEventListener('click', () => {
+          if (busy || tab === id) return;
           tab = id;
+          batch = 1;
+          picks = {};
           render();
         });
         return button;
       }),
     );
-    renderRecipes(tab);
+    const ids = knownIn(tab);
+    // ทำได้ขึ้นก่อน แล้วตามลำดับที่รู้สูตร
+    const ready = new Map(ids.map((id) => [id, canCook(gameState.world, id, id === selected ? picks : {})]));
+    const sorted = [...ids].sort((a, b) => Number(ready.get(b)) - Number(ready.get(a)));
+    if (!selected || !ids.includes(selected)) selected = sorted[0] ?? null;
+    grid.replaceChildren(...sorted.map((id) => recipeCard(id, ready.get(id)!)));
+    if (ids.length === 0) grid.append(element('p', 'ck-empty cook-empty', t('cook.none')));
+    hint.hidden = ids.length <= SLOT.perRow * 3;
+    if (selected) renderScene(selected);
+    else {
+      scene.replaceChildren();
+      bar.replaceChildren();
+    }
   }
 
   close.addEventListener('click', hide);
@@ -291,12 +385,15 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     if (event.target === backdrop) hide();
   });
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') hide();
+    if (event.key === 'Escape' && !backdrop.hidden) hide();
   });
   eventBus.on('cook-open', () => {
     batch = 1;
     picks = {};
+    busy = false;
+    panel.classList.remove('is-busy');
     render();
+    grid.scrollTop = 0;
     backdrop.hidden = false;
     revealWhenReady(backdrop);
     gameState.setWindowOpen(WINDOW, true);

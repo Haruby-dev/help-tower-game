@@ -17,7 +17,7 @@ import { autoHooks, baits, catchItem, chosenBait, finishCast, rollCatch, type Ca
 import { countOf, seedItem } from '../systems/farm';
 import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, isWithered, produceItem, type FarmAction } from '../systems/farm';
 import { withStars } from '../systems/stars';
-import { MYSTERY, collectDish, eatItem, isCooked, isDish, isRawProduce, parseDish } from '../systems/cooking';
+import { MYSTERY, collectDish, cookMethodOf, dishItem, eatItem, isCooked, isDish, isRawProduce, parseDish, recipes as cookRecipes } from '../systems/cooking';
 import { baseItem } from '../systems/stars';
 import recipes from '../data/recipes.json';
 import { registerSlice } from '../core/atlas';
@@ -78,6 +78,8 @@ const PRICE_LIFT_PX = 30;
 
 const STANDING_STILL: Vector = { x: 0, y: 0 };
 const PLAYER_HEAD_PX = 66;
+/** ความสูงภาพในป้ายเด้งที่วางพอดีเหนือหัว (ป้ายผัก) ภาพที่สูงกว่านี้ยกป้ายขึ้นตาม */
+const DISH_POP_BASE_PX = 16;
 const DOOR_TAP_LIFT = 24;
 const DOOR_TAP_RADIUS = 34;
 const TILE_MIDDLE = 16;
@@ -89,6 +91,8 @@ const ARRANGE_WINDOW = 'arrange';
 const TILL_HIT_FRAME = 6;
 const TILL_DIRT_PIECES = 2;
 const MINUTES_PER_HOUR = 60;
+const MS_PER_SECOND = 1000;
+/** อาหารที่ทำเสร็จเด้งขึ้นเหนือกองไฟเท่านี้ */
 const BATH_BUBBLE_MS = 280;
 const BATH_SPARKLE_SHARE = 0.25;
 const BATH_SPREAD_PX = 12;
@@ -192,6 +196,8 @@ export class BaseScene extends Phaser.Scene {
   private trayView: TrayView | null = null;
   private visits: Visits | null = null;
   private cookingShown: boolean | null = null;
+  /** ทำครั้งเดียว เวลาเดียว: ระหว่างตัวเอกทำท่าทำอาหาร นาฬิกาเดินเร็วขึ้นเท่านี้ เวลาของแรงก์จึงผ่านไปใน balance.cooking.fastCookMs */
+  private fastCookScale = 1;
   /** เสียงผัดวนระหว่างยืนทำอาหารที่กองไฟ */
   private cookLoop: SoundHandle | null = null;
   private pond: Pond | null = null;
@@ -443,7 +449,8 @@ export class BaseScene extends Phaser.Scene {
       this.playEat(this.pendingEat);
       this.pendingEat = null;
     }
-    advanceClock(deltaMs, this.door, (done) => this.playFaint(done));
+    const clockScale = this.player.isCooking ? this.fastCookScale : 1;
+    advanceClock(deltaMs * clockScale, this.door, (done) => this.playFaint(done));
     this.updateFarm();
     if (gameState.started) this.night.setFillStyle(this.night.fillColor, nightAlpha(gameState.world.hour));
     this.weatherFx.update(deltaMs, camera.worldView, gameState.started ? gameState.world.weather : null);
@@ -621,10 +628,8 @@ export class BaseScene extends Phaser.Scene {
       this.endBath();
       return;
     }
-    if (this.player.isCooking) {
-      this.player.finishCooking();
-      return;
-    }
+    // ทำอาหารสั้น ๆ ไม่กี่วินาที ทำจนเสร็จเอง ไม่มีปุ่มหยุด
+    if (this.player.isCooking) return;
     const food = gameState.selectedFood;
     if (food) {
       this.eat(food);
@@ -995,32 +1000,59 @@ export class BaseScene extends Phaser.Scene {
     this.player.endPose();
   }
 
-  /** เริ่มทำอาหารตอนยืนที่กองไฟจึงเล่นท่าทำ อาหารสุกแล้วลุกขึ้น */
+  /**
+   * ทำครั้งเดียว เวลาเดียว (zone1 food update 2): เริ่มทำแล้วตัวเอกเล่นท่าของวิธีนั้น นาฬิกาเดินเร็ว เวลาของแรงก์ผ่านไปในไม่กี่วินาที
+   * สุกแล้วลุกขึ้น อาหารทุกจานเด้งออกเข้ากระเป๋า กระเป๋าเต็มอาหารรออยู่ที่กองไฟ เก็บทีหลังได้ · อาหารที่ค้างจากเซฟเก่าสุกตามเวลาปกติ
+   */
   private followCooking(): void {
     const { slot } = gameState.world.cooking;
     const cooking = slot !== null && !isCooked(slot);
     if (cooking === this.cookingShown) return;
     const started = cooking && this.cookingShown === false;
     const finished = !cooking && this.cookingShown === true && isCooked(slot);
+    const served = finished && this.player.isCooking;
     this.cookingShown = cooking;
-    if (started && this.campfire && this.campfireInReach()) {
-      this.player.startCooking(
-        { x: this.campfire.x, y: this.campfire.y },
-        {
-          onStart: () => sound.play('cook_start'),
-          onLoop: () => {
-            this.stopCookLoop();
-            this.cookLoop = sound.play('cook_loop', { loop: true });
-          },
+    if (started && slot && this.campfire && this.campfireInReach()) {
+      const pose = cookMethodOf(slot.recipe)?.pose;
+      const normalMs = (slot.minutesLeft / MINUTES_PER_HOUR) * balance.time.realSecondsPerGameHour * MS_PER_SECOND;
+      this.fastCookScale = Math.max(1, normalMs / balance.cooking.fastCookMs);
+      this.player.startCooking({ x: this.campfire.x, y: this.campfire.y }, pose ?? '', {
+        onStart: () => sound.play('cook_start'),
+        onLoop: () => {
+          this.stopCookLoop();
+          this.cookLoop = sound.play('cook_loop', { loop: true });
         },
-      );
+      });
     }
-    if (!cooking) this.player.finishCooking();
+    if (!cooking) {
+      this.player.finishCooking();
+      this.fastCookScale = 1;
+    }
     if (finished) {
-      // อาหารเด้งขึ้นเหนือกองไฟพร้อมเสียง
       this.stopCookLoop();
       sound.play('cook_done');
     }
+    if (served) this.serveDishes();
+  }
+
+  /** อาหารทุกจานเข้ากระเป๋า เด้งป้ายพร้อมดาวเหนือหัวตัวเอก */
+  private serveDishes(): void {
+    const { slot } = gameState.world.cooking;
+    if (!slot || !this.campfire) return;
+    const next = collectDish(gameState.world);
+    if (!next) {
+      eventBus.emit('player-says', 'bagFull');
+      return;
+    }
+    gameState.setWorld(next);
+    const item = dishItem(slot.recipe, slot.stars);
+    // ภาพอาหาร 48 พิกเซลเด้งเหนือหัวตัวเอกแบบเดียวกับตอนเก็บผัก ไม่บังหน้า (ภาพในกระเป๋าไม่ได้โหลดเข้าฉาก)
+    const icon = cookRecipes[slot.recipe]?.icon ?? '';
+    const name = t(`dish.${slot.recipe}.name` as TextKey);
+    const key = this.textures.exists(icon) ? icon : item;
+    // ป้ายสูงตามภาพอาหาร จึงยกขึ้นอีกครึ่งหนึ่งของส่วนที่สูงกว่าป้ายผัก ขอบล่างจะได้อยู่เหนือหัว
+    const extra = Math.max(0, Math.ceil((this.textures.getFrame(key).height - DISH_POP_BASE_PX) / 2));
+    popPill(this, this.player.feetX, this.player.feetY - PLAYER_HEAD_PX - extra, key, `+${slot.count} ${name}`, gameState.viewport.zoom, `star_badge_${Math.min(3, slot.stars)}`);
   }
 
   /** ลุกจากกองไฟหรืออาหารสุกแล้ว เสียงผัดค่อย ๆ หยุด */
@@ -1254,7 +1286,7 @@ export class BaseScene extends Phaser.Scene {
       return { icon: 'fish', label: this.fishing.phase === 'bite' ? 'action.reel' : 'action.stop' };
     }
     if (this.bath) return { icon: 'bath', label: 'action.stop' };
-    if (this.player.isCooking) return { icon: 'cook', label: 'action.stop' };
+    if (this.player.isCooking) return null;
     // แถบอาหาร: เลือกอาหารแล้วปุ่มกระทำเป็น "กิน" (ผู้ใช้เลือกแบบ B 7 พ.ย. 2026)
     if (gameState.selectedFood) return { icon: 'eat', label: 'action.eat' };
     if (this.landSignWins()) return { icon: 'buy', label: 'action.buy_land' };

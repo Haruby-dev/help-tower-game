@@ -8,6 +8,9 @@ const STAND_ID = 'player_girl_stand';
 const BODY_WIDTH = 16;
 const BODY_HEIGHT = 10;
 
+/** ท่าทำอาหารเดิม (ผัด) ใช้เมื่อไม่รู้วิธี */
+const DEFAULT_COOK_POSE = 'stir_fry' as const;
+
 export type GardenMove = 'till' | 'plant' | 'water' | 'harvest';
 
 export class Player {
@@ -16,6 +19,8 @@ export class Player {
   private facing: Direction8 = 'south';
   private acting = false;
   private cooking = false;
+  /** แผ่นท่าทำอาหารที่เล่นอยู่ */
+  private cookSheet: string | null = null;
   private posing = false;
   /** ท่าเก่าที่ถูกยกเลิกไปแล้วจะไม่เรียกท่ารอต่อ */
   private poseToken = 0;
@@ -199,30 +204,36 @@ export class Player {
     return sheet;
   }
 
-  /** หันหน้าเข้ากองไฟ ย่อตัวแล้ววนท่าทำอาหาร เดินออกเมื่อไหร่ก็ได้ */
-  startCooking(toward: { x: number; y: number }, hooks: { onStart?: () => void; onLoop?: () => void } = {}): void {
+  /** หันหน้าเข้ากองไฟ เล่นท่าทำอาหารของวิธีนั้น (เปิดตัวครั้งเดียวแล้ววน) ทิศตะวันตกกลับด้านจากตะวันออก */
+  startCooking(toward: { x: number; y: number }, pose: string, hooks: { onStart?: () => void; onLoop?: () => void } = {}): void {
     if (this.acting) return;
-    const sheet = this.faceToward(toward);
+    const facing = this.faceToward(toward) as 'south' | 'east' | 'north';
+    const poses = balance.cooking.poses as Record<string, (typeof balance.cooking.poses)[typeof DEFAULT_COOK_POSE]>;
+    const sheets = poses[pose] ?? poses[DEFAULT_COOK_POSE]!;
+    const sheet = sheets[facing].sheet;
     this.cooking = true;
+    this.cookSheet = sheet;
     this.sprite.anims.timeScale = 1;
-    this.sprite.play(`anim_cook_${sheet}_intro`);
+    this.sprite.play(`${sheet}_intro`);
     hooks.onStart?.();
-    this.sprite.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}anim_cook_${sheet}_intro`, () => {
-      if (!this.cooking) return;
-      this.sprite.play(`anim_cook_${sheet}_loop`);
+    this.sprite.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}${sheet}_intro`, () => {
+      if (!this.cooking || this.cookSheet !== sheet) return;
+      this.sprite.play(`${sheet}_loop`);
       hooks.onLoop?.();
     });
   }
 
+  /** ลุกขึ้นจากท่าทำอาหาร (เล่นเปิดตัวย้อนกลับ) */
   finishCooking(): void {
     if (!this.cooking) return;
-    const key = this.sprite.anims.currentAnim?.key ?? '';
+    const sheet = this.cookSheet;
     this.cooking = false;
-    if (!key.startsWith('anim_cook_')) return;
-    const sheet = key.split('_')[2];
+    this.cookSheet = null;
+    const key = this.sprite.anims.currentAnim?.key ?? '';
+    if (!sheet || !key.startsWith(sheet)) return;
     this.acting = true;
-    this.sprite.play(`anim_cook_${sheet}_outro`);
-    this.sprite.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}anim_cook_${sheet}_outro`, () => {
+    this.sprite.play(`${sheet}_outro`);
+    this.sprite.once(`${Phaser.Animations.Events.ANIMATION_COMPLETE_KEY}${sheet}_outro`, () => {
       this.acting = false;
       this.sprite.setFlipX(false);
       this.showStanding();

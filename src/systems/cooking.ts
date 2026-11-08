@@ -38,6 +38,12 @@ const rankOf = (recipe: Recipe): { minutes: number; fullness: number; equipment:
 export const canUseCampfire = (recipe: Recipe): boolean =>
   recipe.method !== 'mortar' && (recipe.category === 'drink' || rankOf(recipe).equipment === CAMPFIRE);
 
+/** ภาชนะ ท่า และภาพกองไฟของวิธีทำสูตรนี้ (balance.cooking.methods) */
+export const cookMethodOf = (id: string): (typeof rules.methods)[Recipe['method']] | null => {
+  const recipe = recipes[id];
+  return recipe ? rules.methods[recipe.method] : null;
+};
+
 /** สูตรที่นับในสมุด ข้าวสวยเป็นส่วนประกอบชุด ไม่นับ */
 export const countsAsRecipe = (recipe: Recipe): boolean => !recipe.setPart;
 
@@ -114,8 +120,8 @@ export function maxBatch(bag: BagStack[], recipe: Recipe, picks: StarPicks = {})
 export const batchIngredients = (recipe: Recipe, count: number): Record<string, number> =>
   Object.fromEntries(Object.entries(recipe.ingredients).map(([item, need]) => [item, need * count]));
 
-/** เวลาทำทั้งรอบ คูณจำนวนจานตรง ๆ ไม่มีส่วนลด */
-export const batchMinutes = (recipe: Recipe, count: number): number => minutesFor(recipe) * count;
+/** ทำครั้งเดียว เวลาเดียว (ผู้ใช้ตัดสิน 8 พ.ย. 2026 19:24): ทำกี่จานก็ใช้เวลาของแรงก์ครั้งเดียว ไม่คูณจำนวนจาน */
+export const batchMinutes = (recipe: Recipe, _count: number): number => minutesFor(recipe);
 
 export function hasIngredients(bag: BagStack[], recipe: Recipe, picks: StarPicks = {}): boolean {
   return Object.entries(recipe.ingredients).every(([item, count]) => haveFor(bag, item, picks, count) >= count);

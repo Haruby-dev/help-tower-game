@@ -333,7 +333,121 @@
       "ing_milk": 1,
       "ing_honey": 1
     },
-    "animationFps": 8
+    "animationFps": 8,
+    "poses": {
+      "stir_fry": {
+        "south": {
+          "sheet": "anim_cook_south",
+          "intro": 4
+        },
+        "east": {
+          "sheet": "anim_cook_east",
+          "intro": 4
+        },
+        "north": {
+          "sheet": "anim_cook_north",
+          "intro": 4
+        }
+      },
+      "boil": {
+        "south": {
+          "sheet": "anim_boil_south",
+          "intro": 4
+        },
+        "east": {
+          "sheet": "anim_boil_east",
+          "intro": 4
+        },
+        "north": {
+          "sheet": "anim_crouch_north",
+          "intro": 4
+        }
+      },
+      "grill": {
+        "south": {
+          "sheet": "anim_grill_south",
+          "intro": 3
+        },
+        "east": {
+          "sheet": "anim_grill_east",
+          "intro": 4
+        },
+        "north": {
+          "sheet": "anim_crouch_north",
+          "intro": 4
+        }
+      },
+      "salad": {
+        "south": {
+          "sheet": "anim_salad_south",
+          "intro": 3
+        },
+        "east": {
+          "sheet": "anim_salad_east",
+          "intro": 3
+        },
+        "north": {
+          "sheet": "anim_crouch_north",
+          "intro": 4
+        }
+      }
+    },
+    "methods": {
+      "grill": {
+        "pose": "grill",
+        "fire": "cook_fire_grill",
+        "vessel": null,
+        "vesselY": null
+      },
+      "iron_pan": {
+        "pose": "stir_fry",
+        "fire": "cook_fire_plain",
+        "vessel": "cook_vessel_iron_pan",
+        "vesselY": 3
+      },
+      "clay_pot": {
+        "pose": "boil",
+        "fire": "cook_fire_plain",
+        "vessel": "cook_vessel_clay_pot",
+        "vesselY": 0
+      },
+      "bowl": {
+        "pose": "salad",
+        "fire": "cook_fire_plain",
+        "vessel": "cook_vessel_bowl",
+        "vesselY": 4
+      },
+      "pot": {
+        "pose": "boil",
+        "fire": "cook_fire_plain",
+        "vessel": "equip_pot",
+        "vesselY": 0
+      },
+      "pan": {
+        "pose": "stir_fry",
+        "fire": "cook_fire_plain",
+        "vessel": "equip_pan",
+        "vesselY": 3
+      },
+      "oven": {
+        "pose": "boil",
+        "fire": "cook_fire_plain",
+        "vessel": "equip_oven",
+        "vesselY": 0
+      },
+      "mortar": {
+        "pose": null,
+        "fire": null,
+        "vessel": null,
+        "vesselY": null
+      }
+    },
+    "fastCookMs": 2500,
+    "float": {
+      "itemMs": 520,
+      "gapMs": 220,
+      "steamMs": 450
+    }
   },
   "fishing": {
     "minutes": 30,

@@ -28,6 +28,8 @@ describe('project data', () => {
     const replaced: Record<string, { file: string; jade_tone: boolean }> = Object.fromEntries(
       [3, 6, 10].map((size) => [`food_tray_${size}`, { file: `assets-src/art_2026-11-06/yard/food_tray_${size}_d1.png`, jade_tone: false }]),
     );
+    // กองไฟเปล่าในลาน (งานอาหารโซน 1 ขั้นที่ 2) ทำจากภาพที่ลงสีหยกแล้ว จึงไม่ลงสีซ้ำ
+    replaced.campfire = { file: 'public/assets/world/yard/campfire_yard.png', jade_tone: false };
     for (const addition of additions) {
       const entry = registry[addition.name];
       if (entry?.type !== 'local' && entry?.type !== 'local_tileset') throw new Error(`${addition.name} is missing`);

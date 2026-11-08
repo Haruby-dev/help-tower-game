@@ -501,14 +501,12 @@
   },
   "campfire": {
     "type": "local",
-    "pixellab_job": "82ecfdc3-6dbf-4ae5-b344-45e034321e46",
-    "index": 8,
-    "width": 61,
-    "height": 59,
-    "source": "assets-src/art_2026-11-01/yard/campfire.png",
-    "file": "world/yard/campfire.png",
-    "jade_tone": true,
-    "note": "tier 1 cooking (yard)"
+    "width": 63,
+    "height": 52,
+    "source": "public/assets/world/yard/campfire_yard.png",
+    "file": "world/yard/campfire_yard.png",
+    "jade_tone": false,
+    "note": "tier 1 cooking (yard): empty campfire + 3 stumps (zone1 food update 2) · old hanging-pot art was assets-src/art_2026-11-01/yard/campfire.png"
   },
   "gio_seat": {
     "type": "local",
@@ -6763,6 +6761,16 @@
     "jade_tone": false,
     "lazy": true
   },
+  "ing_mini_produce_soybean": {
+    "type": "local",
+    "width": 15,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/produce_soybean.png",
+    "file": "food/ingredients_mini/produce_soybean.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "cooking window mini (zone1 food update §10, added 9 Nov)"
+  },
   "ing_mini_produce_garlic": {
     "type": "local",
     "width": 14,
@@ -11482,6 +11490,16 @@
     "jade_tone": false,
     "lazy": true
   },
+  "ing_icon_whipped_cream": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/whipped_cream.png",
+    "file": "food/ingredients/whipped_cream.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "topping icon (zone1 food update §10, added 9 Nov)"
+  },
   "ing_mini_ing_coconut_jelly": {
     "type": "local",
     "width": 16,
@@ -11490,6 +11508,16 @@
     "file": "food/ingredients_mini/ing_coconut_jelly.png",
     "jade_tone": false,
     "lazy": true
+  },
+  "ing_mini_ing_whipped_cream": {
+    "type": "local",
+    "width": 15,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_whipped_cream.png",
+    "file": "food/ingredients_mini/ing_whipped_cream.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "topping icon (zone1 food update §10, added 9 Nov)"
   },
   "ing_icon_rainbow_sprinkles": {
     "type": "local",
@@ -12454,5 +12482,139 @@
     "height": 64,
     "color": "#9a8f5a",
     "labelKey": "crop.lime.name"
+  },
+  "anim_boil_south": {
+    "type": "local",
+    "width": 704,
+    "height": 88,
+    "source": "public/assets/farm/anims/cook_boil_south.png",
+    "file": "farm/anims/cook_boil_south.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 8,
+    "note": "cooking pose (zone1 food update 2) from art-src/cook_ui_1108/cook_anim/stir_v2_south_fixed/frames"
+  },
+  "anim_boil_east": {
+    "type": "local",
+    "width": 704,
+    "height": 88,
+    "source": "public/assets/farm/anims/cook_boil_east.png",
+    "file": "farm/anims/cook_boil_east.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 8,
+    "note": "cooking pose (zone1 food update 2) from art-src/cook_ui_1108/cook_anim/stir_v2_east_fixed/frames"
+  },
+  "anim_crouch_north": {
+    "type": "local",
+    "width": 704,
+    "height": 88,
+    "source": "public/assets/farm/anims/cook_crouch_north.png",
+    "file": "farm/anims/cook_crouch_north.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 8,
+    "note": "cooking pose (zone1 food update 2) from art-src/cook_ui_1108/cook_anim/stir_v2_north_noladle/frames"
+  },
+  "anim_grill_south": {
+    "type": "local",
+    "width": 792,
+    "height": 88,
+    "source": "public/assets/farm/anims/cook_grill_south.png",
+    "file": "farm/anims/cook_grill_south.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 9,
+    "note": "cooking pose (zone1 food update 2) from art-src/cook_ui_1108/cook_anim/grill_mix/cook_grill_south/frames"
+  },
+  "anim_grill_east": {
+    "type": "local",
+    "width": 704,
+    "height": 88,
+    "source": "public/assets/farm/anims/cook_grill_east.png",
+    "file": "farm/anims/cook_grill_east.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 8,
+    "note": "cooking pose (zone1 food update 2) from art-src/cook_ui_1108/cook_anim/grill_mix/cook_grill_east/frames"
+  },
+  "anim_salad_south": {
+    "type": "local",
+    "width": 704,
+    "height": 88,
+    "source": "public/assets/farm/anims/cook_salad_south.png",
+    "file": "farm/anims/cook_salad_south.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 8,
+    "note": "cooking pose (zone1 food update 2) from art-src/cook_ui_1108/cook_anim/grill_mix/cook_mix_south/frames"
+  },
+  "anim_salad_east": {
+    "type": "local",
+    "width": 704,
+    "height": 88,
+    "source": "public/assets/farm/anims/cook_salad_east.png",
+    "file": "farm/anims/cook_salad_east.png",
+    "jade_tone": false,
+    "frame_width": 88,
+    "frame_height": 88,
+    "frames": 8,
+    "note": "cooking pose (zone1 food update 2) from art-src/cook_ui_1108/cook_anim/grill_mix/cook_mix_east/frames"
+  },
+  "cook_fire_plain": {
+    "type": "local",
+    "width": 40,
+    "height": 43,
+    "source": "public/assets/ui/cook/campfire_plain.png",
+    "file": "ui/cook/campfire_plain.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "cooking window K2 (zone1 food update 2)"
+  },
+  "cook_fire_grill": {
+    "type": "local",
+    "width": 40,
+    "height": 43,
+    "source": "public/assets/ui/cook/grill_G3.png",
+    "file": "ui/cook/grill_G3.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "cooking window K2 (zone1 food update 2)"
+  },
+  "cook_vessel_iron_pan": {
+    "type": "local",
+    "width": 28,
+    "height": 23,
+    "source": "public/assets/ui/cook/iron_pan_old.png",
+    "file": "ui/cook/iron_pan_old.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "cooking window K2 (zone1 food update 2)"
+  },
+  "cook_vessel_clay_pot": {
+    "type": "local",
+    "width": 22,
+    "height": 22,
+    "source": "public/assets/ui/cook/clay_pot_old.png",
+    "file": "ui/cook/clay_pot_old.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "cooking window K2 (zone1 food update 2)"
+  },
+  "cook_vessel_bowl": {
+    "type": "local",
+    "width": 28,
+    "height": 18,
+    "source": "public/assets/ui/cook/mixing_bowl.png",
+    "file": "ui/cook/mixing_bowl.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "cooking window K2 (zone1 food update 2)"
   }
 }

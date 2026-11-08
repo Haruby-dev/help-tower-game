@@ -10,8 +10,6 @@ import { preloadInterfaceArt } from '../ui/preload';
 const LABEL_FONT = '700 8px Mali';
 const PRELOAD_LIMIT_MS = 8000;
 const CURSOR_FPS = 2;
-const COOK_INTRO_END = 3;
-const COOK_LAST_FRAME = 8;
 const ZZZ_FPS = 3;
 const SPARKLE_FPS = 10;
 const READY_SPARKLE_PAUSE_MS = 1400;
@@ -68,14 +66,21 @@ export class BootScene extends Phaser.Scene {
     this.anims.create({ key: 'fx_sparkle_idle', frames: frames('fx_sparkle'), frameRate: SPARKLE_FPS, repeat: -1, repeatDelay: READY_SPARKLE_PAUSE_MS });
   }
 
-  /** ย่อตัวครั้งเดียว วนท่าทำระหว่างรอ แล้วลุกขึ้นตอนเสร็จ */
-  private createCookAnimations(id: string): void {
+  /** ท่าทำอาหารตามวิธี (balance.cooking.poses): เปิดตัวครั้งเดียว วนท่าทำระหว่างทำ แล้วลุกขึ้น (เปิดตัวย้อนกลับ) ตอนเสร็จ */
+  private createCookAnimations(): void {
     const frameRate = balance.cooking.animationFps;
-    const frames = (start: number, end: number): Phaser.Types.Animations.AnimationFrame[] =>
-      this.anims.generateFrameNumbers(id, { start, end });
-    this.anims.create({ key: `${id}_intro`, frames: frames(0, COOK_INTRO_END), frameRate });
-    this.anims.create({ key: `${id}_loop`, frames: frames(COOK_INTRO_END + 1, COOK_LAST_FRAME), frameRate, repeat: -1 });
-    this.anims.create({ key: `${id}_outro`, frames: frames(COOK_INTRO_END, 0), frameRate });
+    const made = new Set<string>();
+    for (const pose of Object.values(balance.cooking.poses)) {
+      for (const { sheet, intro } of [pose.south, pose.east, pose.north]) {
+        if (made.has(sheet) || !this.textures.exists(sheet)) continue;
+        made.add(sheet);
+        const last = this.textures.get(sheet).frameTotal - 2;
+        const frames = (start: number, end: number): Phaser.Types.Animations.AnimationFrame[] => this.anims.generateFrameNumbers(sheet, { start, end });
+        this.anims.create({ key: `${sheet}_intro`, frames: frames(0, intro - 1), frameRate });
+        this.anims.create({ key: `${sheet}_loop`, frames: frames(intro, last), frameRate, repeat: -1 });
+        this.anims.create({ key: `${sheet}_outro`, frames: frames(intro - 1, 0), frameRate });
+      }
+    }
   }
 
   /** ท่าตกปลาเหวี่ยงครั้งเดียวแล้ววนเฟรม 7–8 ช้า ๆ ระหว่างรอ ท่าอาบน้ำเล่น 0–8 แล้ววน 2–8 */
@@ -118,9 +123,11 @@ export class BootScene extends Phaser.Scene {
     this.createFarmEffects();
     this.createBobberAnimations();
     prepareTreeSway(this);
+    this.createCookAnimations();
+    const poseSheets = new Set(Object.values(balance.cooking.poses).flatMap((pose) => [pose.south.sheet, pose.east.sheet, pose.north.sheet]));
     for (const [id, entry] of Object.entries(registry)) {
-      if (entry.type === 'local' && id.startsWith('anim_cook_')) {
-        this.createCookAnimations(id);
+      if (poseSheets.has(id)) {
+        // สร้างแล้วด้านบน
       } else if (entry.type === 'local' && (id.startsWith('anim_fish_') || id.startsWith('anim_wash_'))) {
         this.createPondAnimations(id, entry);
       } else if (entry.type === 'local' && id === 'anim_eat_south') {

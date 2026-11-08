@@ -117,6 +117,32 @@ export const balanceSchema = z.strictObject({
       bagIcon: z.string().min(1),
     }),
     animationFps: z.number().positive(),
+    /** ท่าทำอาหารตามวิธี (zone1 food update 2) ต่อทิศ: แผ่นท่า และจำนวนเฟรมเปิดตัวที่เล่นครั้งเดียว ที่เหลือวนซ้ำ ทิศตะวันตกกลับด้านจากตะวันออก */
+    poses: z.record(
+      z.string().regex(/^[a-z_]+$/),
+      z.strictObject({
+        south: z.strictObject({ sheet: z.string().min(1), intro: z.number().int().positive() }),
+        east: z.strictObject({ sheet: z.string().min(1), intro: z.number().int().positive() }),
+        north: z.strictObject({ sheet: z.string().min(1), intro: z.number().int().positive() }),
+      }),
+    ),
+    /**
+     * ภาชนะตามวิธีทำของสูตร: ท่าของตัวเอก ภาพกองไฟในหน้าต่าง และภาชนะบนกองไฟ (null คือไม่มี เช่น ตะแกรงรวมอยู่ในภาพกองไฟ ครกไม่ทำที่กองไฟ)
+     * ภาชนะวางกลางกองไฟตามแนวนอน ห่างขอบบนภาพกองไฟ vesselY พิกเซลภาพ (ภาพตัวอย่าง: กระทะ 3 หม้อดิน 0)
+     */
+    methods: z.record(
+      z.enum(['grill', 'iron_pan', 'clay_pot', 'bowl', 'pot', 'pan', 'oven', 'mortar']),
+      z.strictObject({
+        pose: z.string().min(1).nullable(),
+        fire: z.string().min(1).nullable(),
+        vessel: z.string().min(1).nullable(),
+        vesselY: z.number().int().nonnegative().nullable(),
+      }),
+    ),
+    /** ทำครั้งเดียว เวลาเดียว: กดเริ่มทำแล้วนาฬิกาเดินเร็ว เวลาของแรงก์ผ่านไปในเวลาจริงเท่านี้ ระหว่างตัวเอกทำท่าทำอาหาร */
+    fastCookMs: z.number().positive(),
+    /** วัตถุดิบลอยลงภาชนะในหน้าต่างก่อนปิด: เวลาลอยต่อชิ้น เว้นระหว่างชิ้น และไอน้ำตอนท้าย */
+    float: z.strictObject({ itemMs: z.number().positive(), gapMs: z.number().nonnegative(), steamMs: z.number().nonnegative() }),
     /** ของเริ่มเกมชั่วคราวจนกว่าบทนำจะมาใน M9 */
     starterBag: z.record(z.string().min(1), z.number().int().positive()),
   }),

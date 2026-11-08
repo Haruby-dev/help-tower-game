@@ -175,10 +175,11 @@ describe('batch cooking (her decision 4 Nov 2026)', () => {
     expect(maxBatch(bag, KAPRAO)).toBe(Math.min(9, Math.floor(5 / KAPRAO.ingredients.ing_pork!)));
   });
 
-  it('takes the recipe time × n with no discount', () => {
-    expect(batchMinutes(EGG, 4)).toBe(minutesFor(EGG) * 4);
+  it('takes the rank time once, not × n (one cook = one time, zone1 food update 2)', () => {
+    expect(batchMinutes(EGG, 4)).toBe(minutesFor(EGG));
     const next = startCooking(withEggs(4), 'boiled_egg', 4, {}, NO_BONUS)!;
-    expect(next.cooking.slot?.minutesLeft).toBe(minutesFor(EGG) * 4);
+    expect(next.cooking.slot?.minutesLeft).toBe(minutesFor(EGG));
+    expect(next.cooking.slot?.count).toBe(4);
   });
 
   it('takes ingredients × n when cooking starts, and refuses more than the bag allows', () => {

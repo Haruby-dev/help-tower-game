@@ -25,12 +25,6 @@ async function open(page: Page): Promise<void> {
 const standAtFire = (page: Page): Promise<void> =>
   page.evaluate(() => (window as unknown as { __state: TestState }).__state.movePlayer({ x: 544, y: 372 }));
 
-const finishCooking = (page: Page): Promise<void> =>
-  page.evaluate(() => {
-    const s = (window as unknown as { __state: TestState }).__state;
-    s.setWorld({ ...s.world, cooking: { slot: { ...s.world.cooking.slot!, minutesLeft: 0 } } });
-  });
-
 const count = async (page: Page, item: string): Promise<number> =>
   (await state(page)).bag.filter((stack) => stack.item === item).reduce((sum, stack) => sum + stack.count, 0);
 
@@ -44,6 +38,7 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
   await page.locator('[data-recipe="home_kaprao"]').click();
   await expect(page.locator('[data-plate="ing_pork"]')).toContainText('1/1');
   await page.locator('#cook-go').click();
+  // ทำครั้งเดียว เวลาเดียว: วัตถุดิบลอยลงภาชนะแล้วหน้าต่างปิดเอง ตัวเอกทำท่าราว 2–3 วินาที แล้วอาหารเด้งเข้ากระเป๋าเอง
   await expect(page.locator('#cook-window')).toBeHidden();
   expect((await state(page)).cooking.slot?.recipe).toBe('home_kaprao');
   expect(await count(page, 'ing_pork')).toBe(0);
@@ -51,11 +46,8 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
   const stars = (await state(page)).cooking.slot!.stars;
   expect([1, 2]).toContain(stars);
   const dish = `dish_home_kaprao_${stars}`;
-
-  await finishCooking(page);
-  await expect(act).toHaveAttribute('aria-label', /เก็บ/);
-  await act.click();
-  await expect.poll(() => count(page, dish)).toBe(1);
+  await expect.poll(() => count(page, dish), { timeout: 30_000 }).toBe(1);
+  expect((await state(page)).cooking.slot).toBeNull();
 
   await page.evaluate(() => {
     const s = (window as unknown as { __state: TestState }).__state;
@@ -185,15 +177,40 @@ test('the recipe book fits the screen at a whole-number size', async ({ page }) 
   await expect(page.locator('.book-steam')).toHaveCount(0);
 });
 
-test('cooking at the campfire plays the cooking move until walking away', async ({ page }) => {
+test('cooking plays the pose of the dish vessel with a fast clock, then the dish comes out by itself', async ({ page }) => {
   await open(page);
   await standAtFire(page);
   await page.locator('#action-button').click();
+  // ไข่ต้มใช้หม้อดินเก่า: ยืนใต้กองไฟหันหน้าขึ้น ใช้ท่าย่อตัวทิศหลังร่วมกับต้ม ย่าง ยำ
   await page.locator('[data-recipe="boiled_egg"]').click();
+  const clock = (): Promise<number> =>
+    page.evaluate(() => {
+      const world = (window as unknown as { __state: { world: { day: number; hour: number } } }).__state.world;
+      return (world.day * 24 + world.hour) * 60;
+    });
+  // นาฬิกาหยุดระหว่างเปิดหน้าต่าง จึงอ่านเวลาเริ่มก่อนกดเริ่มทำ
+  const startMinute = await clock();
   await page.locator('#cook-go').click();
-  await expect
-    .poll(() => page.evaluate(() => (window as unknown as { __game: { scene: { getScene(k: string): { children: { getByName(n: string): { anims: { currentAnim?: { key: string } } } } } } } }).__game.scene.getScene('Base').children.getByName('player').anims.currentAnim?.key ?? ''))
-    .toContain('anim_cook_');
+  await expect(page.locator('#cook-window')).toBeHidden();
+  const anim = (): Promise<string> =>
+    page.evaluate(
+      () =>
+        (window as unknown as { __game: { scene: { getScene(k: string): { children: { getByName(n: string): { anims: { currentAnim?: { key: string } } } } } } } }).__game.scene
+          .getScene('Base')
+          .children.getByName('player').anims.currentAnim?.key ?? '',
+    );
+  await expect.poll(anim).toContain('anim_crouch_north');
+  await expect.poll(() => count(page, 'dish_boiled_egg_1'), { timeout: 30_000 }).toBeGreaterThan(0);
+  // เวลาในเกมผ่านไปเท่าเวลาของแรงก์ครั้งเดียว (F 20 นาที) ในไม่กี่วินาที แล้วลุกขึ้นกลับเป็นภาพยืน (ชื่อท่าล่าสุดยังค้างอยู่ จึงดูแผ่นภาพแทน)
+  expect((await clock()) - startMinute).toBeGreaterThanOrEqual(19.5);
+  const sheet = (): Promise<string> =>
+    page.evaluate(
+      () =>
+        (window as unknown as { __game: { scene: { getScene(k: string): { children: { getByName(n: string): { texture: { key: string } } } } } } }).__game.scene
+          .getScene('Base')
+          .children.getByName('player').texture.key,
+    );
+  await expect.poll(sheet).not.toContain('anim_crouch_north');
 });
 
 test('the campfire window shows what is missing', async ({ page }) => {
@@ -207,7 +224,20 @@ test('the campfire window shows what is missing', async ({ page }) => {
   await page.locator('[data-recipe="home_kaprao"]').click();
   await expect(page.locator('[data-plate="ing_pork"]')).toHaveClass(/is-short/);
   await expect(page.locator('#cook-go')).toBeDisabled();
+  await expect(page.locator('#cook-batch-total')).toContainText('ขาด: หมูสับ 1');
   await expect(page.locator('.cook-panel')).toHaveAttribute('data-theme', 'savory');
+  // ภาชนะตามวิธีทำ: กะเพราใช้กระทะเหล็กเก่า ไข่ต้มหม้อดินเก่า ปลาย่างตะแกรงไม้ไผ่ (รวมในภาพกองไฟ ไม่มีภาชนะแยก)
+  await expect(page.locator('.ck-fire__vessel')).toHaveAttribute('data-art', 'cook_vessel_iron_pan');
+  await expect(page.locator('.ck-bubble__sub')).toContainText('กระทะเหล็กเก่า');
+  await page.locator('[data-recipe="boiled_egg"]').click();
+  await expect(page.locator('.ck-fire__vessel')).toHaveAttribute('data-art', 'cook_vessel_clay_pot');
+  await page.locator('[data-recipe="grilled_fish"]').click();
+  await expect(page.locator('.ck-fire__art')).toHaveAttribute('data-art', 'cook_fire_grill');
+  await expect(page.locator('.ck-fire__vessel')).toHaveCount(0);
+  // เมนูที่ทำได้ขึ้นก่อน
+  const order = await page.locator('.ck-card').evaluateAll((cards) => cards.map((card) => card.classList.contains('is-missing')));
+  expect(order.indexOf(true)).toBeGreaterThan(0);
+  expect(order.slice(order.indexOf(true)).every(Boolean)).toBe(true);
   await page.locator('[data-cook-tab="drink"]').click();
   await expect(page.locator('.cook-panel')).toHaveAttribute('data-theme', 'drink');
 });
@@ -228,7 +258,7 @@ test('the pond is drawn from the map and the trees sway', async ({ page }) => {
   expect(info.trees).toBeGreaterThan(0);
 });
 
-test('cooks several plates of one recipe with the − n + stepper, then collects them all together', async ({ page }) => {
+test('cooks several plates in one cooking time with the − n + stepper, and they all come out together', async ({ page }) => {
   await open(page);
   await page.evaluate(() => {
     const s = (window as unknown as { __state: TestState }).__state;
@@ -242,26 +272,25 @@ test('cooks several plates of one recipe with the − n + stepper, then collects
   const count1 = page.locator('#cook-count');
   await expect(count1).toHaveText('1');
   await expect(page.locator('#cook-less')).toBeDisabled();
-  const minutes = Number((await page.locator('.cook-facts span').first().textContent())!.match(/\d+/)![0]);
+  const minutes = Number((await page.locator('.ck-bubble__sub').textContent())!.match(/\d+/)![0]);
   await page.locator('#cook-more').click();
   await page.locator('#cook-more').click();
   await expect(count1).toHaveText('3');
   // ไข่มี 3 ฟอง ทำได้มากสุด 3 จาน
   await expect(page.locator('#cook-more')).toBeDisabled();
   await expect(page.locator('[data-plate="ing_egg"]')).toContainText('3/3');
-  await expect(page.locator('#cook-batch-total')).toContainText(`${minutes * 3}`);
-  await expect(page.locator('.cook-facts span').first()).toContainText(`${minutes * 3}`);
+  // เวลาเท่าเดิมไม่คูณจำนวนจาน แถบล่างบอก "ใช้ ไข่ ×3 · 20 นาที"
+  await expect(page.locator('#cook-batch-total')).toContainText('×3');
+  await expect(page.locator('#cook-batch-total')).toContainText(`· ${minutes} `);
+  await expect(page.locator('.ck-bubble__sub')).toContainText(`${minutes} `);
   await page.locator('#cook-go').click();
+  // ไข่ลอยลงหม้อดินในหน้าต่างก่อน กดปิดไม่ได้ระหว่างนั้น แล้วหน้าต่างปิดเอง
+  await expect(page.locator('.ck-flyer')).toHaveCount(1);
+  await expect(page.locator('#cook-close')).toHaveCSS('pointer-events', 'none');
   await expect(page.locator('#cook-window')).toBeHidden();
   const slot = (await state(page)).cooking.slot!;
   expect(slot.count).toBe(3);
-  // นาฬิกาเดินต่อหลังปิดหน้าต่าง เวลาที่เหลือจึงน้อยกว่าเวลารวมเล็กน้อย
-  expect(slot.minutesLeft).toBeLessThanOrEqual(minutes * 3);
-  expect(slot.minutesLeft).toBeGreaterThan(minutes * 2);
+  expect(slot.minutesLeft).toBeLessThanOrEqual(minutes);
   expect(await count(page, 'ing_egg')).toBe(0);
-
-  await finishCooking(page);
-  await expect(act).toHaveAttribute('aria-label', /เก็บ/);
-  await act.click();
-  await expect.poll(() => count(page, 'dish_boiled_egg_1')).toBe(3);
+  await expect.poll(() => count(page, 'dish_boiled_egg_1'), { timeout: 30_000 }).toBe(3);
 });

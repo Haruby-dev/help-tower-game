@@ -14,6 +14,7 @@ import { createOverlay, updateRotationRequired } from './ui/overlay';
 import { showTitleScreen } from './ui/saves';
 import './ui/styles.css';
 import './ui/phone.css';
+import './ui/cooking.css';
 
 const appRoot = document.getElementById('app')!;
 const gameRoot = document.getElementById('game')!;

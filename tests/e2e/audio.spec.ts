@@ -212,11 +212,8 @@ test('cooking plays the start, the sizzle loop while she cooks, and the done sou
   await page.locator('#cook-go').click();
   await expect.poll(() => log(page)).toContain('cook_start');
   await expect.poll(() => log(page), { timeout: 20_000 }).toContain('cook_loop');
-  await page.evaluate(() => {
-    const s = (window as unknown as { __state: TestState & { world: { cooking: { slot: object } } } }).__state;
-    s.setWorld({ ...s.world, cooking: { slot: { ...s.world.cooking.slot, minutesLeft: 0 } } });
-  });
-  await expect.poll(() => log(page)).toContain('cook_done');
+  // ทำครั้งเดียว เวลาเดียว: นาฬิกาเดินเร็วระหว่างท่า สุกเองในไม่กี่วินาที
+  await expect.poll(() => log(page), { timeout: 20_000 }).toContain('cook_done');
   await page.waitForTimeout(1200);
   expect((await log(page)).some((key) => key.startsWith('voice_'))).toBe(false);
 });

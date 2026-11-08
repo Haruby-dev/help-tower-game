@@ -258,7 +258,7 @@
   },
   "campfire": {
     "footY": {
-      "default": 59
+      "default": 52
     }
   },
   "gio_seat": {
@@ -3146,6 +3146,11 @@
       "default": 16
     }
   },
+  "ing_mini_produce_soybean": {
+    "footY": {
+      "default": 16
+    }
+  },
   "ing_mini_produce_garlic": {
     "footY": {
       "default": 16
@@ -5494,9 +5499,19 @@
       "default": 29
     }
   },
+  "ing_icon_whipped_cream": {
+    "footY": {
+      "default": 29
+    }
+  },
   "ing_mini_ing_coconut_jelly": {
     "footY": {
       "default": 15
+    }
+  },
+  "ing_mini_ing_whipped_cream": {
+    "footY": {
+      "default": 16
     }
   },
   "ing_icon_rainbow_sprinkles": {
@@ -6052,6 +6067,66 @@
   "ing_mini_ing_meatball": {
     "footY": {
       "default": 15
+    }
+  },
+  "anim_boil_south": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_boil_east": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_crouch_north": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_grill_south": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_grill_east": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_salad_south": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "anim_salad_east": {
+    "footY": {
+      "default": 74
+    }
+  },
+  "cook_fire_plain": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "cook_fire_grill": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "cook_vessel_iron_pan": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "cook_vessel_clay_pot": {
+    "footY": {
+      "default": 22
+    }
+  },
+  "cook_vessel_bowl": {
+    "footY": {
+      "default": 18
     }
   }
 }

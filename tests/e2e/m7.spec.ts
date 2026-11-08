@@ -178,6 +178,7 @@ test('fertilizer twinkles on a tilled plot and cooking can pick 3-star strawberr
   await expect(cook.locator('#cook-dish-stars')).toHaveAttribute('data-stars', '3');
   await shot(page, '08_star_pick');
   await cook.locator('#cook-go').click();
+  await expect(cook).toBeHidden();
   const cooking = await world(page);
   expect(cooking.bag.find((stack) => stack.item === 'produce_strawberry@3')).toBeUndefined();
   expect(cooking.bag.find((stack) => stack.item === 'produce_strawberry')?.count).toBe(2);
