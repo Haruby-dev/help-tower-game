@@ -25,18 +25,20 @@ import { carriesStars, starLevels } from '../systems/stars';
 import { itemName, starBadge } from './inventory';
 import { sizedArt } from './pixelArt';
 import { revealWhenReady } from './preload';
+import { createSetArranger } from './setArrange';
 
 /**
  * หน้าต่างทำอาหาร K2 "หม้อกลางกองไฟ" (docs/cook_ui_k2_2026-11-08.md ภาพตัวอย่าง art-src/cook_ui_1108/k2_mock_v3.png)
  * ทุกขนาดเป็นพิกเซลของภาพตัวอย่าง (จอ 2796×1290) แล้วย่อขยายทั้งก้อนด้วย --pz เหมือนโทรศัพท์ · ตำแหน่งส่วนใหญ่อยู่ใน cooking.css
  */
 const WINDOW = 'cooking';
-type Tab = Recipe['category'];
-/** แท็บที่ 4 "จัดชุด" มาในขั้นที่ 6 ของงานอาหารโซน 1 */
+type Tab = Recipe['category'] | 'set';
+/** แท็บที่ 4 "จัดชุด" แทนแท็บทดลองผสมที่เอาออก (งานอาหารโซน 1 ขั้นที่ 6 ระบบอยู่ใน setArrange.ts) */
 const TABS: { id: Tab; label: TextKey }[] = [
   { id: 'savory', label: 'recipe.tab_savory' },
   { id: 'sweet', label: 'recipe.tab_sweet' },
   { id: 'drink', label: 'recipe.tab_drink' },
+  { id: 'set', label: 'set.tab' },
 ];
 
 /** ช่องวัตถุดิบรอบกองไฟ (พิกเซลภาพตัวอย่าง นับจากมุมซ้ายบนของฉาก) แถวละ 3 ช่อง */
@@ -382,6 +384,10 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
         return button;
       }),
     );
+    if (tab === 'set') {
+      setArranger.render();
+      return;
+    }
     const ids = knownIn(tab);
     // ทำได้ขึ้นก่อน แล้วตามลำดับที่รู้สูตร
     const ready = new Map(ids.map((id) => [id, canCook(gameState.world, id, id === selected ? picks : {})]));
@@ -397,6 +403,8 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     }
   }
 
+  const setArranger = createSetArranger(grid, hint, scene, bar);
+
   close.addEventListener('click', hide);
   backdrop.addEventListener('click', (event) => {
     if (event.target === backdrop) hide();
@@ -407,6 +415,7 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
   eventBus.on('cook-open', () => {
     batch = 1;
     picks = {};
+    setArranger.reset();
     busy = false;
     panel.classList.remove('is-busy');
     render();

@@ -108,8 +108,8 @@ describe('save version 18 (and later)', () => {
     const file = toSaveFile(withBag([{ item: 'fish_shrimp', count: 2 }]));
     const { crafting: _crafting, ...oldWorld } = file.world;
     const parsed = parseSaveFile({ ...file, version: 17, world: oldWorld })!;
-    expect(SAVE_VERSION).toBe(19);
-    expect(parsed.version).toBe(19);
+    expect(SAVE_VERSION).toBe(20);
+    expect(parsed.version).toBe(20);
     expect(parsed.world.crafting).toEqual({ bananaDay: 0, noticed: ['fish_shrimp'], stations: { drying_tray: 0, trap: 1 }, drying: [], traps: [], mortar: false });
   });
 });

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import type { MonsterData } from '../data/schema';
+import { parseSet, setTable } from '../systems/sets';
 import balance from '../data/balance.json';
 
 export type MonsterArt = NonNullable<MonsterData[string]['art']>;
@@ -196,6 +197,12 @@ export function foodMoundKey(scene: Phaser.Scene, recipe: string, icon: string |
 }
 
 /** อาหารจิ๋วบนจานถาดและหอคอย: ใช้ภาพ tray_mini (ราว 9 พิกเซล ฝั่งวางแผนทำ 6 พ.ย. 2026) เมนูที่ยังไม่มีภาพ (น้ำสตรอว์เบอร์รี) ใช้กองสีวาดด้วยโค้ด */
+/** ชุดอาหารบนจานถาดหอคอยและบนหอคอยเหนือหัวมอนสเตอร์: ไอคอนถาดสานจิ๋วขนาดจริงตามขนาดถาด (ไม่ย่อภาพชุด) null คือไม่ใช่ชุด */
+export function setArtKey(item: string): string | null {
+  const parts = parseSet(item);
+  return parts ? `ing_mini_${setTable.trays[parts.size].item}` : null;
+}
+
 export function foodArtKey(scene: Phaser.Scene, recipe: string, icon: string | undefined): string {
   const art = `tray_mini_${recipe}`;
   return scene.textures.exists(art) ? art : foodMoundKey(scene, recipe, icon);

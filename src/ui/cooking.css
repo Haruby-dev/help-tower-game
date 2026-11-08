@@ -1475,3 +1475,343 @@
   height: 86px;
   font-size: 38px;
 }
+
+/*
+ * แท็บจัดชุด (งานอาหารโซน 1 ขั้นที่ 6) ตามภาพตัวอย่าง art-src/cook_ui_1108/set_1108/set_free_mock.png
+ * การ์ดสูง 200 · ถาดในฉากขยาย 4 เท่า (12 จุดภาพตัวอย่างต่อพิกเซล) · ช่องวงกลมรัศมี 66
+ */
+.ck-tab[data-cook-tab='set'] {
+  width: 170px;
+}
+
+.ck[data-tab='set'] .ck-grid {
+  grid-auto-rows: 200px;
+}
+
+.sx-card__art {
+  top: 5px;
+}
+
+.sx-card__name {
+  top: 125px;
+  font-size: 26px;
+}
+
+.sx-card__name[data-size='s'] {
+  font-size: 21px;
+}
+
+.sx-tag {
+  position: absolute;
+  top: 147px;
+  left: 21px;
+  width: 134px;
+  height: 36px;
+  box-sizing: border-box;
+  border: 2px solid var(--ck-line);
+  border-radius: 12px;
+  background: #fff4e2;
+  font-size: 19px;
+  line-height: 32px;
+  text-align: center;
+  color: #966e46;
+}
+
+.sx-tag.is-yuck {
+  background: #ffe8e8;
+  color: var(--ck-bad-ink);
+}
+
+.sx-count {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 38px;
+  height: 38px;
+  box-sizing: border-box;
+  border: 3px solid var(--ck-line);
+  border-radius: 50%;
+  background: #ffffff;
+  font-size: 22px;
+  line-height: 32px;
+  text-align: center;
+}
+
+.sx-yuck {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+}
+
+.ck-scene > .sx-chips {
+  position: absolute;
+  top: 15px;
+  left: 21px;
+  display: flex;
+  gap: 10px;
+}
+
+.sx-chip {
+  position: relative;
+  width: 150px;
+  height: 56px;
+  border-radius: 28px;
+  font-size: 26px;
+}
+
+.sx-chip.is-active {
+  background: var(--ck-orange);
+  color: #ffffff;
+}
+
+.sx-chip__have {
+  position: absolute;
+  top: 66px;
+  left: 0;
+  width: 100%;
+  font-size: 19px;
+  font-weight: 400;
+  color: var(--ck-sub);
+}
+
+.ck-scene > .sx-note {
+  position: absolute;
+  top: 31px;
+  right: 17px;
+  margin: 0;
+  font-size: 21px;
+  color: var(--ck-sub);
+}
+
+.ck-scene > .sx-tray {
+  position: absolute;
+}
+
+.ck-scene > .sx-slot {
+  position: absolute;
+  display: grid;
+  width: 132px;
+  height: 132px;
+  box-sizing: border-box;
+  place-items: center;
+  padding: 0;
+  border: 5px dashed var(--ck-orange);
+  border-radius: 50%;
+  background: rgb(255 250 240 / 90%);
+  font-family: Mali, sans-serif;
+  cursor: pointer;
+}
+
+.sx-slot.is-filled {
+  border: 5px solid #5a965a;
+  background: rgb(255 250 240 / 82%);
+}
+
+.sx-slot.is-filled.is-combo {
+  border: 6px solid #fabe3c;
+}
+
+.sx-slot__plus {
+  font-size: 54px;
+  line-height: 1;
+  color: var(--ck-orange);
+}
+
+.ck-scene > .sx-progress,
+.ck-scene > .sx-made {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  color: var(--ck-sub);
+  transform: translateY(-50%);
+}
+
+.sx-progress.is-combo {
+  font-size: 26px;
+  color: #c88228;
+}
+
+.ck-scene > .sx-made__art {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ck-scene > .sx-made {
+  font-size: 34px;
+  color: var(--ck-ok-ink);
+  paint-order: stroke fill;
+  -webkit-text-stroke: 8px #ffffff;
+}
+
+.ck-scene > .sx-combo {
+  position: absolute;
+  left: 50%;
+  padding: 10px 40px;
+  border: 5px solid #aa6e1e;
+  border-radius: 30px;
+  background: #fabe3c;
+  font-size: 44px;
+  line-height: 1.1;
+  white-space: nowrap;
+  color: #ffffff;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 3px #aa6e1e;
+  transform: translate(-50%, -50%);
+  animation: st-pop 0.3s steps(4) both;
+}
+
+@keyframes st-pop {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.ck-bar > .sx-use {
+  top: 734px;
+  left: 634px;
+  width: 420px;
+  height: 88px;
+  box-sizing: border-box;
+  border: 3px solid var(--ck-line);
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.sx-use__art {
+  position: absolute;
+  top: 9px;
+  left: 11px;
+}
+
+.sx-use__name,
+.sx-use__have {
+  position: absolute;
+  left: 87px;
+  line-height: 1;
+  white-space: nowrap;
+  transform: translateY(-50%);
+}
+
+.sx-use__name {
+  top: 23px;
+  font-size: 26px;
+}
+
+.sx-use__have {
+  top: 59px;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ck-ok-ink);
+}
+
+.sx-use__have.is-short {
+  color: var(--ck-bad-ink);
+}
+
+.ck-bar > .sx-go {
+  top: 734px;
+  right: 30px;
+  width: 230px;
+}
+
+.set-art {
+  image-rendering: pixelated;
+}
+
+/*
+ * หน้าต่างโต๊ะใหญ่ (ขั้นที่ 6) ยังไม่มีภาพตัวอย่าง ใช้กรอบหน้าเลือกของตาก รายการแคบลงเพื่อให้โต๊ะขยาย 6 จุด (--dpx) ใส่ช่องขวาได้
+ */
+#table-window {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+}
+
+#table-window[hidden] {
+  display: none;
+}
+
+.bt-head {
+  position: absolute;
+  top: 22px;
+  left: 24px;
+}
+
+.bt .bt-title {
+  left: 240px;
+}
+
+.bt .bt-sub {
+  left: 430px;
+}
+
+.bt .bt-list {
+  width: 590px;
+  max-height: 700px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.bt-row__label,
+.bt-row__have {
+  max-width: 440px;
+  overflow: hidden;
+  padding-bottom: 6px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+}
+
+.bt-row__have {
+  color: var(--ck-sub);
+}
+
+.bt .bt-preview {
+  left: 640px;
+  width: 605px;
+}
+
+.bt-stage {
+  top: 60px;
+  left: 11px;
+  width: 576px;
+  height: 246px;
+}
+
+.bt-stage > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.bt .bt-caption {
+  top: 360px;
+  font-size: 30px;
+}
+
+.bt .bt-dishes {
+  top: 420px;
+  padding: 0 20px;
+  white-space: normal;
+  line-height: 1.2;
+}
+
+.bt .bt-go {
+  top: 496px;
+  left: 172px;
+}
+
+.bt-none {
+  margin: 40px 0;
+}

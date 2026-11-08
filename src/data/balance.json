@@ -583,7 +583,8 @@
       },
       "drying_tray_1": { "zone": "frontyard", "cols": 2, "rows": 1 },
       "drying_tray_2": { "zone": "frontyard", "cols": 2, "rows": 1 },
-      "drying_tray_3": { "zone": "frontyard", "cols": 2, "rows": 1 }
+      "drying_tray_3": { "zone": "frontyard", "cols": 2, "rows": 1 },
+      "big_table": { "zone": "frontyard", "cols": 3, "rows": 1 }
     }
   },
   "test": {

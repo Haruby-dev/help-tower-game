@@ -660,7 +660,7 @@ export const saveFileSchema = z.strictObject({
       /** แมวเลียรสที่จีโอเคยกินแล้ว เปิดรูปในอัลบั้ม */
       album: z.array(z.string().min(1)),
       /** ข่าวมอนสเตอร์ที่จีโอเล่าแล้ว (เมนูโปรด เครื่องดื่มโปรด เมนูประจำใจ) */
-      tips: z.array(z.strictObject({ monster: z.string().min(1), kind: z.enum(['favourite', 'drink', 'signature', 'twin_clue', 'twin_reveal']), day: z.number().int().positive(), read: z.boolean() })),
+      tips: z.array(z.strictObject({ monster: z.string().min(1), kind: z.enum(['favourite', 'drink', 'signature', 'twin_clue', 'twin_reveal', 'set_hint']), day: z.number().int().positive(), read: z.boolean() })),
       /** สรุปยอดวันล่าสุดที่ให้ข่าวไปแล้ว และวันล่าสุดที่ได้ข่าวจริง (ช่วงความสุขต่ำได้ข่าวทุก 2 วัน) */
       tipsReportDay: z.number().int().nonnegative(),
       lastTipDay: z.number().int().nonnegative(),
@@ -682,6 +682,12 @@ export const saveFileSchema = z.strictObject({
       drying: z.array(z.strictObject({ recipe: z.string().min(1), count: z.number().int().positive(), day: z.number().int().positive(), shows: z.string().min(1) }).nullable()),
       traps: z.array(z.strictObject({ day: z.number().int().positive() }).nullable()),
       mortar: z.boolean(),
+    }),
+    /** จัดชุด: ชื่อเสียงร้าน (ขึ้นอย่างเดียว) ชุดคอมโบที่เคยจัด และโต๊ะใหญ่ (มีแล้วไหม ชุดที่วางอยู่) */
+    sets: z.strictObject({
+      reputation: z.number().nonnegative(),
+      combos: z.array(z.string().min(1)),
+      bigTable: z.strictObject({ owned: z.boolean(), set: z.string().min(1).nullable() }),
     }),
     /** ตำแหน่งเท้า (พิกเซล) ของของที่ผู้เล่นย้ายแล้ว */
     placed: z.record(z.string().min(1), z.strictObject({ x: z.number(), y: z.number() })),
@@ -772,6 +778,37 @@ export const ingredientsSchema = z.record(
 
 const itemMapSchema = z.record(z.string().regex(/^(ing|produce|fish)_[a-z_]+$/), z.number().int().positive());
 const tilePointSchema = z.strictObject({ x: z.number(), y: z.number() });
+
+const traySizeSchema = z.enum(['small', 'medium', 'large']);
+const pointPairSchema = z.tuple([z.number(), z.number()]);
+
+/**
+ * จัดชุด (งานอาหารโซน 1 ขั้นที่ 6 · สเปกข้อ 6): ถาดสาน 3 ขนาด (slots คือกลางจานเป็นสัดส่วนของภาพถาด ui คือกลางช่องในหน้าต่าง พิกเซลภาพตัวอย่าง)
+ * bonus คือตัวคูณราคาขายของชุด · comboAffection ตัวคูณความชอบของชุดคอมโบ · reputation ชื่อเสียงร้านจากชุดคอมโบ (stars คือคะแนนขั้นต่ำของดาว 1–5)
+ * combos: ชุดลับ 15 ชุด ช่องเป็นรหัสสูตร หรือ @กลุ่ม จาก groups (flag ธงในสูตร · recipes รายชื่อสูตร · categories หมวด)
+ */
+export const setsSchema = z.strictObject({
+  trays: z.record(
+    traySizeSchema,
+    z.strictObject({ item: z.string().regex(/^[a-z_]+$/), pieces: z.number().int().positive(), slots: z.array(pointPairSchema).min(1), ui: z.array(pointPairSchema).min(1), bigTable: z.boolean() }),
+  ),
+  rice: z.string().regex(/^[a-z_]+$/),
+  bonus: z.strictObject({ free: z.number().positive(), freeRice: z.number().positive(), combo: z.record(traySizeSchema, z.number().positive()) }),
+  comboAffection: z.number().positive(),
+  reputation: z.strictObject({ combo: z.record(traySizeSchema, z.number().int().nonnegative()), firstCombo: z.number().int().nonnegative(), stars: z.array(z.number().int().nonnegative()).length(5) }),
+  bigTable: z.strictObject({ item: z.string().regex(/^[a-z_]+$/), price: z.number().int().positive() }),
+  groups: z.record(
+    z.string().regex(/^[a-z_]+$/),
+    z.union([
+      z.strictObject({ flag: z.enum(['sideDish', 'soup']) }),
+      z.strictObject({ recipes: z.array(z.string().regex(/^[a-z_]+$/)).min(1) }),
+      z.strictObject({ categories: z.array(z.enum(['savory', 'sweet', 'drink'])).min(1) }),
+    ]),
+  ),
+  combos: z.record(z.string().regex(/^[a-z_]+$/), z.strictObject({ tray: traySizeSchema, slots: z.array(z.string().regex(/^@?[a-z_]+$/)).min(2) })),
+});
+export type Sets = z.infer<typeof setsSchema>;
+export type TraySize = z.infer<typeof traySizeSchema>;
 
 /**
  * สถานีแปรรูป (งานอาหารโซน 1 ขั้นที่ 5 · สเปกข้อ 5): ถาดตาก ลอบ ครกหินเก่า

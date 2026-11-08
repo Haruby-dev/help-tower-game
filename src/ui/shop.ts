@@ -8,6 +8,7 @@ import { registry } from '../core/assets';
 import { recipes } from '../systems/cooking';
 import { crops, cropOfItem } from '../systems/farm';
 import { formatMoney } from '../systems/economy';
+import { reputationStars } from '../systems/sets';
 import { buyOffer, maxQuantity, offersFor, tasteOfTreat, type Offer, type ShopGroup } from '../systems/shop';
 import { itemImage, itemName } from './inventory';
 import { coinIcon, setMoney } from './money';
@@ -98,6 +99,13 @@ function gioNoteOf(offer: Offer): string {
   return t('shop.gnote_seeds');
 }
 
+/** "ชื่อเสียงร้าน ★2 · อีก 40 ถึง ★3" ดาวเต็มแล้วบอกว่าเต็มแล้ว */
+function fameText(points: number): string {
+  const { stars, toNext } = reputationStars(points);
+  const head = `${t('shop.reputation')} ★${stars}`;
+  return toNext === null ? `${head} · ${t('shop.reputation_max')}` : `${head} · ${t('shop.reputation_more')} ${formatMoney(toNext)} ${t('shop.reputation_to')} ★${stars + 1}`;
+}
+
 /** เกร็ดจีโอบนหน้าที่มีของน้อย: ปุ๋ยบอกโอกาสได้ดาวจากไฟล์สมดุล · สูตรบอกว่าสุ่มวันละกี่เมนู */
 function tipOf(category: Category): { title: string; lines: string[] } | null {
   if (category === 'fertilizer') {
@@ -130,7 +138,10 @@ export function createShopPage(): PhonePage {
   logo.append(element('b', '', t('shop.logo_b')));
   const purse = element('b', 'ps-purse');
   purse.id = 'shop-coins';
-  top.append(logo, purse);
+  // หัวหน้าสูตรบอกชื่อเสียงร้านและคะแนนที่ยังขาดถึงดาวถัดไปเสมอ (ผู้ใช้อนุมัติ 9 พ.ย. 2026)
+  const fame = element('span', 'ps-fame');
+  fame.id = 'shop-reputation';
+  top.append(logo, fame, purse);
   const chips = element('div', 'ps-chips');
   const list = element('div', 'ps-list');
   const pager = element('div', 'ps-pager');
@@ -233,6 +244,8 @@ export function createShopPage(): PhonePage {
     if (!gameState.started) return;
     const world = gameState.world;
     setMoney(purse, world.wallet.coins);
+    fame.hidden = category !== 'recipes';
+    fame.textContent = fameText(world.sets.reputation);
     chips.replaceChildren(
       ...CATEGORIES.map((entry) => {
         const chip = element('button', `ps-chip${entry.id === category ? ' is-active' : ''}`);

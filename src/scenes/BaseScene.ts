@@ -18,6 +18,7 @@ import { countOf, seedItem } from '../systems/farm';
 import { canShakeBanana, shakeBanana } from '../systems/crafting';
 import { collectDrying, collectTrap, dryingSlot, isDryingReady, isTrapReady, setTrap, trapSet } from '../systems/stations';
 import { StationsView, type Station } from './stationsView';
+import setTableData from '../data/sets.json';
 import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, isWithered, produceItem, type FarmAction } from '../systems/farm';
 import { withStars } from '../systems/stars';
 import { MYSTERY, collectDish, cookMethodOf, dishItem, eatItem, isCooked, isDish, isRawProduce, parseDish, recipes as cookRecipes } from '../systems/cooking';
@@ -84,6 +85,7 @@ const PLAYER_HEAD_PX = 66;
 /** ครึ่งความกว้างที่ยืนใช้โต๊ะช่างกับกอกล้วยได้รอบฐาน (พิกเซลเกม) */
 const WORKBENCH_SLACK_PX = 24;
 const BANANA_SLACK_PX = 56;
+const TABLE_SLACK_PX = 40;
 /** กอกล้วยโยกซ้ายขวา 1 พิกเซล */
 const BANANA_SHAKE_STEPS = 8;
 const BANANA_SHAKE_MS = 480;
@@ -278,7 +280,12 @@ export class BaseScene extends Phaser.Scene {
     for (const object of map.getObjectLayer('objects')!.objects) this.placeObject(object);
     this.pond = Pond.create(this, ground, this.pondObjects, DEPTH.pond);
     this.pond?.setEffects(gameState.lightingEnabled);
-    this.stationsView = new StationsView(this, (index, image) => this.placeDryingTray(index, image), (points) => this.pond?.setTraps(points));
+    this.stationsView = new StationsView(
+      this,
+      (index, image) => this.placeDryingTray(index, image),
+      (points) => this.pond?.setTraps(points),
+      (image) => this.placeMovable(setTableData.bigTable.item, image),
+    );
     for (const effect of map.getObjectLayer('effects')!.objects) this.placeEffect(effect);
 
     const spawns = map.getObjectLayer('spawns')!.objects;
@@ -308,6 +315,7 @@ export class BaseScene extends Phaser.Scene {
       { burrow: spawn('gio_burrow'), route: [...tripRoute].reverse().slice(0, MONSTER_ROUTE_POINTS), eatSpots },
       () => this.trayView,
       (x, y) => this.toScreen(x, y),
+      () => (this.stationsView?.table ? { x: this.stationsView.table.x, y: this.stationsView.table.y } : null),
     );
 
     this.physics.add.collider(this.player.body, obstacles);
@@ -392,6 +400,10 @@ export class BaseScene extends Phaser.Scene {
       const station = this.stationInReach();
       if (station && station.image.getBounds().contains(pointer.worldX, pointer.worldY)) {
         this.useStation(station);
+        return;
+      }
+      if (this.tableInReach() && this.stationsView?.table?.getBounds().contains(pointer.worldX, pointer.worldY)) {
+        eventBus.emit('table-open', undefined);
         return;
       }
       const near = Phaser.Math.Distance.Between(pointer.worldX, pointer.worldY, this.door.x, this.door.y - DOOR_TAP_LIFT);
@@ -675,6 +687,7 @@ export class BaseScene extends Phaser.Scene {
     else if (this.workbenchInReach()) eventBus.emit('workbench-open', undefined);
     else if (this.bananaReady()) this.shakeBananaClump();
     else if (this.stationInReach()) this.useStation(this.stationInReach()!);
+    else if (this.tableInReach()) eventBus.emit('table-open', undefined);
     else if (this.pondSpot()) {
       if (gameState.selectedTool === 'rod') this.startFishing();
       else this.startBath();
@@ -834,7 +847,11 @@ export class BaseScene extends Phaser.Scene {
 
   /** ถาดตากใบใหม่: ลงทะเบียนกับโหมดจัดวาง วางที่ตำแหน่งในเซฟ หรือช่องว่างใกล้ช่องที่อยากวาง */
   private placeDryingTray(index: number, image: Phaser.GameObjects.Image): void {
-    const id = `drying_tray_${index + 1}`;
+    this.placeMovable(`drying_tray_${index + 1}`, image);
+  }
+
+  /** ของที่เพิ่งมีในลาน (ถาดตาก โต๊ะใหญ่) ลงทะเบียนกับโหมดจัดวาง วางที่ตำแหน่งในเซฟ หรือช่องว่างใกล้ช่องที่อยากวาง */
+  private placeMovable(id: string, image: Phaser.GameObjects.Image): void {
     this.arranger.register(id, image, null, false, () => undefined);
     const saved = gameState.world.placed[id];
     const feet = saved ?? this.arranger.findFree(id, this.playerRect(), { x: image.x, y: image.y });
@@ -857,6 +874,11 @@ export class BaseScene extends Phaser.Scene {
       }
     }
     return best;
+  }
+
+  /** โต๊ะใหญ่ (ยืนรอบโต๊ะ กว้างเกือบ 3 ช่อง) */
+  private tableInReach(): boolean {
+    return this.nearObject(this.stationsView?.table ?? null, TABLE_SLACK_PX);
   }
 
   private stationLabel(station: Station): TextKey {
@@ -1458,6 +1480,7 @@ export class BaseScene extends Phaser.Scene {
     if (this.bananaReady()) return { icon: 'interact', label: 'action.shake' };
     const station = this.stationInReach();
     if (station) return { icon: 'interact', label: this.stationLabel(station) };
+    if (this.tableInReach()) return { icon: 'interact', label: 'action.table' };
     if (this.pondSpot()) return gameState.selectedTool === 'rod' ? { icon: 'fish', label: 'action.fish' } : { icon: 'bath', label: 'action.bath' };
     return this.nearDoor() ? { icon: 'sleep', label: 'action.sleep' } : null;
   }

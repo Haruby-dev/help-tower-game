@@ -18,6 +18,7 @@ import { dishItem, isIngredientGroup, recipes } from '../systems/cooking';
 import { addToBag, crops, produceItem, seedItem } from '../systems/farm';
 import { baits, fishItem, fishTable } from '../systems/fishing';
 import { giveFirstDryingTray } from '../systems/crafting';
+import { giveBigTable } from '../systems/sets';
 import { findMortar } from '../systems/stations';
 import { carriesStars, withStars } from '../systems/stars';
 
@@ -460,6 +461,11 @@ function createSettingsCard(card: HTMLElement): HTMLElement[] {
       if (!gameState.started || gameState.world.crafting.stations.drying_tray > 0) return;
       gameState.setWorld(giveFirstDryingTray(gameState.world));
       eventBus.emit('player-says', 'dryingTrayIdea');
+    }),
+    // โต๊ะใหญ่ขายในจีโอมาร์ทในขั้นที่ 7 ระหว่างนี้ให้ด้วยปุ่มทดสอบ (โผล่ที่ลานหน้าบ้าน ย้ายได้ในโหมดจัดวาง)
+    testButton('test-big-table', t('settings.test_big_table'), () => {
+      if (!gameState.started || gameState.world.sets.bigTable.owned) return;
+      gameState.setWorld(giveBigTable(gameState.world));
     }),
     // ครกหินเก่าอยู่ในหีบเก่าในบ้าน (ตัดสิน 9 พ.ย. 2026) แต่ยังไม่มีฉากในบ้าน จึงเปิดจากปุ่มทดสอบ ครั้งแรกได้สูตรทอดมันกับลูกชิ้นปิ้งด้วย
     testButton('test-mortar', t('settings.test_mortar'), () => {

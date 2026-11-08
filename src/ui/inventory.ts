@@ -9,7 +9,8 @@ import { crops, cropOfItem, isFertilizer, isSeed } from '../systems/farm';
 import { baseItem, starsOf } from '../systems/stars';
 import { fishOfItem, isBait, isFish, makeBait } from '../systems/fishing';
 import { toppingTable, toppingsOf } from '../systems/toppings';
-import { artUrl } from './pixelArt';
+import { comboOf, isSet, parseSet, setTable } from '../systems/sets';
+import { artUrl, compositeArt } from './pixelArt';
 import { isTreat } from '../systems/gio';
 import type { PhonePage } from './phone';
 
@@ -45,7 +46,7 @@ const flavourKey = (item: string): TextKey => {
   if (isBait(item)) return 'bag.flavour_bait';
   if (isChest(item)) return 'bag.flavour_chest';
   if (isTreat(item)) return 'bag.flavour_treat';
-  if (isDish(item)) return 'bag.flavour_dish';
+  if (isDish(item) || isSet(item)) return 'bag.flavour_dish';
   return isIngredient(item) ? 'bag.flavour_ingredient' : 'bag.flavour_produce';
 };
 
@@ -59,6 +60,11 @@ const inTab = (item: string, tab: BagTab): boolean => {
 
 /** ของที่ยังไม่รู้จักแสดงเป็นรหัสแทน กระเป๋าจะได้เปิดได้เสมอ */
 export const itemName = (item: string): string => {
+  const parts = parseSet(item);
+  if (parts) {
+    const combo = comboOf(parts.size, parts.dishes);
+    return combo ? t(`combo.${combo}.name` as TextKey) : `${t('set.free')}${t(`set.tray_name.${parts.size}` as TextKey)}`;
+  }
   if (isDish(item)) {
     const key = `dish.${parseDish(item).recipe}.name` as TextKey;
     return t(key) ?? item;
@@ -73,6 +79,8 @@ export const itemName = (item: string): string => {
 
 /** รูปในช่องกระเป๋าไม่มีประกาย รูปในการ์ดรายละเอียดมีประกาย */
 function artFor(item: string, sparkly: boolean): string | null {
+  const parts = parseSet(item);
+  if (parts) return setTable.trays[parts.size].item;
   if (isDish(item)) {
     const { recipe } = parseDish(item);
     if (recipe === MYSTERY) return sparkly ? balance.cooking.mystery.icon : balance.cooking.mystery.bagIcon;
@@ -122,6 +130,7 @@ export function cornerBadge(slot: HTMLElement, item: string): void {
 
 /** ไม่มีภาพใช้กล่องสีแทนตามกฎทะเบียน ขนาดเป็นจำนวนเท่าของจุดพิกเซลเสมอ */
 export function itemImage(item: string, sparkly: boolean, scale = 1): HTMLElement {
+  if (isSet(item)) return setImage(item, 'set-art', '--px', scale);
   const id = artFor(item, sparkly);
   const entry = id ? registry[id] : undefined;
   if (!id || entry?.type !== 'local') {
@@ -177,6 +186,14 @@ const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className: strin
 };
 
 /** ป้ายข้อมูลสั้น ๆ ใต้ชื่อ: ประเภท แรงก์ อิ่ม และจำนวนที่มี */
+/** ภาพชุด: ถาดสานกับอาหารจิ๋วของแต่ละจานตามช่อง (สเปก 6.4) */
+export function setImage(item: string, className: string, unit = '--px', scale = 1): HTMLElement {
+  const parts = parseSet(item)!;
+  const tray = setTable.trays[parts.size];
+  const pieces = parts.dishes.map((dish, index) => ({ art: `tray_mini_${parseDish(dish).recipe}`, x: tray.slots[index]![0], y: tray.slots[index]![1] }));
+  return compositeArt(tray.item, pieces, className, unit, scale);
+}
+
 /** ท็อปปิ้งบนจานเป็นตัวหนังสือ เช่น "ผงนัว · ต้นหอม ×2" (ใช้ชื่อของที่ใช้ทำท็อปปิ้ง) */
 export function toppingText(toppings: string[]): string {
   const counts = new Map<string, number>();
@@ -191,6 +208,8 @@ export function toppingText(toppings: string[]): string {
 
 function factsOf(item: string, count: number): string[] {
   const facts: string[] = [];
+  const parts = parseSet(item);
+  if (parts) facts.push(`${t('set.dishes')} ${parts.dishes.map((dish) => itemName(dish)).join(' · ')}`);
   if (isDish(item)) {
     const recipe = recipes[parseDish(item).recipe];
     if (recipe) facts.push(`${t(`recipe.tab_${recipe.category}` as TextKey)} · ${recipe.rank}`);

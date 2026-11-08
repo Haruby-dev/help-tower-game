@@ -148,3 +148,34 @@ export function drawSpeechBubble(canvas: HTMLCanvasElement, image: HTMLImageElem
 }
 
 export const bubbleImage = (id: string): Promise<HTMLImageElement> => loadImage(artUrl(id));
+
+/**
+ * ภาพชุดอาหาร (งานอาหารโซน 1 ขั้นที่ 6 สเปก 6.4): ภาพถาดสาน แล้ววางอาหารจิ๋ว `tray_mini_*` กลางช่องตามสัดส่วนของถาด ยกขึ้น 1 พิกเซล
+ * วาดบนแคนวาสขนาดเท่าภาพถาด ไม่ย่อขยายภาพ ขยายทั้งก้อนด้วยหน่วยพิกเซลของที่ที่วาง
+ */
+export function compositeArt(base: string, pieces: { art: string; x: number; y: number }[], className: string, unit = '--px', scale = 1): HTMLCanvasElement {
+  const entry = registry[base];
+  const width = entry?.type === 'local' ? entry.width : 16;
+  const height = entry?.type === 'local' ? entry.height : 16;
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  canvas.className = `pixel-img ${className}`;
+  canvas.style.width = `calc(var(${unit}) * ${width * scale})`;
+  canvas.style.height = `calc(var(${unit}) * ${height * scale})`;
+  canvas.style.imageRendering = 'pixelated';
+  const context = canvas.getContext('2d');
+  if (!context || entry?.type !== 'local') return canvas;
+  context.imageSmoothingEnabled = false;
+  const layers = [{ art: base, x: 0, y: 0, centred: false }, ...pieces.map((piece) => ({ ...piece, centred: true }))];
+  void Promise.all(layers.map((layer) => (registry[layer.art]?.type === 'local' ? loadImage(artUrl(layer.art)).catch(() => null) : Promise.resolve(null)))).then((images) => {
+    images.forEach((image, index) => {
+      if (!image) return;
+      const layer = layers[index]!;
+      const x = layer.centred ? Math.round(layer.x * width - image.width / 2) : 0;
+      const y = layer.centred ? Math.round(layer.y * height - image.height / 2) - 1 : 0;
+      context.drawImage(image, x, y);
+    });
+  });
+  return canvas;
+}

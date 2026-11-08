@@ -31,6 +31,7 @@ import {
   translationsSchema,
   workbenchSchema,
   stationsSchema,
+  setsSchema,
 } from '../src/data/schema';
 
 export const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -87,6 +88,7 @@ export function checkProject(): string[] {
   checkSchema('src/data/toppings.json', toppingsSchema, problems);
   checkSchema('src/data/workbench.json', workbenchSchema, problems);
   checkSchema('src/data/stations.json', stationsSchema, problems);
+  checkSchema('src/data/sets.json', setsSchema, problems);
   checkSchema('src/data/fish.json', fishSchema, problems);
   checkSchema('src/data/baits.json', baitsSchema, problems);
   checkSchema('src/data/chests.json', chestsSchema, problems);
@@ -226,6 +228,22 @@ export function checkProject(): string[] {
   }
   for (const entry of stationData.trap.catch) if (!knownItem(entry.item)) problems.push(`src/data/stations.json: trap catches unknown ${entry.item}`);
   for (const id of stationData.mortar.teaches) if (!recipesSchema.parse(readJson('src/data/recipes.json'))[id]) problems.push(`src/data/stations.json: mortar teaches unknown recipe ${id}`);
+  // จัดชุด: ถาดมีจริง ชุดคอมโบอ้างสูตรและกลุ่มที่มีจริง จำนวนช่องเท่าขนาดถาด และมีชื่อ
+  const setData = setsSchema.parse(readJson('src/data/sets.json'));
+  const allRecipes = recipesSchema.parse(readJson('src/data/recipes.json'));
+  for (const tray of Object.values(setData.trays)) if (registry[tray.item]?.type !== 'local') problems.push(`src/data/sets.json: tray ${tray.item} has no image`);
+  for (const [id, group] of Object.entries(setData.groups)) {
+    if ('recipes' in group) for (const recipe of group.recipes) if (!allRecipes[recipe]) problems.push(`src/data/sets.json: group ${id} uses unknown recipe ${recipe}`);
+  }
+  for (const [id, combo] of Object.entries(setData.combos)) {
+    if (!translations[`combo.${id}.name`]) problems.push(`src/i18n/th.json: combo ${id} has no name`);
+    if (!translations[`news.set_hint.${id}`]) problems.push(`src/i18n/th.json: combo ${id} has no gio hint`);
+    if (combo.slots.length !== setData.trays[combo.tray].pieces) problems.push(`src/data/sets.json: combo ${id} does not fill its tray`);
+    for (const slot of combo.slots) {
+      if (slot.startsWith('@') ? !setData.groups[slot.slice(1)] : !allRecipes[slot]) problems.push(`src/data/sets.json: combo ${id} uses unknown ${slot}`);
+    }
+  }
+  if (registry[setData.bigTable.item]?.type !== 'local') problems.push('src/data/sets.json: big table has no image');
   for (const item of Object.keys(linesSchema.parse(readJson('src/data/lines.json')).player.firstItem)) {
     if (!isMaterial(item)) problems.push(`src/data/lines.json: first-item line for unknown ${item}`);
   }

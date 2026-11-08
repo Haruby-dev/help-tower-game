@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import type { Tray } from '../core/state';
 import balance from '../data/balance.json';
 import { parseDish, recipes } from '../systems/cooking';
+import { setArtKey } from './monsterArt';
 import { platePoints, trayArt } from '../systems/tray';
 import { foodArtKey } from './monsterArt';
 
@@ -45,8 +46,8 @@ export class TrayView {
     const { stackStepPx, stackShownMax } = balance.tray;
     tray.plates.forEach((plate, index) => {
       if (!plate) return;
-      const { recipe } = parseDish(plate.item);
-      const key = foodArtKey(this.scene, recipe, recipes[recipe]?.icon);
+      // ชุดถาดเล็กบนจานใช้ไอคอนถาดสานเล็กขนาดจริง (ผู้ใช้เลือก 9 พ.ย. 2026 แทนการย่อภาพชุด)
+      const key = setArtKey(plate.item) ?? foodArtKey(this.scene, parseDish(plate.item).recipe, recipes[parseDish(plate.item).recipe]?.icon);
       const center = this.platePoint(tray.level, index);
       for (let layer = 0; layer < Math.min(plate.count, stackShownMax); layer += 1) {
         const pile = this.scene.add

@@ -7,7 +7,8 @@ import type { Recipe } from '../data/schema';
 import { recipes } from '../systems/cooking';
 import { at, bookArrow, bookNote, bookTab, createBook, pageArt, type BookPieces } from './book';
 import { itemName } from './inventory';
-import { artUrl } from './pixelArt';
+import { artUrl, sizedArt } from './pixelArt';
+import { setTable } from '../systems/sets';
 import { uiSound } from './sound';
 
 type Category = Recipe['category'];
@@ -26,6 +27,11 @@ const PAGE_WIDTH = 297;
 const SLOT_PX = 22;
 const SLOT_GAP = 5;
 const steps = recipeSteps as Record<string, string[]>;
+/** หน้าชุดที่เคยจัด (ขั้นที่ 6) ใช้สีของหมวดคาว · ซ้าย 8 ชุดแรก ขวาที่เหลือ แถวละ 19 พิกเซล */
+const SETS_PAGE = '@sets';
+const SETS_THEME: Category = 'savory';
+const SETS_LEFT = 8;
+const SET_ROW_PX = 19;
 const ORDER = Object.keys(recipes);
 
 const book = (name: string): string => `ui_book_${name}`;
@@ -76,6 +82,7 @@ export function createRecipeBook(uiRoot: HTMLElement): void {
   };
 
   const turn = (step: number): void => {
+    if (current === SETS_PAGE) return;
     const { list, index } = pageOf(current);
     go(list[(index + step + list.length) % list.length]!);
   };
@@ -125,8 +132,69 @@ export function createRecipeBook(uiRoot: HTMLElement): void {
     return row;
   }
 
+  /** แถบแท็บ คาว หวาน เครื่องดื่ม ชุด (แท็บชุดใช้สีของหมวดคาว) */
+  function tabRow(theme: Category): HTMLElement {
+    const tabs = element('div', 'bk-tabs');
+    for (const { id, label } of TABS) {
+      const tab = bookTab(t(label), current !== SETS_PAGE && id === theme, themed('book_tab', theme), themed('book_tab_active', theme));
+      tab.dataset.bookTab = id;
+      tab.addEventListener('click', () => go(ORDER.find((candidate) => recipes[candidate]?.category === id)!));
+      tabs.append(tab);
+    }
+    const sets = bookTab(t('book.sets_tab'), current === SETS_PAGE, themed('book_tab', theme), themed('book_tab_active', theme));
+    sets.dataset.bookTab = 'set';
+    sets.addEventListener('click', () => go(SETS_PAGE));
+    tabs.append(sets);
+    return tabs;
+  }
+
+  /** แถวชุดหนึ่งแถว: ถาดสานจิ๋ว ชื่อชุด (ยังไม่เคยจัดเป็น ? ? ?) ขนาดถาดกับจำนวนชิ้น */
+  function setRow(combo: string, y: number): HTMLElement {
+    const info = setTable.combos[combo]!;
+    const tray = setTable.trays[info.tray];
+    const found = gameState.world.sets.combos.includes(combo);
+    const row = at(element('div', `rb-set${found ? ' is-found' : ''}`), 22, y);
+    row.dataset.combo = combo;
+    const mini = `ing_mini_${tray.item}`;
+    const hold = element('span', 'rb-set__hold');
+    if (registry[mini]?.type === 'local') hold.append(sizedArt(mini, 'rb-set__tray'));
+    row.append(hold);
+    row.append(
+      element('b', 'rb-set__name', found ? t(`combo.${combo}.name` as TextKey) : '? ? ?'),
+      element('small', 'rb-set__size', `${t(`set.tray_name.${info.tray}` as TextKey)} · ${tray.pieces}`),
+    );
+    return row;
+  }
+
+  function renderSets(): void {
+    const theme = SETS_THEME;
+    const combos = Object.keys(setTable.combos);
+    const found = combos.filter((combo) => gameState.world.sets.combos.includes(combo)).length;
+    shell.setPieces(piecesFor(theme));
+    leftPage.dataset.theme = theme;
+    leftPage.dataset.recipe = SETS_PAGE;
+    shell.root.querySelector('.bk')!.setAttribute('data-recipe-theme', theme);
+    shell.left.replaceChildren(
+      pageArt(themed('book_apron', theme), 259, 12, 'rb-apron', 'scaleX(-1)'),
+      tabRow(theme),
+      element('div', 'rb-dname book-title rb-sets-title', t('book.sets_title')),
+      at(element('div', 'rb-lab rb-sets-count', `${t('book.sets_count')} ${found}/${combos.length}`), 22, 72),
+      ...combos.slice(0, SETS_LEFT).map((combo, index) => setRow(combo, 90 + index * SET_ROW_PX)),
+    );
+    const note = bookNote('rb-note book-note rb-sets-note', t('book.sets_note'), book('book_tape'), 30, 168);
+    shell.right.replaceChildren(
+      pageArt(themed('book_corner_plant', theme), 5, 219, 'rb-plant'),
+      ...combos.slice(SETS_LEFT).map((combo, index) => setRow(combo, 16 + index * SET_ROW_PX)),
+      note,
+    );
+  }
+
   function render(): void {
     if (!gameState.started) return;
+    if (current === SETS_PAGE) {
+      renderSets();
+      return;
+    }
     const recipe = recipes[current]!;
     const theme = recipe.category;
     const world = gameState.world.recipes;
@@ -138,13 +206,7 @@ export function createRecipeBook(uiRoot: HTMLElement): void {
     shell.root.querySelector('.bk')!.setAttribute('data-recipe-theme', theme);
 
     // หน้าซ้าย
-    const tabs = element('div', 'bk-tabs');
-    for (const { id, label } of TABS) {
-      const tab = bookTab(t(label), id === theme, themed('book_tab', theme), themed('book_tab_active', theme));
-      tab.dataset.bookTab = id;
-      tab.addEventListener('click', () => go(ORDER.find((candidate) => recipes[candidate]?.category === id)!));
-      tabs.append(tab);
-    }
+    const tabs = tabRow(theme);
     const title = element('div', 'rb-dname book-title', known ? t(`dish.${current}.name` as TextKey) : '? ? ?');
     const decos = ([
       [44, 90],
@@ -221,9 +283,11 @@ export function createRecipeBook(uiRoot: HTMLElement): void {
   });
   // หน้าที่เปิดอยู่เปลี่ยนตามความจริง เช่น ได้ดาวใหม่
   let shownBook: unknown = null;
-  eventBus.on('world-changed', ({ recipes: now }) => {
-    if (!shell.isOpen() || now === shownBook) return;
+  let shownSets: unknown = null;
+  eventBus.on('world-changed', ({ recipes: now, sets }) => {
+    if (!shell.isOpen() || (now === shownBook && sets === shownSets)) return;
     shownBook = now;
+    shownSets = sets;
     render();
   });
 }

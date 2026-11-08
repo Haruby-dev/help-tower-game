@@ -32,6 +32,8 @@ export interface GameEvents {
   'drying-open': number;
   /** เปิดครกหินเก่า (ตอนนี้จากปุ่มทดสอบ) */
   'mortar-open': undefined;
+  /** แตะโต๊ะใหญ่ เปิดหน้าวางชุด */
+  'table-open': undefined;
   'cook-open': undefined;
   /** แตะโต๊ะช่างเก่า เปิดหน้าต่างทำของ */
   'workbench-open': undefined;

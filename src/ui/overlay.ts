@@ -9,6 +9,7 @@ import { createCookingWindow } from './cooking';
 import { createDecorateWindow } from './decorate';
 import { createWorkbenchWindow } from './workbench';
 import { createDryingWindow } from './drying';
+import { createBigTableWindow } from './bigTable';
 import { createMortarWindow } from './mortar';
 import { createHud } from './hud';
 import { createJoystick } from './joystick';
@@ -96,6 +97,7 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   createDecorateWindow(uiRoot);
   createWorkbenchWindow(uiRoot);
   createDryingWindow(uiRoot);
+  createBigTableWindow(uiRoot);
   createMortarWindow(uiRoot);
   createGioWindows(uiRoot);
   createTrayWindow(uiRoot);

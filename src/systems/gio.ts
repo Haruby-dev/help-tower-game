@@ -9,6 +9,7 @@ import { addToBag, countOf, cropOfItem, crops, takeFromBag } from './farm';
 import { fishOfItem, fishTable, isFish } from './fishing';
 import { starsOf } from './stars';
 import { toppingPriceFactor } from './toppings';
+import { parseSet, setBonus } from './sets';
 import { readTips, unreadTips } from './news';
 
 const care = balance.gioCare;
@@ -69,6 +70,9 @@ export function saleValue(item: string): number | null {
     return price === undefined ? null : Math.round(price * multiplier);
   }
   if (isFish(item)) return fishTable[fishOfItem(item)]?.price ?? null;
+  // ชุด: ราคาอาหารทุกจาน (คิดดาวและท็อปปิ้งรายจานก่อน) × โบนัสชุด
+  const parts = parseSet(item);
+  if (parts) return Math.round(parts.dishes.reduce((sum, dish) => sum + (saleValue(dish) ?? 0), 0) * setBonus(item));
   if (isDish(item)) {
     const { recipe, stars } = parseDish(item);
     if (recipe === MYSTERY) return null;

@@ -263,16 +263,18 @@ test('M7b: Gio comes back with news: the summary shows tomorrow\'s visitors and 
   await patch(page, `(w) => ({ ...w, day: 2, hour: 18.2 })`);
   await expect.poll(async () => (await world(page)).gio.report !== null).toBe(true);
   // ยืนใกล้จีโออยู่แล้ว ใบสรุปยอดเปิดเอง · ขาย 9 ชิ้น พรุ่งนี้มา 1 + 9 ÷ 4 = 3 ตัว · ความสุข 70 ขึ้นไปได้ข่าว 2 ข้อ
+  // และคำใบ้ชุดลับอีก 1 ข้อ (ขั้นที่ 6: ชุดข้าว เพราะรู้สูตรข้าวสวยกับกับข้าวแล้ว) รวมเป็นข่าวใหม่ 3 ข้อ
   await expect(page.locator('#gio-report')).toBeVisible();
   await expect(page.locator('#report-visitors')).toContainText('พรุ่งนี้มอนสเตอร์มาเยี่ยม 3 ตัว');
-  await expect(page.locator('#report-news')).toContainText('มีข่าวใหม่ 2 ข้อ');
+  await expect(page.locator('#report-news')).toContainText('มีข่าวใหม่ 3 ข้อ');
   await shot(page, '13_summary');
   await page.locator('.gio-report__ok').click();
   await page.locator('#action-button').click();
   await expect(page.locator('[data-gio-action="news"] .gio-talk__dot')).toHaveCount(1);
   await page.locator('[data-gio-action="news"]').click();
-  await expect(page.locator('#gio-news .gio-talk__tip')).toHaveCount(2);
-  await expect(page.locator('#gio-news .gio-talk__new')).toHaveCount(2);
+  await expect(page.locator('#gio-news .gio-talk__tip')).toHaveCount(3);
+  await expect(page.locator('#gio-news .gio-talk__new')).toHaveCount(3);
+  await expect(page.locator('#gio-news [data-tip-kind="set_hint"]')).toHaveCount(1);
   await expect(page.locator('#gio-line')).toContainText('ได้ยินว่า');
   await shot(page, '14_news');
   await page.locator('.gio-talk__news-back').click();

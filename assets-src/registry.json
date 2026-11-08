@@ -11846,7 +11846,6 @@
     "source": "public/assets/items/small_woven_tray.png",
     "file": "items/small_woven_tray.png",
     "jade_tone": false,
-    "lazy": true,
     "note": "small woven tray (used up when a set is made)"
   },
   "ing_mini_small_woven_tray": {
@@ -11856,7 +11855,6 @@
     "source": "public/assets/food/ingredients_mini/small_woven_tray.png",
     "file": "food/ingredients_mini/small_woven_tray.png",
     "jade_tone": false,
-    "lazy": true,
     "note": "small woven tray mini"
   },
   "medium_woven_tray": {
@@ -11866,7 +11864,6 @@
     "source": "public/assets/items/medium_woven_tray.png",
     "file": "items/medium_woven_tray.png",
     "jade_tone": false,
-    "lazy": true,
     "note": "medium woven tray (used up when a set is made)"
   },
   "ing_mini_medium_woven_tray": {
@@ -11876,7 +11873,6 @@
     "source": "public/assets/food/ingredients_mini/medium_woven_tray.png",
     "file": "food/ingredients_mini/medium_woven_tray.png",
     "jade_tone": false,
-    "lazy": true,
     "note": "medium woven tray mini"
   },
   "big_woven_tray": {
@@ -11886,7 +11882,6 @@
     "source": "public/assets/items/big_woven_tray.png",
     "file": "items/big_woven_tray.png",
     "jade_tone": false,
-    "lazy": true,
     "note": "big woven tray (used up when a set is made)"
   },
   "ing_mini_big_woven_tray": {
@@ -11896,7 +11891,6 @@
     "source": "public/assets/food/ingredients_mini/big_woven_tray.png",
     "file": "food/ingredients_mini/big_woven_tray.png",
     "jade_tone": false,
-    "lazy": true,
     "note": "big woven tray mini"
   },
   "workbench": {
@@ -11925,6 +11919,15 @@
     "file": "world/map/drying_tray.png",
     "jade_tone": true,
     "note": "drying tray (กระด้ง) station, also the workbench icon"
+  },
+  "big_table": {
+    "type": "local",
+    "width": 96,
+    "height": 41,
+    "source": "public/assets/world/yard/big_table.png",
+    "file": "world/yard/big_table.png",
+    "jade_tone": false,
+    "note": "big table (โต๊ะใหญ่) holds 1 medium/large set · bought in Geo Mart (phase 7), not jade toned like other shop furniture"
   },
   "trap": {
     "type": "local",

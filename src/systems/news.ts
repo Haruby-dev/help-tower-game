@@ -4,6 +4,7 @@ import balance from '../data/balance.json';
 import dialogueJson from '../data/dialogue.json';
 import type { Dialogue } from '../data/schema';
 import { eligibleMonsters, isCleared, isTwin, monsterTable, twinA } from './monsters';
+import { comboReachable, setTable } from './sets';
 
 /** แต่ละตัวเล่าตามลำดับนี้ เมนูประจำใจท้ายสุด เพราะใช้ตอนความชอบถึง 90% */
 const KINDS: TipKind[] = ['favourite', 'drink', 'signature'];
@@ -40,6 +41,18 @@ export function nextTips(world: World, count: number): { monster: string; kind: 
   return picked;
 }
 
+/**
+ * จีโอใบ้ชุดลับที่ยังไม่เจอทีละชุด (สเปก 6.2): ใบ้ชุดถัดไปเมื่อชุดที่ใบ้ไว้ทุกชุดเจอแล้ว เลือกตามลำดับใน sets.json
+ * เฉพาะชุดที่ทุกช่องมีสูตรที่รู้แล้วลงได้ ข่าวนี้ไม่นับในจำนวนข่าวตามความสุข
+ */
+function nextSetHint(world: World, day: number): Tip[] {
+  const found = world.sets.combos;
+  const hinted = world.gio.tips.filter((tip) => tip.kind === 'set_hint').map((tip) => tip.monster);
+  if (hinted.some((combo) => !found.includes(combo))) return [];
+  const combo = Object.keys(setTable.combos).find((id) => !found.includes(id) && !hinted.includes(id) && comboReachable(id, world.recipes.known));
+  return combo ? [{ monster: combo, kind: 'set_hint', day, read: false }] : [];
+}
+
 /** จีโอกลับจากเร่ขายพร้อมข่าว จำนวนตามช่วงความสุขตอนฝาก (2 · 1 · 1 ข้อทุก 2 วัน) · เรียกซ้ำได้ ให้ข่าวครั้งเดียวต่อสรุปยอด */
 export function gainTips(world: World): World {
   const report = world.gio.report;
@@ -53,11 +66,12 @@ export function gainTips(world: World): World {
     twins.revealed && report.day > twins.revealDay && !world.gio.tips.some((tip) => tip.kind === 'twin_reveal')
       ? [{ monster: twinA, kind: 'twin_reveal', day: report.day, read: false }]
       : [];
+  const hint = nextSetHint(world, report.day);
   return {
     ...world,
     gio: {
       ...world.gio,
-      tips: [...world.gio.tips, ...reveal, ...fresh],
+      tips: [...world.gio.tips, ...reveal, ...fresh, ...hint],
       tipsReportDay: report.day,
       lastTipDay: fresh.length > 0 ? report.day : world.gio.lastTipDay,
     },
@@ -75,6 +89,7 @@ const dishName = (recipe: string): string => t(`dish.${recipe}.name` as TextKey)
 
 /** ประโยคที่จีโอเล่า ประกอบจากชิ้นข้อความใน th.json */
 export function tipText(tip: Tip): string {
+  if (tip.kind === 'set_hint') return t(`news.set_hint.${tip.monster}` as TextKey);
   const monster = monsterTable[tip.monster];
   const name = t(`monster.${tip.monster}.name` as TextKey);
   if (!monster) return name;

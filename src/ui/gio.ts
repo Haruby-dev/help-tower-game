@@ -5,6 +5,7 @@ import { gameState, type BagStack } from '../core/state';
 import balance from '../data/balance.json';
 import linesJson from '../data/lines.json';
 import { isDish, isRawProduce } from '../systems/cooking';
+import { isSet } from '../systems/sets';
 import { formatMoney } from '../systems/economy';
 import { countOf } from '../systems/farm';
 import {
@@ -121,7 +122,7 @@ function stackSlot(stack: BagStack | undefined, className: string): HTMLButtonEl
 
 const inConsignTab = (item: string, tab: ConsignTab): boolean => {
   if (tab === 'produce') return isRawProduce(item);
-  if (tab === 'food') return isDish(item);
+  if (tab === 'food') return isDish(item) || isSet(item);
   return true;
 };
 

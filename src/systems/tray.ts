@@ -2,6 +2,7 @@ import type { BagStack, Tray, World } from '../core/state';
 import balance from '../data/balance.json';
 import { MYSTERY, isDish, parseDish } from './cooking';
 import { addToBag, countOf, takeFromBag } from './farm';
+import { fitsTowerTray, isSet } from './sets';
 
 const { tray: rules } = balance;
 
@@ -15,8 +16,8 @@ export const platePoints = (level: number): [number, number][] => rules.levels[M
 
 export const newTray = (): Tray => ({ level: 0, plates: Array.from({ length: plateCount(0) }, () => null) });
 
-/** วางบนถาดได้เฉพาะอาหารที่ทำสำเร็จ (รวมเครื่องดื่ม) อาหารปริศนาไม่วาง */
-export const canServe = (item: string): boolean => isDish(item) && parseDish(item).recipe !== MYSTERY;
+/** วางบนถาดได้เฉพาะอาหารที่ทำสำเร็จ (รวมเครื่องดื่ม) และชุดถาดเล็ก อาหารปริศนาไม่วาง ชุดถาดกลางกับใหญ่วางบนโต๊ะใหญ่ */
+export const canServe = (item: string): boolean => (isSet(item) ? fitsTowerTray(item) : isDish(item) && parseDish(item).recipe !== MYSTERY);
 
 /** จานที่จะใส่ของนี้: จานที่มีเมนูเดียวกัน (ดาวเท่ากัน) อยู่แล้ว หรือจานว่างใบแรก */
 export function plateFor(tray: Tray, item: string): number | null {

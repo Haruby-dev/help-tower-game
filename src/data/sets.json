@@ -1,0 +1,36 @@
+{
+  "trays": {
+    "small": { "item": "small_woven_tray", "pieces": 2, "slots": [[0.3, 0.45], [0.7, 0.45]], "ui": [[-82, 0], [82, 0]], "bigTable": false },
+    "medium": { "item": "medium_woven_tray", "pieces": 3, "slots": [[0.3, 0.38], [0.7, 0.38], [0.5, 0.68]], "ui": [[-82, -72], [82, -72], [0, 78]], "bigTable": true },
+    "large": { "item": "big_woven_tray", "pieces": 4, "slots": [[0.3, 0.33], [0.7, 0.33], [0.3, 0.66], [0.7, 0.66]], "ui": [[-82, -72], [82, -72], [-82, 78], [82, 78]], "bigTable": true }
+  },
+  "rice": "plain_rice",
+  "bonus": { "free": 1, "freeRice": 1.1, "combo": { "small": 1.2, "medium": 1.35, "large": 1.5 } },
+  "comboAffection": 1.2,
+  "reputation": { "combo": { "small": 5, "medium": 10, "large": 15 }, "firstCombo": 30, "stars": [0, 150, 500, 1200, 2500] },
+  "bigTable": { "item": "big_table", "price": 6000 },
+  "groups": {
+    "side": { "flag": "sideDish" },
+    "soup": { "flag": "soup" },
+    "chili_dip": { "recipes": ["mackerel_chili_dip", "kapi_chili_dip"] },
+    "shrimp": { "recipes": ["grilled_shrimp", "garlic_shrimp"] },
+    "sweet_or_drink": { "categories": ["sweet", "drink"] }
+  },
+  "combos": {
+    "rice_set": { "tray": "small", "slots": ["plain_rice", "@side"] },
+    "chili_veg": { "tray": "small", "slots": ["@chili_dip", "cucumber_salad"] },
+    "two_shrimp": { "tray": "small", "slots": ["grilled_shrimp", "garlic_shrimp"] },
+    "sweet_corn_pair": { "tray": "small", "slots": ["buttered_corn", "corn_milk"] },
+    "afternoon_tea": { "tray": "small", "slots": ["honey_pancake", "warm_honey_milk"] },
+    "perfect_match": { "tray": "small", "slots": ["grilled_corn", "warm_honey_milk"] },
+    "mackerel_tray": { "tray": "medium", "slots": ["plain_rice", "mackerel_chili_dip", "boiled_egg"] },
+    "soup_omelet": { "tray": "medium", "slots": ["plain_rice", "cabbage_shrimp_soup", "scallion_omelet"] },
+    "happy_sea": { "tray": "medium", "slots": ["plain_rice", "steamed_crab", "@shrimp"] },
+    "fish_trio": { "tray": "medium", "slots": ["grilled_fish", "lime_steamed_fish", "hor_mok"] },
+    "strawberry_fever": { "tray": "medium", "slots": ["strawberry_skewer", "strawberry_milk_pudding", "strawberry_juice"] },
+    "full_samrab": { "tray": "large", "slots": ["plain_rice", "@chili_dip", "@soup", "@side"] },
+    "sea_samrab": { "tray": "large", "slots": ["plain_rice", "kapi_chili_dip", "steamed_crab", "garlic_shrimp"] },
+    "country_samrab": { "tray": "large", "slots": ["plain_rice", "cabbage_shrimp_soup", "scallion_omelet", "cabbage_crispy_shrimp"] },
+    "full_meal": { "tray": "large", "slots": ["plain_rice", "@side", "@soup", "@sweet_or_drink"] }
+  }
+}

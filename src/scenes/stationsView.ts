@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import type { World } from '../core/state';
 import { isDryingReady, stationTable, trapSet } from '../systems/stations';
+import { parseDish } from '../systems/cooking';
+import { parseSet, setTable } from '../systems/sets';
 import { footY } from '../core/assets';
 
 /**
@@ -17,6 +19,9 @@ const TRAY_MINIS = [
 ];
 const MINI_STEPS = [1, 4, 7];
 const SPARKLE_LIFT = { x: 12, y: -40 };
+/** ช่องที่อยากวางโต๊ะใหญ่ครั้งแรก (ช่องแผนที่ ลานหน้าบ้าน ย้ายได้) และขอบล่างถาดชุดบนพื้นโต๊ะ (พิกเซลจากขอบบนภาพโต๊ะ) */
+const TABLE_PREFER = { x: 17.5, y: 13 };
+const TABLE_TRAY_BOTTOM = 27;
 
 export interface Station {
   kind: 'drying' | 'trap';
@@ -37,6 +42,10 @@ interface TraySprites {
 
 export class StationsView {
   readonly trays: TraySprites[] = [];
+  /** โต๊ะใหญ่ (งานอาหารโซน 1 ขั้นที่ 6) กับภาพชุดบนโต๊ะ: ถาดสานแล้ววางอาหารจิ๋วตามช่อง */
+  table: Phaser.GameObjects.Image | null = null;
+  private tableSet: Phaser.GameObjects.Image[] = [];
+  private tableKey = '';
   private readonly traps: { land: Phaser.GameObjects.Image; water: Phaser.GameObjects.Image }[] = [];
   private trapKey = '';
 
@@ -46,10 +55,13 @@ export class StationsView {
     private readonly onNewTray: (index: number, image: Phaser.GameObjects.Image) => void,
     /** ลอบในน้ำเปลี่ยน: ส่งจุดระลอกให้บ่อ (พิกเซลแผนที่) */
     private readonly onTrapsInWater: (points: { x: number; y: number }[]) => void,
+    /** โต๊ะใหญ่เพิ่งมี: ให้ฉากลงทะเบียนกับโหมดจัดวางและหาที่วาง */
+    private readonly onNewTable: (image: Phaser.GameObjects.Image) => void = () => undefined,
   ) {}
 
   /** ตามจำนวนถาดกับลอบที่มีและสถานะในเซฟ เรียกทุกเฟรม เปลี่ยนภาพเฉพาะตอนสถานะเปลี่ยน */
   sync(world: World): void {
+    this.syncTable(world);
     while (this.trays.length < world.crafting.stations.drying_tray) this.addTray(this.trays.length);
     this.trays.forEach((tray, index) => this.syncTray(world, tray, index));
     while (this.traps.length < Math.min(world.crafting.stations.trap, stationTable.trap.spots.length)) this.addTrap(this.traps.length);
@@ -72,6 +84,39 @@ export class StationsView {
     const list: Station[] = this.trays.map((tray, index) => ({ kind: 'drying', index, image: tray.image, x: tray.image.x, y: tray.image.y }));
     this.traps.forEach((trap, index) => list.push({ kind: 'trap', index, image: trapSet(world, index) ? trap.water : trap.land, x: trap.land.x, y: trap.land.y }));
     return list;
+  }
+
+  private syncTable(world: World): void {
+    const { owned, set } = world.sets.bigTable;
+    if (!owned) return;
+    if (!this.table) {
+      const id = setTable.bigTable.item;
+      this.table = this.scene.add.image(0, 0, id).setOrigin(0.5, footY(id) / 41);
+      const prefer = TABLE_PREFER;
+      this.table.setPosition((prefer.x + 0.5) * TILE, (prefer.y + 1) * TILE).setDepth(this.table.y);
+      this.onNewTable(this.table);
+    }
+    const key = `${set ?? ''}:${this.table.x},${this.table.y}`;
+    if (key === this.tableKey) return;
+    this.tableKey = key;
+    for (const piece of this.tableSet) piece.destroy();
+    this.tableSet = [];
+    const parts = set ? parseSet(set) : null;
+    if (!parts) return;
+    const tray = setTable.trays[parts.size];
+    const corner = this.table.getTopLeft();
+    const trayImage = this.scene.add.image(Math.round(this.table.x), Math.round(corner.y + TABLE_TRAY_BOTTOM), tray.item).setOrigin(0.5, 1).setDepth(this.table.depth + 0.01);
+    this.tableSet.push(trayImage);
+    const trayCorner = trayImage.getTopLeft();
+    parts.dishes.forEach((dish, index) => {
+      const art = `tray_mini_${parseDish(dish).recipe}`;
+      if (!this.scene.textures.exists(art)) return;
+      const [fx, fy] = tray.slots[index]!;
+      const frame = this.scene.textures.getFrame(art);
+      const x = Math.round(trayCorner.x + fx * trayImage.width - frame.width / 2);
+      const y = Math.round(trayCorner.y + fy * trayImage.height - frame.height / 2) - 1;
+      this.tableSet.push(this.scene.add.image(x, y, art).setOrigin(0).setDepth(this.table!.depth + 0.02 + index * 0.001));
+    });
   }
 
   private addTray(index: number): void {

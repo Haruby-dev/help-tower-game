@@ -5734,6 +5734,11 @@
       "default": 47
     }
   },
+  "big_table": {
+    "footY": {
+      "default": 41
+    }
+  },
   "trap": {
     "footY": {
       "default": 28

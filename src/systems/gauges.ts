@@ -67,6 +67,7 @@ export function newWorld(): World {
     gio: newGioCare(),
     land: { owned: 0 },
     crafting: newCrafting(),
+    sets: { reputation: 0, combos: [], bigTable: { owned: false, set: null } },
     placed: {},
     tray: newTray(),
     monsters: newMonsters(),

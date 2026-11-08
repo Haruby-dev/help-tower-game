@@ -7,6 +7,7 @@ import type { MonsterData } from '../data/schema';
 import { parseDish, recipes } from './cooking';
 import { applyTransaction } from './economy';
 import { toppingAffectionFactor } from './toppings';
+import { isSet, parseSet, setCombo, setTable } from './sets';
 import { removeFromPlate } from './tray';
 
 export const monsterTable = monstersJson as MonsterData;
@@ -114,10 +115,23 @@ export function wantsSignature(world: World, id: string): boolean {
 export const signatureOf = (id: string): { recipe: string; stars: number } => info(id).signature;
 
 export const isSignatureDish = (id: string, item: string): boolean => {
+  const parts = parseSet(item);
+  if (parts) return parts.dishes.some((dish) => isSignatureDish(id, dish));
   const { recipe, stars } = parseDish(item);
   const wanted = info(id).signature;
   return recipe === wanted.recipe && stars >= wanted.stars;
 };
+
+/** สูตรของทุกจานในของชิ้นนี้ (ชุดมีหลายจาน อาหารจานเดียวมีสูตรเดียว) */
+export const recipesIn = (item: string): string[] => (parseSet(item)?.dishes ?? [item]).map((dish) => parseDish(dish).recipe);
+
+/** รสนิยมต่อชุด: มีเมนูโปรดอย่างน้อย 1 จานเป็นโปรด · มีเมนูที่ชอบเป็นชอบ · ไม่มีเลยไม่หยิบ (ผู้ใช้เลือก 9 พ.ย. 2026) */
+function setTaste(id: string, item: string): Taste {
+  const tastes = recipesIn(item).map((recipe) => tasteOf(id, recipe));
+  if (tastes.includes('favourite')) return 'favourite';
+  if (tastes.includes('like')) return 'like';
+  return tastes.every((taste) => taste === 'belowRank') ? 'belowRank' : 'dislike';
+}
 
 /** ระดับความชอบที่ใช้เลือกบทพูด: หิว (พูดห้วน) · อุ่น (สุภาพ) · สนิท (เรียกว่าเชฟ) */
 export function tierOf(world: World, id: string): Tier {
@@ -133,6 +147,20 @@ export interface Fed {
   cleared: boolean;
 }
 
+/**
+ * ความชอบจากของชิ้นนี้ · อาหาร: ท็อปปิ้งถูกประเภทเพิ่มเป็นขั้นเดียวกับราคา ท็อปปิ้งที่ชอบคูณเพิ่มอีกชั้น
+ * ชุด: รวมทุกจานตามรสนิยมของแต่ละจาน ชุดคอมโบคูณเพิ่ม (สเปก 6.3) จานที่จะอ้วกไม่ลดความชอบ
+ */
+function itemPoints(world: World, id: string, item: string, eatenBefore: number): number {
+  const parts = parseSet(item);
+  if (parts) {
+    const total = parts.dishes.reduce((sum, dish) => sum + itemPoints(world, id, dish, 0), 0);
+    return total * (setCombo(item) ? setTable.comboAffection : 1);
+  }
+  const { recipe, stars } = parseDish(item);
+  return dishPoints(id, recipe, stars, eatenBefore, world.gauges.cleanliness) * toppingAffectionFactor(item, id);
+}
+
 /** กินอาหาร 1 ที่ · ก่อนได้เมนูประจำใจความชอบหยุดที่ 90% · ได้เมนูประจำใจตอนขอจึงครบ 100% และได้ดาวน้ำตาลเป็นรางวัล */
 export function feed(world: World, id: string, item: string, eatenBefore: number): Fed {
   const affection = affectionOf(world, id);
@@ -144,10 +172,8 @@ export function feed(world: World, id: string, item: string, eatenBefore: number
     const rewarded = rules.clearStars > 0 ? applyTransaction(done, 'stars', rules.clearStars, 'wallet.monster_clear', 'wallet.category_monster') : done;
     return { world: rewarded, points: required - affection.points, signature: true, cleared: true };
   }
-  const { recipe, stars } = parseDish(item);
   const cap = affection.signature ? required : required * rules.signatureAt;
-  // ท็อปปิ้งถูกประเภทเพิ่มความชอบเป็นขั้นเดียวกับราคา และท็อปปิ้งที่ชอบคูณเพิ่มอีกชั้น
-  const gained = dishPoints(id, recipe, stars, eatenBefore, world.gauges.cleanliness) * toppingAffectionFactor(item, id);
+  const gained = itemPoints(world, id, item, eatenBefore);
   const points = Math.min(cap, affection.points + gained);
   return { world: put({ ...affection, points }), points: points - affection.points, signature: false, cleared: false };
 }
@@ -322,7 +348,7 @@ export function planVisit(world: World, id: string, rng: Rng): VisitPlan {
       signaturePlate = { index, item: plate!.item };
       continue;
     }
-    const taste = tasteOf(id, parseDish(plate!.item).recipe);
+    const taste = isSet(plate!.item) ? setTaste(id, plate!.item) : tasteOf(id, parseDish(plate!.item).recipe);
     if (taste === 'dislike' || taste === 'belowRank') pouts.push(index);
     else byTaste.set(taste, [...(byTaste.get(taste) ?? []), { index, item: plate!.item, count: plate!.count }]);
   }
@@ -336,11 +362,12 @@ export function planVisit(world: World, id: string, rng: Rng): VisitPlan {
     appetite -= 1;
   }
   // มีทั้งเมนูโปรดและเครื่องดื่มโปรด: อาหารเป็นหอคอยแต่เว้นที่ไว้ 1 แก้วให้ครบเซ็ต "เข้ากันสุดๆ!"
-  const food = favourites.filter((entry) => !isDrink(parseDish(entry.item).recipe));
-  const drink = favourites.filter((entry) => isDrink(parseDish(entry.item).recipe));
+  const food = favourites.filter((entry) => isSet(entry.item) || !isDrink(parseDish(entry.item).recipe));
+  const drink = favourites.filter((entry) => !isSet(entry.item) && isDrink(parseDish(entry.item).recipe));
   const pairing = food.length > 0 && drink.length > 0;
   for (const entry of food) {
-    const count = Math.min(appetite - (pairing ? 1 : 0), tower, entry.count);
+    // ชุดหยิบครั้งละ 1 ชุด นับเป็น 1 ที่
+    const count = isSet(entry.item) ? Math.min(1, appetite) : Math.min(appetite - (pairing ? 1 : 0), tower, entry.count);
     if (count > 0) takes.push({ plate: entry.index, item: entry.item, count, reaction: 'favourite' });
     appetite -= Math.max(0, count);
   }
@@ -351,12 +378,34 @@ export function planVisit(world: World, id: string, rng: Rng): VisitPlan {
   }
   for (const taste of ['like', 'neutral'] as const) {
     for (const entry of byTaste.get(taste) ?? []) {
+      if (isSet(entry.item) && taste === 'neutral') continue;
       if (appetite <= 0) break;
       takes.push({ plate: entry.index, item: entry.item, count: 1, reaction: taste });
       appetite -= 1;
     }
   }
   return { takes, pouts, asks: asking && !signaturePlate ? signatureOf(id).recipe : null };
+}
+
+/** จานพิเศษของโต๊ะใหญ่ในแผนการหยิบ (ถาดหอคอยใช้เลขจาน 0 ขึ้นไป) */
+export const BIG_TABLE_PLATE = -1;
+
+function removeFromBigTable(world: World, item: string): { tray: World['tray']; sets: World['sets']; taken: number } {
+  const table = world.sets.bigTable;
+  if (table.set !== item) return { tray: world.tray, sets: world.sets, taken: 0 };
+  return { tray: world.tray, sets: { ...world.sets, bigTable: { ...table, set: null } }, taken: 1 };
+}
+
+/** ชุดบนโต๊ะใหญ่: หยิบด้วยกฎเดียวกับถาดหอคอย (มีจานที่ชอบอย่างน้อย 1 จาน) ตอบสิ่งที่หยิบ หรือ null */
+export function planBigTable(world: World, id: string, plan: VisitPlan): PlateTake | null {
+  const item = world.sets.bigTable.set;
+  if (!item || isCleared(world, id)) return null;
+  const taken = plan.takes.reduce((sum, take) => sum + take.count, 0);
+  if (taken >= rules.appetiteMax) return null;
+  const taste = setTaste(id, item);
+  if (wantsSignature(world, id) && isSignatureDish(id, item)) return { plate: BIG_TABLE_PLATE, item, count: 1, reaction: 'signature' };
+  if (taste !== 'favourite' && taste !== 'like') return null;
+  return { plate: BIG_TABLE_PLATE, item, count: 1, reaction: taste };
 }
 
 /** สิ่งที่จำไว้ระหว่างการมาครั้งหนึ่ง: จานที่กินต่อเมนู (ความหลากหลาย) และความชอบจากเมนูโปรดกับเครื่องดื่มโปรดที่ใช้คิดโบนัสเซ็ต */
@@ -383,10 +432,10 @@ export interface Taken {
 
 /** หยิบจากจานแล้วกินทีละที่ ความชอบเข้าทันที (ภาพค่อย ๆ เล่นตามทีหลัง) · ครบเซ็ตครั้งแรกได้โบนัส (setBonus − 1) × ความชอบของคู่นั้น */
 export function takePlate(world: World, id: string, take: PlateTake, memo: VisitMemo): Taken {
-  const removed = removeFromPlate(world.tray, take.plate, take.item, take.count);
-  const recipe = parseDish(take.item).recipe;
-  let next: World = { ...world, tray: removed.tray };
-  if (removed.taken > 0) next = noteTasted(next, id, recipe);
+  const removed = take.plate === BIG_TABLE_PLATE ? removeFromBigTable(world, take.item) : { ...removeFromPlate(world.tray, take.plate, take.item, take.count), sets: world.sets };
+  const recipe = isSet(take.item) ? take.item : parseDish(take.item).recipe;
+  let next: World = { ...world, tray: removed.tray, sets: removed.sets };
+  if (removed.taken > 0) for (const tasted of recipesIn(take.item)) next = noteTasted(next, id, tasted);
   const gains: number[] = [];
   let cleared = false;
   for (let serving = 0; serving < removed.taken; serving += 1) {
@@ -395,7 +444,7 @@ export function takePlate(world: World, id: string, take: PlateTake, memo: Visit
     gains.push(fed.points);
     cleared ||= fed.cleared;
     memo.eaten[recipe] = (memo.eaten[recipe] ?? 0) + 1;
-    if (take.reaction === 'favourite') {
+    if (take.reaction === 'favourite' && !isSet(take.item)) {
       if (isDrink(recipe)) memo.favouriteDrink ??= fed.points;
       else memo.favouriteFood ??= fed.points;
     }
@@ -435,11 +484,13 @@ export function settleVisits(world: World): World {
     const plan = planVisit(next, arrival.monster, createRng(world.seed + arrival.day * SETTLE_MIX + index));
     for (const plate of plan.pouts) {
       const item = next.tray.plates[plate]?.item;
-      if (item) next = noteTasted(next, arrival.monster, parseDish(item).recipe);
+      if (item) for (const recipe of recipesIn(item)) next = noteTasted(next, arrival.monster, recipe);
     }
     for (const take of plan.takes) {
       next = takePlate(next, arrival.monster, take, memo).world;
     }
+    const table = planBigTable(next, arrival.monster, plan);
+    if (table) next = takePlate(next, arrival.monster, table, memo).world;
   });
   // แขกของวันก่อน ๆ ไม่ต้องเก็บไว้แล้ว
   return { ...next, monsters: { ...next.monsters, arrivals: next.monsters.arrivals.filter((arrival) => arrival.day >= world.day) } };

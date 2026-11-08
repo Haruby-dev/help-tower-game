@@ -124,9 +124,10 @@ test('mystery food left at the campfire from an old save is still collected, and
   await standAtFire(page);
   const act = page.locator('#action-button');
   await act.click();
-  // โหมดทดลองผสมเอาออกแล้ว (zone1 food update 1.6) เหลือแท็บคาว หวาน เครื่องดื่ม
+  // โหมดทดลองผสมเอาออกแล้ว (zone1 food update 1.6) แท็บคาว หวาน เครื่องดื่ม และจัดชุด (ขั้นที่ 6) แทนที่
   await expect(page.locator('[data-cook-tab="mix"]')).toHaveCount(0);
-  await expect(page.locator('[data-cook-tab]')).toHaveCount(3);
+  await expect(page.locator('[data-cook-tab]')).toHaveCount(4);
+  await expect(page.locator('[data-cook-tab="set"]')).toHaveText('จัดชุด');
   await page.locator('#cook-close').click();
   await page.evaluate(() => {
     const s = (window as unknown as { __state: TestState }).__state;
@@ -461,4 +462,96 @@ test('the drying tray dries shrimp overnight, the old trap catches overnight, an
   await page.locator('#mortar-collect').click();
   await expect(mortar).toBeHidden();
   expect(await count(page, 'ing_fish_ball')).toBe(2);
+});
+
+test('arranges sets on woven trays, finds a secret set, places a medium set on the big table, and the book lists it', async ({ page }) => {
+  await open(page);
+  const rice = 'dish_plain_rice_1';
+  const fish = 'dish_grilled_fish_1';
+  const egg = 'dish_boiled_egg_1';
+  const skewer = 'dish_strawberry_skewer_1';
+  await page.evaluate(
+    (bag) => {
+      const s = (window as unknown as { __state: TestState }).__state;
+      s.setWorld({ ...s.world, bag });
+    },
+    [
+      { item: 'small_woven_tray', count: 1 },
+      { item: 'medium_woven_tray', count: 1 },
+      { item: rice, count: 2 },
+      { item: fish, count: 1 },
+      { item: egg, count: 1 },
+      { item: skewer, count: 1 },
+    ],
+  );
+  await standAtFire(page);
+  await page.locator('#action-button').click();
+  const cook = page.locator('#cook-window');
+  await expect(cook).toBeVisible();
+  await page.locator('[data-cook-tab="set"]').click();
+  // ถาดเล็กก่อน (มีถาด) · ของหวานมีป้ายกับหน้าจะอ้วก
+  await expect(page.locator('.sx-chip[data-tray-size="small"]')).toHaveClass(/is-active/);
+  await expect(page.locator(`[data-set-dish="${skewer}"] .sx-tag`)).toHaveClass(/is-yuck/);
+  await expect(page.locator('#set-go')).toBeDisabled();
+  await page.locator(`[data-set-dish="${rice}"]`).click();
+  await page.locator(`[data-set-dish="${fish}"]`).click();
+  await expect(page.locator('.sx-combo')).toHaveText('ชุดข้าว');
+  await expect(page.locator('.sx-progress')).toHaveText('ชุดใหม่! บันทึกลงสมุดสูตรแล้ว');
+  await page.locator('#set-go').click();
+  await expect(page.locator('.sx-made')).toContainText('ชุดข้าว');
+  const small = `set_small|${fish}|${rice}`;
+  expect(await count(page, small)).toBe(1);
+  expect(await count(page, 'small_woven_tray')).toBe(0);
+  const sets = (): Promise<{ reputation: number; combos: string[]; bigTable: { owned: boolean; set: string | null } }> =>
+    page.evaluate(() => (window as unknown as { __state: { world: { sets: { reputation: number; combos: string[]; bigTable: { owned: boolean; set: string | null } } } } }).__state.world.sets);
+  expect((await sets()).reputation).toBe(35);
+
+  // ถาดกลาง: ชุดอิสระ 3 ชิ้น (แตะช่องเอาคืนได้)
+  await page.locator('.sx-chip[data-tray-size="medium"]').click();
+  await page.locator(`[data-set-dish="${rice}"]`).click();
+  await page.locator(`[data-set-dish="${egg}"]`).click();
+  await page.locator('.sx-slot[data-slot="1"]').click();
+  await expect(page.locator('.sx-slot.is-filled')).toHaveCount(1);
+  await page.locator(`[data-set-dish="${egg}"]`).click();
+  await page.locator(`[data-set-dish="${skewer}"]`).click();
+  await expect(page.locator('.sx-combo')).toHaveCount(0);
+  await page.locator('#set-go').click();
+  const medium = `set_medium|${egg}|${rice}|${skewer}`;
+  expect(await count(page, medium)).toBe(1);
+  expect((await sets()).reputation).toBe(35);
+  await page.locator('#cook-close').click();
+  await expect(cook).toBeHidden();
+
+  // โต๊ะใหญ่จากปุ่มทดสอบ แล้ววางชุดถาดกลาง
+  await page.locator('#settings-button').click();
+  await page.locator('#test-big-table').click();
+  await page.locator('#settings-close').click();
+  expect((await sets()).bigTable.owned).toBe(true);
+  await expect
+    .poll(() => page.evaluate(() => Boolean((window as unknown as { __game: { scene: { getScene(k: string): { stationsView: { table: unknown } } } } }).__game.scene.getScene('Base').stationsView.table)))
+    .toBe(true);
+  await page.evaluate(() => {
+    const scene = (window as unknown as { __game: { scene: { getScene(k: string): { stationsView: { table: { x: number; y: number } } } } } }).__game.scene.getScene('Base');
+    (window as unknown as { __state: TestState }).__state.movePlayer({ x: scene.stationsView.table.x, y: scene.stationsView.table.y + 24 });
+  });
+  const act = page.locator('#action-button');
+  await expect(act).toHaveAttribute('aria-label', 'โต๊ะใหญ่');
+  await act.click();
+  const table = page.locator('#table-window');
+  await expect(table).toBeVisible();
+  await expect(table.locator('.bt-row')).toHaveCount(1);
+  await page.locator('#table-go').click();
+  expect((await sets()).bigTable.set).toBe(medium);
+  await expect(page.locator('#table-go')).toHaveText('เก็บคืน');
+  await page.locator('#table-close').click();
+
+  // สมุดสูตร หน้าชุดที่เคยจัด
+  await page.locator('#phone-button').click();
+  await page.locator('#lock-open').click();
+  await page.locator('[data-app="recipes"]').click();
+  await page.locator('[data-book-tab="set"]').click();
+  await expect(page.locator('.rb-sets-count')).toContainText('1/15');
+  await expect(page.locator('.rb-set[data-combo="rice_set"]')).toHaveClass(/is-found/);
+  await expect(page.locator('.rb-set[data-combo="rice_set"] .rb-set__name')).toHaveText('ชุดข้าว');
+  await expect(page.locator('.rb-set[data-combo="two_shrimp"] .rb-set__name')).toHaveText('? ? ?');
 });

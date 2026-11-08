@@ -9,7 +9,7 @@ import balance from '../data/balance.json';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 import { cookingStarterBag, firstWeather, fishingStarterBag, newFarm, newFishing, newRecipeBook, newSeed, starterBag } from './gauges';
 
-export const SAVE_VERSION = 19;
+export const SAVE_VERSION = 20;
 const PLAIN_RICE = 'plain_rice';
 /** ผู้ใช้ตัดสิน 4 พ.ย. 2026: ตัวเลขเหรียญทั้งเกมใหญ่ขึ้น 10 เท่า สัดส่วนเศรษฐกิจเท่าเดิม */
 export const COIN_SCALE = 10;
@@ -143,6 +143,8 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
     const world = save.world as { crafting: Record<string, unknown> };
     return { ...save, world: { ...world, crafting: { ...world.crafting, drying: [], traps: [], mortar: false } } };
   },
+  // เวอร์ชัน 20 จัดชุด (zone1 food update 6): ชื่อเสียงร้าน 0 ยังไม่เคยจัดคอมโบ ยังไม่มีโต๊ะใหญ่
+  19: (save) => ({ ...save, world: { ...(save.world as object), sets: { reputation: 0, combos: [], bigTable: { owned: false, set: null } } } }),
 };
 
 /** เซฟเก่าไม่ได้เก็บช่วงความสุขของสรุปยอด เดาจากสัดส่วนค่าคอม */

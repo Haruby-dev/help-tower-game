@@ -11,6 +11,7 @@ import dialogueJson from '../data/dialogue.json';
 import type { Dialogue } from '../data/schema';
 import { Monster } from '../entities/Monster';
 import { parseDish, recipes } from '../systems/cooking';
+import { isYuckPiece, parseSet, setCombo } from '../systems/sets';
 import { dishToppingEffect, favouriteToppingOf } from '../systems/toppings';
 import type { ArrivalKind } from '../core/state';
 import {
@@ -40,9 +41,13 @@ import {
   voiceOf,
   type EatPlace,
   type Reaction,
+  planBigTable,
+  recipesIn,
+  type PlateTake,
+  type VisitMemo,
 } from '../systems/monsters';
 import { servingsOnTray } from '../systems/tray';
-import { foodArtKey, prepareTwinArt, TWIN_ANIMS, type MonsterArt } from './monsterArt';
+import { foodArtKey, prepareTwinArt, setArtKey, TWIN_ANIMS, type MonsterArt } from './monsterArt';
 import type { TrayView } from './trayView';
 
 type Point = { x: number; y: number };
@@ -61,6 +66,8 @@ const HESITANT = new Set(['shy', 'proud']);
 const HESITATE_CHANCE = 0.35;
 const HESITATE_STEP_PX = 8;
 const POUT_MS = 500;
+/** มอนสเตอร์ยืนหน้าโต๊ะใหญ่ ต่ำกว่าเท้าโต๊ะเท่านี้ (พิกเซล) */
+const TABLE_FRONT_PX = 14;
 const TAG_DROP_PX = 2;
 const CLEAR_PAUSE_MS = 2200;
 const VANISH_SPARKLE = true;
@@ -149,6 +156,8 @@ export class Visits {
     private readonly places: VisitPlaces,
     private readonly tray: () => TrayView | null,
     private readonly toScreen: ToScreen,
+    /** เท้าโต๊ะใหญ่ (null คือยังไม่มีโต๊ะ) มอนสเตอร์เดินไปหยิบชุดที่หน้าโต๊ะ */
+    private readonly bigTable: () => Point | null = () => null,
   ) {}
 
   update(deltaMs: number, time: number, player: Point): void {
@@ -329,7 +338,11 @@ export class Visits {
    */
   private reactToToppings(run: Run, item: string): void {
     const monster = run.monster;
-    const effect = dishToppingEffect(item, favouriteToppingOf(monster.id));
+    // ชุด: ท็อปปิ้งของทุกจานรวมกัน และชุดอิสระที่มีของหวานหรือเครื่องดื่มทำหน้าจะอ้วกเป็นมุก (ไม่ลดความชอบ สเปก 6.1)
+    const parts = parseSet(item);
+    const effects = (parts?.dishes ?? [item]).map((dish) => dishToppingEffect(dish, favouriteToppingOf(monster.id)));
+    const effect = { yuck: effects.some((one) => one.yuck), favourite: effects.some((one) => one.favourite), noticed: effects.some((one) => one.noticed) };
+    if (parts && !setCombo(item) && parts.dishes.some(isYuckPiece)) effect.yuck = true;
     if (effect.yuck) monster.think('emote_yuck', rules.bubbleMs);
     if (effect.favourite) {
       monster.hearts(1);
@@ -343,6 +356,33 @@ export class Visits {
 
   private pick(lines: string[]): string {
     return lines[Math.floor(this.talkRng.next() * lines.length)]!;
+  }
+
+  /** หยิบจากจาน (หรือโต๊ะใหญ่) แล้วเห็นบนหอคอย หัวใจ ประกาย บทพูด · ชุดใช้ไอคอนถาดสานจิ๋วบนหอคอย */
+  private *takeAndShow(run: Run, take: PlateTake, memo: VisitMemo, meals: Meal[]): Generator<Wait, void, unknown> {
+    const monster = run.monster;
+    const result = takePlate(gameState.world, monster.id, take, memo);
+    gameState.setWorld(result.world);
+    if (result.taken === 0) return;
+    const recipe = parseDish(take.item).recipe;
+    // หอคอยใช้ภาพอาหารจิ๋ววางบนจาน D1 (ผู้ใช้เลือก 6 พ.ย. 2026 14:18)
+    monster.addToTower(setArtKey(take.item) ?? foodArtKey(this.scene, recipe, recipes[recipe]?.icon), result.taken);
+    monster.hearts(take.reaction === 'neutral' ? 0 : 1);
+    if (take.reaction === 'favourite' || take.reaction === 'signature') monster.sparkles();
+    if (take.reaction === 'favourite') this.say(run, 'favourite', true);
+    else if (take.reaction === 'like') this.say(run, 'like');
+    result.gains.forEach((gain, at) => {
+      const last = at === result.gains.length - 1;
+      meals.push({ item: take.item, gain: gain + (last ? result.setBonus : 0), reaction: take.reaction, cleared: result.cleared && last, set: result.set && last });
+    });
+    if (result.set) {
+      // ครบเซ็ตเมนูโปรดกับเครื่องดื่มโปรด
+      this.speak(run, t('monster.set'));
+      monster.hearts(2);
+      monster.sparkles();
+      yield { kind: 'ms', left: rules.bubbleMs / 2 };
+    }
+    yield { kind: 'ms', left: rules.eatGapMs };
   }
 
   /** แฝดก่อนเฉลย: บทแซวตอนเจอเมนูที่ไม่ชอบ ให้รู้ว่าโดนแกล้ง ไม่ใช่บั๊ก */
@@ -452,7 +492,7 @@ export class Visits {
       if (plan.pouts.includes(index)) {
         // จำว่าเคยเสิร์ฟเมนูนี้แล้ว อัลบั้มจะได้เปิดช่อง "ไม่ชอบ"
         const pouted = gameState.world.tray.plates[index];
-        if (pouted) gameState.setWorld(noteTasted(gameState.world, id, parseDish(pouted.item).recipe));
+        if (pouted) for (const recipe of recipesIn(pouted.item)) gameState.setWorld(noteTasted(gameState.world, id, recipe));
         // เส้นเลือดงอนขึ้นก่อน บทพูดไม่ชอบ (ถ้าสุ่มได้) ตามมาหลังเส้นเลือดจาง จะได้ไม่ทับกัน
         monster.pout();
         yield { kind: 'ms', left: POUT_MS };
@@ -461,28 +501,16 @@ export class Visits {
       }
       const take = plan.takes.find((entry) => entry.plate === index);
       if (!take) continue;
-      const result = takePlate(gameState.world, id, take, memo);
-      gameState.setWorld(result.world);
-      if (result.taken === 0) continue;
-      const recipe = parseDish(take.item).recipe;
-      // หอคอยใช้ภาพอาหารจิ๋ววางบนจาน D1 (ผู้ใช้เลือก 6 พ.ย. 2026 14:18)
-      monster.addToTower(foodArtKey(this.scene, recipe, recipes[recipe]?.icon), result.taken);
-      monster.hearts(take.reaction === 'neutral' ? 0 : 1);
-      if (take.reaction === 'favourite' || take.reaction === 'signature') monster.sparkles();
-      if (take.reaction === 'favourite') this.say(run, 'favourite', true);
-      else if (take.reaction === 'like') this.say(run, 'like');
-      result.gains.forEach((gain, at) => {
-        const last = at === result.gains.length - 1;
-        meals.push({ item: take.item, gain: gain + (last ? result.setBonus : 0), reaction: take.reaction, cleared: result.cleared && last, set: result.set && last });
-      });
-      if (result.set) {
-        // ครบเซ็ตเมนูโปรดกับเครื่องดื่มโปรด
-        this.speak(run, t('monster.set'));
-        monster.hearts(2);
-        monster.sparkles();
-        yield { kind: 'ms', left: rules.bubbleMs / 2 };
-      }
-      yield { kind: 'ms', left: rules.eatGapMs };
+      yield* this.takeAndShow(run, take, memo, meals);
+    }
+    // ชุดบนโต๊ะใหญ่: เดินไปหน้าโต๊ะแล้วหยิบด้วยกฎเดียวกับถาด (สเปก 6.4)
+    const tableAt = this.bigTable();
+    const tableTake = tableAt ? planBigTable(gameState.world, id, plan) : null;
+    if (tableAt && tableTake) {
+      yield* this.walk(run, [{ x: tableAt.x, y: tableAt.y + TABLE_FRONT_PX }]);
+      monster.stand('north');
+      yield { kind: 'ms', left: rules.browseMs };
+      yield* this.takeAndShow(run, tableTake, memo, meals);
     }
     if (plan.asks) {
       // ฟองความคิดมีไอคอนเมนูประจำใจที่อยากกิน ไม่มีตัวหนังสือ (ภาพยังไม่มีใช้ฟองคำพูดแทน)

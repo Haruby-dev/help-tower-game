@@ -164,7 +164,8 @@ export interface GioReport {
 }
 
 /** twin_clue ข่าวแฝดที่จีโอเล่าขัดกันเองก่อนเฉลย · twin_reveal ข่าวด่วนวันหลังเฉลย */
-export type TipKind = 'favourite' | 'drink' | 'signature' | 'twin_clue' | 'twin_reveal';
+/** set_hint: จีโอใบ้ชุดลับที่ยังไม่เจอ (ขั้นที่ 6) ช่อง monster เก็บรหัสชุดแทน */
+export type TipKind = 'favourite' | 'drink' | 'signature' | 'twin_clue' | 'twin_reveal' | 'set_hint';
 
 /** ข่าวหนึ่งข้อที่จีโอเล่า */
 export interface Tip {
@@ -191,6 +192,13 @@ export interface GioCare {
   /** tier คือช่วงความสุขตอนฝาก ใช้คิดค่าคอมตอนจีโอกลับ */
   consignment: { items: BagStack[]; returnDay: number; tier: number } | null;
   report: GioReport | null;
+}
+
+/** จัดชุด (งานอาหารโซน 1 ขั้นที่ 6): ชื่อเสียงร้าน ชุดคอมโบที่เคยจัด โต๊ะใหญ่ */
+export interface SetState {
+  reputation: number;
+  combos: string[];
+  bigTable: { owned: boolean; set: string | null };
 }
 
 /** งานประดิษฐ์ (งานอาหารโซน 1 ขั้นที่ 4) */
@@ -240,6 +248,7 @@ export interface World {
   /** ที่ดินที่ซื้อแล้ว (ซื้อตามลำดับ จึงเก็บแค่จำนวน) */
   land: { owned: number };
   crafting: Crafting;
+  sets: SetState;
   /** ของที่ผู้เล่นย้ายแล้ว เก็บตำแหน่งเท้าเป็นพิกเซล ของที่ยังไม่ย้ายใช้ตำแหน่งบนแผนที่ */
   placed: Record<string, Point>;
   tray: Tray;
