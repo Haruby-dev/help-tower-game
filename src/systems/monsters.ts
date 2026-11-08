@@ -6,6 +6,7 @@ import monstersJson from '../data/monsters.json';
 import type { MonsterData } from '../data/schema';
 import { parseDish, recipes } from './cooking';
 import { applyTransaction } from './economy';
+import { toppingAffectionFactor } from './toppings';
 import { removeFromPlate } from './tray';
 
 export const monsterTable = monstersJson as MonsterData;
@@ -145,7 +146,8 @@ export function feed(world: World, id: string, item: string, eatenBefore: number
   }
   const { recipe, stars } = parseDish(item);
   const cap = affection.signature ? required : required * rules.signatureAt;
-  const gained = dishPoints(id, recipe, stars, eatenBefore, world.gauges.cleanliness);
+  // ท็อปปิ้งถูกประเภทเพิ่มความชอบเป็นขั้นเดียวกับราคา และท็อปปิ้งที่ชอบคูณเพิ่มอีกชั้น
+  const gained = dishPoints(id, recipe, stars, eatenBefore, world.gauges.cleanliness) * toppingAffectionFactor(item, id);
   const points = Math.min(cap, affection.points + gained);
   return { world: put({ ...affection, points }), points: points - affection.points, signature: false, cleared: false };
 }

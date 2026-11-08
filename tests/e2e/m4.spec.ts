@@ -48,6 +48,10 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
   const dish = `dish_home_kaprao_${stars}`;
   await expect.poll(() => count(page, dish), { timeout: 30_000 }).toBe(1);
   expect((await state(page)).cooking.slot).toBeNull();
+  // อาหารออกแล้วเด้งหน้าแต่งจาน ไม่แต่งกดข้าม
+  await expect(page.locator('#decorate-window')).toBeVisible();
+  await page.locator('#decorate-skip').click();
+  await expect(page.locator('#decorate-window')).toBeHidden();
 
   await page.evaluate(() => {
     const s = (window as unknown as { __state: TestState }).__state;
@@ -201,6 +205,7 @@ test('cooking plays the pose of the dish vessel with a fast clock, then the dish
     );
   await expect.poll(anim).toContain('anim_crouch_north');
   await expect.poll(() => count(page, 'dish_boiled_egg_1'), { timeout: 30_000 }).toBeGreaterThan(0);
+  await page.locator('#decorate-skip').click();
   // เวลาในเกมผ่านไปเท่าเวลาของแรงก์ครั้งเดียว (F 20 นาที) ในไม่กี่วินาที แล้วลุกขึ้นกลับเป็นภาพยืน (ชื่อท่าล่าสุดยังค้างอยู่ จึงดูแผ่นภาพแทน)
   expect((await clock()) - startMinute).toBeGreaterThanOrEqual(19.5);
   const sheet = (): Promise<string> =>
@@ -293,4 +298,57 @@ test('cooks several plates in one cooking time with the − n + stepper, and the
   expect(slot.minutesLeft).toBeLessThanOrEqual(minutes);
   expect(await count(page, 'ing_egg')).toBe(0);
   await expect.poll(() => count(page, 'dish_boiled_egg_1'), { timeout: 30_000 }).toBe(3);
+});
+
+test('decorates the dishes that just came out: one topping per dish, at most 3 pieces, soup-only and too-few are grey', async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const s = (window as unknown as { __state: TestState }).__state;
+    const bag = [
+      { item: 'fish_shrimp', count: 4 },
+      { item: 'ing_salt', count: 2 },
+      { item: 'produce_scallion', count: 4 },
+      { item: 'ing_honey', count: 2 },
+      { item: 'ing_umami_powder', count: 1 },
+      { item: 'ing_fish_ball', count: 2 },
+    ];
+    s.setWorld({ ...s.world, bag, recipes: { ...s.world.recipes, known: [...s.world.recipes.known, 'grilled_shrimp'] } });
+  });
+  await standAtFire(page);
+  await page.locator('#action-button').click();
+  await page.locator('[data-recipe="grilled_shrimp"]').click();
+  await page.locator('#cook-more').click();
+  await page.locator('#cook-go').click();
+  const decorate = page.locator('#decorate-window');
+  await expect(decorate).toBeVisible({ timeout: 30_000 });
+  await expect(decorate.locator('.dk-name')).toContainText('กุ้งเผา ×2');
+  // ลูกชิ้นใส่ได้แค่ซุป/แกง · ผงนัวมีชิ้นเดียว ไม่พอทั้งสองจาน
+  await expect(decorate.locator('[data-topping="fish_ball"]')).toHaveAttribute('data-block', 'soupOnly');
+  await expect(decorate.locator('[data-topping="umami_powder"]')).toHaveAttribute('data-block', 'notEnough');
+  await expect(decorate.locator('[data-topping="honey"]')).toHaveClass(/is-wrong/);
+  const hour = (await state(page) as unknown as { hour: number }).hour;
+  await expect(page.locator('#decorate-count')).toHaveText('0/3');
+  await decorate.locator('[data-topping="scallion"]').click();
+  await expect(page.locator('#decorate-count')).toHaveText('1/3');
+  // น้ำผึ้งบนของคาวใส่ได้ (ไม่ได้โบนัส) และนับรวม 3 ชิ้นด้วย
+  await decorate.locator('[data-topping="honey"]').click();
+  await expect(page.locator('#decorate-count')).toHaveText('2/3');
+  await expect(page.locator('#decorate-dish .dk-piece')).toHaveCount(2);
+  await decorate.locator('[data-topping="scallion"]').click();
+  await expect(page.locator('#decorate-count')).toHaveText('3/3');
+  // ครบ 3 ชิ้นแล้ว ท็อปปิ้งที่เหลือเป็นสีเทา "ใส่ครบแล้ว"
+  await expect(decorate.locator('[data-topping="scallion"]')).toHaveAttribute('data-block', 'full');
+  await expect(decorate.locator('[data-topping="fish_ball"]')).toHaveAttribute('data-block', 'full');
+  await expect(decorate.locator('[data-topping="scallion"] .dk-card__block')).toHaveText('ใส่ครบแล้ว');
+  // นาฬิกาหยุดระหว่างแต่งจาน
+  expect((await state(page) as unknown as { hour: number }).hour).toBe(hour);
+  await page.locator('#decorate-done').click();
+  await expect(decorate).toBeHidden();
+  const bag = (await state(page)).bag;
+  const topped = bag.find((stack) => stack.item.startsWith('dish_grilled_shrimp_'));
+  expect(topped?.item).toMatch(/^dish_grilled_shrimp_\d~scallion\.scallion\.honey$/);
+  expect(topped?.count).toBe(2);
+  expect(await count(page, 'produce_scallion')).toBe(0);
+  expect(await count(page, 'ing_honey')).toBe(0);
+  expect(await count(page, 'ing_fish_ball')).toBe(2);
 });

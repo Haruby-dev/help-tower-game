@@ -8,6 +8,7 @@ import { cosmeticTable, isChest } from '../systems/chests';
 import { crops, cropOfItem, isFertilizer, isSeed } from '../systems/farm';
 import { baseItem, starsOf } from '../systems/stars';
 import { fishOfItem, isBait, isFish, makeBait } from '../systems/fishing';
+import { toppingTable, toppingsOf } from '../systems/toppings';
 import { artUrl } from './pixelArt';
 import { isTreat } from '../systems/gio';
 import type { PhonePage } from './phone';
@@ -176,11 +177,26 @@ const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className: strin
 };
 
 /** ป้ายข้อมูลสั้น ๆ ใต้ชื่อ: ประเภท แรงก์ อิ่ม และจำนวนที่มี */
+/** ท็อปปิ้งบนจานเป็นตัวหนังสือ เช่น "ผงนัว · ต้นหอม ×2" (ใช้ชื่อของที่ใช้ทำท็อปปิ้ง) */
+export function toppingText(toppings: string[]): string {
+  const counts = new Map<string, number>();
+  for (const id of toppings) counts.set(id, (counts.get(id) ?? 0) + 1);
+  return [...counts]
+    .map(([id, count]) => {
+      const name = itemName(toppingTable[id]?.item ?? id);
+      return count > 1 ? `${name} ×${count}` : name;
+    })
+    .join(' · ');
+}
+
 function factsOf(item: string, count: number): string[] {
   const facts: string[] = [];
   if (isDish(item)) {
     const recipe = recipes[parseDish(item).recipe];
     if (recipe) facts.push(`${t(`recipe.tab_${recipe.category}` as TextKey)} · ${recipe.rank}`);
+    // ภาพในกระเป๋าเล็กเกินจะเห็นท็อปปิ้ง จึงบอกเป็นตัวหนังสือ
+    const toppings = toppingsOf(item);
+    if (toppings.length > 0) facts.push(`${t('bag.fact_toppings')} ${toppingText(toppings)}`);
   }
   const fullness = fullnessOf(item);
   if (fullness !== null) facts.push(`${t('bag.fact_full')} +${fullness}`);

@@ -51,11 +51,11 @@ Icons: 32 px in `.../ingredients/<id>.png`, small in `.../ingredients_mini/ing_<
 | bamboo | ไม้ไผ่ | not sellable | **no art → placeholder** | gate 2 forage (M8) → dev card for now |
 | cherry | เชอร์รี | 100 (already in code) | existing | Geo Mart random |
 | cocoa | โกโก้ | **350** (was 150) | existing | zone-2 crop later; chests |
-| cream / fizzy_water / slime_jelly_scrap | — | as in code | **no art → placeholder** | Mumu (cream/butter) · Bubble pet (fizzy water **and slime jelly scrap**) — pets come with M8 |
+| cream / fizzy_water / slime_jelly_scrap | — | as in code | **art added 9 Nov:** `art-src/pet_items_1109/ingredients/{cream,fizzy_water,slime_jelly_scrap}.png` + `ingredients_mini/ing_*.png` | Mumu (cream/butter) · Bubble pet (fizzy water **and slime jelly scrap**) — pets come with M8 |
 
 Do **not** add: moo deng (หมูเด้ง, removed from zone 1), pond clay, ferment jar, pickles, salted egg (all moved to zone 2). Vanilla stays unused.
 
-Topping-only items (bought, see 3.3): fried_garlic, toasted_sesame, sweet_basil (ใบโหระพา), coconut_jelly, rainbow_sprinkles, whipped_cream. Icons: `art-src/topping_1108/topping_icons_1108/ingredients(_mini)/` (fried_garlic, toasted_sesame, coconut_jelly, rainbow_sprinkles, scallion_sliced). **No bag icon yet for sweet basil and whipped cream → placeholder.**
+Topping-only items (bought, see 3.3): fried_garlic, toasted_sesame, ~~sweet_basil (ใบโหระพา)~~ removed 9 Nov, coconut_jelly, rainbow_sprinkles, whipped_cream. Icons: `art-src/topping_1108/topping_icons_1108/ingredients(_mini)/` (fried_garlic, toasted_sesame, coconut_jelly, rainbow_sprinkles, scallion_sliced). **No bag icon yet for sweet basil and whipped cream → placeholder.**
 
 Seasonings: salt, sugar, fish sauce **buy price 10** each (GDD said 50 before — wrong).
 
@@ -149,20 +149,20 @@ Full notes: `docs/cook_ui_k2_2026-11-08.md` (Thai). Mocks: `art-src/cook_ui_1108
 Mock: `art-src/cook_ui_1108/decorate_mock_v2.png`, animation mock `art-src/topping_1108/toppings3_drop_v3_bottle.gif`. GDD "ท็อปปิ้ง".
 
 ### 3.1 Screen
-After dishes come out: "แต่งจาน · <dish name>", the dish in the middle with a soft shadow (no plate under it), stars under the dish, a **milk-bottle "amount" gauge** on the right (pink cap + bow, bubbles; mint normally, pink when over; a pink heart marks the limit), a row of toppings from the bag (cannot use = grey + reason label, e.g. "ซุป/แกงเท่านั้น"), buttons Skip / Done. Cooking several dishes at once = decorate once for all of them.
+After dishes come out: "แต่งจาน · <dish name>", the dish in the middle with a soft shadow (no plate under it), stars under the dish, ~~a milk-bottle "amount" gauge on the right~~ **(removed 9 Nov 02:44, her pick: no gauge; a small "n/3" counter under the stars instead)**, a row of toppings from the bag (cannot use = grey + reason label, e.g. "ซุป/แกงเท่านั้น"), buttons Skip / Done. Cooking several dishes at once = decorate once for all of them.
 
 ### 3.2 Rules
-- Tap a topping once = one piece drops onto the dish = uses 1 item (powders = one sprinkle). Pieces are big and clear on the 48 px dish.
-- Bonus by count: 1 / 2 / 3 pieces = sell price +10% / +20% / +30% and the same steps of extra affection. **The 4th piece passes the heart line = all topping bonus lost + "too much" face 😵.**
+- Tap a topping once = one piece drops onto the dish = uses 1 item (powders = one sprinkle). **Several dishes decorated together (decided 9 Nov 02:16): 1 tap uses 1 item PER DISH (3 dishes = 3 items) and every dish gets the piece; if the bag has fewer than the dish count, the topping is grey with the label "ไม่พอทุกจาน".** Pieces are big and clear on the 48 px dish.
+- Bonus by count: 1 / 2 / 3 pieces = sell price +10% / +20% / +30% and the same steps of extra affection. ~~The 4th piece passes the heart line = bonus lost + 😵~~ **Changed 9 Nov 02:44: max 3 pieces per dish. After 3 pieces every other topping is grey with the label "ใส่ครบแล้ว". No 4th-piece trap, no "too much" face (keep emote_too_much.png unused). Every piece counts toward the 3, including wrong-type 🤢 pieces.**
 - umami_powder: counts as 1 piece but gives **+20%** (old rule); only one spoon per dish. On savory food monsters notice it: a small sparkle on the dish and a chance to say "นัวว~!".
 - Topping types: savory / sweet / drink. Drinks may also take sweet toppings. Wrong type (savory on sweet/drink, sweet on savory) **can still be put on** but the monster makes a 🤢 face — **no affection loss, no money loss, just no bonus** (the piece does not count in the gauge). Exception: a monster whose favourite topping it is eats it happily (no 🤢, gets ×1.5).
 - **Fish balls and shrimp balls only go on soups/curries** (blocked otherwise, grey + label). approved 9 Nov soups/curries: tomato_soup, cabbage_shrimp_soup, potato_carrot_stew, fish_congee.
 - Favourite topping of a monster = affection ×1.5 + heart sparkle (on top of the steps).
 - A dish keeps its toppings as data (sell price, affection, set rules use them). Show toppings only on 48 px views for now (small 16/9 px icons unchanged — OPEN how to show them small).
-- 🤢 / 😵 = emoji bubble above the monster's head. **Bubble art not made → use a text/emoji placeholder.**
+- 🤢 / 😵 = emoji bubble above the monster's head. **Art added 9 Nov:** put a face icon inside the existing monster thought bubble (`ui_thought_bubble`, same as `Monster.think(icon)`): `art-src/topping_1108/emote_1109/emote_yuck.png` (🤢, 16×16) and `emote_too_much.png` (😵, 18×19, star ring above the head). Mock: `emote_bubbles_mock.png`.
 - Animations: pieces drop and squash (+ splash in soup); whipped cream drops and sticks; powders puff into specks with one sparkle that stays. **umami_powder (added 9 Nov 00:08, her pick):** its sparkle twinkles in a calm loop for as long as the dish shows it (dot → plus → big plus → shrink → tiny glints on a left/right speck → pause, ~1.8 s per loop), see `art-src/topping_1108/umami_twinkle_1109.gif` (frame timings in the GIF). Other powders keep the still sparkle.
 
-### 3.3 The 14 toppings (zone 1)
+### 3.3 The 13 toppings (zone 1) — sweet basil removed 9 Nov 00:50 (her decision: it fits no menu). If phase 1 already added `sweet_basil`, remove it from data, shop, i18n and tests.
 | topping | type | comes from | on-dish sprite (`art-src/topping_1108/topping_icons_1108/on_dish/`) |
 |---|---|---|---|
 | ผงนัว umami powder | savory | mortar | umami_powder.png 🆕 |
@@ -177,7 +177,7 @@ After dishes come out: "แต่งจาน · <dish name>", the dish in the m
 | บลูเบอร์รี blueberry | sweet | uses 1 blueberry (crop) | blueberry.png |
 | วิปครีม whipped cream | sweet | Geo Mart 100 | whipped_cream.png 🆕 |
 | เม็ดสายรุ้ง rainbow sprinkles | sweet | Geo Mart 80 | rainbow_sprinkles.png |
-| ใบโหระพา sweet basil | drink | Geo Mart 40 | basil_leaf.png |
+| ~~ใบโหระพา sweet basil~~ | **removed 9 Nov** | — | (basil_leaf.png unused) |
 | วุ้นมะพร้าว coconut jelly | drink | Geo Mart 60 | coconut_jelly.png |
 
 🆕 = 3 sprites drawn today in the same style (her final look pending; use them). Do NOT use moo_deng.png. Gio reveals favourite toppings slowly in the news (e.g. "ผู้เฝ้าทุ่งชอบงาบนของหวาน แปลกจัง"). Favourite toppings per monster: GDD "ท็อปปิ้งที่ชอบ" (1 strawberry · 2 rainbow sprinkles · 3 sliced scallion · 4 fried garlic · 5 twin A chili flakes / twin B blueberry · 6 umami powder · 7 honey · 8 fish ball · 9 whipped cream · 10 toasted sesame).
@@ -190,13 +190,13 @@ Design: `docs/crafting_design_2026-11-06.md`. Things are made where they are use
 ### 4.1 Materials
 The first time she gets each new material/ingredient (straw, rope, banana leaf, bamboo, shrimp, crab, dried things, kapi, balls, powders) the heroine says one short line from her own knowledge (never "grandma taught me"). Draft the Thai lines yourself and list them in your report for her review.
 - **Rice straw:** harvesting 1 rice cell = +1 rice straw.
-- **Banana tree** at the bottom corner of the base floor (GDD 6 Nov). Shake once a day = **banana leaf ×2 + banana rope ×1**. **No banana-tree art → placeholder.**
+- **Banana tree** at the **bottom-RIGHT** corner of the base floor (decided 9 Nov 02:26, about tile 44,28 in base.json; keep the bottom-left free for pets). It is a **clump of 3 banana plants = ONE shake point** (same yield). Shake once a day = **banana leaf ×2 + banana rope ×1**. **Art added 9 Nov:** `art-src/crafting_1109/world/banana_clump.png` (160×113, the 3-tree clump = one object; about 2× the heroine's height) · single tree `banana_tree.png` 90×99.
 - **Bamboo:** gate-2 forage (M8). Until then: dev card "give bamboo".
 
 ### 4.2 Workbench recipes
 | item | materials | gives | note |
 |---|---|---|---|
-| bamboo cup แก้วไม้ไผ่ | bamboo 1 (approved 9 Nov) | 1, **crafted once, used forever** (not consumed) | all drinks need it → drinks open after gate 2. No icon yet → placeholder |
+| bamboo cup แก้วไม้ไผ่ | bamboo 1 (approved 9 Nov) | 1, **crafted once, used forever** (not consumed) | all drinks need it → drinks open after gate 2. **Art (added 9 Nov):** `art-src/cook_ui_1108/drink_1108/bamboo_cup_final/` — `items/bamboo_cup.png` 25×24 (bag) · `items_mini/bamboo_cup.png` 14×14 · `bamboo_cup_48.png` (48, same cup as the drinks, empty). Do NOT use the old `drink_1108/cup48_empty.png` (old cup style). |
 | small woven tray ถาดเล็ก | banana rope 1 + rice straw 2 | 3 | consumed when a set is made |
 | medium woven tray ถาดกลาง | bamboo 2 + rice straw 2 | 2 | consumed |
 | big woven tray ถาดใหญ่ | bamboo 3 + rice straw 3 | 2 | consumed |
@@ -271,7 +271,7 @@ Today: 6 categories (แมวเลีย · เมล็ด · ปุ๋ย ·
 - Every day, limited: milk 2 · butter 1 · honey 1 per day, **price ×2 before the matching pet** (milk 240 · butter 400 · honey 240), normal price after the pet.
 - Random "วันนี้": cherry (some days, small stock, 100) · **bait_chest** (30% of days, max 5 per appearance, **10,000** each — demo value).
 ### 7.2 New category "ท็อปปิ้ง"
-Random 2–3 kinds per day, 5–10 pieces each, "วันนี้" tag: fried garlic 50 · toasted sesame 50 · sweet basil 40 · coconut jelly 60 · rainbow sprinkles 80 · whipped cream 100.
+Random 2–3 kinds per day, 5–10 pieces each, "วันนี้" tag: fried garlic 50 · toasted sesame 50 · ~~sweet basil 40~~ (removed 9 Nov) · coconut jelly 60 · rainbow sprinkles 80 · whipped cream 100.
 ### 7.3 Other categories
 - Seeds: add lime 400 and coriander 80 to the every-day rows.
 - Recipes: add an **"ขายถาวร" (permanent) row block above the random rows** (8.1).
@@ -309,10 +309,14 @@ Now merge from `docs/dialogue_zone1_draft.json` the lines held back on 7 Nov: fa
 
 ## 9. OPEN (do not build)
 - ~~Mystery food when happiness ≤ 30~~ dropped 9 Nov (see 1.6). Its replacement is decided (happiness ≤ 30 → 15% chance a cooked dish loses 1 star, never below 1) but is **not part of this job** — do not build it now.
-- Mortar entry point (house interior).
+- Mortar entry point: **decided 9 Nov** = the kitchen corner inside the house (one-room interior, bed inside, door = walk in). The house interior is NOT part of this job: keep the dev-card entry for now.
 - How toppings show on 16/9 px icons.
 - Rank-special recipes and special quests (need rank / daily quest systems).
 - Restaurant reputation sources, monster friends (เพื่อนมอนสเตอร์), restaurant itself.
 
 ## 10. Art still missing (use placeholders, list them in your report)
-workbench · banana tree · bamboo item · bamboo cup · cream / fizzy water / slime jelly scrap icons · sweet basil + whipped cream bag icons · 🤢 / 😵 bubbles · recipe fragment (reuse scroll).
+~~workbench · banana tree~~ (added 9 Nov: `art-src/crafting_1109/world/workbench.png` 64×41 front view, `banana_clump.png` 160×113 (3 trees, one shake point)) · ~~bamboo item~~ (added 9 Nov) · ~~cream / fizzy water / slime jelly scrap icons~~ (added 9 Nov, art-src/pet_items_1109/) · whipped cream bag icon → now `art-src/topping_1108/topping_icons_1108/ingredients/whipped_cream.png` + `ingredients_mini/ing_whipped_cream.png` (added 9 Nov) · ~~sweet basil~~ removed · ~~🤢 / 😵 bubbles~~ (added 9 Nov, see 3.2) · recipe fragment (reuse scroll).
+
+**Added 9 Nov (art now available):** small soybean icon for the cooking window → `art-src/dishes_1108/ingredients_final/ingredients_mini/produce_soybean.png` (15×16, same bagdown method as the other produce_* minis) → copy to `public/assets/food/ingredients_mini/produce_soybean.png`. Empty bamboo cup → see 4.2.
+Withered lime (lime withers after its 3 regrows) → `art-src/dishes_1108/crops/withered/withered_lime.png` (48×64, stage 3 recoloured to the withered brown palette) → copy to `public/assets/farm/crops48/withered/withered_lime.png` (key `withered_lime`, used by Plot.ts).
+Bamboo material icon → `art-src/dishes_1108/groupC/final/ingredients/bamboo.png` (32) + `ingredients_mini/ing_bamboo.png` (16), next to rice_straw / banana_rope. Note: the starting rod id is also `bamboo` — keep the material icon key separate from the rod.

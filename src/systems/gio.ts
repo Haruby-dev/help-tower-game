@@ -8,6 +8,7 @@ import { applyTransaction } from './economy';
 import { addToBag, countOf, cropOfItem, crops, takeFromBag } from './farm';
 import { fishOfItem, fishTable, isFish } from './fishing';
 import { starsOf } from './stars';
+import { toppingPriceFactor } from './toppings';
 import { readTips, unreadTips } from './news';
 
 const care = balance.gioCare;
@@ -59,7 +60,7 @@ export const isTripLive = (world: World, away: boolean): boolean => {
 export const isTreat = (item: string): boolean => shop.treats.some((treat) => treat.item === item);
 export const tasteOf = (item: string): TreatTaste | null => shop.treats.find((treat) => treat.item === item)?.taste ?? null;
 
-/** ราคาที่จีโอขายได้ต่อชิ้นก่อนหักค่าคอม ของที่ขายไม่ได้ตอบ null · อาหาร 2 ดาว ×1.2 · 3 ดาว ×1.5 */
+/** ราคาที่จีโอขายได้ต่อชิ้นก่อนหักค่าคอม ของที่ขายไม่ได้ตอบ null · อาหาร 2 ดาว ×1.2 · 3 ดาว ×1.5 · ท็อปปิ้งเพิ่มตามขั้นความเยอะ */
 export function saleValue(item: string): number | null {
   if (isRawProduce(item)) {
     const price = crops[cropOfItem(item)]?.sellPrice;
@@ -73,7 +74,8 @@ export function saleValue(item: string): number | null {
     if (recipe === MYSTERY) return null;
     const price = recipes[recipe]?.price;
     const multiplier = care.dishStarPrice[Math.min(Math.max(stars, 1), care.dishStarPrice.length) - 1]!;
-    return price === undefined ? null : Math.round(price * multiplier);
+    // ท็อปปิ้งถูกประเภท 1–3 ชิ้น +10% / +20% / +30% (ผงนัว +20%) เกินเส้นไม่ได้โบนัส
+    return price === undefined ? null : Math.round(price * multiplier * toppingPriceFactor(item));
   }
   return null;
 }

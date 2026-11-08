@@ -21,9 +21,13 @@ export const isIngredient = (item: string): boolean => item.startsWith('ing_');
 export const isRawProduce = (item: string): boolean => baseItem(item).startsWith('produce_');
 
 export const dishItem = (recipe: string, stars: number): string => `${DISH_PREFIX}${recipe}_${stars}`;
+/** อาหารที่แต่งแล้วเก็บท็อปปิ้งต่อท้ายรหัส `dish_<สูตร>_<ดาว>~<ท็อปปิ้ง>.<ท็อปปิ้ง>` (systems/toppings.ts) อาหารเก่าไม่มีส่วนนี้ */
+export const TOPPING_SEPARATOR = '~';
+/** รหัสอาหารโดยไม่มีท็อปปิ้ง */
+export const plainDish = (item: string): string => item.split(TOPPING_SEPARATOR)[0]!;
 
 export function parseDish(item: string): { recipe: string; stars: number } {
-  const body = item.slice(DISH_PREFIX.length);
+  const body = plainDish(item).slice(DISH_PREFIX.length);
   const split = body.lastIndexOf('_');
   return { recipe: body.slice(0, split), stars: Number(body.slice(split + 1)) };
 }

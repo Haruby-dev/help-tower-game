@@ -5514,6 +5514,106 @@
       "default": 16
     }
   },
+  "ing_icon_cream": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "ing_mini_ing_cream": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_icon_fizzy_water": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "ing_mini_ing_fizzy_water": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_icon_slime_jelly_scrap": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "ing_mini_ing_slime_jelly_scrap": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "topping_umami_powder": {
+    "footY": {
+      "default": 11
+    }
+  },
+  "topping_scallion_sliced": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "topping_fried_garlic": {
+    "footY": {
+      "default": 6
+    }
+  },
+  "topping_chili_flakes": {
+    "footY": {
+      "default": 10
+    }
+  },
+  "topping_toasted_sesame": {
+    "footY": {
+      "default": 10
+    }
+  },
+  "topping_fish_ball": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "topping_shrimp_ball": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "topping_honey_drizzle": {
+    "footY": {
+      "default": 6
+    }
+  },
+  "topping_strawberry_slice": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "topping_blueberry": {
+    "footY": {
+      "default": 5
+    }
+  },
+  "topping_whipped_cream": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "topping_rainbow_sprinkles": {
+    "footY": {
+      "default": 10
+    }
+  },
+  "topping_coconut_jelly": {
+    "footY": {
+      "default": 5
+    }
+  },
+  "emote_yuck": {
+    "footY": {
+      "default": 16
+    }
+  },
   "ing_icon_rainbow_sprinkles": {
     "footY": {
       "default": 29
@@ -6067,6 +6167,11 @@
   "ing_mini_ing_meatball": {
     "footY": {
       "default": 15
+    }
+  },
+  "withered_lime": {
+    "footY": {
+      "default": 64
     }
   },
   "anim_boil_south": {

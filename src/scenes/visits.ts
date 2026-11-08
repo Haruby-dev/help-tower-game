@@ -11,6 +11,7 @@ import dialogueJson from '../data/dialogue.json';
 import type { Dialogue } from '../data/schema';
 import { Monster } from '../entities/Monster';
 import { parseDish, recipes } from '../systems/cooking';
+import { dishToppingEffect, favouriteToppingOf } from '../systems/toppings';
 import type { ArrivalKind } from '../core/state';
 import {
   affectionOf,
@@ -322,6 +323,24 @@ export class Visits {
     });
   }
 
+  /**
+   * ท็อปปิ้งบนจานที่กิน: ผิดประเภทหน้าจะอ้วก 🤢 (ไม่มีผลเสีย) ในฟองความคิด
+   * ท็อปปิ้งที่ชอบหัวใจลอยกับประกาย · ผงนัวบนของคาวมีประกายและบางครั้งพูด "นัวว~!"
+   */
+  private reactToToppings(run: Run, item: string): void {
+    const monster = run.monster;
+    const effect = dishToppingEffect(item, favouriteToppingOf(monster.id));
+    if (effect.yuck) monster.think('emote_yuck', rules.bubbleMs);
+    if (effect.favourite) {
+      monster.hearts(1);
+      monster.sparkles();
+    }
+    if (effect.noticed) {
+      monster.sparkles();
+      if (this.talkRng.next() < balance.toppings.umamiSayChance) this.speak(run, t('monster.umami'));
+    }
+  }
+
   private pick(lines: string[]): string {
     return lines[Math.floor(this.talkRng.next() * lines.length)]!;
   }
@@ -503,6 +522,7 @@ export class Visits {
       this.showAffection(run, meal);
       if (HEARTS[meal.reaction] > 0) monster.hearts(HEARTS[meal.reaction]);
       if (meal.set) monster.sparkles();
+      this.reactToToppings(run, meal.item);
       if (meal.cleared && id === twinA && !gameState.world.monsters.twins.revealed) {
         // พี่ครบ 100% แต่ประตูยังไม่เปิด หัวเราะคิกคัก แล้วหลอดสลับเป็นของน้อง
         monster.sparkles();

@@ -6,6 +6,7 @@ const { stars: rules } = balance;
 /** ผักดาว 2–3 เก็บในกระเป๋าเป็น `produce_tomato@2` ผัก 1 ดาวใช้รหัสเดิม เซฟเก่าจึงเป็น 1 ดาวเองโดยไม่ต้องแปลงของ */
 const SEPARATOR = '@';
 const DISH_PREFIX = 'dish_';
+const DISH_TOPPINGS = '~';
 export const MAX_STARS = rules.max;
 
 /** ของที่มีดาวใน MVP คือผักจากแปลง (และอาหาร ซึ่งเก็บดาวไว้ในรหัสของตัวเอง) เครื่องปรุง ไข่ นม น้ำผึ้ง ปลา ไม่มีดาว */
@@ -25,7 +26,9 @@ export const withStars = (item: string, stars: number): string => {
 /** ดาวของของชิ้นนี้ ของที่ไม่มีดาวตอบ null · อาหารอ่านจากท้ายรหัส dish_<สูตร>_<ดาว> */
 export function starsOf(item: string): number | null {
   if (item.startsWith(DISH_PREFIX)) {
-    const stars = Number(item.slice(item.lastIndexOf('_') + 1));
+    // อาหารที่แต่งแล้วมีท็อปปิ้งต่อท้ายหลัง ~ (systems/toppings.ts)
+    const plain = item.split(DISH_TOPPINGS)[0]!;
+    const stars = Number(plain.slice(plain.lastIndexOf('_') + 1));
     return Number.isInteger(stars) && stars >= 1 ? stars : null;
   }
   if (!carriesStars(item)) return null;

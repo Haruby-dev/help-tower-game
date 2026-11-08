@@ -29,6 +29,8 @@ export interface GameEvents {
   /** key ของบทพูดตัวเอกใน lines.json */
   'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut' | 'noMoney';
   'cook-open': undefined;
+  /** อาหารเพิ่งออกจากกองไฟ เปิดหน้าแต่งจาน (item คืออาหารที่ยังไม่แต่ง count คือจำนวนจานที่แต่งพร้อมกัน) */
+  'decorate-open': { item: string; count: number };
   'book-open': undefined;
   /** ปุ่มกระเป๋าปลายขวาแถบเครื่องมือ เปิดหน้ากระเป๋าในหน้าต่างโทรศัพท์ขนาดกลาง */
   'bag-open': undefined;

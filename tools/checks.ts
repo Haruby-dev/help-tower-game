@@ -27,6 +27,7 @@ import {
   shopSchema,
   registrySchema,
   spriteMetaSchema,
+  toppingsSchema,
   translationsSchema,
 } from '../src/data/schema';
 
@@ -81,6 +82,7 @@ export function checkProject(): string[] {
   checkSchema('src/data/recipes.json', recipesSchema, problems);
   checkSchema('src/data/ingredients.json', ingredientsSchema, problems);
   checkSchema('src/data/recipe_steps.json', recipeStepsSchema, problems);
+  checkSchema('src/data/toppings.json', toppingsSchema, problems);
   checkSchema('src/data/fish.json', fishSchema, problems);
   checkSchema('src/data/baits.json', baitsSchema, problems);
   checkSchema('src/data/chests.json', chestsSchema, problems);
@@ -192,6 +194,13 @@ export function checkProject(): string[] {
     }
   }
 
+  // ท็อปปิ้ง: ใช้ของที่มีจริงและมีภาพบนจาน
+  const toppingData = toppingsSchema.parse(readJson('src/data/toppings.json'));
+  for (const [id, topping] of Object.entries(toppingData)) {
+    if (!knownItem(topping.item)) problems.push(`src/data/toppings.json: ${id} uses unknown ${topping.item}`);
+    if (registry[topping.art]?.type !== 'local') problems.push(`src/data/toppings.json: ${id} art ${topping.art} is not a local image`);
+  }
+
   // มอนสเตอร์: ชื่อและประโยคครบ 100% อยู่ใน th.json เมนูทุกเมนูมีจริง เมนูประจำใจทำได้ในโซน (แรงก์ไม่เกินอุปกรณ์ช่วงนั้น) ภาพครบทุกท่า และมีบทพูด
   const recipesData = recipesSchema.parse(readJson('src/data/recipes.json'));
   const balanceData = balanceSchema.parse(readJson('src/data/balance.json'));
@@ -205,6 +214,7 @@ export function checkProject(): string[] {
     const menus = [...monster.favourite, ...monster.likes, ...monster.dislikes, monster.signature.recipe];
     if (recipesData[monster.favouriteDrink]?.category !== 'drink') problems.push(`src/data/monsters.json: ${id} favourite drink ${monster.favouriteDrink} is not a drink`);
     for (const recipe of menus) if (!recipesData[recipe]) problems.push(`src/data/monsters.json: ${id} uses unknown recipe ${recipe}`);
+    if (monster.favouriteTopping && !toppingData[monster.favouriteTopping]) problems.push(`src/data/monsters.json: ${id} favourite topping ${monster.favouriteTopping} is unknown`);
     const signature = recipesData[monster.signature.recipe];
     const highest = monster.zone === 1 ? 'D' : 'SSS';
     if (signature && ranks.indexOf(signature.rank) > ranks.indexOf(highest)) problems.push(`src/data/monsters.json: ${id} signature ${monster.signature.recipe} cannot be cooked in zone ${monster.zone}`);

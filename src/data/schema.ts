@@ -182,6 +182,27 @@ export const balanceSchema = z.strictObject({
       )
       .length(3),
   }),
+  /**
+   * ท็อปปิ้ง (งานอาหารโซน 1 ขั้นที่ 3): ชิ้นที่ถูกประเภทได้โบนัสราคาและความชอบชิ้นละ pieceBonus (ผงนัวใช้ bonus ของตัวเอง)
+   * ใส่ได้ไม่เกิน maxPieces ชิ้นต่อจาน นับทุกชิ้นรวมชิ้นผิดประเภท (ผู้ใช้ตัดสิน 9 พ.ย. 2026 02:44 เอาขวดความเยอะออก)
+   * ท็อปปิ้งที่มอนสเตอร์ชอบคูณ favouriteMultiplier · spots คือกลางชิ้นบนภาพอาหาร 48 พิกเซล ชิ้นที่ k วางที่จุด k
+   */
+  toppings: z.strictObject({
+    pieceBonus: z.number().positive(),
+    maxPieces: z.number().int().positive(),
+    favouriteMultiplier: z.number().positive(),
+    umamiSayChance: z.number().min(0).max(1),
+    openDelayMs: z.number().nonnegative(),
+    dropMs: z.number().positive(),
+    dropPx: z.number().int().positive(),
+    spots: z.strictObject({ food: z.array(z.tuple([z.number().int(), z.number().int()])).min(1), drink: z.array(z.tuple([z.number().int(), z.number().int()])).min(1) }),
+    /** ประกายผงนัวกะพริบวนบนจาน (ภาพตัวอย่าง umami_twinkle_1109.gif) ตำแหน่งนับจากกลางภาพผงนัว */
+    twinkle: z.strictObject({
+      at: z.tuple([z.number().int(), z.number().int()]),
+      glints: z.tuple([z.tuple([z.number().int(), z.number().int()]), z.tuple([z.number().int(), z.number().int()])]),
+      frames: z.array(z.strictObject({ ms: z.number().positive(), shape: z.enum(['none', 'dot', 'plus', 'big', 'glintLeft', 'glintRight']) })).min(1),
+    }),
+  }),
   fishing: z.strictObject({
     minutes: z.number().positive(),
     happinessGain: z.number(),
@@ -456,6 +477,8 @@ export const monstersSchema = z.record(
     favourite: tasteListSchema,
     /** เครื่องดื่มโปรด ×3 เท่าเมนูโปรด หยิบคู่กับเมนูโปรดในครั้งเดียวได้โบนัสเซ็ต "เข้ากันสุดๆ!" */
     favouriteDrink: z.string().regex(/^[a-z_]+$/),
+    /** ท็อปปิ้งที่ชอบ (รหัสใน toppings.json) ใส่แล้วความชอบคูณเพิ่ม และไม่ทำหน้าจะอ้วกแม้ใส่ผิดประเภท · ข้อมูลมาในขั้นที่ 8 */
+    favouriteTopping: z.string().regex(/^[a-z_]+$/).optional(),
     likes: tasteListSchema,
     dislikes: tasteListSchema,
     /** เมนูประจำใจ ขอเมื่อความชอบถึง 90% ต้องได้จึงไปถึง 100% */
@@ -716,6 +739,26 @@ export const ingredientsSchema = z.record(
     anyOf: z.array(z.string().regex(/^(ing|produce|fish)_[a-z_]+$/)).min(2).optional(),
   }),
 );
+
+/** ท็อปปิ้งหนึ่งอย่าง item คือของในกระเป๋าที่ใช้ชิ้นละ 1 ต่อจาน · art คือภาพบนจาน 48 พิกเซล · kind บอกท่าตอนร่วง (ผงฟุ้งเป็นละออง ลูกชิ้นกระเซ็นในซุป) */
+export const toppingsSchema = z.record(
+  z.string().regex(/^[a-z_]+$/),
+  z.strictObject({
+    item: z.string().regex(/^(ing|produce)_[a-z_]+$/),
+    type: z.enum(['savory', 'sweet', 'drink']),
+    art: z.string().regex(/^[a-z0-9_]+$/),
+    kind: z.enum(['piece', 'powder', 'ball']),
+    /** โบนัสต่อชิ้นแทน pieceBonus (ผงนัว +20%) */
+    bonus: z.number().positive().optional(),
+    /** ใส่ได้กี่ชิ้นต่อจาน (ผงนัวจานละช้อน) */
+    perDish: z.number().int().positive().optional(),
+    /** ลูกชิ้นใส่ได้เฉพาะซุปและแกง */
+    soupOnly: z.literal(true).optional(),
+    /** ประกายกะพริบวนค้างบนจาน (ผงนัว) */
+    twinkle: z.literal(true).optional(),
+  }),
+);
+export type Toppings = z.infer<typeof toppingsSchema>;
 
 export type Recipe = z.infer<typeof recipeSchema>;
 export type Ingredients = z.infer<typeof ingredientsSchema>;

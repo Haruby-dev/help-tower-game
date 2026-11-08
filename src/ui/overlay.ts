@@ -6,6 +6,7 @@ import { needsRotation, uiZoomFor } from '../core/viewport';
 import display from '../data/display.json';
 import { createChestWindow } from './chest';
 import { createCookingWindow } from './cooking';
+import { createDecorateWindow } from './decorate';
 import { createHud } from './hud';
 import { createJoystick } from './joystick';
 import { createPhone } from './phone';
@@ -89,6 +90,7 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   // ปุ่มจัดวางอยู่ในชั้นเดียวกับ HUD หน้าต่าง สมุด และการ์ดที่สร้างทีหลังจึงทับปุ่มนี้ได้
   createArrange(uiRoot);
   createCookingWindow(uiRoot);
+  createDecorateWindow(uiRoot);
   createGioWindows(uiRoot);
   createTrayWindow(uiRoot);
   createWorldBubbles(uiRoot);

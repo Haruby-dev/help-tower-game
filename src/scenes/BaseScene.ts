@@ -1035,7 +1035,7 @@ export class BaseScene extends Phaser.Scene {
     if (served) this.serveDishes();
   }
 
-  /** อาหารทุกจานเข้ากระเป๋า เด้งป้ายพร้อมดาวเหนือหัวตัวเอก */
+  /** อาหารทุกจานเข้ากระเป๋า เด้งป้ายพร้อมดาวเหนือหัวตัวเอก แล้วเปิดหน้าแต่งจาน */
   private serveDishes(): void {
     const { slot } = gameState.world.cooking;
     if (!slot || !this.campfire) return;
@@ -1053,6 +1053,8 @@ export class BaseScene extends Phaser.Scene {
     // ป้ายสูงตามภาพอาหาร จึงยกขึ้นอีกครึ่งหนึ่งของส่วนที่สูงกว่าป้ายผัก ขอบล่างจะได้อยู่เหนือหัว
     const extra = Math.max(0, Math.ceil((this.textures.getFrame(key).height - DISH_POP_BASE_PX) / 2));
     popPill(this, this.player.feetX, this.player.feetY - PLAYER_HEAD_PX - extra, key, `+${slot.count} ${name}`, gameState.viewport.zoom, `star_badge_${Math.min(3, slot.stars)}`);
+    // เห็นป้ายเด้งก่อน แล้วจึงเปิดหน้าแต่งจาน (แต่งครั้งเดียวได้ทุกจาน)
+    this.time.delayedCall(balance.toppings.openDelayMs, () => eventBus.emit('decorate-open', { item, count: slot.count }));
   }
 
   /** ลุกจากกองไฟหรืออาหารสุกแล้ว เสียงผัดค่อย ๆ หยุด */
@@ -1087,7 +1089,7 @@ export class BaseScene extends Phaser.Scene {
     return isCooked(slot) ? 'action.collect' : null;
   }
 
-  /** เก็บได้เมื่อสุกแล้ว กระเป๋าเต็มอาหารยังรออยู่ที่กองไฟ */
+  /** เก็บได้เมื่อสุกแล้ว กระเป๋าเต็มอาหารยังรออยู่ที่กองไฟ เก็บแล้วเปิดหน้าแต่งจาน */
   private useCampfire(): void {
     const { slot } = gameState.world.cooking;
     if (!slot) {
@@ -1101,6 +1103,7 @@ export class BaseScene extends Phaser.Scene {
     }
     gameState.setWorld(next);
     if (slot.recipe === MYSTERY) eventBus.emit('player-says', 'mysteryFood');
+    else eventBus.emit('decorate-open', { item: dishItem(slot.recipe, slot.stars), count: slot.count });
   }
 
   private createPlots(ground: Phaser.Tilemaps.TilemapLayer): void {

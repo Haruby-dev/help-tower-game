@@ -1,0 +1,15 @@
+{
+  "umami_powder": { "item": "ing_umami_powder", "type": "savory", "art": "topping_umami_powder", "kind": "powder", "bonus": 0.2, "perDish": 1, "twinkle": true },
+  "scallion": { "item": "produce_scallion", "type": "savory", "art": "topping_scallion_sliced", "kind": "piece" },
+  "fried_garlic": { "item": "ing_fried_garlic", "type": "savory", "art": "topping_fried_garlic", "kind": "piece" },
+  "chili_flakes": { "item": "ing_chili_flakes", "type": "savory", "art": "topping_chili_flakes", "kind": "powder" },
+  "toasted_sesame": { "item": "ing_toasted_sesame", "type": "savory", "art": "topping_toasted_sesame", "kind": "powder" },
+  "fish_ball": { "item": "ing_fish_ball", "type": "savory", "art": "topping_fish_ball", "kind": "ball", "soupOnly": true },
+  "shrimp_ball": { "item": "ing_shrimp_ball", "type": "savory", "art": "topping_shrimp_ball", "kind": "ball", "soupOnly": true },
+  "honey": { "item": "ing_honey", "type": "sweet", "art": "topping_honey_drizzle", "kind": "piece" },
+  "strawberry": { "item": "produce_strawberry", "type": "sweet", "art": "topping_strawberry_slice", "kind": "piece" },
+  "blueberry": { "item": "produce_blueberry", "type": "sweet", "art": "topping_blueberry", "kind": "piece" },
+  "whipped_cream": { "item": "ing_whipped_cream", "type": "sweet", "art": "topping_whipped_cream", "kind": "piece" },
+  "rainbow_sprinkles": { "item": "ing_rainbow_sprinkles", "type": "sweet", "art": "topping_rainbow_sprinkles", "kind": "powder" },
+  "coconut_jelly": { "item": "ing_coconut_jelly", "type": "drink", "art": "topping_coconut_jelly", "kind": "piece" }
+}

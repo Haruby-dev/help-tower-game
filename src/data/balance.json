@@ -449,6 +449,35 @@
       "steamMs": 450
     }
   },
+  "toppings": {
+    "pieceBonus": 0.1,
+    "maxPieces": 3,
+    "favouriteMultiplier": 1.5,
+    "umamiSayChance": 0.5,
+    "openDelayMs": 700,
+    "dropMs": 280,
+    "dropPx": 16,
+    "spots": {
+      "food": [[23, 20], [16, 23], [30, 22], [20, 15], [28, 15], [24, 27]],
+      "drink": [[22, 16], [16, 17], [28, 17], [19, 14], [26, 14], [22, 19]]
+    },
+    "twinkle": {
+      "at": [3, -1],
+      "glints": [[-5, 2], [6, 1]],
+      "frames": [
+        { "ms": 350, "shape": "none" },
+        { "ms": 90, "shape": "dot" },
+        { "ms": 90, "shape": "plus" },
+        { "ms": 160, "shape": "big" },
+        { "ms": 90, "shape": "plus" },
+        { "ms": 90, "shape": "dot" },
+        { "ms": 220, "shape": "glintLeft" },
+        { "ms": 160, "shape": "none" },
+        { "ms": 220, "shape": "glintRight" },
+        { "ms": 300, "shape": "none" }
+      ]
+    }
+  },
   "fishing": {
     "minutes": 30,
     "happinessGain": 8,
