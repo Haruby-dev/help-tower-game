@@ -1,4 +1,4 @@
-# ON HOLD — DO NOT SEND. Her rule (2026-11-06 19:17): finish ALL phone UI first (app icons, every app page) and wait until SHE asks for the prompt. This draft is only a starting point.
+# SUPERSEDED by prompt_phone_ui_2026-11-07.md — DO NOT SEND. Her rule (2026-11-06 19:17): finish ALL phone UI first (app icons, every app page) and wait until SHE asks for the prompt. This draft is only a starting point.
 
 ```
 Phone UI redesign (approved by her 2026-11-06) + strawberry juice art.

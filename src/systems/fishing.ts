@@ -24,10 +24,6 @@ export const isFish = (item: string): boolean => item.startsWith(FISH_PREFIX) &&
 export const baitOfItem = (item: string): string | null => Object.entries(baits).find(([, bait]) => bait.item === item)?.[0] ?? null;
 export const isBait = (item: string): boolean => baitOfItem(item) !== null;
 
-/** สูตรที่เขียนว่า ing_fish_F ใช้ปลาแรงก์ F ชนิดไหนก็ได้ */
-const FISH_GROUP = /^ing_fish_([A-Z]+)$/;
-export const fishGroupRank = (item: string): string | null => FISH_GROUP.exec(item)?.[1] ?? null;
-export const fishGroupOf = (item: string): string | null => (isFish(item) ? `ing_fish_${fishTable[fishOfItem(item)]!.rank}` : null);
 
 export const isNight = (hour: number): boolean => hour >= rules.nightFromHour;
 

@@ -685,5 +685,6 @@
         "y": 10
       }
     }
-  }
+  },
+  "crafting": { "materials": ["rice_straw", "banana_rope", "bamboo"] }
 }

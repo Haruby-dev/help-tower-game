@@ -12,12 +12,10 @@ import {
   eatItem,
   fullnessOf,
   isCooked,
-  matchRecipe,
   minutesFor,
   parseDish,
   recipes,
   startCooking,
-  startExperiment,
   tickCooking,
 } from '../../src/systems/cooking';
 import { countOf } from '../../src/systems/farm';
@@ -40,9 +38,9 @@ describe('recipe data', () => {
     expect(Object.keys(recipes).length).toBeGreaterThanOrEqual(33);
   });
 
-  it('knows the 3 GDD recipes and 3 starter drinks from day 1', () => {
+  it('knows the 3 GDD recipes, 3 starter drinks and plain rice from day 1', () => {
     expect(newWorld().recipes.known.sort()).toEqual(
-      ['basil_tea', 'boiled_egg', 'grilled_fish', 'home_kaprao', 'tomato_juice', 'warm_honey_milk'].sort(),
+      ['basil_tea', 'boiled_egg', 'grilled_fish', 'home_kaprao', 'plain_rice', 'tomato_juice', 'warm_honey_milk'].sort(),
     );
   });
 
@@ -118,36 +116,14 @@ describe('cooking', () => {
   });
 });
 
-describe('experimenting', () => {
-  it('unlocks a recipe when the mix matches exactly', () => {
-    const mix = { produce_tomato: 2, produce_garlic: 1, ing_salt: 1 };
-    expect(matchRecipe(mix)).toBe('tomato_soup');
-    const next = startExperiment(newWorld(), mix, NO_BONUS)!;
-    expect(next.recipes.known).toContain('tomato_soup');
-    expect(next.cooking.slot?.recipe).toBe('tomato_soup');
-  });
-
-  it('makes mystery food from a wrong mix: ingredients gone, happiness −5, fullness +5', () => {
+describe('no more experimenting (zone1 food update 1.6)', () => {
+  it('the mixing mode is gone but mystery food already at the campfire can still be collected', () => {
     const start = newWorld();
-    const mix = { produce_chili: 2 };
-    const next = startExperiment(start, mix, NO_BONUS)!;
-    expect(next.cooking.slot?.recipe).toBe(MYSTERY);
-    expect(countOf(next.bag, 'produce_chili')).toBe(countOf(start.bag, 'produce_chili') - 2);
-    const done = collectDish(cooked(next))!;
-    expect(done.gauges.happiness).toBe(start.gauges.happiness - 5);
-    const item = dishItem(MYSTERY, 1);
-    expect(fullnessOf(item)).toBe(balance.cooking.mystery.fullness);
-    expect(fullnessOf(item)).toBe(5);
+    const withMystery: World = { ...start, cooking: { slot: { recipe: MYSTERY, stars: 1, minutesLeft: 0, count: 1 } } };
+    const done = collectDish(withMystery)!;
+    expect(done.gauges.happiness).toBe(start.gauges.happiness - balance.cooking.mystery.happinessPenalty);
+    expect(fullnessOf(dishItem(MYSTERY, 1))).toBe(balance.cooking.mystery.fullness);
     expect(done.recipes.known).not.toContain(MYSTERY);
-  });
-
-  it('does not match a recipe the campfire cannot make', () => {
-    expect(matchRecipe({ produce_rice: 1, ing_fish_F: 1, produce_scallion: 1, produce_garlic: 1 })).toBeNull();
-  });
-
-  it('refuses an empty mix or what is not in the bag', () => {
-    expect(startExperiment(newWorld(), {}, NO_BONUS)).toBeNull();
-    expect(startExperiment(newWorld(), { ing_cocoa: 1 }, NO_BONUS)).toBeNull();
   });
 });
 

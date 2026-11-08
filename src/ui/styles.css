@@ -1132,26 +1132,9 @@ canvas {
   flex: none;
 }
 
-.cook-empty,
-.cook-mix__tray {
+.cook-empty {
   margin: 4px 0;
   font-size: 13px;
-}
-
-.cook-mix__tray {
-  font-weight: 700;
-}
-
-.cook-mix__actions {
-  display: flex;
-  flex: none;
-  gap: 4px;
-}
-
-.cook-mix__items {
-  display: grid;
-  flex: none;
-  grid-template-columns: repeat(auto-fill, max(44px, calc(var(--px) * 36)));
 }
 
 .bag-slot {
@@ -1289,8 +1272,7 @@ canvas {
   overflow: hidden;
 }
 
-.cook-list,
-.cook-pantry {
+.cook-list {
   min-height: 0;
   overflow-y: auto;
   touch-action: pan-y;
@@ -1300,13 +1282,6 @@ canvas {
   display: flex;
   flex-direction: column;
   gap: calc(var(--px) * 3);
-}
-
-.cook-pantry {
-  display: grid;
-  align-content: start;
-  grid-template-columns: repeat(auto-fill, max(44px, calc(var(--px) * 34)));
-  gap: calc(var(--px) * 1);
 }
 
 .cook-card {
@@ -1470,25 +1445,8 @@ canvas {
   color: #fff;
 }
 
-.cook-plate__remove {
-  display: grid;
-  min-width: 44px;
-  min-height: 44px;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
 .cook-go {
   min-width: 120px;
-  margin-top: auto;
-}
-
-.cook-actions {
-  display: flex;
-  gap: 4px;
   margin-top: auto;
 }
 
@@ -1511,8 +1469,7 @@ canvas {
   flex: none;
 }
 
-.cook-go,
-.cook-actions {
+.cook-go {
   align-self: center;
 }
 
@@ -1554,8 +1511,7 @@ canvas {
   color: var(--book-text);
 }
 
-.cook-panel .cook-go,
-.cook-panel #mix-go {
+.cook-panel .cook-go {
   border-image-source: var(--theme-button);
   color: #fffaf4;
 }

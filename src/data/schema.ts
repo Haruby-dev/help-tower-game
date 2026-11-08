@@ -271,6 +271,8 @@ export const balanceSchema = z.strictObject({
   }),
   /** รหัสปุ๋ยในกระเป๋ากับระดับของมัน */
   fertilizer: z.strictObject({ tiers: z.record(z.string().regex(/^fertilizer_[a-z0-9_]+$/), z.number().int().min(2).max(3)) }),
+  /** วัสดุคราฟ (zone1 food update 4) ขายไม่ได้ ไม้ไผ่ได้จากเกต 2 (M8) ตอนนี้เสกจากการ์ดเดฟ */
+  crafting: z.strictObject({ materials: z.array(z.string().regex(/^[a-z_]+$/)).min(1) }),
   /** มอนสเตอร์มาเยี่ยมและสูตรความชอบ ตาม GDD · rankBase เป็นค่าชั่วคราว (GDD ไม่ได้ระบุ) ปรับใน M10 */
   monsters: z.strictObject({
     rankBase: z.record(z.string().min(1), z.number().positive()),
@@ -630,7 +632,8 @@ export type SaveFile = z.infer<typeof saveFileSchema>;
 export const cropsSchema = z.record(
   z.string().regex(/^[a-z_]+$/),
   z.strictObject({
-    source: z.enum(['start', 'shop', 'gate']),
+    /** start = พืชเริ่มเกม ขายทุกวัน · daily = ขายทุกวันแต่ไม่ใช่พืชเริ่มเกม (มะนาว ผักชี) · shop = ร้านสุ่ม · gate = ในเกต */
+    source: z.enum(['start', 'daily', 'shop', 'gate']),
     growDays: z.number().int().positive(),
     regrowDays: z.number().int().positive().nullable(),
     firstYield: z.number().int().positive(),
@@ -648,10 +651,22 @@ export type Crops = z.infer<typeof cropsSchema>;
 const recipeSchema = z.strictObject({
   category: z.enum(['savory', 'sweet', 'drink']),
   rank: z.string().min(1),
-  ingredients: z.record(z.string().regex(/^(produce|ing)_[a-zA-Z_]+$/), z.number().int().positive()),
+  /** produce_ ผัก · ing_ วัตถุดิบหรือกลุ่มวัตถุดิบ (ingredients.json) · fish_ ปลาระบุชนิด เช่น กุ้ง ปู ปลาทู */
+  ingredients: z.record(z.string().regex(/^(produce|ing|fish)_[a-zA-Z_]+$/), z.number().int().positive()),
   price: z.number().int().positive(),
-  /** วิธีได้สูตร start คือรู้ตั้งแต่วันแรก */
-  source: z.enum(['start', 'shop', 'gate', 'quest']),
+  /**
+   * วิธีได้สูตร (GDD "การได้สูตร") start รู้ตั้งแต่วันแรก · quest เควสวันที่ 4 · gate สูตรลับเกต · shop ร้านสุ่ม · shop_permanent ร้านขายถาวร
+   * chest เศษสูตรจากหีบตกปลา · teacher มอนสเตอร์สอน · mortar รู้เองตอนเจอครก · special_quest ภารกิจพิเศษ · rank_special สูตรพิเศษแรงก์ตัวละคร
+   */
+  source: z.enum(['start', 'quest', 'gate', 'shop', 'shop_permanent', 'chest', 'teacher', 'mortar', 'special_quest', 'rank_special']),
+  /** ภาชนะตามวิธีทำ (zone1 food update 2) mortar ทำที่ครกหินเก่าเท่านั้น ไม่ทำที่กองไฟ */
+  method: z.enum(['grill', 'iron_pan', 'clay_pot', 'bowl', 'pot', 'pan', 'oven', 'mortar']),
+  /** นับเป็นกับข้าวตอนจัดชุด */
+  sideDish: z.literal(true).optional(),
+  /** ซุปหรือแกง ลูกชิ้นโรยได้เฉพาะเมนูกลุ่มนี้ */
+  soup: z.literal(true).optional(),
+  /** ส่วนประกอบชุด (ข้าวสวย) ไม่นับเป็นสูตร */
+  setPart: z.literal(true).optional(),
   /** รหัสภาพในทะเบียน ไม่มีคือใช้กล่องสีแทน */
   icon: z.string().min(1).optional(),
   /** ภาพเล็กสำหรับช่องกระเป๋า ไม่เกิน 32px */
@@ -662,9 +677,22 @@ const recipeSchema = z.strictObject({
 export const recipeStepsSchema = z.record(z.string().regex(/^[a-z_]+$/), z.array(z.string().min(1).max(40)).length(3));
 
 export const recipesSchema = z.record(z.string().regex(/^[a-z_]+$/), recipeSchema);
-export const ingredientsSchema = z.record(z.string().regex(/^[a-zA-Z_]+$/), z.strictObject({ value: z.number().positive() }));
+const fishKindSchema = z.enum(['fish', 'shrimp', 'crab', 'squid']);
+
+/**
+ * วัตถุดิบ value คือมูลค่า · กลุ่มที่สูตรใช้แทนของหลายชนิด: fish ปลาตามชนิดและแรงก์ (ไม่ระบุแรงก์คือแรงก์ไหนก็ได้) · anyOf ของชนิดใดก็ได้ในรายการ
+ */
+export const ingredientsSchema = z.record(
+  z.string().regex(/^[a-zA-Z_]+$/),
+  z.strictObject({
+    value: z.number().positive(),
+    fish: z.strictObject({ kind: fishKindSchema, rank: z.string().min(1).optional() }).optional(),
+    anyOf: z.array(z.string().regex(/^(ing|produce|fish)_[a-z_]+$/)).min(2).optional(),
+  }),
+);
 
 export type Recipe = z.infer<typeof recipeSchema>;
+export type Ingredients = z.infer<typeof ingredientsSchema>;
 export type Recipes = z.infer<typeof recipesSchema>;
 
 const rankSchema = z.enum(['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS']);
@@ -673,6 +701,8 @@ const rankSchema = z.enum(['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS']);
 export const fishSchema = z.record(
   z.string().regex(/^[a-z_]+$/),
   z.strictObject({
+    /** ปลา กุ้ง ปู หมึก สูตรที่เขียนว่าปลานับเฉพาะ fish */
+    kind: fishKindSchema,
     rank: rankSchema,
     hours: z.tuple([z.number(), z.number()]).nullable(),
     weather: z.enum(['any', 'sunny', 'rain', 'cloudy']),

@@ -165,6 +165,12 @@ export function checkProject(): string[] {
 
   const cropIds = cropsSchema.parse(readJson('src/data/crops.json'));
   const ingredientIds = ingredientsSchema.parse(readJson('src/data/ingredients.json'));
+  const fishData = fishSchema.parse(readJson('src/data/fish.json'));
+  const knownItem = (item: string): boolean => {
+    if (item.startsWith('produce_')) return Boolean(cropIds[item.slice('produce_'.length)]);
+    if (item.startsWith('fish_')) return Boolean(fishData[item.slice('fish_'.length)]);
+    return Boolean(ingredientIds[item.slice('ing_'.length)]);
+  };
   for (const id of Object.keys(ingredientIds)) {
     if (!translations[`ingredient.${id}.name`]) problems.push(`src/i18n/th.json: ingredient ${id} has no name`);
   }
@@ -174,8 +180,15 @@ export function checkProject(): string[] {
     if (recipe.bagIcon && !registry[recipe.bagIcon]) problems.push(`src/data/recipes.json: ${id} bag icon ${recipe.bagIcon} is not registered`);
     if (!recipeStepsSchema.parse(readJson('src/data/recipe_steps.json'))[id]) problems.push(`src/data/recipe_steps.json: ${id} has no steps`);
     for (const item of Object.keys(recipe.ingredients)) {
-      const known = item.startsWith('produce_') ? cropIds[item.slice('produce_'.length)] : ingredientIds[item.slice('ing_'.length)];
-      if (!known) problems.push(`src/data/recipes.json: ${id} uses unknown ${item}`);
+      if (!knownItem(item)) problems.push(`src/data/recipes.json: ${id} uses unknown ${item}`);
+    }
+  }
+  // กลุ่มวัตถุดิบ (ปลาชนิดไหนก็ได้ ลูกชิ้น) ต้องอ้างของที่มีจริง และกลุ่มปลาต้องมีปลาอย่างน้อยหนึ่งชนิด
+  for (const [id, entry] of Object.entries(ingredientIds)) {
+    for (const member of entry.anyOf ?? []) if (!knownItem(member)) problems.push(`src/data/ingredients.json: ${id} uses unknown ${member}`);
+    const group = entry.fish;
+    if (group && !Object.values(fishData).some((fish) => fish.kind === group.kind && (group.rank === undefined || fish.rank === group.rank))) {
+      problems.push(`src/data/ingredients.json: fish group ${id} matches no fish`);
     }
   }
 

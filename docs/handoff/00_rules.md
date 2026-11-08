@@ -1,5 +1,17 @@
 # 00 — Working rules (read first in every new chat)
 
+> ## สรุปภาษาไทย (อ่านก่อน)
+> - **ตอบเธอเป็นภาษาไทยทุกข้อความ** แม้หลังรันเครื่องมือยาว ๆ หรือดึกแค่ไหน ภาษาอังกฤษใช้ได้เฉพาะ prompt ส่งฝั่งโค้ดในกล่องโค้ด
+> - เปิด `00_where_is_what.md` ก่อนทำงานทุกครั้ง + รัน `git log` ดูว่าฝั่งโค้ดทำอะไรไปแล้ว ม็อกบนภาพเกมจริงเท่านั้น
+> - เธอไม่ใช่โปรแกรมเมอร์ ทำวางแผนกับกำกับภาพ **เธอไม่วาดเอง** เอาภาพอ้างอิงมา แล้วเราทำเป็นภาพในเกม
+> - ใช้เครดิต PixelLab ต้องบอกราคาและรอเธอโอเคทุกครั้ง งานวาดมือ/โค้ด 0 เครดิตไม่ต้องขอ
+> - ให้ตัวเลือกเป็นข้อ ๆ ติด ⭐ ที่แนะนำ และมีทางที่ประหยัดกว่าเสมอ · เธอพิมพ์ครึ่งประโยคบ่อย ให้เดา 2–3 ความหมายแล้วถาม
+> - บันทึก 01_status และ handoff เขียนเป็นภาษาไทยตั้งแต่ 7 พ.ย. 2026 23:50
+
+
+> **FIRST read `00_where_is_what.md` (status of every feature: in game / prompt sent / approved / lost) and run `git log` before any work. Mock existing screens on the REAL game only. Update that file on every approval, prompt and commit.** (added 2026-11-07 after the shop-E and bag-outside mix-ups)
+
+
 > **Also read `04_us.md` before starting. It explains HOW to work with her: show → explain → ask → wait. Don't rush, don't decide for her, and don't send prompts before she approves.**
 
 

@@ -47,7 +47,8 @@ export function offersFor(world: World): Offer[] {
     (treat): Offer => ({ id: `treats:${treat.item}`, tab: 'daily', group: 'treats', kind: 'item', target: treat.item, price: treat.price, currency: 'coins' }),
   );
   const starter = Object.entries(crops)
-    .filter(([, crop]) => crop.source === 'start' && crop.seedPrice !== null)
+    // พืชเริ่มเกมกับพืชที่ขายทุกวัน (มะนาว ผักชี)
+    .filter(([, crop]) => (crop.source === 'start' || crop.source === 'daily') && crop.seedPrice !== null)
     .map(([id]) => seedOffer(id, 'daily', 'seeds'));
   const rng = createRng(world.seed + world.day * DAY_MIX);
   const shopCrops = Object.entries(crops)

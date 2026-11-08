@@ -123,34 +123,24 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
   await expect(page.locator('#phone')).toBeVisible();
 });
 
-test('a wrong mix makes mystery food and the player says so', async ({ page }) => {
+test('mystery food left at the campfire from an old save is still collected, and the mixing tab is gone', async ({ page }) => {
   await open(page);
   await standAtFire(page);
   const act = page.locator('#action-button');
   await act.click();
-  await page.locator('[data-cook-tab="mix"]').click();
-  await page.locator('[data-mix-item="produce_chili"]').click();
-  await page.locator('[data-mix-item="produce_chili"]').click();
-  await page.locator('#mix-go').click();
-  expect((await state(page)).cooking.slot?.recipe).toBe('mystery');
-  await finishCooking(page);
+  // โหมดทดลองผสมเอาออกแล้ว (zone1 food update 1.6) เหลือแท็บคาว หวาน เครื่องดื่ม
+  await expect(page.locator('[data-cook-tab="mix"]')).toHaveCount(0);
+  await expect(page.locator('[data-cook-tab]')).toHaveCount(3);
+  await page.locator('#cook-close').click();
+  await page.evaluate(() => {
+    const s = (window as unknown as { __state: TestState }).__state;
+    s.setWorld({ ...s.world, cooking: { slot: { recipe: 'mystery', stars: 1, minutesLeft: 0, count: 1 } } });
+  });
   const before = (await state(page)).gauges.happiness;
   await act.click();
   await expect(page.locator('#player-bubble')).toContainText('หน้าตาแปลก');
   expect(await count(page, 'dish_mystery_1')).toBe(1);
   expect((await state(page)).gauges.happiness).toBeLessThan(before - 4);
-});
-
-test('a right mix unlocks the recipe', async ({ page }) => {
-  await open(page);
-  await standAtFire(page);
-  await page.locator('#action-button').click();
-  await page.locator('[data-cook-tab="mix"]').click();
-  for (const item of ['produce_tomato', 'produce_tomato', 'produce_garlic', 'ing_salt']) await page.locator(`[data-mix-item="${item}"]`).click();
-  await page.locator('#mix-go').click();
-  const world = await state(page);
-  expect(world.recipes.known).toContain('tomato_soup');
-  expect(world.cooking.slot?.recipe).toBe('tomato_soup');
 });
 
 test('the title screen shows the logo board and opens the save slots', async ({ page }) => {
@@ -206,7 +196,7 @@ test('cooking at the campfire plays the cooking move until walking away', async 
     .toContain('anim_cook_');
 });
 
-test('the campfire window shows what is missing and lets the pot be emptied', async ({ page }) => {
+test('the campfire window shows what is missing', async ({ page }) => {
   await open(page);
   await page.evaluate(() => {
     const s = (window as unknown as { __state: TestState }).__state;
@@ -217,14 +207,6 @@ test('the campfire window shows what is missing and lets the pot be emptied', as
   await page.locator('[data-recipe="home_kaprao"]').click();
   await expect(page.locator('[data-plate="ing_pork"]')).toHaveClass(/is-short/);
   await expect(page.locator('#cook-go')).toBeDisabled();
-  await page.locator('[data-cook-tab="mix"]').click();
-  await page.locator('[data-mix-item="produce_tomato"]').click();
-  await page.locator('[data-mix-item="produce_tomato"]').click();
-  await expect(page.locator('[data-plate="produce_tomato"]')).toContainText('×2');
-  await page.locator('[data-mix-remove="produce_tomato"]').click();
-  await expect(page.locator('[data-plate="produce_tomato"]')).toContainText('×1');
-  await page.locator('[data-mix-remove="produce_tomato"]').click();
-  await expect(page.locator('#mix-go')).toBeDisabled();
   await expect(page.locator('.cook-panel')).toHaveAttribute('data-theme', 'savory');
   await page.locator('[data-cook-tab="drink"]').click();
   await expect(page.locator('.cook-panel')).toHaveAttribute('data-theme', 'drink');

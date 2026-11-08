@@ -8,6 +8,8 @@
     },
     "price": 300,
     "source": "start",
+    "method": "grill",
+    "sideDish": true,
     "icon": "dish_icon_grilled_fish",
     "bagIcon": "dish_bag_grilled_fish"
   },
@@ -19,6 +21,8 @@
     },
     "price": 300,
     "source": "start",
+    "method": "clay_pot",
+    "sideDish": true,
     "icon": "dish_icon_boiled_egg",
     "bagIcon": "dish_bag_boiled_egg"
   },
@@ -27,10 +31,12 @@
     "rank": "F",
     "ingredients": {
       "produce_potato": 1,
-      "ing_salt": 1
+      "ing_salt": 1,
+      "ing_banana_leaf": 1
     },
     "price": 500,
     "source": "quest",
+    "method": "grill",
     "icon": "dish_icon_baked_potato",
     "bagIcon": "dish_bag_baked_potato"
   },
@@ -43,6 +49,7 @@
     },
     "price": 400,
     "source": "shop",
+    "method": "grill",
     "icon": "dish_icon_grilled_corn",
     "bagIcon": "dish_bag_grilled_corn"
   },
@@ -55,6 +62,7 @@
     },
     "price": 750,
     "source": "shop",
+    "method": "iron_pan",
     "icon": "dish_icon_strawberry_skewer",
     "bagIcon": "dish_bag_strawberry_skewer"
   },
@@ -71,6 +79,7 @@
     },
     "price": 1200,
     "source": "start",
+    "method": "iron_pan",
     "icon": "dish_icon_home_kaprao",
     "bagIcon": "dish_bag_home_kaprao"
   },
@@ -84,6 +93,8 @@
     },
     "price": 600,
     "source": "shop",
+    "method": "iron_pan",
+    "sideDish": true,
     "icon": "dish_icon_scallion_omelet",
     "bagIcon": "dish_bag_scallion_omelet"
   },
@@ -97,6 +108,8 @@
     },
     "price": 600,
     "source": "shop",
+    "method": "clay_pot",
+    "soup": true,
     "icon": "dish_icon_tomato_soup",
     "bagIcon": "dish_bag_tomato_soup"
   },
@@ -109,6 +122,7 @@
     },
     "price": 650,
     "source": "shop",
+    "method": "grill",
     "icon": "dish_icon_honey_apple_grill",
     "bagIcon": "dish_bag_honey_apple_grill"
   },
@@ -121,6 +135,7 @@
     },
     "price": 600,
     "source": "start",
+    "method": "clay_pot",
     "icon": "dish_icon_warm_honey_milk",
     "bagIcon": "dish_bag_warm_honey_milk"
   },
@@ -135,6 +150,8 @@
     },
     "price": 1200,
     "source": "shop",
+    "method": "pot",
+    "soup": true,
     "icon": "dish_icon_fish_congee",
     "bagIcon": "dish_bag_fish_congee"
   },
@@ -150,6 +167,7 @@
     },
     "price": 1200,
     "source": "shop",
+    "method": "pan",
     "icon": "dish_icon_corn_egg_fried_rice",
     "bagIcon": "dish_bag_corn_egg_fried_rice"
   },
@@ -164,6 +182,8 @@
     },
     "price": 1800,
     "source": "shop",
+    "method": "pot",
+    "soup": true,
     "icon": "dish_icon_potato_carrot_stew",
     "bagIcon": "dish_bag_potato_carrot_stew"
   },
@@ -177,6 +197,7 @@
     },
     "price": 1200,
     "source": "gate",
+    "method": "pan",
     "icon": "dish_icon_honey_pancake",
     "bagIcon": "dish_bag_honey_pancake"
   },
@@ -191,6 +212,7 @@
     },
     "price": 1200,
     "source": "gate",
+    "method": "pot",
     "icon": "dish_icon_strawberry_milk_pudding",
     "bagIcon": "dish_bag_strawberry_milk_pudding"
   },
@@ -202,6 +224,7 @@
     },
     "price": 400,
     "source": "start",
+    "method": "bowl",
     "icon": "dish_icon_tomato_juice",
     "bagIcon": "dish_bag_tomato_juice"
   },
@@ -213,6 +236,7 @@
     },
     "price": 300,
     "source": "start",
+    "method": "clay_pot",
     "icon": "dish_icon_basil_tea",
     "bagIcon": "dish_bag_basil_tea"
   },
@@ -224,6 +248,7 @@
     },
     "price": 1080,
     "source": "shop",
+    "method": "bowl",
     "icon": "dish_icon_strawberry_juice",
     "bagIcon": "dish_bag_strawberry_juice"
   },
@@ -236,6 +261,7 @@
     },
     "price": 400,
     "source": "shop",
+    "method": "bowl",
     "icon": "food_slime24",
     "bagIcon": "food_bag_food_slime24"
   },
@@ -249,6 +275,7 @@
     },
     "price": 500,
     "source": "shop",
+    "method": "clay_pot",
     "icon": "food_slime2",
     "bagIcon": "food_bag_food_slime2"
   },
@@ -262,6 +289,7 @@
     },
     "price": 500,
     "source": "shop",
+    "method": "clay_pot",
     "icon": "food_slime9",
     "bagIcon": "food_bag_food_slime9"
   },
@@ -276,6 +304,7 @@
     },
     "price": 1050,
     "source": "shop",
+    "method": "clay_pot",
     "icon": "food_slime8",
     "bagIcon": "food_bag_food_slime8"
   },
@@ -289,6 +318,7 @@
     },
     "price": 600,
     "source": "shop",
+    "method": "bowl",
     "icon": "food_slime1",
     "bagIcon": "food_bag_food_slime1"
   },
@@ -303,6 +333,7 @@
     },
     "price": 800,
     "source": "shop",
+    "method": "bowl",
     "icon": "food_slime12",
     "bagIcon": "food_bag_food_slime12"
   },
@@ -316,6 +347,7 @@
     },
     "price": 800,
     "source": "shop",
+    "method": "clay_pot",
     "icon": "food_bee22",
     "bagIcon": "food_bag_food_bee22"
   },
@@ -330,6 +362,7 @@
     },
     "price": 1200,
     "source": "shop",
+    "method": "pot",
     "icon": "food_bee7",
     "bagIcon": "food_bag_food_bee7"
   },
@@ -344,6 +377,7 @@
     },
     "price": 1200,
     "source": "shop",
+    "method": "pot",
     "icon": "food_bee12",
     "bagIcon": "food_bag_food_bee12"
   },
@@ -358,6 +392,7 @@
     },
     "price": 1500,
     "source": "shop",
+    "method": "pot",
     "icon": "food_bee6",
     "bagIcon": "food_bag_food_bee6"
   },
@@ -370,8 +405,9 @@
       "ing_cocoa": 1,
       "ing_sugar": 1
     },
-    "price": 1250,
+    "price": 1650,
     "source": "shop",
+    "method": "pan",
     "icon": "food_bee13",
     "bagIcon": "food_bag_food_bee13"
   },
@@ -384,8 +420,9 @@
       "ing_cocoa": 2,
       "ing_cream": 1
     },
-    "price": 2000,
+    "price": 2350,
     "source": "shop",
+    "method": "pot",
     "icon": "food_bee17",
     "bagIcon": "food_bag_food_bee17"
   },
@@ -400,6 +437,7 @@
     },
     "price": 2200,
     "source": "shop",
+    "method": "pan",
     "icon": "food_bee14",
     "bagIcon": "food_bag_food_bee14"
   },
@@ -415,6 +453,7 @@
     },
     "price": 3500,
     "source": "shop",
+    "method": "oven",
     "icon": "food_slime23",
     "bagIcon": "food_bag_food_slime23"
   },
@@ -430,7 +469,336 @@
     },
     "price": 3500,
     "source": "shop",
+    "method": "oven",
     "icon": "food_slime22",
     "bagIcon": "food_bag_food_slime22"
+  },
+  "cabbage_crispy_shrimp": {
+    "category": "savory",
+    "rank": "E",
+    "ingredients": {
+      "produce_cabbage": 1,
+      "produce_garlic": 1,
+      "ing_fish_sauce": 1,
+      "ing_dried_shrimp": 1
+    },
+    "price": 1000,
+    "source": "chest",
+    "method": "iron_pan",
+    "sideDish": true,
+    "icon": "dish_icon_cabbage_crispy_shrimp",
+    "bagIcon": "dish_bag_cabbage_crispy_shrimp"
+  },
+  "cucumber_salad": {
+    "category": "savory",
+    "rank": "F",
+    "ingredients": {
+      "produce_cucumber": 1,
+      "produce_chili": 1,
+      "produce_lime": 1,
+      "ing_fish_sauce": 1,
+      "ing_sugar": 1
+    },
+    "price": 650,
+    "source": "special_quest",
+    "method": "bowl",
+    "sideDish": true,
+    "icon": "dish_icon_cucumber_salad",
+    "bagIcon": "dish_bag_cucumber_salad"
+  },
+  "squid_salad": {
+    "category": "savory",
+    "rank": "E",
+    "ingredients": {
+      "ing_squid_any": 1,
+      "produce_chili": 1,
+      "produce_lime": 1,
+      "produce_coriander": 1,
+      "ing_fish_sauce": 1
+    },
+    "price": 1100,
+    "source": "chest",
+    "method": "bowl",
+    "sideDish": true,
+    "icon": "dish_icon_squid_salad",
+    "bagIcon": "dish_bag_squid_salad"
+  },
+  "fish_rice_ball": {
+    "category": "savory",
+    "rank": "F",
+    "ingredients": {
+      "produce_rice": 1,
+      "ing_fish_any": 1,
+      "ing_salt": 1
+    },
+    "price": 550,
+    "source": "rank_special",
+    "method": "grill",
+    "icon": "dish_icon_fish_rice_ball",
+    "bagIcon": "dish_bag_fish_rice_ball"
+  },
+  "hor_mok": {
+    "category": "savory",
+    "rank": "D",
+    "ingredients": {
+      "ing_fish_any": 1,
+      "ing_egg": 1,
+      "produce_chili": 1,
+      "produce_coriander": 1,
+      "ing_banana_leaf": 1
+    },
+    "price": 1200,
+    "source": "chest",
+    "method": "pot",
+    "sideDish": true,
+    "icon": "dish_icon_hor_mok",
+    "bagIcon": "dish_bag_hor_mok"
+  },
+  "cabbage_shrimp_soup": {
+    "category": "savory",
+    "rank": "E",
+    "ingredients": {
+      "produce_cabbage": 1,
+      "fish_shrimp": 1,
+      "produce_garlic": 1,
+      "produce_coriander": 1,
+      "ing_salt": 1
+    },
+    "price": 1150,
+    "source": "teacher",
+    "method": "clay_pot",
+    "sideDish": true,
+    "soup": true,
+    "icon": "dish_icon_cabbage_shrimp_soup",
+    "bagIcon": "dish_bag_cabbage_shrimp_soup"
+  },
+  "grilled_shrimp": {
+    "category": "savory",
+    "rank": "F",
+    "ingredients": {
+      "fish_shrimp": 2,
+      "ing_salt": 1
+    },
+    "price": 650,
+    "source": "shop",
+    "method": "grill",
+    "sideDish": true,
+    "icon": "dish_icon_grilled_shrimp",
+    "bagIcon": "dish_bag_grilled_shrimp"
+  },
+  "garlic_shrimp": {
+    "category": "savory",
+    "rank": "E",
+    "ingredients": {
+      "fish_shrimp": 1,
+      "produce_garlic": 1,
+      "ing_salt": 1
+    },
+    "price": 600,
+    "source": "chest",
+    "method": "iron_pan",
+    "sideDish": true,
+    "icon": "dish_icon_garlic_shrimp",
+    "bagIcon": "dish_bag_garlic_shrimp"
+  },
+  "steamed_crab": {
+    "category": "savory",
+    "rank": "D",
+    "ingredients": {
+      "fish_crab": 1,
+      "produce_chili": 1,
+      "produce_garlic": 1,
+      "produce_lime": 1,
+      "produce_coriander": 1
+    },
+    "price": 1250,
+    "source": "rank_special",
+    "method": "pot",
+    "sideDish": true,
+    "icon": "dish_icon_steamed_crab",
+    "bagIcon": "dish_bag_steamed_crab"
+  },
+  "mackerel_chili_dip": {
+    "category": "savory",
+    "rank": "E",
+    "ingredients": {
+      "fish_lost_mackerel": 1,
+      "produce_chili": 1,
+      "produce_garlic": 1,
+      "produce_lime": 1
+    },
+    "price": 1100,
+    "source": "rank_special",
+    "method": "mortar",
+    "sideDish": true,
+    "icon": "dish_icon_mackerel_chili_dip",
+    "bagIcon": "dish_bag_mackerel_chili_dip"
+  },
+  "kapi_chili_dip": {
+    "category": "savory",
+    "rank": "E",
+    "ingredients": {
+      "ing_kapi": 1,
+      "produce_chili": 1,
+      "produce_garlic": 1,
+      "produce_lime": 1,
+      "ing_sugar": 1
+    },
+    "price": 1300,
+    "source": "teacher",
+    "method": "mortar",
+    "sideDish": true,
+    "icon": "dish_icon_kapi_chili_dip",
+    "bagIcon": "dish_bag_kapi_chili_dip"
+  },
+  "fruit_veg_salad": {
+    "category": "sweet",
+    "rank": "E",
+    "ingredients": {
+      "produce_cabbage": 1,
+      "produce_carrot": 1,
+      "produce_cucumber": 1,
+      "produce_tomato": 1,
+      "produce_strawberry": 1,
+      "ing_sugar": 1
+    },
+    "price": 1600,
+    "source": "shop_permanent",
+    "method": "bowl",
+    "icon": "dish_icon_fruit_veg_salad",
+    "bagIcon": "dish_bag_fruit_veg_salad"
+  },
+  "kaprao_shrimp": {
+    "category": "savory",
+    "rank": "E",
+    "ingredients": {
+      "produce_basil": 1,
+      "produce_chili": 1,
+      "produce_garlic": 1,
+      "fish_shrimp": 1,
+      "ing_fish_sauce": 1
+    },
+    "price": 800,
+    "source": "shop",
+    "method": "iron_pan",
+    "sideDish": true,
+    "icon": "dish_icon_kaprao_shrimp",
+    "bagIcon": "dish_bag_kaprao_shrimp"
+  },
+  "lime_steamed_fish": {
+    "category": "savory",
+    "rank": "D",
+    "ingredients": {
+      "ing_fish_any": 1,
+      "produce_lime": 1,
+      "produce_garlic": 1,
+      "produce_chili": 1,
+      "produce_coriander": 1
+    },
+    "price": 1200,
+    "source": "rank_special",
+    "method": "pot",
+    "sideDish": true,
+    "icon": "dish_icon_lime_steamed_fish",
+    "bagIcon": "dish_bag_lime_steamed_fish"
+  },
+  "buttered_corn": {
+    "category": "sweet",
+    "rank": "F",
+    "ingredients": {
+      "produce_corn": 1,
+      "ing_butter": 1,
+      "ing_salt": 1
+    },
+    "price": 800,
+    "source": "shop",
+    "method": "iron_pan",
+    "icon": "dish_icon_buttered_corn",
+    "bagIcon": "dish_bag_buttered_corn"
+  },
+  "pumpkin_custard": {
+    "category": "sweet",
+    "rank": "D",
+    "ingredients": {
+      "produce_pumpkin": 1,
+      "ing_egg": 1,
+      "ing_milk": 1,
+      "ing_sugar": 1
+    },
+    "price": 1400,
+    "source": "chest",
+    "method": "pot",
+    "icon": "dish_icon_pumpkin_custard",
+    "bagIcon": "dish_bag_pumpkin_custard"
+  },
+  "soy_milk": {
+    "category": "drink",
+    "rank": "F",
+    "ingredients": {
+      "produce_soybean": 1,
+      "ing_sugar": 1
+    },
+    "price": 300,
+    "source": "special_quest",
+    "method": "clay_pot",
+    "icon": "dish_icon_soy_milk",
+    "bagIcon": "dish_bag_soy_milk"
+  },
+  "corn_milk": {
+    "category": "drink",
+    "rank": "F",
+    "ingredients": {
+      "produce_corn": 1,
+      "ing_milk": 1,
+      "ing_sugar": 1
+    },
+    "price": 650,
+    "source": "chest",
+    "method": "clay_pot",
+    "icon": "dish_icon_corn_milk",
+    "bagIcon": "dish_bag_corn_milk"
+  },
+  "fish_cake": {
+    "category": "savory",
+    "rank": "E",
+    "ingredients": {
+      "ing_fish_any": 1,
+      "ing_egg": 1,
+      "produce_chili": 1,
+      "produce_coriander": 1
+    },
+    "price": 850,
+    "source": "mortar",
+    "method": "mortar",
+    "sideDish": true,
+    "icon": "dish_icon_fish_cake",
+    "bagIcon": "dish_bag_fish_cake"
+  },
+  "grilled_meatball_skewer": {
+    "category": "savory",
+    "rank": "F",
+    "ingredients": {
+      "ing_meatball": 2,
+      "produce_chili": 1,
+      "ing_sugar": 1
+    },
+    "price": 500,
+    "source": "mortar",
+    "method": "grill",
+    "icon": "dish_icon_grilled_meatball_skewer",
+    "bagIcon": "dish_bag_grilled_meatball_skewer"
+  },
+  "plain_rice": {
+    "category": "savory",
+    "rank": "F",
+    "ingredients": {
+      "produce_rice": 1
+    },
+    "price": 300,
+    "source": "start",
+    "method": "clay_pot",
+    "setPart": true,
+    "icon": "dish_icon_plain_rice",
+    "bagIcon": "dish_bag_plain_rice"
   }
 }

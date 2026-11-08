@@ -59,6 +59,26 @@
     "sellPrice": 100,
     "seedPrice": 100
   },
+  "lime": {
+    "source": "daily",
+    "growDays": 7,
+    "regrowDays": 3,
+    "regrowTimes": 3,
+    "firstYield": 3,
+    "regrowYield": 2,
+    "sellPrice": 120,
+    "seedPrice": 400
+  },
+  "coriander": {
+    "source": "daily",
+    "growDays": 3,
+    "regrowDays": null,
+    "regrowTimes": 0,
+    "firstYield": 3,
+    "regrowYield": null,
+    "sellPrice": 80,
+    "seedPrice": 80
+  },
   "carrot": {
     "source": "shop",
     "growDays": 4,

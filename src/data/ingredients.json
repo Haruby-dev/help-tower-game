@@ -6,7 +6,11 @@
     "value": 150
   },
   "fish_F": {
-    "value": 80
+    "value": 80,
+    "fish": {
+      "kind": "fish",
+      "rank": "F"
+    }
   },
   "milk": {
     "value": 120
@@ -36,7 +40,7 @@
     "value": 200
   },
   "cocoa": {
-    "value": 150
+    "value": 350
   },
   "cherry": {
     "value": 100
@@ -49,5 +53,72 @@
   },
   "vanilla": {
     "value": 150
+  },
+  "fish_any": {
+    "value": 150,
+    "fish": {
+      "kind": "fish"
+    }
+  },
+  "squid_any": {
+    "value": 250,
+    "fish": {
+      "kind": "squid"
+    }
+  },
+  "meatball": {
+    "value": 80,
+    "anyOf": [
+      "ing_fish_ball",
+      "ing_shrimp_ball"
+    ]
+  },
+  "kapi": {
+    "value": 350
+  },
+  "dried_shrimp": {
+    "value": 150
+  },
+  "dried_fish": {
+    "value": 150
+  },
+  "dried_chili": {
+    "value": 80
+  },
+  "umami_powder": {
+    "value": 100
+  },
+  "chili_flakes": {
+    "value": 50
+  },
+  "ground_dried_shrimp": {
+    "value": 80
+  },
+  "fish_ball": {
+    "value": 80
+  },
+  "shrimp_ball": {
+    "value": 80
+  },
+  "banana_leaf": {
+    "value": 10
+  },
+  "fried_garlic": {
+    "value": 50
+  },
+  "toasted_sesame": {
+    "value": 50
+  },
+  "sweet_basil": {
+    "value": 40
+  },
+  "coconut_jelly": {
+    "value": 60
+  },
+  "rainbow_sprinkles": {
+    "value": 80
+  },
+  "whipped_cream": {
+    "value": 100
   }
 }

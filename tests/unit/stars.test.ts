@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createRng } from '../../src/core/rng';
 import type { World } from '../../src/core/state';
-import { baseDishStars, collectDish, dishItem, recipes, startCooking, startExperiment } from '../../src/systems/cooking';
+import { baseDishStars, collectDish, dishItem, recipes, startCooking } from '../../src/systems/cooking';
 import { actionFor, applyFarmAction, canStoreHarvest, countOf, harvestStacks } from '../../src/systems/farm';
 import { newWorld } from '../../src/systems/gauges';
 import { saleValue } from '../../src/systems/gio';
@@ -116,12 +116,6 @@ describe('dish stars (star system doc §4)', () => {
     const next = startCooking(world, 'tomato_juice', 1, {}, NO_BONUS)!;
     expect(next.cooking.slot?.stars).toBe(3);
   });
-
-  it('experiments with starred produce: matches the recipe and uses the lowest star', () => {
-    const world: World = { ...newWorld(), bag: [{ item: 'produce_tomato@2', count: 1 }, { item: 'produce_tomato@3', count: 1 }, { item: 'produce_garlic', count: 1 }, { item: 'ing_salt', count: 1 }] };
-    const next = startExperiment(world, { 'produce_tomato@2': 1, 'produce_tomato@3': 1, produce_garlic: 1, ing_salt: 1 }, NO_BONUS)!;
-    expect(next.cooking.slot).toMatchObject({ recipe: 'tomato_soup', stars: 1 });
-  });
 });
 
 describe('fertilizer (star system doc §2)', () => {
@@ -190,8 +184,8 @@ describe('save version 12', () => {
     const { tray: _tray, monsters: _monsters, ...world } = newWorld();
     const old = { ...world, farm: { plots: world.farm.plots.map(({ fertilizer: _fertilizer, ...plot }) => plot) }, bag: [{ item: 'produce_tomato', count: 3 }] };
     const parsed = parseSaveFile({ version: 11, savedAt: 'x', world: old })!;
-    expect(SAVE_VERSION).toBe(16);
-    expect(parsed.version).toBe(16);
+    expect(SAVE_VERSION).toBe(17);
+    expect(parsed.version).toBe(17);
     expect(parsed.world.farm.plots.every((plot) => plot.fertilizer === 0)).toBe(true);
     expect(parsed.world.tray).toEqual({ level: 0, plates: [null, null, null] });
     expect(parsed.world.monsters).toEqual({ affection: {}, plannedDay: 0, arrivals: [], twins: { revealed: false, revealDay: 0, quizWon: false }, tasted: {} });

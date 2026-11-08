@@ -42,7 +42,8 @@ function growUntilReady(start: World): World {
 
 describe('crop numbers', () => {
   it('match the GDD growth table', () => {
-    expect(Object.keys(crops)).toHaveLength(15);
+    // 15 เดิม + มะนาว ผักชี (zone1 food update 1.2)
+    expect(Object.keys(crops)).toHaveLength(17);
     expect(crops.blueberry).toMatchObject({ growDays: 7, regrowDays: 3, regrowTimes: 3, sellPrice: 150, seedPrice: 500 });
     expect(crops.scallion).toMatchObject({ growDays: 3, regrowDays: null });
     expect(crops.chili).toMatchObject({ growDays: 5, regrowDays: 3 });

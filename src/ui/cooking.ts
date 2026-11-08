@@ -1,7 +1,7 @@
 import { registry } from '../core/assets';
 import { eventBus } from '../core/events';
 import { t, type TextKey } from '../core/i18n';
-import { gameState, type BagStack } from '../core/state';
+import { gameState } from '../core/state';
 import balance from '../data/balance.json';
 import type { Recipe } from '../data/schema';
 import {
@@ -11,33 +11,28 @@ import {
   canCook,
   canUseCampfire,
   haveFor,
-  isIngredient,
-  isRawProduce,
   maxBatch,
   pickedStars,
   recipes,
   startCooking,
-  startExperiment,
+  stockFitting,
   type StarPicks,
 } from '../systems/cooking';
 import { createRng } from '../core/rng';
 import { carriesStars, starLevels } from '../systems/stars';
-import { fishGroupOf, isFish } from '../systems/fishing';
-import { itemImage, itemName, starBadge } from './inventory';
+import { itemName, starBadge } from './inventory';
 import { artUrl } from './pixelArt';
 import { revealWhenReady } from './preload';
 
 const WINDOW = 'cooking';
 type Theme = Recipe['category'];
-type Tab = Theme | 'mix';
+type Tab = Theme;
+/** โหมดทดลองผสมเอาออกแล้ว (zone1 food update 1.6) แท็บที่ 4 "จัดชุด" มาในขั้นถัดไป */
 const TABS: { id: Tab; label: TextKey }[] = [
   { id: 'savory', label: 'recipe.tab_savory' },
   { id: 'sweet', label: 'recipe.tab_sweet' },
   { id: 'drink', label: 'recipe.tab_drink' },
-  { id: 'mix', label: 'cook.tab_mix' },
 ];
-/** แท็บทดลองผสมใช้ธีมครีมส้มเหมือนหมวดคาว */
-const MIX_THEME: Theme = 'savory';
 /** กลางจานรองวัตถุดิบขนาด 22×22 */
 const PLATE_CENTER = { x: 11, y: 10 };
 
@@ -60,8 +55,8 @@ function ingredientPlate(item: string, theme: Theme, label: string, short: boole
   const plate = element('span', `cook-plate${short ? ' is-short' : ''}`);
   plate.dataset.plate = item;
   plate.style.backgroundImage = bookArt(`book_ing_slot_${theme}`);
-  // สูตรที่ใช้ปลาแรงก์ F แสดงปลาที่มีในกระเป๋า ถ้ายังไม่มีใช้ภาพปลารวม
-  const owned = gameState.started ? gameState.world.bag.find((stack) => fishGroupOf(stack.item) === item)?.item : undefined;
+  // กลุ่มวัตถุดิบ (ปลาชนิดไหนก็ได้ ลูกชิ้น) แสดงของที่มีในกระเป๋า ถ้ายังไม่มีใช้ภาพของกลุ่ม
+  const owned = gameState.started ? stockFitting(gameState.world.bag, item).find((stock) => stock !== item) : undefined;
   const miniId = `ing_mini_${(owned ?? item).toLowerCase()}`;
   const mini = registry[miniId];
   if (mini?.type === 'local') {
@@ -96,7 +91,7 @@ function dishPicture(recipe: Recipe | null, id: string | null, theme: Theme): HT
   return holder;
 }
 
-/** หน้าต่างที่กองไฟ เลือกเมนูทางซ้าย ดูวัตถุดิบและเริ่มทำทางขวา หรือทดลองผสมเอง นาฬิกาเกมหยุดระหว่างเปิด */
+/** หน้าต่างที่กองไฟ เลือกเมนูทางซ้าย ดูวัตถุดิบและเริ่มทำทางขวา นาฬิกาเกมหยุดระหว่างเปิด */
 export function createCookingWindow(uiRoot: HTMLElement): void {
   const backdrop = document.createElement('div');
   backdrop.id = 'cook-window';
@@ -115,7 +110,6 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
 
   let tab: Tab = 'savory';
   let selected: string | null = null;
-  let mix: Record<string, number> = {};
   /** จำนวนจานของเมนูที่เลือก กลับเป็น 1 ทุกครั้งที่เปลี่ยนเมนูหรือเปิดหน้าต่างใหม่ */
   let batch = 1;
   /** ดาวผักที่เลือกต่อวัตถุดิบ ล้างทุกครั้งที่เปลี่ยนเมนู (ค่าเริ่มคือดาวต่ำสุดที่มีพอ ผักดีจะได้ไม่ถูกใช้โดยไม่ตั้งใจ) */
@@ -267,76 +261,8 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     body.replaceChildren(list, selected ? recipeDetail(selected, category) : element('div', 'cook-detail'));
   };
 
-  const mixChoices = (bag: BagStack[]): BagStack[] => bag.filter((stack) => isIngredient(stack.item) || isRawProduce(stack.item) || isFish(stack.item));
-
-  const renderMix = (): void => {
-    const { bag } = gameState.world;
-    const pantry = element('div', 'cook-pantry');
-    for (const stack of mixChoices(bag)) {
-      const button = element('button', 'bag-slot');
-      button.type = 'button';
-      button.dataset.mixItem = stack.item;
-      button.setAttribute('aria-label', itemName(stack.item));
-      const left = stack.count - (mix[stack.item] ?? 0);
-      button.disabled = left <= 0;
-      button.append(itemImage(stack.item, false), element('b', '', String(left)));
-      if (carriesStars(stack.item)) button.append(starBadge(stack.item));
-      button.addEventListener('click', () => {
-        mix = { ...mix, [stack.item]: (mix[stack.item] ?? 0) + 1 };
-        render();
-      });
-      pantry.append(button);
-    }
-
-    const pot = element('div', 'cook-detail');
-    const plates = element('div', 'cook-plates');
-    for (const [item, count] of Object.entries(mix)) {
-      const plate = ingredientPlate(item, MIX_THEME, `×${count}`, false);
-      // แตะของในหม้อเพื่อเอาออกทีละชิ้น
-      const remove = element('button', 'cook-plate__remove');
-      remove.type = 'button';
-      remove.dataset.mixRemove = item;
-      remove.setAttribute('aria-label', `${t('cook.mix_remove')} ${itemName(item)}`);
-      remove.append(plate);
-      remove.addEventListener('click', () => {
-        const next = { ...mix };
-        if ((next[item] ?? 0) > 1) next[item] = next[item]! - 1;
-        else delete next[item];
-        mix = next;
-        render();
-      });
-      plates.append(remove);
-    }
-    const clear = element('button', 'phone-tool', t('cook.mix_clear'));
-    clear.type = 'button';
-    clear.disabled = Object.keys(mix).length === 0;
-    clear.addEventListener('click', () => {
-      mix = {};
-      render();
-    });
-    const go = element('button', 'phone-tool cook-go', t('cook.mix_go'));
-    go.id = 'mix-go';
-    go.type = 'button';
-    go.disabled = Object.keys(mix).length === 0;
-    go.addEventListener('click', () => {
-      const chosen = mix;
-      mix = {};
-      apply(startExperiment(gameState.world, chosen, rng));
-    });
-    const actions = element('div', 'cook-actions');
-    actions.append(clear, go);
-    pot.append(
-      dishPicture(null, null, MIX_THEME),
-      element('h3', 'cook-detail__name', t('cook.mix_title')),
-      element('small', 'cook-tip', t(Object.keys(mix).length > 0 ? 'cook.mix_warning' : 'cook.mix_hint')),
-      plates,
-      actions,
-    );
-    body.replaceChildren(pantry, pot);
-  };
-
   function render(): void {
-    const theme: Theme = tab === 'mix' ? MIX_THEME : tab;
+    const theme: Theme = tab;
     panel.dataset.theme = theme;
     panel.dataset.tab = tab;
     panel.style.setProperty('--cloth', bookArt(`book_cloth_${theme}`));
@@ -357,8 +283,7 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
         return button;
       }),
     );
-    if (tab === 'mix') renderMix();
-    else renderRecipes(tab);
+    renderRecipes(tab);
   }
 
   close.addEventListener('click', hide);
@@ -369,7 +294,6 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     if (event.key === 'Escape') hide();
   });
   eventBus.on('cook-open', () => {
-    mix = {};
     batch = 1;
     picks = {};
     render();

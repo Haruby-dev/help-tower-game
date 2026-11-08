@@ -6343,8 +6343,8 @@
   },
   "dish_bag_basil_tea": {
     "type": "local",
-    "width": 32,
-    "height": 30,
+    "width": 25,
+    "height": 32,
     "source": "public/assets/food/dishes_bag/basil_tea.png",
     "file": "food/dishes_bag/basil_tea.png",
     "jade_tone": false,
@@ -8491,7 +8491,7 @@
   },
   "tray_mini_basil_tea": {
     "type": "local",
-    "width": 8,
+    "width": 6,
     "height": 8,
     "source": "public/assets/food/tray_mini/basil_tea.png",
     "file": "food/tray_mini/basil_tea.png",
@@ -8734,7 +8734,7 @@
   },
   "tray_mini_tomato_juice": {
     "type": "local",
-    "width": 6,
+    "width": 7,
     "height": 8,
     "source": "public/assets/food/tray_mini/tomato_juice.png",
     "file": "food/tray_mini/tomato_juice.png",
@@ -8779,8 +8779,8 @@
   },
   "mini16_basil_tea": {
     "type": "local",
-    "width": 18,
-    "height": 17,
+    "width": 14,
+    "height": 18,
     "source": "public/assets/food/mini16/basil_tea.png",
     "file": "food/mini16/basil_tea.png",
     "jade_tone": false,
@@ -9040,7 +9040,7 @@
   },
   "mini16_warm_honey_milk": {
     "type": "local",
-    "width": 15,
+    "width": 14,
     "height": 18,
     "source": "public/assets/food/mini16/warm_honey_milk.png",
     "file": "food/mini16/warm_honey_milk.png",
@@ -9985,7 +9985,7 @@
   },
   "dish_bag_strawberry_juice": {
     "type": "local",
-    "width": 26,
+    "width": 27,
     "height": 32,
     "source": "public/assets/food/dishes_bag/strawberry_juice.png",
     "file": "food/dishes_bag/strawberry_juice.png",
@@ -10003,7 +10003,7 @@
   },
   "mini16_strawberry_juice": {
     "type": "local",
-    "width": 14,
+    "width": 16,
     "height": 18,
     "source": "public/assets/food/mini16/strawberry_juice.png",
     "file": "food/mini16/strawberry_juice.png",
@@ -11238,5 +11238,1221 @@
     "jade_tone": false,
     "lazy": true,
     "note": "frosted-glass card paper tile, tiled at the app-icon scale (phone update 2026-11-07c)"
+  },
+  "ing_icon_butter": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/butter.png",
+    "file": "food/ingredients/butter.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_butter": {
+    "type": "local",
+    "width": 16,
+    "height": 12,
+    "source": "public/assets/food/ingredients_mini/ing_butter.png",
+    "file": "food/ingredients_mini/ing_butter.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_kapi": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/kapi.png",
+    "file": "food/ingredients/kapi.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_kapi": {
+    "type": "local",
+    "width": 15,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_kapi.png",
+    "file": "food/ingredients_mini/ing_kapi.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_dried_shrimp": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/dried_shrimp.png",
+    "file": "food/ingredients/dried_shrimp.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_dried_shrimp": {
+    "type": "local",
+    "width": 12,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_dried_shrimp.png",
+    "file": "food/ingredients_mini/ing_dried_shrimp.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_dried_fish": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/dried_fish.png",
+    "file": "food/ingredients/dried_fish.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_dried_fish": {
+    "type": "local",
+    "width": 16,
+    "height": 15,
+    "source": "public/assets/food/ingredients_mini/ing_dried_fish.png",
+    "file": "food/ingredients_mini/ing_dried_fish.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_dried_chili": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/dried_chili.png",
+    "file": "food/ingredients/dried_chili.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_dried_chili": {
+    "type": "local",
+    "width": 16,
+    "height": 14,
+    "source": "public/assets/food/ingredients_mini/ing_dried_chili.png",
+    "file": "food/ingredients_mini/ing_dried_chili.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_umami_powder": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/umami_powder.png",
+    "file": "food/ingredients/umami_powder.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_umami_powder": {
+    "type": "local",
+    "width": 14,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_umami_powder.png",
+    "file": "food/ingredients_mini/ing_umami_powder.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_chili_flakes": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/chili_flakes.png",
+    "file": "food/ingredients/chili_flakes.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_chili_flakes": {
+    "type": "local",
+    "width": 14,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_chili_flakes.png",
+    "file": "food/ingredients_mini/ing_chili_flakes.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_ground_dried_shrimp": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/ground_dried_shrimp.png",
+    "file": "food/ingredients/ground_dried_shrimp.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_ground_dried_shrimp": {
+    "type": "local",
+    "width": 14,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_ground_dried_shrimp.png",
+    "file": "food/ingredients_mini/ing_ground_dried_shrimp.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_fish_ball": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/fish_ball.png",
+    "file": "food/ingredients/fish_ball.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_fish_ball": {
+    "type": "local",
+    "width": 16,
+    "height": 15,
+    "source": "public/assets/food/ingredients_mini/ing_fish_ball.png",
+    "file": "food/ingredients_mini/ing_fish_ball.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_shrimp_ball": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/shrimp_ball.png",
+    "file": "food/ingredients/shrimp_ball.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_shrimp_ball": {
+    "type": "local",
+    "width": 16,
+    "height": 14,
+    "source": "public/assets/food/ingredients_mini/ing_shrimp_ball.png",
+    "file": "food/ingredients_mini/ing_shrimp_ball.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_banana_leaf": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/banana_leaf.png",
+    "file": "food/ingredients/banana_leaf.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_banana_leaf": {
+    "type": "local",
+    "width": 16,
+    "height": 14,
+    "source": "public/assets/food/ingredients_mini/ing_banana_leaf.png",
+    "file": "food/ingredients_mini/ing_banana_leaf.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_fried_garlic": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/fried_garlic.png",
+    "file": "food/ingredients/fried_garlic.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_fried_garlic": {
+    "type": "local",
+    "width": 16,
+    "height": 15,
+    "source": "public/assets/food/ingredients_mini/ing_fried_garlic.png",
+    "file": "food/ingredients_mini/ing_fried_garlic.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_toasted_sesame": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/toasted_sesame.png",
+    "file": "food/ingredients/toasted_sesame.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_toasted_sesame": {
+    "type": "local",
+    "width": 16,
+    "height": 15,
+    "source": "public/assets/food/ingredients_mini/ing_toasted_sesame.png",
+    "file": "food/ingredients_mini/ing_toasted_sesame.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_coconut_jelly": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/coconut_jelly.png",
+    "file": "food/ingredients/coconut_jelly.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_coconut_jelly": {
+    "type": "local",
+    "width": 16,
+    "height": 15,
+    "source": "public/assets/food/ingredients_mini/ing_coconut_jelly.png",
+    "file": "food/ingredients_mini/ing_coconut_jelly.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_icon_rainbow_sprinkles": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/rainbow_sprinkles.png",
+    "file": "food/ingredients/rainbow_sprinkles.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_ing_rainbow_sprinkles": {
+    "type": "local",
+    "width": 12,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/ing_rainbow_sprinkles.png",
+    "file": "food/ingredients_mini/ing_rainbow_sprinkles.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "fish_shrimp": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/fish/fish_shrimp.png",
+    "file": "fish/fish_shrimp.png",
+    "jade_tone": false,
+    "note": "ingredient picture used as the fish (zone1 food update 1.3)"
+  },
+  "ing_mini_fish_shrimp": {
+    "type": "local",
+    "width": 16,
+    "height": 12,
+    "source": "public/assets/food/ingredients_mini/ing_fish_shrimp.png",
+    "file": "food/ingredients_mini/ing_fish_shrimp.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "fish_crab": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/fish/fish_crab.png",
+    "file": "fish/fish_crab.png",
+    "jade_tone": false,
+    "note": "ingredient picture used as the fish (zone1 food update 1.3)"
+  },
+  "ing_mini_fish_crab": {
+    "type": "local",
+    "width": 16,
+    "height": 14,
+    "source": "public/assets/food/ingredients_mini/ing_fish_crab.png",
+    "file": "food/ingredients_mini/ing_fish_crab.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "rice_straw": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/rice_straw.png",
+    "file": "items/rice_straw.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_rice_straw": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/rice_straw.png",
+    "file": "food/ingredients_mini/rice_straw.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "banana_rope": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/banana_rope.png",
+    "file": "items/banana_rope.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_banana_rope": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/banana_rope.png",
+    "file": "food/ingredients_mini/banana_rope.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "bait_chest": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/bait_chest.png",
+    "file": "items/bait_chest.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "crop_lime": {
+    "type": "local",
+    "width": 192,
+    "height": 64,
+    "source": "public/assets/farm/crops48/lime_stages.png",
+    "file": "farm/crops48/lime_stages.png",
+    "jade_tone": false,
+    "frame_width": 48,
+    "frame_height": 64,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ]
+  },
+  "icon_lime": {
+    "type": "local",
+    "width": 28,
+    "height": 26,
+    "source": "public/assets/farm/icons/lime.png",
+    "file": "farm/icons/lime.png",
+    "jade_tone": false,
+    "note": "sparkly tower-grown produce icon"
+  },
+  "icon_bag_lime": {
+    "type": "local",
+    "width": 27,
+    "height": 24,
+    "source": "public/assets/farm/icons_bag/lime.png",
+    "file": "farm/icons_bag/lime.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "seed_lime": {
+    "type": "local",
+    "width": 23,
+    "height": 27,
+    "source": "public/assets/farm/seeds/seed_lime.png",
+    "file": "farm/seeds/seed_lime.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_produce_lime": {
+    "type": "local",
+    "width": 16,
+    "height": 15,
+    "source": "public/assets/food/ingredients_mini/produce_lime.png",
+    "file": "food/ingredients_mini/produce_lime.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "crop_coriander": {
+    "type": "local",
+    "width": 192,
+    "height": 64,
+    "source": "public/assets/farm/crops48/coriander_stages.png",
+    "file": "farm/crops48/coriander_stages.png",
+    "jade_tone": false,
+    "frame_width": 48,
+    "frame_height": 64,
+    "frames": 4,
+    "frames_meaning": [
+      "seed",
+      "sprout",
+      "half",
+      "ready"
+    ]
+  },
+  "icon_coriander": {
+    "type": "local",
+    "width": 28,
+    "height": 26,
+    "source": "public/assets/farm/icons/coriander.png",
+    "file": "farm/icons/coriander.png",
+    "jade_tone": false,
+    "note": "sparkly tower-grown produce icon"
+  },
+  "icon_bag_coriander": {
+    "type": "local",
+    "width": 27,
+    "height": 24,
+    "source": "public/assets/farm/icons_bag/coriander.png",
+    "file": "farm/icons_bag/coriander.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "seed_coriander": {
+    "type": "local",
+    "width": 23,
+    "height": 27,
+    "source": "public/assets/farm/seeds/seed_coriander.png",
+    "file": "farm/seeds/seed_coriander.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "ing_mini_produce_coriander": {
+    "type": "local",
+    "width": 13,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/produce_coriander.png",
+    "file": "food/ingredients_mini/produce_coriander.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "dish_icon_cabbage_crispy_shrimp": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/cabbage_crispy_shrimp.png",
+    "file": "food/dishes/cabbage_crispy_shrimp.png",
+    "jade_tone": false
+  },
+  "dish_bag_cabbage_crispy_shrimp": {
+    "type": "local",
+    "width": 32,
+    "height": 27,
+    "source": "public/assets/food/dishes_bag/cabbage_crispy_shrimp.png",
+    "file": "food/dishes_bag/cabbage_crispy_shrimp.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_cabbage_crispy_shrimp": {
+    "type": "local",
+    "width": 18,
+    "height": 16,
+    "source": "public/assets/food/mini16/cabbage_crispy_shrimp.png",
+    "file": "food/mini16/cabbage_crispy_shrimp.png",
+    "jade_tone": false
+  },
+  "tray_mini_cabbage_crispy_shrimp": {
+    "type": "local",
+    "width": 9,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/cabbage_crispy_shrimp.png",
+    "file": "food/tray_mini/cabbage_crispy_shrimp.png",
+    "jade_tone": false
+  },
+  "dish_icon_cucumber_salad": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/cucumber_salad.png",
+    "file": "food/dishes/cucumber_salad.png",
+    "jade_tone": false
+  },
+  "dish_bag_cucumber_salad": {
+    "type": "local",
+    "width": 32,
+    "height": 21,
+    "source": "public/assets/food/dishes_bag/cucumber_salad.png",
+    "file": "food/dishes_bag/cucumber_salad.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_cucumber_salad": {
+    "type": "local",
+    "width": 18,
+    "height": 12,
+    "source": "public/assets/food/mini16/cucumber_salad.png",
+    "file": "food/mini16/cucumber_salad.png",
+    "jade_tone": false
+  },
+  "tray_mini_cucumber_salad": {
+    "type": "local",
+    "width": 9,
+    "height": 6,
+    "source": "public/assets/food/tray_mini/cucumber_salad.png",
+    "file": "food/tray_mini/cucumber_salad.png",
+    "jade_tone": false
+  },
+  "dish_icon_squid_salad": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/squid_salad.png",
+    "file": "food/dishes/squid_salad.png",
+    "jade_tone": false
+  },
+  "dish_bag_squid_salad": {
+    "type": "local",
+    "width": 32,
+    "height": 30,
+    "source": "public/assets/food/dishes_bag/squid_salad.png",
+    "file": "food/dishes_bag/squid_salad.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_squid_salad": {
+    "type": "local",
+    "width": 18,
+    "height": 17,
+    "source": "public/assets/food/mini16/squid_salad.png",
+    "file": "food/mini16/squid_salad.png",
+    "jade_tone": false
+  },
+  "tray_mini_squid_salad": {
+    "type": "local",
+    "width": 8,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/squid_salad.png",
+    "file": "food/tray_mini/squid_salad.png",
+    "jade_tone": false
+  },
+  "dish_icon_fish_rice_ball": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/fish_rice_ball.png",
+    "file": "food/dishes/fish_rice_ball.png",
+    "jade_tone": false
+  },
+  "dish_bag_fish_rice_ball": {
+    "type": "local",
+    "width": 32,
+    "height": 26,
+    "source": "public/assets/food/dishes_bag/fish_rice_ball.png",
+    "file": "food/dishes_bag/fish_rice_ball.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_fish_rice_ball": {
+    "type": "local",
+    "width": 18,
+    "height": 15,
+    "source": "public/assets/food/mini16/fish_rice_ball.png",
+    "file": "food/mini16/fish_rice_ball.png",
+    "jade_tone": false
+  },
+  "tray_mini_fish_rice_ball": {
+    "type": "local",
+    "width": 9,
+    "height": 7,
+    "source": "public/assets/food/tray_mini/fish_rice_ball.png",
+    "file": "food/tray_mini/fish_rice_ball.png",
+    "jade_tone": false
+  },
+  "dish_icon_hor_mok": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/hor_mok.png",
+    "file": "food/dishes/hor_mok.png",
+    "jade_tone": false
+  },
+  "dish_bag_hor_mok": {
+    "type": "local",
+    "width": 32,
+    "height": 29,
+    "source": "public/assets/food/dishes_bag/hor_mok.png",
+    "file": "food/dishes_bag/hor_mok.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_hor_mok": {
+    "type": "local",
+    "width": 18,
+    "height": 16,
+    "source": "public/assets/food/mini16/hor_mok.png",
+    "file": "food/mini16/hor_mok.png",
+    "jade_tone": false
+  },
+  "tray_mini_hor_mok": {
+    "type": "local",
+    "width": 9,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/hor_mok.png",
+    "file": "food/tray_mini/hor_mok.png",
+    "jade_tone": false
+  },
+  "dish_icon_cabbage_shrimp_soup": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/cabbage_shrimp_soup.png",
+    "file": "food/dishes/cabbage_shrimp_soup.png",
+    "jade_tone": false
+  },
+  "dish_bag_cabbage_shrimp_soup": {
+    "type": "local",
+    "width": 30,
+    "height": 32,
+    "source": "public/assets/food/dishes_bag/cabbage_shrimp_soup.png",
+    "file": "food/dishes_bag/cabbage_shrimp_soup.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_cabbage_shrimp_soup": {
+    "type": "local",
+    "width": 17,
+    "height": 18,
+    "source": "public/assets/food/mini16/cabbage_shrimp_soup.png",
+    "file": "food/mini16/cabbage_shrimp_soup.png",
+    "jade_tone": false
+  },
+  "tray_mini_cabbage_shrimp_soup": {
+    "type": "local",
+    "width": 8,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/cabbage_shrimp_soup.png",
+    "file": "food/tray_mini/cabbage_shrimp_soup.png",
+    "jade_tone": false
+  },
+  "dish_icon_grilled_shrimp": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/grilled_shrimp.png",
+    "file": "food/dishes/grilled_shrimp.png",
+    "jade_tone": false
+  },
+  "dish_bag_grilled_shrimp": {
+    "type": "local",
+    "width": 32,
+    "height": 24,
+    "source": "public/assets/food/dishes_bag/grilled_shrimp.png",
+    "file": "food/dishes_bag/grilled_shrimp.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_grilled_shrimp": {
+    "type": "local",
+    "width": 18,
+    "height": 14,
+    "source": "public/assets/food/mini16/grilled_shrimp.png",
+    "file": "food/mini16/grilled_shrimp.png",
+    "jade_tone": false
+  },
+  "tray_mini_grilled_shrimp": {
+    "type": "local",
+    "width": 9,
+    "height": 7,
+    "source": "public/assets/food/tray_mini/grilled_shrimp.png",
+    "file": "food/tray_mini/grilled_shrimp.png",
+    "jade_tone": false
+  },
+  "dish_icon_garlic_shrimp": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/garlic_shrimp.png",
+    "file": "food/dishes/garlic_shrimp.png",
+    "jade_tone": false
+  },
+  "dish_bag_garlic_shrimp": {
+    "type": "local",
+    "width": 32,
+    "height": 24,
+    "source": "public/assets/food/dishes_bag/garlic_shrimp.png",
+    "file": "food/dishes_bag/garlic_shrimp.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_garlic_shrimp": {
+    "type": "local",
+    "width": 18,
+    "height": 14,
+    "source": "public/assets/food/mini16/garlic_shrimp.png",
+    "file": "food/mini16/garlic_shrimp.png",
+    "jade_tone": false
+  },
+  "tray_mini_garlic_shrimp": {
+    "type": "local",
+    "width": 9,
+    "height": 7,
+    "source": "public/assets/food/tray_mini/garlic_shrimp.png",
+    "file": "food/tray_mini/garlic_shrimp.png",
+    "jade_tone": false
+  },
+  "dish_icon_steamed_crab": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/steamed_crab.png",
+    "file": "food/dishes/steamed_crab.png",
+    "jade_tone": false
+  },
+  "dish_bag_steamed_crab": {
+    "type": "local",
+    "width": 32,
+    "height": 27,
+    "source": "public/assets/food/dishes_bag/steamed_crab.png",
+    "file": "food/dishes_bag/steamed_crab.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_steamed_crab": {
+    "type": "local",
+    "width": 18,
+    "height": 16,
+    "source": "public/assets/food/mini16/steamed_crab.png",
+    "file": "food/mini16/steamed_crab.png",
+    "jade_tone": false
+  },
+  "tray_mini_steamed_crab": {
+    "type": "local",
+    "width": 9,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/steamed_crab.png",
+    "file": "food/tray_mini/steamed_crab.png",
+    "jade_tone": false
+  },
+  "dish_icon_mackerel_chili_dip": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/mackerel_chili_dip.png",
+    "file": "food/dishes/mackerel_chili_dip.png",
+    "jade_tone": false
+  },
+  "dish_bag_mackerel_chili_dip": {
+    "type": "local",
+    "width": 32,
+    "height": 28,
+    "source": "public/assets/food/dishes_bag/mackerel_chili_dip.png",
+    "file": "food/dishes_bag/mackerel_chili_dip.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_mackerel_chili_dip": {
+    "type": "local",
+    "width": 18,
+    "height": 16,
+    "source": "public/assets/food/mini16/mackerel_chili_dip.png",
+    "file": "food/mini16/mackerel_chili_dip.png",
+    "jade_tone": false
+  },
+  "tray_mini_mackerel_chili_dip": {
+    "type": "local",
+    "width": 9,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/mackerel_chili_dip.png",
+    "file": "food/tray_mini/mackerel_chili_dip.png",
+    "jade_tone": false
+  },
+  "dish_icon_kapi_chili_dip": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/kapi_chili_dip.png",
+    "file": "food/dishes/kapi_chili_dip.png",
+    "jade_tone": false
+  },
+  "dish_bag_kapi_chili_dip": {
+    "type": "local",
+    "width": 32,
+    "height": 20,
+    "source": "public/assets/food/dishes_bag/kapi_chili_dip.png",
+    "file": "food/dishes_bag/kapi_chili_dip.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_kapi_chili_dip": {
+    "type": "local",
+    "width": 18,
+    "height": 12,
+    "source": "public/assets/food/mini16/kapi_chili_dip.png",
+    "file": "food/mini16/kapi_chili_dip.png",
+    "jade_tone": false
+  },
+  "tray_mini_kapi_chili_dip": {
+    "type": "local",
+    "width": 9,
+    "height": 6,
+    "source": "public/assets/food/tray_mini/kapi_chili_dip.png",
+    "file": "food/tray_mini/kapi_chili_dip.png",
+    "jade_tone": false
+  },
+  "dish_icon_fruit_veg_salad": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/fruit_veg_salad.png",
+    "file": "food/dishes/fruit_veg_salad.png",
+    "jade_tone": false
+  },
+  "dish_bag_fruit_veg_salad": {
+    "type": "local",
+    "width": 32,
+    "height": 26,
+    "source": "public/assets/food/dishes_bag/fruit_veg_salad.png",
+    "file": "food/dishes_bag/fruit_veg_salad.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_fruit_veg_salad": {
+    "type": "local",
+    "width": 18,
+    "height": 15,
+    "source": "public/assets/food/mini16/fruit_veg_salad.png",
+    "file": "food/mini16/fruit_veg_salad.png",
+    "jade_tone": false
+  },
+  "tray_mini_fruit_veg_salad": {
+    "type": "local",
+    "width": 9,
+    "height": 7,
+    "source": "public/assets/food/tray_mini/fruit_veg_salad.png",
+    "file": "food/tray_mini/fruit_veg_salad.png",
+    "jade_tone": false
+  },
+  "dish_icon_kaprao_shrimp": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/kaprao_shrimp.png",
+    "file": "food/dishes/kaprao_shrimp.png",
+    "jade_tone": false
+  },
+  "dish_bag_kaprao_shrimp": {
+    "type": "local",
+    "width": 32,
+    "height": 29,
+    "source": "public/assets/food/dishes_bag/kaprao_shrimp.png",
+    "file": "food/dishes_bag/kaprao_shrimp.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_kaprao_shrimp": {
+    "type": "local",
+    "width": 18,
+    "height": 16,
+    "source": "public/assets/food/mini16/kaprao_shrimp.png",
+    "file": "food/mini16/kaprao_shrimp.png",
+    "jade_tone": false
+  },
+  "tray_mini_kaprao_shrimp": {
+    "type": "local",
+    "width": 9,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/kaprao_shrimp.png",
+    "file": "food/tray_mini/kaprao_shrimp.png",
+    "jade_tone": false
+  },
+  "dish_icon_lime_steamed_fish": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/lime_steamed_fish.png",
+    "file": "food/dishes/lime_steamed_fish.png",
+    "jade_tone": false
+  },
+  "dish_bag_lime_steamed_fish": {
+    "type": "local",
+    "width": 32,
+    "height": 26,
+    "source": "public/assets/food/dishes_bag/lime_steamed_fish.png",
+    "file": "food/dishes_bag/lime_steamed_fish.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_lime_steamed_fish": {
+    "type": "local",
+    "width": 18,
+    "height": 15,
+    "source": "public/assets/food/mini16/lime_steamed_fish.png",
+    "file": "food/mini16/lime_steamed_fish.png",
+    "jade_tone": false
+  },
+  "tray_mini_lime_steamed_fish": {
+    "type": "local",
+    "width": 9,
+    "height": 7,
+    "source": "public/assets/food/tray_mini/lime_steamed_fish.png",
+    "file": "food/tray_mini/lime_steamed_fish.png",
+    "jade_tone": false
+  },
+  "dish_icon_buttered_corn": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/buttered_corn.png",
+    "file": "food/dishes/buttered_corn.png",
+    "jade_tone": false
+  },
+  "dish_bag_buttered_corn": {
+    "type": "local",
+    "width": 30,
+    "height": 32,
+    "source": "public/assets/food/dishes_bag/buttered_corn.png",
+    "file": "food/dishes_bag/buttered_corn.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_buttered_corn": {
+    "type": "local",
+    "width": 17,
+    "height": 18,
+    "source": "public/assets/food/mini16/buttered_corn.png",
+    "file": "food/mini16/buttered_corn.png",
+    "jade_tone": false
+  },
+  "tray_mini_buttered_corn": {
+    "type": "local",
+    "width": 8,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/buttered_corn.png",
+    "file": "food/tray_mini/buttered_corn.png",
+    "jade_tone": false
+  },
+  "dish_icon_pumpkin_custard": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/pumpkin_custard.png",
+    "file": "food/dishes/pumpkin_custard.png",
+    "jade_tone": false
+  },
+  "dish_bag_pumpkin_custard": {
+    "type": "local",
+    "width": 32,
+    "height": 25,
+    "source": "public/assets/food/dishes_bag/pumpkin_custard.png",
+    "file": "food/dishes_bag/pumpkin_custard.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_pumpkin_custard": {
+    "type": "local",
+    "width": 18,
+    "height": 14,
+    "source": "public/assets/food/mini16/pumpkin_custard.png",
+    "file": "food/mini16/pumpkin_custard.png",
+    "jade_tone": false
+  },
+  "tray_mini_pumpkin_custard": {
+    "type": "local",
+    "width": 9,
+    "height": 7,
+    "source": "public/assets/food/tray_mini/pumpkin_custard.png",
+    "file": "food/tray_mini/pumpkin_custard.png",
+    "jade_tone": false
+  },
+  "dish_icon_plain_rice": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/plain_rice.png",
+    "file": "food/dishes/plain_rice.png",
+    "jade_tone": false
+  },
+  "dish_bag_plain_rice": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/dishes_bag/plain_rice.png",
+    "file": "food/dishes_bag/plain_rice.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_plain_rice": {
+    "type": "local",
+    "width": 18,
+    "height": 18,
+    "source": "public/assets/food/mini16/plain_rice.png",
+    "file": "food/mini16/plain_rice.png",
+    "jade_tone": false
+  },
+  "tray_mini_plain_rice": {
+    "type": "local",
+    "width": 8,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/plain_rice.png",
+    "file": "food/tray_mini/plain_rice.png",
+    "jade_tone": false
+  },
+  "dish_icon_fish_cake": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/fish_cake.png",
+    "file": "food/dishes/fish_cake.png",
+    "jade_tone": false
+  },
+  "dish_bag_fish_cake": {
+    "type": "local",
+    "width": 32,
+    "height": 30,
+    "source": "public/assets/food/dishes_bag/fish_cake.png",
+    "file": "food/dishes_bag/fish_cake.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_fish_cake": {
+    "type": "local",
+    "width": 18,
+    "height": 17,
+    "source": "public/assets/food/mini16/fish_cake.png",
+    "file": "food/mini16/fish_cake.png",
+    "jade_tone": false
+  },
+  "tray_mini_fish_cake": {
+    "type": "local",
+    "width": 8,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/fish_cake.png",
+    "file": "food/tray_mini/fish_cake.png",
+    "jade_tone": false
+  },
+  "dish_icon_grilled_meatball_skewer": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/grilled_meatball_skewer.png",
+    "file": "food/dishes/grilled_meatball_skewer.png",
+    "jade_tone": false
+  },
+  "dish_bag_grilled_meatball_skewer": {
+    "type": "local",
+    "width": 32,
+    "height": 30,
+    "source": "public/assets/food/dishes_bag/grilled_meatball_skewer.png",
+    "file": "food/dishes_bag/grilled_meatball_skewer.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_grilled_meatball_skewer": {
+    "type": "local",
+    "width": 18,
+    "height": 17,
+    "source": "public/assets/food/mini16/grilled_meatball_skewer.png",
+    "file": "food/mini16/grilled_meatball_skewer.png",
+    "jade_tone": false
+  },
+  "tray_mini_grilled_meatball_skewer": {
+    "type": "local",
+    "width": 9,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/grilled_meatball_skewer.png",
+    "file": "food/tray_mini/grilled_meatball_skewer.png",
+    "jade_tone": false
+  },
+  "dish_icon_soy_milk": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/soy_milk.png",
+    "file": "food/dishes/soy_milk.png",
+    "jade_tone": false
+  },
+  "dish_bag_soy_milk": {
+    "type": "local",
+    "width": 25,
+    "height": 32,
+    "source": "public/assets/food/dishes_bag/soy_milk.png",
+    "file": "food/dishes_bag/soy_milk.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_soy_milk": {
+    "type": "local",
+    "width": 14,
+    "height": 18,
+    "source": "public/assets/food/mini16/soy_milk.png",
+    "file": "food/mini16/soy_milk.png",
+    "jade_tone": false
+  },
+  "tray_mini_soy_milk": {
+    "type": "local",
+    "width": 6,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/soy_milk.png",
+    "file": "food/tray_mini/soy_milk.png",
+    "jade_tone": false
+  },
+  "dish_icon_corn_milk": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/food/dishes/corn_milk.png",
+    "file": "food/dishes/corn_milk.png",
+    "jade_tone": false
+  },
+  "dish_bag_corn_milk": {
+    "type": "local",
+    "width": 25,
+    "height": 32,
+    "source": "public/assets/food/dishes_bag/corn_milk.png",
+    "file": "food/dishes_bag/corn_milk.png",
+    "jade_tone": false,
+    "lazy": true
+  },
+  "mini16_corn_milk": {
+    "type": "local",
+    "width": 14,
+    "height": 18,
+    "source": "public/assets/food/mini16/corn_milk.png",
+    "file": "food/mini16/corn_milk.png",
+    "jade_tone": false
+  },
+  "tray_mini_corn_milk": {
+    "type": "local",
+    "width": 6,
+    "height": 8,
+    "source": "public/assets/food/tray_mini/corn_milk.png",
+    "file": "food/tray_mini/corn_milk.png",
+    "jade_tone": false
+  },
+  "ing_icon_fish_any": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/fish_F.png",
+    "file": "food/ingredients/fish_F.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "same picture as ing_icon_fish_f"
+  },
+  "ing_mini_ing_fish_any": {
+    "type": "local",
+    "width": 16,
+    "height": 15,
+    "source": "public/assets/food/ingredients_mini/ing_fish_F.png",
+    "file": "food/ingredients_mini/ing_fish_F.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "same picture as ing_mini_ing_fish_f"
+  },
+  "ing_icon_squid_any": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/fish/fish_glow_squid.png",
+    "file": "fish/fish_glow_squid.png",
+    "jade_tone": false,
+    "note": "same picture as fish_glow_squid"
+  },
+  "ing_mini_ing_squid_any": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "public/assets/food/ingredients_mini/ing_fish_glow_squid.png",
+    "file": "food/ingredients_mini/ing_fish_glow_squid.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "same picture as ing_mini_fish_glow_squid"
+  },
+  "ing_icon_meatball": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/food/ingredients/fish_ball.png",
+    "file": "food/ingredients/fish_ball.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "same picture as ing_icon_fish_ball"
+  },
+  "ing_mini_ing_meatball": {
+    "type": "local",
+    "width": 16,
+    "height": 15,
+    "source": "public/assets/food/ingredients_mini/ing_fish_ball.png",
+    "file": "food/ingredients_mini/ing_fish_ball.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "same picture as ing_mini_ing_fish_ball"
+  },
+  "withered_lime": {
+    "type": "placeholder",
+    "width": 48,
+    "height": 64,
+    "color": "#9a8f5a",
+    "labelKey": "crop.lime.name"
   }
 }

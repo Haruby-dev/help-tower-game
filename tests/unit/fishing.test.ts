@@ -4,7 +4,7 @@ import type { World } from '../../src/core/state';
 import balance from '../../src/data/balance.json';
 import { finishBath } from '../../src/systems/bath';
 import { chestData, openChest, rollChestTier } from '../../src/systems/chests';
-import { canCook, matchRecipe, startCooking } from '../../src/systems/cooking';
+import { canCook, haveFor, startCooking } from '../../src/systems/cooking';
 import { countOf } from '../../src/systems/farm';
 import { autoHooks, biteCandidates, chestChance, chosenBait, finishCast, fishTable, makeBait, rollCatch, spendFishingTime } from '../../src/systems/fishing';
 import { newWorld } from '../../src/systems/gauges';
@@ -22,17 +22,18 @@ const world = (changes: Partial<World> = {}): World => ({ ...newWorld(), ...chan
 const NO_CHEST = 0.99;
 
 describe('fish table', () => {
-  it('has the 8 zone-1 fish from the GDD, all catchable with the bamboo rod', () => {
-    expect(Object.keys(fishTable)).toHaveLength(8);
+  it('has the 8 zone-1 fish from the GDD plus shrimp and crab, all catchable with the bamboo rod', () => {
+    expect(Object.keys(fishTable)).toHaveLength(10);
     expect(Object.values(fishTable).every((fish) => fish.rod === 'bamboo')).toBe(true);
     expect(fishTable.meow_salmon).toMatchObject({ rank: 'D', hours: [6, 9], bait: 'corn', price: 450 });
     expect(fishTable.cloud_bass).toMatchObject({ rank: 'D', weather: 'rain', bait: 'cloud_lettuce' });
   });
 
   it('only offers the fish that are out at this hour and weather', () => {
-    expect(biteCandidates(world({ weather: 'sunny' }), 'normal', 7).sort()).toEqual(['golden_carp', 'pond_tilapia', 'silver_minnow']);
-    expect(biteCandidates(world({ weather: 'sunny' }), 'normal', 12).sort()).toEqual(['lost_mackerel', 'pond_tilapia', 'silver_minnow']);
-    expect(biteCandidates(world({ weather: 'rain' }), 'normal', 21).sort()).toEqual(['glow_squid', 'mud_catfish', 'pond_tilapia', 'silver_minnow']);
+    // กุ้งออกทั้งวันทุกอากาศ ปูออกกลางคืนตอนฝนตก (zone1 food update 1.3)
+    expect(biteCandidates(world({ weather: 'sunny' }), 'normal', 7).sort()).toEqual(['golden_carp', 'pond_tilapia', 'shrimp', 'silver_minnow']);
+    expect(biteCandidates(world({ weather: 'sunny' }), 'normal', 12).sort()).toEqual(['lost_mackerel', 'pond_tilapia', 'shrimp', 'silver_minnow']);
+    expect(biteCandidates(world({ weather: 'rain' }), 'normal', 21).sort()).toEqual(['crab', 'glow_squid', 'mud_catfish', 'pond_tilapia', 'shrimp', 'silver_minnow']);
     expect(biteCandidates(world({ weather: 'rain' }), 'normal', 25.5)).toContain('glow_squid');
   });
 
@@ -170,7 +171,7 @@ describe('cooking with fish', () => {
     const next = startCooking(world({ bag }), 'grilled_fish', 1, {}, { next: () => 0.99, between: (min: number) => min })!;
     expect(countOf(next.bag, 'fish_pond_tilapia')).toBe(0);
     expect(canCook(world({ bag: [{ item: 'fish_golden_carp', count: 1 }, { item: 'ing_salt', count: 1 }] }), 'grilled_fish')).toBe(false);
-    expect(matchRecipe({ fish_silver_minnow: 1, ing_salt: 1 })).toBe('grilled_fish');
+    expect(haveFor([{ item: 'fish_silver_minnow', count: 1 }], 'ing_fish_F')).toBe(1);
   });
 });
 
@@ -222,8 +223,8 @@ describe('bath and saves', () => {
       },
     };
     const parsed = parseSaveFile(v5);
-    expect(SAVE_VERSION).toBe(16);
-    expect(parsed?.version).toBe(16);
+    expect(SAVE_VERSION).toBe(17);
+    expect(parsed?.version).toBe(17);
     expect(parsed?.world.weather).toBe('sunny');
     expect(parsed?.world.fishing).toEqual({ rods: ['bamboo'], caught: {} });
     expect(parsed?.world.cosmetics.owned.clips).toEqual([]);

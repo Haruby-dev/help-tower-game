@@ -14,7 +14,7 @@ import { uiSound } from './sound';
 import ingredientsJson from '../data/ingredients.json';
 import shopJson from '../data/shop.json';
 import chestsJson from '../data/chests.json';
-import { dishItem, recipes } from '../systems/cooking';
+import { dishItem, isIngredientGroup, recipes } from '../systems/cooking';
 import { addToBag, crops, produceItem, seedItem } from '../systems/farm';
 import { baits, fishItem, fishTable } from '../systems/fishing';
 import { carriesStars, withStars } from '../systems/stars';
@@ -286,7 +286,11 @@ function spawnableItems(): string[] {
     ...Object.keys(crops).map(seedItem),
     ...Object.keys(balance.fertilizer.tiers),
     ...Object.keys(recipes).map((recipe) => dishItem(recipe, 1)),
-    ...Object.keys(ingredientsJson).map((id) => `ing_${id}`),
+    // กลุ่มวัตถุดิบในสูตร (ปลาชนิดไหนก็ได้ ลูกชิ้น) ไม่ใช่ของจริง ไม่เสก
+    ...Object.keys(ingredientsJson)
+      .map((id) => `ing_${id}`)
+      .filter((item) => !isIngredientGroup(item)),
+    ...balance.crafting.materials,
     ...Object.keys(fishTable).map(fishItem),
     ...Object.values(baits).map((bait) => bait.item),
     ...shopJson.treats.map((treat) => treat.item),

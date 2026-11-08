@@ -1,13 +1,15 @@
 import type { BagStack, Cooking, CookingSlot, World } from '../core/state';
 import balance from '../data/balance.json';
+import ingredientsJson from '../data/ingredients.json';
 import recipesJson from '../data/recipes.json';
-import type { Recipe, Recipes } from '../data/schema';
+import type { Ingredients, Recipe, Recipes } from '../data/schema';
 import { addToBag, countOf, takeFromBag } from './farm';
-import { fishGroupOf, fishGroupRank } from './fishing';
+import { fishOfItem, fishTable, isFish } from './fishing';
 import type { Rng } from '../core/rng';
-import { baseItem, carriesStars, defaultStarPick, dishStars, starsOf, withStars } from './stars';
+import { baseItem, carriesStars, defaultStarPick, dishStars, withStars } from './stars';
 
 export const recipes = recipesJson as Recipes;
+const ingredientTable = ingredientsJson as Ingredients;
 const { cooking: rules, gauges } = balance;
 const MINUTES_PER_HOUR = 60;
 const CAMPFIRE = 'campfire';
@@ -32,7 +34,35 @@ const rankOf = (recipe: Recipe): { minutes: number; fullness: number; equipment:
   return rank;
 };
 
-export const canUseCampfire = (recipe: Recipe): boolean => recipe.category === 'drink' || rankOf(recipe).equipment === CAMPFIRE;
+/** น้ำพริกกับทอดมันทำที่ครกหินเก่าเท่านั้น (zone1 food update 2) */
+export const canUseCampfire = (recipe: Recipe): boolean =>
+  recipe.method !== 'mortar' && (recipe.category === 'drink' || rankOf(recipe).equipment === CAMPFIRE);
+
+/** สูตรที่นับในสมุด ข้าวสวยเป็นส่วนประกอบชุด ไม่นับ */
+export const countsAsRecipe = (recipe: Recipe): boolean => !recipe.setPart;
+
+const groupOf = (item: string): Ingredients[string] | undefined => {
+  if (!isIngredient(item)) return undefined;
+  const entry = ingredientTable[item.slice('ing_'.length)];
+  return entry?.fish || entry?.anyOf ? entry : undefined;
+};
+
+/** วัตถุดิบในสูตรนี้เป็นกลุ่ม (ปลาชนิดไหนก็ได้ หมึกชนิดไหนก็ได้ ลูกชิ้นปลาหรือกุ้ง) */
+export const isIngredientGroup = (item: string): boolean => groupOf(item) !== undefined;
+
+/** ของในกระเป๋านี้ใช้เป็นวัตถุดิบในสูตรได้ไหม · "ปลา" นับเฉพาะปลา ไม่นับกุ้ง ปู หมึก */
+export function fitsIngredient(item: string, stock: string): boolean {
+  if (stock === item) return true;
+  const group = groupOf(item);
+  if (!group) return false;
+  if (group.anyOf) return group.anyOf.includes(baseItem(stock));
+  if (!group.fish || !isFish(stock)) return false;
+  const fish = fishTable[fishOfItem(stock)]!;
+  return fish.kind === group.fish.kind && (group.fish.rank === undefined || fish.rank === group.fish.rank);
+}
+
+/** ของในกระเป๋าที่ใช้แทนวัตถุดิบในสูตรได้ ตามลำดับในกระเป๋า (ของที่ใส่ก่อนถูกใช้ก่อน) */
+export const stockFitting = (bag: BagStack[], item: string): string[] => [...new Set(bag.filter((stack) => fitsIngredient(item, stack.item)).map((stack) => stack.item))];
 
 export const minutesFor = (recipe: Recipe): number => (recipe.category === 'drink' ? rules.drink.minutes : rankOf(recipe).minutes);
 
@@ -54,20 +84,20 @@ export function baseDishStars(bag: BagStack[], recipe: Recipe, picks: StarPicks 
   return levels.length > 0 ? Math.min(...levels) : 1;
 }
 
-/** จำนวนที่มีสำหรับวัตถุดิบในสูตร ปลาแรงก์ F นับปลาแรงก์ F ทุกชนิดในกระเป๋า · ผักนับเฉพาะดาวที่เลือก */
+/** จำนวนที่มีสำหรับวัตถุดิบในสูตร กลุ่มวัตถุดิบนับทุกชนิดในกลุ่ม · ผักนับเฉพาะดาวที่เลือก */
 export function haveFor(bag: BagStack[], item: string, picks: StarPicks = {}, need = 1): number {
   if (carriesStars(item)) return countOf(bag, stockItem(bag, item, need, picks));
-  if (!fishGroupRank(item)) return countOf(bag, item);
-  return countOf(bag, item) + bag.filter((stack) => fishGroupOf(stack.item) === item).reduce((sum, stack) => sum + stack.count, 0);
+  if (!isIngredientGroup(item)) return countOf(bag, item);
+  return stockFitting(bag, item).reduce((sum, kind) => sum + countOf(bag, kind), 0);
 }
 
-/** หยิบตามลำดับในกระเป๋า ปลาที่ใส่ก่อนถูกใช้ก่อน */
+/** หยิบตามลำดับในกระเป๋า ของในกลุ่มที่ใส่ก่อนถูกใช้ก่อน */
 function takeFor(bag: BagStack[], item: string, count: number): BagStack[] | null {
-  if (!fishGroupRank(item)) return takeFromBag(bag, item, count);
+  if (!isIngredientGroup(item)) return takeFromBag(bag, item, count);
   if (haveFor(bag, item) < count) return null;
   let left: BagStack[] = bag;
   let need = count;
-  for (const kind of [item, ...new Set(bag.filter((stack) => fishGroupOf(stack.item) === item).map((stack) => stack.item))]) {
+  for (const kind of stockFitting(bag, item)) {
     const moved = Math.min(need, countOf(left, kind));
     if (moved > 0) left = takeFromBag(left, kind, moved)!;
     need -= moved;
@@ -104,16 +134,6 @@ function takeAll(bag: BagStack[], items: Record<string, number>): BagStack[] | n
   return left;
 }
 
-/** ปลาที่ผสมเองนับเป็นปลาแรงก์ของมัน จะได้ตรงกับสูตรที่เขียนว่าปลาแรงก์ F */
-function asRecipeItems(mix: Record<string, number>): Record<string, number> {
-  const items: Record<string, number> = {};
-  for (const [item, count] of Object.entries(mix)) {
-    const key = fishGroupOf(item) ?? baseItem(item);
-    items[key] = (items[key] ?? 0) + count;
-  }
-  return items;
-}
-
 export function canCook(world: World, id: string, picks: StarPicks = {}): boolean {
   const recipe = recipes[id];
   return Boolean(recipe && !world.cooking.slot && canUseCampfire(recipe) && hasIngredients(world.bag, recipe, picks));
@@ -131,39 +151,6 @@ export function startCooking(world: World, id: string, count: number, picks: Sta
   const stars = dishStars([baseDishStars(world.bag, recipe, picks)], world.gauges.happiness, rng);
   const bag = takeAll(world.bag, stockFor(world.bag, recipe, count, picks));
   return bag && put(world, bag, { recipe: id, stars, minutesLeft: batchMinutes(recipe, count), count });
-}
-
-/** ของที่ผสมต้องตรงสูตรทุกอย่าง และเป็นเมนูที่กองไฟทำได้ */
-export function matchRecipe(raw: Record<string, number>): string | null {
-  const mix = asRecipeItems(raw);
-  const kinds = Object.keys(mix);
-  const found = Object.entries(recipes).find(
-    ([, recipe]) =>
-      canUseCampfire(recipe) &&
-      Object.keys(recipe.ingredients).length === kinds.length &&
-      kinds.every((item) => recipe.ingredients[item] === mix[item]),
-  );
-  return found ? found[0] : null;
-}
-
-/** ตรงสูตรจะปลดสูตรนั้น ผิดได้อาหารปริศนา วัตถุดิบหมดทั้งสองแบบ · ดาวคิดจากผักที่ใส่จริง */
-export function startExperiment(world: World, mix: Record<string, number>, rng: Rng): World | null {
-  if (world.cooking.slot || Object.keys(mix).length === 0) return null;
-  const bag = takeAll(world.bag, mix);
-  if (!bag) return null;
-  const id = matchRecipe(mix);
-  if (!id) return put(world, bag, { recipe: MYSTERY, stars: 1, minutesLeft: rules.mystery.minutes, count: 1 });
-  const recipe = recipes[id]!;
-  const known = world.recipes.known.includes(id) ? world.recipes.known : [...world.recipes.known, id];
-  return {
-    ...put(world, bag, { recipe: id, stars: mixStars(mix, world.gauges.happiness, rng), minutesLeft: minutesFor(recipe), count: 1 }),
-    recipes: { ...world.recipes, known },
-  };
-}
-
-function mixStars(mix: Record<string, number>, happiness: number, rng: Rng): number {
-  const levels = Object.keys(mix).flatMap((item) => (carriesStars(item) ? [starsOf(item) ?? 1] : []));
-  return dishStars(levels, happiness, rng);
 }
 
 export function tickCooking(cooking: Cooking, hours: number): Cooking {

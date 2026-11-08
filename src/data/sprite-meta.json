@@ -2838,7 +2838,7 @@
   },
   "dish_icon_warm_honey_milk": {
     "footY": {
-      "default": 44
+      "default": 45
     }
   },
   "dish_bag_warm_honey_milk": {
@@ -2898,7 +2898,7 @@
   },
   "dish_icon_tomato_juice": {
     "footY": {
-      "default": 44
+      "default": 45
     }
   },
   "dish_bag_tomato_juice": {
@@ -2908,12 +2908,12 @@
   },
   "dish_icon_basil_tea": {
     "footY": {
-      "default": 43
+      "default": 45
     }
   },
   "dish_bag_basil_tea": {
     "footY": {
-      "default": 30
+      "default": 32
     }
   },
   "food_bag_food_slime24": {
@@ -4112,7 +4112,7 @@
   },
   "mini16_basil_tea": {
     "footY": {
-      "default": 17
+      "default": 18
     }
   },
   "mini16_berry_pudding": {
@@ -4691,7 +4691,7 @@
   },
   "dish_icon_strawberry_juice": {
     "footY": {
-      "default": 44
+      "default": 45
     }
   },
   "dish_bag_strawberry_juice": {
@@ -5357,6 +5357,701 @@
   "ui_paper_glass": {
     "footY": {
       "default": 40
+    }
+  },
+  "ing_icon_butter": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "ing_mini_ing_butter": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ing_icon_kapi": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "ing_mini_ing_kapi": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_icon_dried_shrimp": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "ing_mini_ing_dried_shrimp": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_icon_dried_fish": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "ing_mini_ing_dried_fish": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "ing_icon_dried_chili": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "ing_mini_ing_dried_chili": {
+    "footY": {
+      "default": 14
+    }
+  },
+  "ing_icon_umami_powder": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "ing_mini_ing_umami_powder": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_icon_chili_flakes": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "ing_mini_ing_chili_flakes": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_icon_ground_dried_shrimp": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "ing_mini_ing_ground_dried_shrimp": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "ing_icon_fish_ball": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "ing_mini_ing_fish_ball": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "ing_icon_shrimp_ball": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "ing_mini_ing_shrimp_ball": {
+    "footY": {
+      "default": 14
+    }
+  },
+  "ing_icon_banana_leaf": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "ing_mini_ing_banana_leaf": {
+    "footY": {
+      "default": 14
+    }
+  },
+  "ing_icon_fried_garlic": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "ing_mini_ing_fried_garlic": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "ing_icon_toasted_sesame": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "ing_mini_ing_toasted_sesame": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "ing_icon_coconut_jelly": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "ing_mini_ing_coconut_jelly": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "ing_icon_rainbow_sprinkles": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "ing_mini_ing_rainbow_sprinkles": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "fish_shrimp": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "ing_mini_fish_shrimp": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "fish_crab": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "ing_mini_fish_crab": {
+    "footY": {
+      "default": 14
+    }
+  },
+  "rice_straw": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "ing_mini_rice_straw": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "banana_rope": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "ing_mini_banana_rope": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "bait_chest": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "crop_lime": {
+    "footY": {
+      "default": 64
+    }
+  },
+  "icon_lime": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "icon_bag_lime": {
+    "footY": {
+      "default": 23
+    }
+  },
+  "seed_lime": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "ing_mini_produce_lime": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "crop_coriander": {
+    "footY": {
+      "default": 64
+    }
+  },
+  "icon_coriander": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "icon_bag_coriander": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "seed_coriander": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "ing_mini_produce_coriander": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "dish_icon_cabbage_crispy_shrimp": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "dish_bag_cabbage_crispy_shrimp": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "mini16_cabbage_crispy_shrimp": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "tray_mini_cabbage_crispy_shrimp": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "dish_icon_cucumber_salad": {
+    "footY": {
+      "default": 37
+    }
+  },
+  "dish_bag_cucumber_salad": {
+    "footY": {
+      "default": 21
+    }
+  },
+  "mini16_cucumber_salad": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "tray_mini_cucumber_salad": {
+    "footY": {
+      "default": 6
+    }
+  },
+  "dish_icon_squid_salad": {
+    "footY": {
+      "default": 41
+    }
+  },
+  "dish_bag_squid_salad": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "mini16_squid_salad": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "tray_mini_squid_salad": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "dish_icon_fish_rice_ball": {
+    "footY": {
+      "default": 39
+    }
+  },
+  "dish_bag_fish_rice_ball": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "mini16_fish_rice_ball": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "tray_mini_fish_rice_ball": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "dish_icon_hor_mok": {
+    "footY": {
+      "default": 41
+    }
+  },
+  "dish_bag_hor_mok": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "mini16_hor_mok": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "tray_mini_hor_mok": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "dish_icon_cabbage_shrimp_soup": {
+    "footY": {
+      "default": 42
+    }
+  },
+  "dish_bag_cabbage_shrimp_soup": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "mini16_cabbage_shrimp_soup": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "tray_mini_cabbage_shrimp_soup": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "dish_icon_grilled_shrimp": {
+    "footY": {
+      "default": 39
+    }
+  },
+  "dish_bag_grilled_shrimp": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "mini16_grilled_shrimp": {
+    "footY": {
+      "default": 14
+    }
+  },
+  "tray_mini_grilled_shrimp": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "dish_icon_garlic_shrimp": {
+    "footY": {
+      "default": 39
+    }
+  },
+  "dish_bag_garlic_shrimp": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "mini16_garlic_shrimp": {
+    "footY": {
+      "default": 14
+    }
+  },
+  "tray_mini_garlic_shrimp": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "dish_icon_steamed_crab": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "dish_bag_steamed_crab": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "mini16_steamed_crab": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "tray_mini_steamed_crab": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "dish_icon_mackerel_chili_dip": {
+    "footY": {
+      "default": 39
+    }
+  },
+  "dish_bag_mackerel_chili_dip": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "mini16_mackerel_chili_dip": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "tray_mini_mackerel_chili_dip": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "dish_icon_kapi_chili_dip": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "dish_bag_kapi_chili_dip": {
+    "footY": {
+      "default": 20
+    }
+  },
+  "mini16_kapi_chili_dip": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "tray_mini_kapi_chili_dip": {
+    "footY": {
+      "default": 6
+    }
+  },
+  "dish_icon_fruit_veg_salad": {
+    "footY": {
+      "default": 39
+    }
+  },
+  "dish_bag_fruit_veg_salad": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "mini16_fruit_veg_salad": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "tray_mini_fruit_veg_salad": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "dish_icon_kaprao_shrimp": {
+    "footY": {
+      "default": 41
+    }
+  },
+  "dish_bag_kaprao_shrimp": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "mini16_kaprao_shrimp": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "tray_mini_kaprao_shrimp": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "dish_icon_lime_steamed_fish": {
+    "footY": {
+      "default": 41
+    }
+  },
+  "dish_bag_lime_steamed_fish": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "mini16_lime_steamed_fish": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "tray_mini_lime_steamed_fish": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "dish_icon_buttered_corn": {
+    "footY": {
+      "default": 41
+    }
+  },
+  "dish_bag_buttered_corn": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "mini16_buttered_corn": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "tray_mini_buttered_corn": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "dish_icon_pumpkin_custard": {
+    "footY": {
+      "default": 41
+    }
+  },
+  "dish_bag_pumpkin_custard": {
+    "footY": {
+      "default": 25
+    }
+  },
+  "mini16_pumpkin_custard": {
+    "footY": {
+      "default": 14
+    }
+  },
+  "tray_mini_pumpkin_custard": {
+    "footY": {
+      "default": 7
+    }
+  },
+  "dish_icon_plain_rice": {
+    "footY": {
+      "default": 42
+    }
+  },
+  "dish_bag_plain_rice": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "mini16_plain_rice": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "tray_mini_plain_rice": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "dish_icon_fish_cake": {
+    "footY": {
+      "default": 43
+    }
+  },
+  "dish_bag_fish_cake": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "mini16_fish_cake": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "tray_mini_fish_cake": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "dish_icon_grilled_meatball_skewer": {
+    "footY": {
+      "default": 45
+    }
+  },
+  "dish_bag_grilled_meatball_skewer": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "mini16_grilled_meatball_skewer": {
+    "footY": {
+      "default": 17
+    }
+  },
+  "tray_mini_grilled_meatball_skewer": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "dish_icon_soy_milk": {
+    "footY": {
+      "default": 45
+    }
+  },
+  "dish_bag_soy_milk": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "mini16_soy_milk": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "tray_mini_soy_milk": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "dish_icon_corn_milk": {
+    "footY": {
+      "default": 45
+    }
+  },
+  "dish_bag_corn_milk": {
+    "footY": {
+      "default": 32
+    }
+  },
+  "mini16_corn_milk": {
+    "footY": {
+      "default": 18
+    }
+  },
+  "tray_mini_corn_milk": {
+    "footY": {
+      "default": 8
+    }
+  },
+  "ing_icon_fish_any": {
+    "footY": {
+      "default": 27
+    }
+  },
+  "ing_mini_ing_fish_any": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "ing_icon_squid_any": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "ing_mini_ing_squid_any": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "ing_icon_meatball": {
+    "footY": {
+      "default": 28
+    }
+  },
+  "ing_mini_ing_meatball": {
+    "footY": {
+      "default": 15
     }
   }
 }
