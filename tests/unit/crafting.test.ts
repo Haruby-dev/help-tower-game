@@ -103,13 +103,13 @@ describe('first-time lines (her own knowledge, never "grandma taught me")', () =
   });
 });
 
-describe('save version 18', () => {
+describe('save version 18 (and later)', () => {
   it('adds crafting to an old save and treats items already in the bag as noticed', () => {
     const file = toSaveFile(withBag([{ item: 'fish_shrimp', count: 2 }]));
     const { crafting: _crafting, ...oldWorld } = file.world;
     const parsed = parseSaveFile({ ...file, version: 17, world: oldWorld })!;
-    expect(SAVE_VERSION).toBe(18);
-    expect(parsed.version).toBe(18);
-    expect(parsed.world.crafting).toEqual({ bananaDay: 0, noticed: ['fish_shrimp'], stations: { drying_tray: 0, trap: 1 } });
+    expect(SAVE_VERSION).toBe(19);
+    expect(parsed.version).toBe(19);
+    expect(parsed.world.crafting).toEqual({ bananaDay: 0, noticed: ['fish_shrimp'], stations: { drying_tray: 0, trap: 1 }, drying: [], traps: [], mortar: false });
   });
 });

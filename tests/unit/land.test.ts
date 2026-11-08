@@ -73,8 +73,8 @@ describe('save version 11', () => {
     const gio = { ...(old.gio as Record<string, unknown>) };
     delete gio.album;
     const parsed = parseSaveFile({ version: 10, savedAt: '2026-11-05T00:00:00.000Z', world: { ...old, gio } });
-    expect(SAVE_VERSION).toBe(18);
-    expect(parsed?.version).toBe(18);
+    expect(SAVE_VERSION).toBe(19);
+    expect(parsed?.version).toBe(19);
     expect(parsed?.world.land).toEqual({ owned: 0 });
     expect(parsed?.world.placed).toEqual({});
     expect(parsed?.world.gio.album).toEqual([]);

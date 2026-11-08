@@ -370,6 +370,8 @@ test('the old workbench makes the bamboo cup once, and the banana clump shakes o
   await near('workbench', 30);
   const act = page.locator('#action-button');
   await expect(act).toHaveAttribute('aria-label', 'ทำของ');
+  // จุดกดใช้ทั่วไปใช้ไอคอนอุ้งเท้าแมวของจอยสติ๊ก (ผู้ใช้ตัดสิน 9 พ.ย. 2026)
+  await expect(page.locator('#action-button .action-button__icon')).toHaveAttribute('src', /joystick_knob_paw/);
   await act.click();
   const bench = page.locator('#workbench-window');
   await expect(bench).toBeVisible();
@@ -387,9 +389,76 @@ test('the old workbench makes the bamboo cup once, and the banana clump shakes o
 
   await near('banana', 30);
   await expect(act).toHaveAttribute('aria-label', 'เขย่าต้นกล้วย');
+  await expect(page.locator('#action-button .action-button__icon')).toHaveAttribute('src', /joystick_knob_paw/);
   await act.click();
   await expect.poll(() => count(page, 'ing_banana_leaf')).toBeGreaterThanOrEqual(2);
   expect(await count(page, 'banana_rope')).toBe(1);
   // เขย่าแล้ววันนี้ ไม่มีอะไรทำตรงนี้ ปุ่มกระทำซ่อน
   await expect(act).toBeHidden();
+});
+
+test('the drying tray dries shrimp overnight, the old trap catches overnight, and the stone mortar pounds fish balls', async ({ page }) => {
+  await open(page);
+  const patchWorld = (code: string): Promise<void> =>
+    page.evaluate((body) => {
+      const state = (window as unknown as { __state: TestState & { world: Record<string, unknown> } }).__state;
+      state.setWorld(new Function('w', `return (${body})(w)`)(state.world));
+    }, code);
+  const standBy = (kind: 'drying' | 'trap', index: number): Promise<void> =>
+    page.evaluate(
+      ({ kind, index }) => {
+        const scene = (window as unknown as { __game: { scene: { getScene(k: string): { stationsView: { stations(w: unknown): { kind: string; index: number; x: number; y: number }[] } } } } }).__game.scene.getScene('Base');
+        const state = (window as unknown as { __state: TestState & { world: unknown } }).__state;
+        const station = scene.stationsView.stations(state.world).find((entry) => entry.kind === kind && entry.index === index)!;
+        state.movePlayer({ x: station.x, y: station.y + 20 });
+      },
+      { kind, index },
+    );
+  await patchWorld(`(w) => ({ ...w, hour: 10, bag: [{ item: 'fish_shrimp', count: 4 }, { item: 'fish_silver_minnow', count: 1 }, { item: 'ing_salt', count: 2 }], crafting: { ...w.crafting, stations: { drying_tray: 1, trap: 1 } } })`);
+  const act = page.locator('#action-button');
+  await standBy('drying', 0);
+  await expect(act).toHaveAttribute('aria-label', 'ตากของ');
+  await act.click();
+  const drying = page.locator('#drying-window');
+  await expect(drying).toBeVisible();
+  await page.locator('.dy-row[data-dry="dried_shrimp"]').click();
+  await page.locator('#drying-more').click();
+  await page.locator('#drying-more').click();
+  await expect(page.locator('#drying-count')).toHaveText('3');
+  await page.locator('#drying-go').click();
+  await expect(drying).toBeHidden();
+  expect(await count(page, 'fish_shrimp')).toBe(1);
+  // ยังไม่แห้ง กดแล้วตัวเอกบอกให้รอ
+  await act.click();
+  await expect(page.locator('#player-bubble')).toContainText('ยังไม่แห้ง');
+  // ลอบเก่าก่อน 17:00 วางไม่ได้ · ตอนเย็นวางได้
+  await standBy('trap', 0);
+  await expect(act).toHaveAttribute('aria-label', 'วางลอบ');
+  await act.click();
+  await expect(page.locator('#player-bubble')).toContainText('เย็น');
+  await patchWorld(`(w) => ({ ...w, hour: 17.5 })`);
+  await act.click();
+  await expect(act).toHaveAttribute('aria-label', 'ยกลอบ');
+  // เช้าวันถัดไป
+  await patchWorld(`(w) => ({ ...w, day: w.day + 1, hour: 6.2 })`);
+  await act.click();
+  await expect.poll(async () => (await count(page, 'fish_shrimp')) + (await count(page, 'fish_crab'))).toBe(2);
+  await standBy('drying', 0);
+  await expect(act).toHaveAttribute('aria-label', 'เก็บของแห้ง');
+  await act.click();
+  await expect.poll(() => count(page, 'ing_dried_shrimp')).toBe(3);
+
+  // ครกหินเก่าจากปุ่มทดสอบ: ครั้งแรกได้สูตรทอดมันกับลูกชิ้นปิ้ง · ตำลูกชิ้นปลาทุกครั้งเป๊ะ
+  await page.evaluate(() => (window as unknown as { __mortarAuto(judge: string): void }).__mortarAuto('perfect'));
+  await page.locator('#settings-button').click();
+  await page.locator('#test-mortar').click();
+  const mortar = page.locator('#mortar-window');
+  await expect(mortar).toBeVisible();
+  expect((await state(page)).recipes.known).toEqual(expect.arrayContaining(['fish_cake', 'grilled_meatball_skewer']));
+  await mortar.locator('.wb-make[data-pound="fish_ball"]').click();
+  await expect(page.locator('#mortar-collect')).toBeVisible({ timeout: 30_000 });
+  await expect(page.locator('.mt-beat[data-judge="perfect"]')).toHaveCount(6);
+  await page.locator('#mortar-collect').click();
+  await expect(mortar).toBeHidden();
+  expect(await count(page, 'ing_fish_ball')).toBe(2);
 });

@@ -18,6 +18,7 @@ import { dishItem, isIngredientGroup, recipes } from '../systems/cooking';
 import { addToBag, crops, produceItem, seedItem } from '../systems/farm';
 import { baits, fishItem, fishTable } from '../systems/fishing';
 import { giveFirstDryingTray } from '../systems/crafting';
+import { findMortar } from '../systems/stations';
 import { carriesStars, withStars } from '../systems/stars';
 
 const STORAGE_KEY = 'lighting-enabled';
@@ -456,7 +457,19 @@ function createSettingsCard(card: HTMLElement): HTMLElement[] {
     testButton('test-monster', t('settings.test_monster'), () => eventBus.emit('monster-summon', undefined)),
     // ถาดตากใบแรกตัวเอกคิดทำเองหลังเกต 2 (ระบบเกตมาใน M8) โต๊ะช่างทำใบที่ 2–3 ได้หลังมีใบแรก
     testButton('test-drying-tray', t('settings.test_drying_tray'), () => {
-      if (gameState.started) gameState.setWorld(giveFirstDryingTray(gameState.world));
+      if (!gameState.started || gameState.world.crafting.stations.drying_tray > 0) return;
+      gameState.setWorld(giveFirstDryingTray(gameState.world));
+      eventBus.emit('player-says', 'dryingTrayIdea');
+    }),
+    // ครกหินเก่าอยู่ในหีบเก่าในบ้าน (ตัดสิน 9 พ.ย. 2026) แต่ยังไม่มีฉากในบ้าน จึงเปิดจากปุ่มทดสอบ ครั้งแรกได้สูตรทอดมันกับลูกชิ้นปิ้งด้วย
+    testButton('test-mortar', t('settings.test_mortar'), () => {
+      if (!gameState.started) return;
+      document.getElementById('settings-close')?.click();
+      if (!gameState.world.crafting.mortar) {
+        gameState.setWorld(findMortar(gameState.world));
+        eventBus.emit('player-says', 'mortarFound');
+      }
+      eventBus.emit('mortar-open', undefined);
     }),
     testButton('test-spawn-open', t('settings.test_spawn'), () => {
       spawn.hidden = !spawn.hidden;

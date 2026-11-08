@@ -6704,8 +6704,7 @@
     "height": 16,
     "source": "public/assets/food/ingredients_mini/ing_salt.png",
     "file": "food/ingredients_mini/ing_salt.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "ing_mini_ing_sugar": {
     "type": "local",
@@ -6749,8 +6748,7 @@
     "height": 14,
     "source": "public/assets/food/ingredients_mini/produce_chili.png",
     "file": "food/ingredients_mini/produce_chili.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "ing_mini_produce_corn": {
     "type": "local",
@@ -6999,8 +6997,7 @@
     "height": 9,
     "source": "public/assets/food/ingredients_mini/ing_fish_silver_minnow.png",
     "file": "food/ingredients_mini/ing_fish_silver_minnow.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "fish_pond_tilapia": {
     "type": "local",
@@ -7016,8 +7013,7 @@
     "height": 11,
     "source": "public/assets/food/ingredients_mini/ing_fish_pond_tilapia.png",
     "file": "food/ingredients_mini/ing_fish_pond_tilapia.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "fish_mud_catfish": {
     "type": "local",
@@ -7033,8 +7029,7 @@
     "height": 12,
     "source": "public/assets/food/ingredients_mini/ing_fish_mud_catfish.png",
     "file": "food/ingredients_mini/ing_fish_mud_catfish.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "fish_golden_carp": {
     "type": "local",
@@ -7050,8 +7045,7 @@
     "height": 12,
     "source": "public/assets/food/ingredients_mini/ing_fish_golden_carp.png",
     "file": "food/ingredients_mini/ing_fish_golden_carp.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "fish_lost_mackerel": {
     "type": "local",
@@ -7067,8 +7061,7 @@
     "height": 10,
     "source": "public/assets/food/ingredients_mini/ing_fish_lost_mackerel.png",
     "file": "food/ingredients_mini/ing_fish_lost_mackerel.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "fish_glow_squid": {
     "type": "local",
@@ -7084,8 +7077,7 @@
     "height": 12,
     "source": "public/assets/food/ingredients_mini/ing_fish_glow_squid.png",
     "file": "food/ingredients_mini/ing_fish_glow_squid.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "fish_meow_salmon": {
     "type": "local",
@@ -7101,8 +7093,7 @@
     "height": 11,
     "source": "public/assets/food/ingredients_mini/ing_fish_meow_salmon.png",
     "file": "food/ingredients_mini/ing_fish_meow_salmon.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "fish_cloud_bass": {
     "type": "local",
@@ -7118,8 +7109,7 @@
     "height": 12,
     "source": "public/assets/food/ingredients_mini/ing_fish_cloud_bass.png",
     "file": "food/ingredients_mini/ing_fish_cloud_bass.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "bait_normal": {
     "type": "local",
@@ -11280,8 +11270,7 @@
     "height": 16,
     "source": "public/assets/food/ingredients_mini/ing_kapi.png",
     "file": "food/ingredients_mini/ing_kapi.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "ing_icon_dried_shrimp": {
     "type": "local",
@@ -11298,8 +11287,7 @@
     "height": 16,
     "source": "public/assets/food/ingredients_mini/ing_dried_shrimp.png",
     "file": "food/ingredients_mini/ing_dried_shrimp.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "ing_icon_dried_fish": {
     "type": "local",
@@ -11316,8 +11304,7 @@
     "height": 15,
     "source": "public/assets/food/ingredients_mini/ing_dried_fish.png",
     "file": "food/ingredients_mini/ing_dried_fish.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "ing_icon_dried_chili": {
     "type": "local",
@@ -11334,8 +11321,7 @@
     "height": 14,
     "source": "public/assets/food/ingredients_mini/ing_dried_chili.png",
     "file": "food/ingredients_mini/ing_dried_chili.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "ing_icon_umami_powder": {
     "type": "local",
@@ -11750,8 +11736,7 @@
     "height": 12,
     "source": "public/assets/food/ingredients_mini/ing_fish_shrimp.png",
     "file": "food/ingredients_mini/ing_fish_shrimp.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "fish_crab": {
     "type": "local",
@@ -11768,8 +11753,7 @@
     "height": 14,
     "source": "public/assets/food/ingredients_mini/ing_fish_crab.png",
     "file": "food/ingredients_mini/ing_fish_crab.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "rice_straw": {
     "type": "local",
@@ -11950,6 +11934,15 @@
     "file": "world/map/trap.png",
     "jade_tone": true,
     "note": "shrimp/crab trap on land, also the workbench icon"
+  },
+  "trap_water": {
+    "type": "local",
+    "width": 28,
+    "height": 18,
+    "source": "assets-src/art_2026-11-09/world/trap_water.png",
+    "file": "world/map/trap_water.png",
+    "jade_tone": true,
+    "note": "trap in the pond (no ripple in the art, ripple drawn by Pond.ts)"
   },
   "bait_chest": {
     "type": "local",
@@ -12960,5 +12953,25 @@
     "jade_tone": false,
     "lazy": true,
     "note": "cooking window K2 (zone1 food update 2)"
+  },
+  "mortar_stone": {
+    "type": "local",
+    "width": 28,
+    "height": 29,
+    "source": "public/assets/ui/mortar/stone_mortar.png",
+    "file": "ui/mortar/stone_mortar.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "old stone mortar with pestle (window icon)"
+  },
+  "mortar_empty": {
+    "type": "local",
+    "width": 28,
+    "height": 29,
+    "source": "public/assets/ui/mortar/mortar_nopestle.png",
+    "file": "ui/mortar/mortar_nopestle.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "mortar without pestle for the pounding minigame (pestle drawn in code)"
   }
 }

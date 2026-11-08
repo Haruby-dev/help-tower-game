@@ -9,6 +9,8 @@ export interface CastSpot {
   facing: Direction4;
 }
 
+/** ระลอกรอบลอบอยู่สูงจากเท้าภาพลอบในน้ำเท่านี้ (แนวน้ำในภาพ) */
+const TRAP_WATERLINE = 4;
 const CAST_DIRECTIONS: [Direction4, number, number][] = [
   ['east', 1, 0],
   ['west', -1, 0],
@@ -119,6 +121,8 @@ export class Pond {
   private sparkles: { x: number; y: number; phase: number; length: number }[] = [];
   private bubbles: { phase: number; offset: number }[] = [];
   private rocks: { x: number; y: number }[] = [];
+  /** ลอบที่วางในน้ำ (พิกัดในบ่อ) วาดระลอกเหมือนหินกลางบ่อ */
+  private traps: { x: number; y: number }[] = [];
   private caustic: Phaser.GameObjects.Image | null = null;
   private causticFrames: string[] = [];
   private causticPoints: { x: number; y: number; ax: number; ay: number }[] = [];
@@ -182,6 +186,12 @@ export class Pond {
 
     this.graphics = scene.add.graphics().setPosition(this.left, this.top).setDepth(depth + 0.3);
     if (scene.game.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer) this.setUpLightLayers(depth);
+  }
+
+  /** ลอบในน้ำเปลี่ยน รับเท้าลอบเป็นพิกเซลแผนที่ ระลอกอยู่ที่แนวน้ำเหนือเท้า 2 พิกเซลเหมือนหิน */
+  setTraps(points: { x: number; y: number }[]): void {
+    this.traps = points.map((point) => ({ x: Math.round(point.x - this.left), y: Math.round(point.y - this.top - TRAP_WATERLINE) }));
+    this.shownFrame = -1;
   }
 
   private index(x: number, y: number): number {
@@ -639,7 +649,7 @@ export class Pond {
       }
     }
 
-    for (const rock of this.rocks) {
+    for (const rock of [...this.rocks, ...this.traps]) {
       for (const offset of [0, CYCLE_FRAMES / 2]) {
         const t = ((frame + offset) % CYCLE_FRAMES) / CYCLE_FRAMES;
         const grow = Math.floor(t * 8);

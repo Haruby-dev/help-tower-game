@@ -74,8 +74,11 @@ export function newWorld(): World {
 }
 
 /** งานสวน 1 ช่องกินเวลาตาม GDD สุขลดตอนทำงาน และเลอะกว่าเวลาปกติ */
-export function spendGardenTime(world: World): World {
-  const hours = farm.actionMinutes / MINUTES_PER_HOUR;
+export const spendGardenTime = (world: World): World => spendMinutes(world, farm.actionMinutes);
+
+/** งานที่ใช้เวลาในเกม (ทำสวน ตำครก) เวลาเดินไปตามนาที เกจลดตามอัตราตอนทำงาน */
+export function spendMinutes(world: World, minutes: number): World {
+  const hours = minutes / MINUTES_PER_HOUR;
   const { gauges: values } = world;
   return {
     ...world,

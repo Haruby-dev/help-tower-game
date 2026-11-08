@@ -17,7 +17,7 @@ const firstLines = linesJson.player.firstItem as Record<string, string>;
 
 export type StationId = keyof Crafting['stations'];
 
-export const newCrafting = (): Crafting => ({ bananaDay: 0, noticed: [], stations: { ...rules.startStations } });
+export const newCrafting = (): Crafting => ({ bananaDay: 0, noticed: [], stations: { ...rules.startStations }, drying: [], traps: [], mortar: false });
 
 const isStation = (id: string): id is StationId => id === 'drying_tray' || id === 'trap';
 

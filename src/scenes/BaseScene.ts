@@ -16,6 +16,8 @@ import { finishBath } from '../systems/bath';
 import { autoHooks, baits, catchItem, chosenBait, finishCast, rollCatch, type Catch } from '../systems/fishing';
 import { countOf, seedItem } from '../systems/farm';
 import { canShakeBanana, shakeBanana } from '../systems/crafting';
+import { collectDrying, collectTrap, dryingSlot, isDryingReady, isTrapReady, setTrap, trapSet } from '../systems/stations';
+import { StationsView, type Station } from './stationsView';
 import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, isWithered, produceItem, type FarmAction } from '../systems/farm';
 import { withStars } from '../systems/stars';
 import { MYSTERY, collectDish, cookMethodOf, dishItem, eatItem, isCooked, isDish, isRawProduce, parseDish, recipes as cookRecipes } from '../systems/cooking';
@@ -201,6 +203,7 @@ export class BaseScene extends Phaser.Scene {
   private pendingEat: string | null = null;
   private campfire: Campfire | null = null;
   private trayView: TrayView | null = null;
+  private stationsView: StationsView | null = null;
   /** โต๊ะช่างเก่า (ย้ายได้ในโหมดจัดวาง) กับกอกล้วยมุมล่างขวา */
   private workbench: Phaser.GameObjects.Image | null = null;
   private banana: Phaser.GameObjects.Image | null = null;
@@ -275,6 +278,7 @@ export class BaseScene extends Phaser.Scene {
     for (const object of map.getObjectLayer('objects')!.objects) this.placeObject(object);
     this.pond = Pond.create(this, ground, this.pondObjects, DEPTH.pond);
     this.pond?.setEffects(gameState.lightingEnabled);
+    this.stationsView = new StationsView(this, (index, image) => this.placeDryingTray(index, image), (points) => this.pond?.setTraps(points));
     for (const effect of map.getObjectLayer('effects')!.objects) this.placeEffect(effect);
 
     const spawns = map.getObjectLayer('spawns')!.objects;
@@ -385,6 +389,11 @@ export class BaseScene extends Phaser.Scene {
         this.shakeBananaClump();
         return;
       }
+      const station = this.stationInReach();
+      if (station && station.image.getBounds().contains(pointer.worldX, pointer.worldY)) {
+        this.useStation(station);
+        return;
+      }
       const near = Phaser.Math.Distance.Between(pointer.worldX, pointer.worldY, this.door.x, this.door.y - DOOR_TAP_LIFT);
       if (near < DOOR_TAP_RADIUS) this.useAction();
     });
@@ -447,6 +456,7 @@ export class BaseScene extends Phaser.Scene {
     if (gameState.started) this.openReceiptWhenNear();
     if (gameState.started) this.followPlaced();
     if (gameState.started) this.syncDecor();
+    if (gameState.started) this.stationsView?.sync(gameState.world);
     if (gameState.started) {
       this.updateNearAmbience(time);
       this.ringChimeWhenNear(time);
@@ -664,6 +674,7 @@ export class BaseScene extends Phaser.Scene {
     else if (this.nearGio()) eventBus.emit('gio-talk', undefined);
     else if (this.workbenchInReach()) eventBus.emit('workbench-open', undefined);
     else if (this.bananaReady()) this.shakeBananaClump();
+    else if (this.stationInReach()) this.useStation(this.stationInReach()!);
     else if (this.pondSpot()) {
       if (gameState.selectedTool === 'rod') this.startFishing();
       else this.startBath();
@@ -819,6 +830,81 @@ export class BaseScene extends Phaser.Scene {
         popPill(this, this.player.feetX, this.player.feetY - PLAYER_HEAD_PX, this.textures.exists(icon) ? icon : item, `+${count} ${name}`, gameState.viewport.zoom);
       });
     });
+  }
+
+  /** ถาดตากใบใหม่: ลงทะเบียนกับโหมดจัดวาง วางที่ตำแหน่งในเซฟ หรือช่องว่างใกล้ช่องที่อยากวาง */
+  private placeDryingTray(index: number, image: Phaser.GameObjects.Image): void {
+    const id = `drying_tray_${index + 1}`;
+    this.arranger.register(id, image, null, false, () => undefined);
+    const saved = gameState.world.placed[id];
+    const feet = saved ?? this.arranger.findFree(id, this.playerRect(), { x: image.x, y: image.y });
+    if (!feet) return;
+    this.arranger.apply(id, feet);
+    if (!saved) gameState.setWorld({ ...gameState.world, placed: { ...gameState.world.placed, [id]: feet } });
+  }
+
+  /** ถาดตากหรือลอบที่ใกล้ที่สุดในระยะเอื้อม · ถือคันเบ็ดอยู่และตกปลาตรงนี้ได้ ให้ตกปลาก่อน (ลอบเก่าอยู่ข้างท่าน้ำ) */
+  private stationInReach(): Station | null {
+    if (!this.stationsView || !gameState.clockRunning || this.player.busy) return null;
+    if (gameState.selectedTool === 'rod' && this.pondSpot()) return null;
+    let best: Station | null = null;
+    let bestDistance = balance.crafting.stationReachPx;
+    for (const station of this.stationsView.stations(gameState.world)) {
+      const distance = Phaser.Math.Distance.Between(this.player.feetX, this.player.feetY, station.x, station.y);
+      if (distance < bestDistance) {
+        best = station;
+        bestDistance = distance;
+      }
+    }
+    return best;
+  }
+
+  private stationLabel(station: Station): TextKey {
+    const world = gameState.world;
+    if (station.kind === 'drying') return dryingSlot(world, station.index) ? 'action.collect_dry' : 'action.dry';
+    return trapSet(world, station.index) ? 'action.collect_trap' : 'action.set_trap';
+  }
+
+  /** ถาดตาก: ว่างเปิดหน้าเลือกของ · แห้งแล้วเก็บ · ลอบ: วางลงน้ำตอนเย็น · เช้าวันถัดไปยกขึ้นได้กุ้งหรือปู */
+  private useStation(station: Station): void {
+    const world = gameState.world;
+    const pop = (icon: string, text: string): void =>
+      popPill(this, this.player.feetX, this.player.feetY - PLAYER_HEAD_PX, this.textures.exists(icon) ? icon : 'drying_tray', text, gameState.viewport.zoom);
+    if (station.kind === 'drying') {
+      if (!dryingSlot(world, station.index)) {
+        eventBus.emit('drying-open', station.index);
+        return;
+      }
+      if (!isDryingReady(world, station.index)) {
+        eventBus.emit('player-says', 'dryingWaiting');
+        return;
+      }
+      const done = collectDrying(world, station.index);
+      if (!done) {
+        eventBus.emit('player-says', 'bagFull');
+        return;
+      }
+      gameState.setWorld(done.world);
+      pop(`ing_mini_${done.item}`, `+${done.count} ${t(`ingredient.${done.item.slice('ing_'.length)}.name` as TextKey)}`);
+      return;
+    }
+    if (!trapSet(world, station.index)) {
+      const next = setTrap(world, station.index);
+      if (next) gameState.setWorld(next);
+      else eventBus.emit('player-says', 'trapTooEarly');
+      return;
+    }
+    if (!isTrapReady(world, station.index)) {
+      eventBus.emit('player-says', 'trapWaiting');
+      return;
+    }
+    const caught = collectTrap(world, station.index, createRng(Date.now()));
+    if (!caught) {
+      eventBus.emit('player-says', 'bagFull');
+      return;
+    }
+    gameState.setWorld(caught.world);
+    pop(caught.item, `+1 ${t(`fish.${caught.item.slice('fish_'.length)}.name` as TextKey)}`);
   }
 
   /** คุยกับจีโอได้เมื่อจีโออยู่บ้าน นั่งหรือเดินเล่นอยู่ (ไม่ใช่ระหว่างไปหรือกลับจากโพรง) และยืนใกล้ */
@@ -1367,9 +1453,11 @@ export class BaseScene extends Phaser.Scene {
     if (fire) return { icon: 'cook', label: fire };
     if (this.trayInReach()) return { icon: 'tray', label: 'action.tray' };
     if (this.nearGio()) return { icon: 'talk', label: 'action.talk' };
-    // ไอคอนโต๊ะช่างกับเขย่าต้นกล้วยยังไม่มีภาพ ใช้กล่องสีแทนตามกฎทะเบียน
-    if (this.workbenchInReach()) return { icon: 'craft', label: 'action.craft' };
-    if (this.bananaReady()) return { icon: 'shake', label: 'action.shake' };
+    // จุดกดใช้ทั่วไป (โต๊ะช่าง ต้นกล้วย และจุดใหม่ในโซนหลัง) ใช้ไอคอนอุ้งเท้าเดียวกัน ชื่อท่ายังบอกใน aria-label (ผู้ใช้ตัดสิน 9 พ.ย. 2026)
+    if (this.workbenchInReach()) return { icon: 'interact', label: 'action.craft' };
+    if (this.bananaReady()) return { icon: 'interact', label: 'action.shake' };
+    const station = this.stationInReach();
+    if (station) return { icon: 'interact', label: this.stationLabel(station) };
     if (this.pondSpot()) return gameState.selectedTool === 'rod' ? { icon: 'fish', label: 'action.fish' } : { icon: 'bath', label: 'action.bath' };
     return this.nearDoor() ? { icon: 'sleep', label: 'action.sleep' } : null;
   }

@@ -43,6 +43,7 @@
     }
   },
   "hud": {
+    "interactIcon": "ui_joystick_knob_paw",
     "firstItemDelayMs": 1100,
     "beadsPerGauge": 5,
     "moodHappyFrom": 70,
@@ -579,7 +580,10 @@
         "zone": "frontyard",
         "cols": 2,
         "rows": 1
-      }
+      },
+      "drying_tray_1": { "zone": "frontyard", "cols": 2, "rows": 1 },
+      "drying_tray_2": { "zone": "frontyard", "cols": 2, "rows": 1 },
+      "drying_tray_3": { "zone": "frontyard", "cols": 2, "rows": 1 }
     }
   },
   "test": {
@@ -839,6 +843,7 @@
   "crafting": {
     "materials": ["rice_straw", "banana_rope", "bamboo"],
     "reachPx": 56,
+    "stationReachPx": 34,
     "harvestExtras": { "rice": { "rice_straw": 1 } },
     "banana": { "ing_banana_leaf": 2, "banana_rope": 1 },
     "startStations": { "drying_tray": 0, "trap": 1 }

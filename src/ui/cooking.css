@@ -1014,3 +1014,464 @@
   background: var(--ck-ok);
   color: #ffffff;
 }
+
+/*
+ * หน้าเลือกของตาก (งานอาหารโซน 1 ขั้นที่ 5) ตามภาพตัวอย่าง art-src/cook_ui_1108/dry_1108/dry_popup.png
+ * หน้าต่าง 1282×848 ตำแหน่งข้างในนับจากด้านในกรอบหนา 6 · ไอคอน 32 พิกเซลขยาย 3 จุด (--px) ถาดในช่องขวาขยาย 6 จุด (--dpx)
+ */
+#drying-window {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+}
+
+#drying-window[hidden] {
+  display: none;
+}
+
+.dy {
+  --dpx: calc(var(--px) * 2);
+  width: 1282px;
+  height: 848px;
+}
+
+.dy-head {
+  position: absolute;
+  top: 10px;
+  left: 24px;
+}
+
+.dy-title {
+  position: absolute;
+  top: 32px;
+  left: 134px;
+  margin: 0;
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 52px;
+  white-space: nowrap;
+}
+
+.dy-sub {
+  position: absolute;
+  top: 44px;
+  left: 334px;
+  font-size: 26px;
+  line-height: 36px;
+  white-space: nowrap;
+  color: var(--ck-sub);
+}
+
+.dy-close {
+  position: absolute;
+  top: 22px;
+  left: 1145px;
+  width: 100px;
+  height: 72px;
+  font-size: 40px;
+}
+
+.dy-list {
+  position: absolute;
+  top: 124px;
+  left: 24px;
+  display: flex;
+  width: 640px;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dy-row {
+  position: relative;
+  display: block;
+  height: 140px;
+  margin: 0;
+  padding: 0;
+  border: 3px solid var(--ck-line);
+  border-radius: 18px;
+  background: #ffffff;
+  font-family: Mali, sans-serif;
+  color: var(--ck-dark);
+  text-align: left;
+  cursor: pointer;
+}
+
+.dy-row.is-selected {
+  border: 5px solid var(--ck-orange);
+  background: var(--ck-orange-soft);
+}
+
+.dy-row__icons {
+  position: absolute;
+  top: 19px;
+  left: 17px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dy-row.is-selected .dy-row__icons {
+  top: 17px;
+  left: 15px;
+}
+
+.dy-row__arrow {
+  margin: 0 16px;
+  font-size: 48px;
+  line-height: 1;
+  color: var(--ck-sub);
+}
+
+.dy-none {
+  display: grid;
+  width: 96px;
+  height: 96px;
+  place-items: center;
+  background: var(--ck-grey);
+  font-size: 18px;
+  font-style: normal;
+}
+
+.dy-row__label,
+.dy-row__have {
+  position: absolute;
+  right: 17px;
+  line-height: 1;
+  white-space: nowrap;
+  transform: translateY(-50%);
+}
+
+.dy-row__label {
+  top: 47px;
+  font-size: 26px;
+}
+
+.dy-row__have {
+  top: 92px;
+  font-size: 22px;
+  color: var(--ck-ok-ink);
+}
+
+.dy-row.is-selected .dy-row__label {
+  top: 45px;
+  right: 15px;
+}
+
+.dy-row.is-selected .dy-row__have {
+  top: 90px;
+  right: 15px;
+}
+
+.dy-preview {
+  position: absolute;
+  top: 124px;
+  left: 694px;
+  width: 551px;
+  height: 602px;
+  border: 3px solid var(--ck-line);
+  border-radius: 20px;
+  background: var(--ck-scene);
+}
+
+.dy-preview > * {
+  position: absolute;
+}
+
+.dy-tray {
+  top: 27px;
+  left: 128px;
+  width: 288px;
+  height: 288px;
+}
+
+.dy-tray > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.dy-caption,
+.dy-info,
+.dy-count {
+  left: 0;
+  width: 100%;
+  margin: 0;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  transform: translateY(-50%);
+}
+
+.dy-caption {
+  top: 345px;
+  font-size: 32px;
+}
+
+.dy-step {
+  top: 385px;
+  width: 80px;
+  height: 80px;
+  font-size: 44px;
+}
+
+#drying-less {
+  left: 142px;
+}
+
+#drying-more {
+  left: 342px;
+}
+
+.dy-count {
+  top: 425px;
+  font-size: 44px;
+}
+
+.dy-info {
+  top: 505px;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--ck-sub);
+}
+
+.dy-go {
+  top: 545px;
+  left: 142px;
+  width: 260px;
+  height: 86px;
+  font-size: 38px;
+}
+
+/*
+ * ครกหินเก่า (งานอาหารโซน 1 ขั้นที่ 5) รายการใช้แถวเดียวกับโต๊ะช่าง · มินิเกมตามภาพตัวอย่าง pound_minigame.gif
+ * ฉากมินิเกม 128×100 พิกเซล ขยาย 6 จุดภาพตัวอย่างต่อพิกเซล (--dpx) ตัวหนังสือวางทับด้วย HTML
+ */
+#mortar-window {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+}
+
+#mortar-window[hidden] {
+  display: none;
+}
+
+.mt {
+  --dpx: calc(var(--px) * 2);
+}
+
+.mt-head {
+  position: absolute;
+  top: 16px;
+  left: 30px;
+}
+
+.mt-title {
+  left: 134px;
+}
+
+.mt-sub {
+  left: 440px;
+}
+
+.mt-list[hidden] {
+  display: none;
+}
+
+.mt-row {
+  grid-template-columns: 112px 300px 1fr 250px 190px;
+}
+
+.mt-row.is-missing .wb-row__art {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.mt-stepper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mt-step {
+  width: 64px;
+  height: 64px;
+  font-size: 36px;
+}
+
+.mt-count {
+  width: 60px;
+  font-size: 34px;
+  text-align: center;
+}
+
+.mt.is-playing .ck-close {
+  visibility: hidden;
+}
+
+.mt-game {
+  position: absolute;
+  top: 110px;
+  left: 314px;
+  width: 768px;
+  height: 600px;
+  touch-action: none;
+  cursor: pointer;
+}
+
+.mt-game[hidden] {
+  display: none;
+}
+
+.mt-game > * {
+  position: absolute;
+}
+
+.mt-canvas {
+  top: 0;
+  left: 0;
+  width: calc(var(--dpx) * 128);
+  height: calc(var(--dpx) * 100);
+  border-radius: 20px;
+  image-rendering: pixelated;
+}
+
+.mt-game__title {
+  top: 36px;
+  left: 0;
+  width: 100%;
+  font-size: 36px;
+  line-height: 1;
+  text-align: center;
+  transform: translateY(-50%);
+}
+
+.mt-beats {
+  top: 70px;
+  left: 0;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: 28px;
+}
+
+.mt-beat {
+  width: 31px;
+  height: 31px;
+  box-sizing: border-box;
+  border: 4px solid #c8a078;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.mt-beat[data-judge='perfect'] {
+  background: #fabe3c;
+}
+
+.mt-beat[data-judge='good'] {
+  background: #78be6e;
+}
+
+.mt-beat[data-judge='miss'] {
+  background: #c8beb4;
+}
+
+.mt-judge,
+.mt-thud {
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 10px #ffffff;
+  transform: translate(-50%, -50%);
+}
+
+.mt-judge {
+  top: 180px;
+  left: 564px;
+  font-size: 48px;
+}
+
+.mt-judge[data-judge='perfect'] {
+  color: #faaa28;
+}
+
+.mt-judge[data-judge='good'] {
+  color: #5aa05a;
+}
+
+.mt-judge[data-judge='miss'] {
+  color: #aaa096;
+}
+
+.mt-thud {
+  top: 204px;
+  left: 204px;
+  font-size: 40px;
+  color: #966e50;
+}
+
+.mt-thud[hidden] {
+  display: none;
+}
+
+.mt-hint {
+  bottom: -40px;
+  left: 0;
+  width: 100%;
+  font-size: 24px;
+  text-align: center;
+  color: var(--ck-sub);
+}
+
+.mt-result {
+  top: 192px;
+  left: 108px;
+  width: 552px;
+  height: 216px;
+  border: 6px solid var(--ck-orange);
+  border-radius: 30px;
+  background: var(--ck-cream);
+}
+
+.mt-result__stars {
+  position: absolute;
+  top: 18px;
+  left: 0;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: 12px;
+}
+
+.mt-result__line {
+  position: absolute;
+  top: 110px;
+  left: 0;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  font-size: 40px;
+}
+
+.mt-result__stars.is-item {
+  display: none;
+}
+
+.mt-result__stars.is-item + .mt-result__line {
+  top: 60px;
+}
+
+.mt-collect {
+  top: 612px;
+  left: 254px;
+  width: 260px;
+  height: 86px;
+  font-size: 38px;
+}

@@ -5739,6 +5739,11 @@
       "default": 28
     }
   },
+  "trap_water": {
+    "footY": {
+      "default": 18
+    }
+  },
   "bait_chest": {
     "footY": {
       "default": 31
@@ -6307,6 +6312,16 @@
   "cook_vessel_bowl": {
     "footY": {
       "default": 18
+    }
+  },
+  "mortar_stone": {
+    "footY": {
+      "default": 29
+    }
+  },
+  "mortar_empty": {
+    "footY": {
+      "default": 29
     }
   }
 }

@@ -1,0 +1,52 @@
+{
+  "drying": {
+    "maxPieces": 10,
+    "readyHour": 6,
+    "recipes": {
+      "dried_shrimp": { "in": { "fish_shrimp": 1 }, "out": "ing_dried_shrimp" },
+      "dried_fish": { "in": { "ing_fish_any": 1 }, "out": "ing_dried_fish" },
+      "dried_chili": { "in": { "produce_chili": 1 }, "out": "ing_dried_chili" },
+      "kapi": { "in": { "fish_shrimp": 2, "ing_salt": 1 }, "out": "ing_kapi" }
+    },
+    "prefer": [
+      { "x": 18.4, "y": 12.3 },
+      { "x": 20.6, "y": 12.4 },
+      { "x": 16.2, "y": 12.6 }
+    ]
+  },
+  "trap": {
+    "fromHour": 17,
+    "readyHour": 6,
+    "catch": [
+      { "item": "fish_shrimp", "chance": 0.7 },
+      { "item": "fish_crab", "chance": 0.3 }
+    ],
+    "spots": [
+      { "land": { "x": 21.3, "y": 20.7 }, "water": { "x": 21.3, "y": 19.1 } },
+      { "land": { "x": 19.6, "y": 20.7 }, "water": { "x": 19.9, "y": 19.1 } },
+      { "land": { "x": 27.4, "y": 20.7 }, "water": { "x": 27.0, "y": 19.1 } }
+    ]
+  },
+  "mortar": {
+    "pounds": 6,
+    "firstRingMs": 1200,
+    "lastRingMs": 800,
+    "perfectMs": 80,
+    "goodMs": 180,
+    "judgeMs": 300,
+    "points": { "perfect": 2, "good": 1 },
+    "stars": [
+      { "from": 10, "stars": 3 },
+      { "from": 6, "stars": 2 }
+    ],
+    "itemMinutes": 15,
+    "teaches": ["fish_cake", "grilled_meatball_skewer"],
+    "items": {
+      "fish_ball": { "in": { "ing_fish_any": 1, "ing_salt": 1 }, "out": "ing_fish_ball", "gives": 2 },
+      "shrimp_ball": { "in": { "fish_shrimp": 1, "ing_salt": 1 }, "out": "ing_shrimp_ball", "gives": 2 },
+      "umami_powder": { "in": { "ing_dried_shrimp": 1, "ing_dried_fish": 1 }, "out": "ing_umami_powder", "gives": 3 },
+      "chili_flakes": { "in": { "ing_dried_chili": 2 }, "out": "ing_chili_flakes", "gives": 3 },
+      "ground_dried_shrimp": { "in": { "ing_dried_shrimp": 1 }, "out": "ing_ground_dried_shrimp", "gives": 2 }
+    }
+  }
+}

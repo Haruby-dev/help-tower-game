@@ -27,7 +27,11 @@ export interface GameEvents {
   'fertilize-requested': { plot: number; item: string };
   'fertilize-confirmed': number;
   /** key ของบทพูดตัวเอกใน lines.json */
-  'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut' | 'noMoney';
+  'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut' | 'noMoney' | 'trapTooEarly' | 'trapWaiting' | 'dryingWaiting' | 'dryingTrayIdea' | 'mortarFound';
+  /** แตะถาดตากใบที่ว่าง เปิดหน้าเลือกของตาก */
+  'drying-open': number;
+  /** เปิดครกหินเก่า (ตอนนี้จากปุ่มทดสอบ) */
+  'mortar-open': undefined;
   'cook-open': undefined;
   /** แตะโต๊ะช่างเก่า เปิดหน้าต่างทำของ */
   'workbench-open': undefined;

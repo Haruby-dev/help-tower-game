@@ -8,6 +8,8 @@ import { createChestWindow } from './chest';
 import { createCookingWindow } from './cooking';
 import { createDecorateWindow } from './decorate';
 import { createWorkbenchWindow } from './workbench';
+import { createDryingWindow } from './drying';
+import { createMortarWindow } from './mortar';
 import { createHud } from './hud';
 import { createJoystick } from './joystick';
 import { createPhone } from './phone';
@@ -93,6 +95,8 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   createCookingWindow(uiRoot);
   createDecorateWindow(uiRoot);
   createWorkbenchWindow(uiRoot);
+  createDryingWindow(uiRoot);
+  createMortarWindow(uiRoot);
   createGioWindows(uiRoot);
   createTrayWindow(uiRoot);
   createWorldBubbles(uiRoot);

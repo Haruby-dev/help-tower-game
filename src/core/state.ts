@@ -134,7 +134,7 @@ export interface RecipeBook {
 export type Tool = 'hoe' | 'can' | 'sickle' | 'seeds' | 'rod';
 
 /** ไอคอนบนปุ่มกระทำปุ่มเดียว เปลี่ยนตามจุดที่ยืนและของที่ถือ */
-export type ActionIcon = 'fish' | 'bath' | 'water' | 'till' | 'plant' | 'harvest' | 'cook' | 'sleep' | 'chest' | 'talk' | 'buy' | 'tray' | 'eat' | 'craft' | 'shake';
+export type ActionIcon = 'fish' | 'bath' | 'water' | 'till' | 'plant' | 'harvest' | 'cook' | 'sleep' | 'chest' | 'talk' | 'buy' | 'tray' | 'eat' | 'interact';
 
 export interface ContextAction {
   icon: ActionIcon;
@@ -201,6 +201,19 @@ export interface Crafting {
   noticed: string[];
   /** ถาดตากกับลอบที่มี (ไม่อยู่ในกระเป๋า) */
   stations: { drying_tray: number; trap: number };
+  /** ของบนถาดตากแต่ละใบ null คือว่าง · shows คือของที่วาดบนถาดตอนกำลังตาก */
+  drying: (DryingSlot | null)[];
+  /** ลอบแต่ละใบ: วันที่วางในน้ำ null คืออยู่บนฝั่ง */
+  traps: ({ day: number } | null)[];
+  /** เจอครกหินเก่าแล้ว (ตอนนี้เปิดจากปุ่มทดสอบ จุดเข้าในบ้านยังไม่มี) */
+  mortar: boolean;
+}
+
+export interface DryingSlot {
+  recipe: string;
+  count: number;
+  day: number;
+  shows: string;
 }
 
 /** ความจริงของเกมที่อยู่ในเซฟ */

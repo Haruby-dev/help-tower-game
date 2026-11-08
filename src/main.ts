@@ -14,6 +14,7 @@ import { createOverlay, updateRotationRequired } from './ui/overlay';
 import { showTitleScreen } from './ui/saves';
 import './ui/styles.css';
 import './ui/phone.css';
+import { mortarTestHooks } from './ui/mortar';
 import './ui/cooking.css';
 
 const appRoot = document.getElementById('app')!;
@@ -143,6 +144,9 @@ if (params.has('test')) {
   (window as unknown as { __sound: typeof sound }).__sound = sound;
   (window as unknown as { __visitSpeed: (speed: number) => void }).__visitSpeed = (speed) => {
     visitTestHooks.speed = speed;
+  };
+  (window as unknown as { __mortarAuto: (judge: 'perfect' | 'good' | 'miss' | null) => void }).__mortarAuto = (judge) => {
+    mortarTestHooks.auto = judge;
   };
 }
 // การทดสอบที่ไม่ได้สนใจเซฟข้ามหน้าเลือกช่อง

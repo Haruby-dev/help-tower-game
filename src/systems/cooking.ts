@@ -115,10 +115,13 @@ function takeFor(bag: BagStack[], item: string, count: number): BagStack[] | nul
   return left;
 }
 
-/** ทำได้มากสุดกี่จาน นับจากชุดวัตถุดิบครบที่มีในกระเป๋า (ผักนับเฉพาะดาวที่เลือก) ไม่มีเพดานอื่น */
-export function maxBatch(bag: BagStack[], recipe: Recipe, picks: StarPicks = {}): number {
-  return Math.min(...Object.entries(recipe.ingredients).map(([item, count]) => Math.floor(haveFor(bag, item, picks, count) / count)));
+/** ทำได้มากสุดกี่ชุดจากวัตถุดิบชุดนี้ (สูตรอาหารหรือสถานี) ผักนับเฉพาะดาวที่เลือก */
+export function maxTimes(bag: BagStack[], ingredients: Record<string, number>, picks: StarPicks = {}): number {
+  return Math.min(...Object.entries(ingredients).map(([item, count]) => Math.floor(haveFor(bag, item, picks, count) / count)));
 }
+
+/** ทำได้มากสุดกี่จาน นับจากชุดวัตถุดิบครบที่มีในกระเป๋า (ผักนับเฉพาะดาวที่เลือก) ไม่มีเพดานอื่น */
+export const maxBatch = (bag: BagStack[], recipe: Recipe, picks: StarPicks = {}): number => maxTimes(bag, recipe.ingredients, picks);
 
 /** วัตถุดิบที่ใช้ทั้งรอบ */
 export const batchIngredients = (recipe: Recipe, count: number): Record<string, number> =>
@@ -133,7 +136,20 @@ export function hasIngredients(bag: BagStack[], recipe: Recipe, picks: StarPicks
 
 /** วัตถุดิบทั้งรอบเป็นรหัสของจริงในกระเป๋า (ผักใส่ดาวที่เลือก) */
 function stockFor(bag: BagStack[], recipe: Recipe, count: number, picks: StarPicks): Record<string, number> {
-  return Object.fromEntries(Object.entries(recipe.ingredients).map(([item, need]) => [stockItem(bag, item, need, picks), need * count]));
+  return stockOf(bag, recipe.ingredients, count, picks);
+}
+
+const stockOf = (bag: BagStack[], ingredients: Record<string, number>, count: number, picks: StarPicks): Record<string, number> =>
+  Object.fromEntries(Object.entries(ingredients).map(([item, need]) => [stockItem(bag, item, need, picks), need * count]));
+
+/** หยิบวัตถุดิบชุดนี้ count ชุด (สถานีแปรรูปใช้ร่วมกับทำอาหาร) ตอบ null เมื่อไม่พอ */
+export const takeIngredients = (bag: BagStack[], ingredients: Record<string, number>, count: number, picks: StarPicks = {}): BagStack[] | null =>
+  takeAll(bag, stockOf(bag, ingredients, count, picks));
+
+/** ของในกระเป๋าที่จะถูกหยิบก่อนสำหรับวัตถุดิบนี้ (กลุ่มวัตถุดิบตอบชนิดแรกที่มี ผักตอบดาวที่เลือก) ใช้วาดภาพของที่ใช้จริง */
+export function firstStock(bag: BagStack[], item: string, need = 1, picks: StarPicks = {}): string {
+  if (isIngredientGroup(item)) return stockFitting(bag, item)[0] ?? item;
+  return stockItem(bag, item, need, picks);
 }
 
 function takeAll(bag: BagStack[], items: Record<string, number>): BagStack[] | null {

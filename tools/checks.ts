@@ -30,6 +30,7 @@ import {
   toppingsSchema,
   translationsSchema,
   workbenchSchema,
+  stationsSchema,
 } from '../src/data/schema';
 
 export const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -85,6 +86,7 @@ export function checkProject(): string[] {
   checkSchema('src/data/recipe_steps.json', recipeStepsSchema, problems);
   checkSchema('src/data/toppings.json', toppingsSchema, problems);
   checkSchema('src/data/workbench.json', workbenchSchema, problems);
+  checkSchema('src/data/stations.json', stationsSchema, problems);
   checkSchema('src/data/fish.json', fishSchema, problems);
   checkSchema('src/data/baits.json', baitsSchema, problems);
   checkSchema('src/data/chests.json', chestsSchema, problems);
@@ -203,6 +205,8 @@ export function checkProject(): string[] {
     if (registry[topping.art]?.type !== 'local') problems.push(`src/data/toppings.json: ${id} art ${topping.art} is not a local image`);
   }
 
+  if (registry[balanceSchema.parse(readJson('src/data/balance.json')).hud.interactIcon]?.type !== 'local') problems.push('src/data/balance.json: hud.interactIcon is not a local image');
+
   // โต๊ะช่าง: วัสดุเป็นวัสดุจริง ของที่ได้มีชื่อและภาพ · บทครั้งแรกอ้างของที่มีจริง
   const craftBalance = balanceSchema.parse(readJson('src/data/balance.json')).crafting;
   const isMaterial = (item: string): boolean => craftBalance.materials.includes(item) || knownItem(item);
@@ -214,6 +218,14 @@ export function checkProject(): string[] {
   for (const item of [...Object.keys(craftBalance.banana), ...Object.values(craftBalance.harvestExtras).flatMap((extras) => Object.keys(extras))]) {
     if (!isMaterial(item)) problems.push(`src/data/balance.json: crafting gives unknown ${item}`);
   }
+  // สถานี: วัตถุดิบและของที่ได้มีจริง สูตรอาหารที่ครกสอนมีจริง
+  const stationData = stationsSchema.parse(readJson('src/data/stations.json'));
+  const stationRecipes = [...Object.values(stationData.drying.recipes), ...Object.values(stationData.mortar.items)];
+  for (const recipe of stationRecipes) {
+    for (const item of [...Object.keys(recipe.in), recipe.out]) if (!isMaterial(item)) problems.push(`src/data/stations.json: unknown item ${item}`);
+  }
+  for (const entry of stationData.trap.catch) if (!knownItem(entry.item)) problems.push(`src/data/stations.json: trap catches unknown ${entry.item}`);
+  for (const id of stationData.mortar.teaches) if (!recipesSchema.parse(readJson('src/data/recipes.json'))[id]) problems.push(`src/data/stations.json: mortar teaches unknown recipe ${id}`);
   for (const item of Object.keys(linesSchema.parse(readJson('src/data/lines.json')).player.firstItem)) {
     if (!isMaterial(item)) problems.push(`src/data/lines.json: first-item line for unknown ${item}`);
   }

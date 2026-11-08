@@ -9,7 +9,7 @@ import balance from '../data/balance.json';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 import { cookingStarterBag, firstWeather, fishingStarterBag, newFarm, newFishing, newRecipeBook, newSeed, starterBag } from './gauges';
 
-export const SAVE_VERSION = 18;
+export const SAVE_VERSION = 19;
 const PLAIN_RICE = 'plain_rice';
 /** ผู้ใช้ตัดสิน 4 พ.ย. 2026: ตัวเลขเหรียญทั้งเกมใหญ่ขึ้น 10 เท่า สัดส่วนเศรษฐกิจเท่าเดิม */
 export const COIN_SCALE = 10;
@@ -137,6 +137,11 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
     const crafting = newCrafting();
     const noticed = [...new Set(world.bag.map((stack) => stack.item).filter((item) => firstItemLine(item) !== null))];
     return { ...save, world: { ...world, crafting: { ...crafting, noticed } } };
+  },
+  // เวอร์ชัน 19 สถานีแปรรูป (zone1 food update 5): ถาดตากว่าง ลอบอยู่บนฝั่ง ยังไม่เจอครกหินเก่า
+  18: (save) => {
+    const world = save.world as { crafting: Record<string, unknown> };
+    return { ...save, world: { ...world, crafting: { ...world.crafting, drying: [], traps: [], mortar: false } } };
   },
 };
 

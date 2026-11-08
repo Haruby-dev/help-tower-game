@@ -283,7 +283,7 @@ function createActionControls(uiRoot: HTMLElement): void {
       showFood();
       return;
     }
-    centredIcon(icon, `ui_action_icon_${action.icon}`);
+    centredIcon(icon, action.icon === 'interact' ? balance.hud.interactIcon : `ui_action_icon_${action.icon}`);
     button.setAttribute('aria-label', t(action.label));
   });
   eventBus.on('food-changed', () => {

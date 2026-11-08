@@ -86,6 +86,8 @@ export const balanceSchema = z.strictObject({
     faint: z.strictObject({ skipHours: z.number(), recoverTo: z.number(), gioFee: z.number() }),
   }),
   hud: z.strictObject({
+    /** ไอคอนปุ่มกระทำของจุดกดใช้ทั่วไป (โต๊ะช่าง ต้นกล้วย ฯลฯ) อุ้งเท้าแมวของจอยสติ๊ก */
+    interactIcon: z.string().regex(/^[a-z0-9_]+$/),
     /** บทตอนได้ของใหม่ครั้งแรกรอให้ป้ายของเด้งผ่านไปก่อน ฟองจะได้ไม่ทับป้าย */
     firstItemDelayMs: z.number().nonnegative(),
     beadsPerGauge: z.number().int().positive(),
@@ -330,6 +332,8 @@ export const balanceSchema = z.strictObject({
   crafting: z.strictObject({
     materials: z.array(z.string().regex(/^[a-z_]+$/)).min(1),
     reachPx: z.number().positive(),
+    /** ระยะเอื้อมถาดตากกับลอบ (สั้นกว่าโต๊ะช่าง ริมบ่อจะได้ยังตกปลาได้) */
+    stationReachPx: z.number().positive(),
     harvestExtras: z.record(z.string().regex(/^[a-z_]+$/), z.record(z.string().regex(/^[a-z_]+$/), z.number().int().positive())),
     banana: z.record(z.string().regex(/^[a-z_]+$/), z.number().int().positive()),
     startStations: z.strictObject({ drying_tray: z.number().int().nonnegative(), trap: z.number().int().nonnegative() }),
@@ -667,11 +671,17 @@ export const saveFileSchema = z.strictObject({
     }),
     /** ที่ดินที่ซื้อแล้ว ซื้อตามลำดับจึงเก็บแค่จำนวน */
     land: z.strictObject({ owned: z.number().int().min(0).max(3) }),
-    /** งานประดิษฐ์: วันที่เขย่าต้นกล้วยล่าสุด (0 คือยังไม่เคย) ของที่ตัวเอกเคยพูดถึงแล้ว และจำนวนถาดตากกับลอบที่มี */
+    /**
+     * งานประดิษฐ์: วันที่เขย่าต้นกล้วยล่าสุด (0 คือยังไม่เคย) ของที่ตัวเอกเคยพูดถึงแล้ว และจำนวนถาดตากกับลอบที่มี
+     * drying คือของบนถาดตากแต่ละใบ (null ว่าง) · traps คือวันที่วางลอบแต่ละใบในน้ำ (null อยู่บนฝั่ง) · mortar เจอครกหินเก่าแล้ว
+     */
     crafting: z.strictObject({
       bananaDay: z.number().int().nonnegative(),
       noticed: z.array(z.string().min(1)),
       stations: z.strictObject({ drying_tray: z.number().int().nonnegative(), trap: z.number().int().nonnegative() }),
+      drying: z.array(z.strictObject({ recipe: z.string().min(1), count: z.number().int().positive(), day: z.number().int().positive(), shows: z.string().min(1) }).nullable()),
+      traps: z.array(z.strictObject({ day: z.number().int().positive() }).nullable()),
+      mortar: z.boolean(),
     }),
     /** ตำแหน่งเท้า (พิกเซล) ของของที่ผู้เล่นย้ายแล้ว */
     placed: z.record(z.string().min(1), z.strictObject({ x: z.number(), y: z.number() })),
@@ -759,6 +769,44 @@ export const ingredientsSchema = z.record(
     anyOf: z.array(z.string().regex(/^(ing|produce|fish)_[a-z_]+$/)).min(2).optional(),
   }),
 );
+
+const itemMapSchema = z.record(z.string().regex(/^(ing|produce|fish)_[a-z_]+$/), z.number().int().positive());
+const tilePointSchema = z.strictObject({ x: z.number(), y: z.number() });
+
+/**
+ * สถานีแปรรูป (งานอาหารโซน 1 ขั้นที่ 5 · สเปกข้อ 5): ถาดตาก ลอบ ครกหินเก่า
+ * drying: ถาดละ 1 ชนิด ไม่เกิน maxPieces ชิ้น เก็บได้วันถัดไป readyHour · prefer คือช่องที่อยากวางถาดใบที่ 1–3 ในลานหน้าบ้าน (ย้ายได้)
+ * trap: วางในน้ำได้ตั้งแต่ fromHour เก็บได้วันถัดไป readyHour ได้ 1 ตัวต่อลอบต่อคืน · spots คือที่วางบนฝั่งกับในน้ำของลอบใบที่ 1–3 (ช่องแผนที่ ใบแรกคือลอบเก่าที่ท่าน้ำ)
+ * mortar: มินิเกมตำ ตำ pounds ครั้ง วงหดจาก firstRingMs ถึง lastRingMs · เป๊ะ/ดี ภายใน perfectMs/goodMs · คะแนนรวมถึง stars[].from ได้ดาวนั้น
+ */
+export const stationsSchema = z.strictObject({
+  drying: z.strictObject({
+    maxPieces: z.number().int().positive(),
+    readyHour: z.number(),
+    recipes: z.record(z.string().regex(/^[a-z_]+$/), z.strictObject({ in: itemMapSchema, out: z.string().regex(/^ing_[a-z_]+$/) })),
+    prefer: z.array(tilePointSchema).min(1),
+  }),
+  trap: z.strictObject({
+    fromHour: z.number(),
+    readyHour: z.number(),
+    catch: z.array(z.strictObject({ item: z.string().regex(/^fish_[a-z_]+$/), chance: z.number().positive() })).min(1),
+    spots: z.array(z.strictObject({ land: tilePointSchema, water: tilePointSchema })).min(1),
+  }),
+  mortar: z.strictObject({
+    pounds: z.number().int().positive(),
+    firstRingMs: z.number().positive(),
+    lastRingMs: z.number().positive(),
+    perfectMs: z.number().positive(),
+    goodMs: z.number().positive(),
+    judgeMs: z.number().nonnegative(),
+    points: z.strictObject({ perfect: z.number().int().nonnegative(), good: z.number().int().nonnegative() }),
+    stars: z.array(z.strictObject({ from: z.number().int().nonnegative(), stars: z.number().int().min(1).max(3) })).min(1),
+    itemMinutes: z.number().positive(),
+    teaches: z.array(z.string().regex(/^[a-z_]+$/)),
+    items: z.record(z.string().regex(/^[a-z_]+$/), z.strictObject({ in: itemMapSchema, out: z.string().regex(/^ing_[a-z_]+$/), gives: z.number().int().positive() })),
+  }),
+});
+export type Stations = z.infer<typeof stationsSchema>;
 
 /**
  * ของที่ทำที่โต๊ะช่างเก่า: วัสดุที่ใช้ ได้กี่ชิ้น · once ทำครั้งเดียวใช้ตลอด (แก้วไม้ไผ่) · station ถาดตากกับลอบ นับเป็นจำนวนที่มี ไม่อยู่ในกระเป๋า
@@ -893,6 +941,12 @@ export const linesSchema = z.strictObject({
     noBait: z.string().min(1),
     baitRanOut: z.string().min(1),
     noMoney: z.string().min(1),
+    /** สถานีแปรรูป: ลอบก่อน 17:00 · ลอบยังไม่ถึงเช้า · ถาดตากยังไม่แห้ง · คิดทำถาดตากใบแรกเอง · เจอครกหินเก่า (ความรู้ของตัวเอง) */
+    trapTooEarly: z.string().min(1),
+    trapWaiting: z.string().min(1),
+    dryingWaiting: z.string().min(1),
+    dryingTrayIdea: z.string().min(1),
+    mortarFound: z.string().min(1),
     /** บทสั้น ๆ ครั้งแรกที่ได้วัสดุหรือวัตถุดิบใหม่ (ความรู้รอบตัวของตัวเอง ไม่ใช่ยายสอน) */
     firstItem: z.record(z.string().regex(/^[a-z_]+$/), z.string().min(1)),
   }),
