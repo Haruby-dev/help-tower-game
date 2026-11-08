@@ -5664,6 +5664,81 @@
       "default": 16
     }
   },
+  "bamboo": {
+    "footY": {
+      "default": 31
+    }
+  },
+  "ing_mini_bamboo": {
+    "footY": {
+      "default": 16
+    }
+  },
+  "bamboo_cup": {
+    "footY": {
+      "default": 24
+    }
+  },
+  "ing_mini_bamboo_cup": {
+    "footY": {
+      "default": 14
+    }
+  },
+  "bamboo_cup_48": {
+    "footY": {
+      "default": 45
+    }
+  },
+  "small_woven_tray": {
+    "footY": {
+      "default": 20
+    }
+  },
+  "ing_mini_small_woven_tray": {
+    "footY": {
+      "default": 12
+    }
+  },
+  "medium_woven_tray": {
+    "footY": {
+      "default": 26
+    }
+  },
+  "ing_mini_medium_woven_tray": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "big_woven_tray": {
+    "footY": {
+      "default": 30
+    }
+  },
+  "ing_mini_big_woven_tray": {
+    "footY": {
+      "default": 15
+    }
+  },
+  "workbench": {
+    "footY": {
+      "default": 41
+    }
+  },
+  "banana_clump": {
+    "footY": {
+      "default": 113
+    }
+  },
+  "drying_tray": {
+    "footY": {
+      "default": 47
+    }
+  },
+  "trap": {
+    "footY": {
+      "default": 28
+    }
+  },
   "bait_chest": {
     "footY": {
       "default": 31

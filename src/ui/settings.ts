@@ -17,6 +17,7 @@ import chestsJson from '../data/chests.json';
 import { dishItem, isIngredientGroup, recipes } from '../systems/cooking';
 import { addToBag, crops, produceItem, seedItem } from '../systems/farm';
 import { baits, fishItem, fishTable } from '../systems/fishing';
+import { giveFirstDryingTray } from '../systems/crafting';
 import { carriesStars, withStars } from '../systems/stars';
 
 const STORAGE_KEY = 'lighting-enabled';
@@ -453,6 +454,10 @@ function createSettingsCard(card: HTMLElement): HTMLElement[] {
       gameState.setWorld(applyTransaction(gameState.world, 'stars', balance.test.stars, 'wallet.test_stars', 'wallet.category_test'));
     }),
     testButton('test-monster', t('settings.test_monster'), () => eventBus.emit('monster-summon', undefined)),
+    // ถาดตากใบแรกตัวเอกคิดทำเองหลังเกต 2 (ระบบเกตมาใน M8) โต๊ะช่างทำใบที่ 2–3 ได้หลังมีใบแรก
+    testButton('test-drying-tray', t('settings.test_drying_tray'), () => {
+      if (gameState.started) gameState.setWorld(giveFirstDryingTray(gameState.world));
+    }),
     testButton('test-spawn-open', t('settings.test_spawn'), () => {
       spawn.hidden = !spawn.hidden;
       card.classList.toggle('is-spawning', !spawn.hidden);

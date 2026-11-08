@@ -12,6 +12,7 @@ import {
   canCook,
   canUseCampfire,
   cookMethodOf,
+  hasCupFor,
   haveFor,
   maxBatch,
   pickedStars,
@@ -49,6 +50,8 @@ const MOCK_PER_ART = 3;
 /** วัตถุดิบลอยเป็นโค้งขึ้นเหนือจุดที่สูงกว่า 26 พิกเซลภาพ เหมือนภาพตัวอย่าง */
 const ARC_LIFT = 26 * MOCK_PER_ART;
 const ARC_STEPS = 10;
+/** แก้วไม้ไผ่ข้างกองไฟในแท็บเครื่องดื่ม (ภาพตัวอย่างวาด 4 จุดต่อพิกเซล ภาพมีขอบใส ซ้าย 6 บน 12 พิกเซล) */
+const CUP = { art: 'bamboo_cup_48', left: 532, top: 360, labelX: 624, labelY: 550 } as const;
 /** ชื่อยาวลดขนาดตัวหนังสือตามภาพตัวอย่าง */
 const NAME_LONG = 10;
 /** ชื่อยาวกว่านี้ตัดเป็นสองบรรทัด */
@@ -260,6 +263,7 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
         .map(([item, need]) => [item, need - haveFor(bag, item, picks, need)] as const)
         .filter(([, short]) => short > 0)
         .map(([item, short]) => `${itemName(item)} ${short}`);
+      if (!hasCupFor(bag, recipe)) lacking.unshift(itemName(balance.cooking.drinkNeeds));
       text = `${t('cook.lack')} ${lacking.join(' · ')}`;
     }
     const total = element('p', `ck-need${ready ? '' : ' is-short'}`, text);
@@ -327,6 +331,18 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     window.setTimeout(cook, landed + steamMs);
   };
 
+  /** เครื่องดื่มเทใส่แก้วไม้ไผ่: แก้วเปล่าข้างกองไฟ มีแล้วป้ายเขียว ยังไม่มีแก้วเป็นสีเทาป้ายแดง (ภาพตัวอย่าง drink_k2_mock_v2) */
+  const cupBeside = (have: boolean): HTMLElement[] => {
+    if (!hasArt(CUP.art)) return [];
+    const cup = sizedArt(CUP.art, `ck-cup${have ? '' : ' is-missing'}`, '--px4');
+    cup.style.left = `${CUP.left}px`;
+    cup.style.top = `${CUP.top}px`;
+    const label = element('small', `ck-cup__label${have ? '' : ' is-missing'}`, t(have ? 'cook.have_cup' : 'cook.need_cup'));
+    label.style.left = `${CUP.labelX}px`;
+    label.style.top = `${CUP.labelY}px`;
+    return [cup, label];
+  };
+
   const renderScene = (id: string): void => {
     const recipe = recipes[id]!;
     const { bag, gauges } = gameState.world;
@@ -342,6 +358,7 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
       return made.slot;
     });
     scene.replaceChildren(fire, bubble(id, recipe), ...slots);
+    if (recipe.category === 'drink') scene.append(...cupBeside(hasCupFor(bag, recipe)));
     if (choosing) scene.append(element('small', 'ck-tip', t('cook.star_rule')));
     else if (gauges.happiness >= balance.stars.happyBonusFrom) scene.append(element('small', 'ck-tip', t('cook.star_tip')));
     bar.replaceChildren(...bottomBar(recipe, most, ready, () => startWith(id, land, steam)));

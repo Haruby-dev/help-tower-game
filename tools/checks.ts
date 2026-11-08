@@ -29,6 +29,7 @@ import {
   spriteMetaSchema,
   toppingsSchema,
   translationsSchema,
+  workbenchSchema,
 } from '../src/data/schema';
 
 export const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -83,6 +84,7 @@ export function checkProject(): string[] {
   checkSchema('src/data/ingredients.json', ingredientsSchema, problems);
   checkSchema('src/data/recipe_steps.json', recipeStepsSchema, problems);
   checkSchema('src/data/toppings.json', toppingsSchema, problems);
+  checkSchema('src/data/workbench.json', workbenchSchema, problems);
   checkSchema('src/data/fish.json', fishSchema, problems);
   checkSchema('src/data/baits.json', baitsSchema, problems);
   checkSchema('src/data/chests.json', chestsSchema, problems);
@@ -199,6 +201,21 @@ export function checkProject(): string[] {
   for (const [id, topping] of Object.entries(toppingData)) {
     if (!knownItem(topping.item)) problems.push(`src/data/toppings.json: ${id} uses unknown ${topping.item}`);
     if (registry[topping.art]?.type !== 'local') problems.push(`src/data/toppings.json: ${id} art ${topping.art} is not a local image`);
+  }
+
+  // โต๊ะช่าง: วัสดุเป็นวัสดุจริง ของที่ได้มีชื่อและภาพ · บทครั้งแรกอ้างของที่มีจริง
+  const craftBalance = balanceSchema.parse(readJson('src/data/balance.json')).crafting;
+  const isMaterial = (item: string): boolean => craftBalance.materials.includes(item) || knownItem(item);
+  for (const [id, recipe] of Object.entries(workbenchSchema.parse(readJson('src/data/workbench.json')))) {
+    if (!translations[`item.${id}.name`]) problems.push(`src/i18n/th.json: workbench item ${id} has no name`);
+    if (registry[id]?.type !== 'local') problems.push(`assets-src/registry.json: workbench item ${id} has no image`);
+    for (const item of Object.keys(recipe.materials)) if (!isMaterial(item)) problems.push(`src/data/workbench.json: ${id} uses unknown material ${item}`);
+  }
+  for (const item of [...Object.keys(craftBalance.banana), ...Object.values(craftBalance.harvestExtras).flatMap((extras) => Object.keys(extras))]) {
+    if (!isMaterial(item)) problems.push(`src/data/balance.json: crafting gives unknown ${item}`);
+  }
+  for (const item of Object.keys(linesSchema.parse(readJson('src/data/lines.json')).player.firstItem)) {
+    if (!isMaterial(item)) problems.push(`src/data/lines.json: first-item line for unknown ${item}`);
   }
 
   // มอนสเตอร์: ชื่อและประโยคครบ 100% อยู่ใน th.json เมนูทุกเมนูมีจริง เมนูประจำใจทำได้ในโซน (แรงก์ไม่เกินอุปกรณ์ช่วงนั้น) ภาพครบทุกท่า และมีบทพูด

@@ -4,11 +4,12 @@ import { addToBag } from './farm';
 import { newGioCare } from './gio';
 import { newMonsters, newTwins } from './monsters';
 import { newTray } from './tray';
+import { firstItemLine, newCrafting } from './crafting';
 import balance from '../data/balance.json';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 import { cookingStarterBag, firstWeather, fishingStarterBag, newFarm, newFishing, newRecipeBook, newSeed, starterBag } from './gauges';
 
-export const SAVE_VERSION = 17;
+export const SAVE_VERSION = 18;
 const PLAIN_RICE = 'plain_rice';
 /** ผู้ใช้ตัดสิน 4 พ.ย. 2026: ตัวเลขเหรียญทั้งเกมใหญ่ขึ้น 10 เท่า สัดส่วนเศรษฐกิจเท่าเดิม */
 export const COIN_SCALE = 10;
@@ -129,6 +130,13 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
     const world = save.world as { recipes: World['recipes'] };
     const known = world.recipes.known.includes(PLAIN_RICE) ? world.recipes.known : [...world.recipes.known, PLAIN_RICE];
     return { ...save, world: { ...world, recipes: { ...world.recipes, known } } };
+  },
+  // เวอร์ชัน 18 งานประดิษฐ์ (zone1 food update 4): ต้นกล้วยยังไม่เขย่า ลอบเก่า 1 อัน · ของที่มีในกระเป๋าแล้วนับว่าพูดถึงแล้ว ตัวเอกจะได้ไม่พูดรัวตอนโหลด
+  17: (save) => {
+    const world = save.world as { bag: { item: string }[] };
+    const crafting = newCrafting();
+    const noticed = [...new Set(world.bag.map((stack) => stack.item).filter((item) => firstItemLine(item) !== null))];
+    return { ...save, world: { ...world, crafting: { ...crafting, noticed } } };
   },
 };
 

@@ -5,6 +5,7 @@ import balance from '../data/balance.json';
 import cropsJson from '../data/crops.json';
 import type { Crops } from '../data/schema';
 import { spendGardenTime } from './gauges';
+import { harvestExtras } from './crafting';
 import { baseItem, rollCropStars, starChances, withStars } from './stars';
 
 export const crops = cropsJson as Crops;
@@ -213,6 +214,8 @@ export function applyFarmAction(world: World, index: number, action: FarmAction,
     if (!stored) return null;
     bag = stored;
     if (rng && rng.next() < rules.seedDropChance) bag = addToBag(bag, seedItem(plot.crop.id), 1) ?? bag;
+    // ของแถมตอนเกี่ยว (ข้าว → ฟางข้าว) กระเป๋าเต็มก็ไม่ได้ แต่ผลผลิตยังเก็บได้
+    for (const [item, count] of harvestExtras(plot.crop.id)) bag = addToBag(bag, item, count) ?? bag;
     next = afterHarvest(plot);
   }
   const plots = world.farm.plots.map((candidate, candidateIndex) => (candidateIndex === index ? next : candidate));

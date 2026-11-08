@@ -5,6 +5,7 @@ import recipesJson from '../data/recipes.json';
 import { newGioCare } from './gio';
 import { newMonsters } from './monsters';
 import { newTray } from './tray';
+import { newCrafting } from './crafting';
 
 const { gauges, time, farm, cooking, fishing, weather } = balance;
 const SEED_RANGE = 2 ** 31;
@@ -65,6 +66,7 @@ export function newWorld(): World {
     stash: {},
     gio: newGioCare(),
     land: { owned: 0 },
+    crafting: newCrafting(),
     placed: {},
     tray: newTray(),
     monsters: newMonsters(),

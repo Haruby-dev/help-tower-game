@@ -112,7 +112,8 @@ describe('dish stars (star system doc §4)', () => {
   });
 
   it('does not let seasonings, eggs or fish pull the stars down', () => {
-    const world: World = { ...newWorld(), bag: [...newWorld().bag.filter((stack) => stack.item !== 'produce_tomato'), { item: 'produce_tomato@3', count: 2 }] };
+    // เครื่องดื่มต้องมีแก้วไม้ไผ่ (งานอาหารโซน 1 ขั้นที่ 4)
+    const world: World = { ...newWorld(), bag: [...newWorld().bag.filter((stack) => stack.item !== 'produce_tomato'), { item: 'produce_tomato@3', count: 2 }, { item: 'bamboo_cup', count: 1 }] };
     const next = startCooking(world, 'tomato_juice', 1, {}, NO_BONUS)!;
     expect(next.cooking.slot?.stars).toBe(3);
   });
@@ -184,8 +185,8 @@ describe('save version 12', () => {
     const { tray: _tray, monsters: _monsters, ...world } = newWorld();
     const old = { ...world, farm: { plots: world.farm.plots.map(({ fertilizer: _fertilizer, ...plot }) => plot) }, bag: [{ item: 'produce_tomato', count: 3 }] };
     const parsed = parseSaveFile({ version: 11, savedAt: 'x', world: old })!;
-    expect(SAVE_VERSION).toBe(17);
-    expect(parsed.version).toBe(17);
+    expect(SAVE_VERSION).toBe(18);
+    expect(parsed.version).toBe(18);
     expect(parsed.world.farm.plots.every((plot) => plot.fertilizer === 0)).toBe(true);
     expect(parsed.world.tray).toEqual({ level: 0, plates: [null, null, null] });
     expect(parsed.world.monsters).toEqual({ affection: {}, plannedDay: 0, arrivals: [], twins: { revealed: false, revealDay: 0, quizWon: false }, tasted: {} });

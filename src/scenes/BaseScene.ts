@@ -15,6 +15,7 @@ import { FishingRig } from '../entities/FishingRig';
 import { finishBath } from '../systems/bath';
 import { autoHooks, baits, catchItem, chosenBait, finishCast, rollCatch, type Catch } from '../systems/fishing';
 import { countOf, seedItem } from '../systems/farm';
+import { canShakeBanana, shakeBanana } from '../systems/crafting';
 import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, isWithered, produceItem, type FarmAction } from '../systems/farm';
 import { withStars } from '../systems/stars';
 import { MYSTERY, collectDish, cookMethodOf, dishItem, eatItem, isCooked, isDish, isRawProduce, parseDish, recipes as cookRecipes } from '../systems/cooking';
@@ -78,6 +79,12 @@ const PRICE_LIFT_PX = 30;
 
 const STANDING_STILL: Vector = { x: 0, y: 0 };
 const PLAYER_HEAD_PX = 66;
+/** ครึ่งความกว้างที่ยืนใช้โต๊ะช่างกับกอกล้วยได้รอบฐาน (พิกเซลเกม) */
+const WORKBENCH_SLACK_PX = 24;
+const BANANA_SLACK_PX = 56;
+/** กอกล้วยโยกซ้ายขวา 1 พิกเซล */
+const BANANA_SHAKE_STEPS = 8;
+const BANANA_SHAKE_MS = 480;
 /** ความสูงภาพในป้ายเด้งที่วางพอดีเหนือหัว (ป้ายผัก) ภาพที่สูงกว่านี้ยกป้ายขึ้นตาม */
 const DISH_POP_BASE_PX = 16;
 const DOOR_TAP_LIFT = 24;
@@ -194,6 +201,9 @@ export class BaseScene extends Phaser.Scene {
   private pendingEat: string | null = null;
   private campfire: Campfire | null = null;
   private trayView: TrayView | null = null;
+  /** โต๊ะช่างเก่า (ย้ายได้ในโหมดจัดวาง) กับกอกล้วยมุมล่างขวา */
+  private workbench: Phaser.GameObjects.Image | null = null;
+  private banana: Phaser.GameObjects.Image | null = null;
   private visits: Visits | null = null;
   private cookingShown: boolean | null = null;
   /** ทำครั้งเดียว เวลาเดียว: ระหว่างตัวเอกทำท่าทำอาหาร นาฬิกาเดินเร็วขึ้นเท่านี้ เวลาของแรงก์จึงผ่านไปใน balance.cooking.fastCookMs */
@@ -366,6 +376,15 @@ export class BaseScene extends Phaser.Scene {
         eventBus.emit('tray-open', undefined);
         return;
       }
+      // แตะโต๊ะช่างหรือกอกล้วยตรง ๆ เมื่อยืนใกล้
+      if (this.workbenchInReach() && this.workbench?.getBounds().contains(pointer.worldX, pointer.worldY)) {
+        eventBus.emit('workbench-open', undefined);
+        return;
+      }
+      if (this.bananaReady() && this.banana?.getBounds().contains(pointer.worldX, pointer.worldY)) {
+        this.shakeBananaClump();
+        return;
+      }
       const near = Phaser.Math.Distance.Between(pointer.worldX, pointer.worldY, this.door.x, this.door.y - DOOR_TAP_LIFT);
       if (near < DOOR_TAP_RADIUS) this.useAction();
     });
@@ -497,6 +516,8 @@ export class BaseScene extends Phaser.Scene {
     };
     if (id === 'gio_seat') this.gioSeat = seatAt(x, y);
     if (id.startsWith('food_tray')) this.trayView = new TrayView(this, image);
+    if (id === 'workbench') this.workbench = image;
+    if (id === 'banana_clump') this.banana = image;
     // ของหน้าบ้านย้ายได้ในโหมดจัดวาง กองไฟพาแสงเรืองไปด้วย ตะกร้าพาจีโอไปด้วย
     this.arranger.register(id, image, this.movableBlockers.get(id) ?? null, flat, (feet) => {
       if (id === 'campfire') {
@@ -641,6 +662,8 @@ export class BaseScene extends Phaser.Scene {
     else if (this.campfireAction()) this.useCampfire();
     else if (this.trayInReach()) eventBus.emit('tray-open', undefined);
     else if (this.nearGio()) eventBus.emit('gio-talk', undefined);
+    else if (this.workbenchInReach()) eventBus.emit('workbench-open', undefined);
+    else if (this.bananaReady()) this.shakeBananaClump();
     else if (this.pondSpot()) {
       if (gameState.selectedTool === 'rod') this.startFishing();
       else this.startBath();
@@ -750,6 +773,52 @@ export class BaseScene extends Phaser.Scene {
     if (!report || this.receiptShownDay === report.day || !this.nearGio()) return;
     this.receiptShownDay = report.day;
     eventBus.emit('gio-talk', undefined);
+  }
+
+  /** ยืนใกล้ของในฉาก วัดจากเส้นเท้าของของนั้น slackX คือครึ่งความกว้างที่ยืนได้รอบฐาน */
+  private nearObject(image: Phaser.GameObjects.Image | null, slackX: number): boolean {
+    if (!image || !image.visible || !gameState.clockRunning || this.player.busy) return false;
+    const dx = Math.max(0, Math.abs(this.player.feetX - image.x) - slackX);
+    const dy = this.player.feetY - image.y;
+    return Math.hypot(dx, dy) < balance.crafting.reachPx;
+  }
+
+  private workbenchInReach(): boolean {
+    return this.nearObject(this.workbench, WORKBENCH_SLACK_PX);
+  }
+
+  /** กอกล้วยกว้าง 3 ต้น ยืนตรงไหนรอบฐานก็เขย่าได้ วันละครั้ง */
+  private bananaReady(): boolean {
+    return this.nearObject(this.banana, BANANA_SLACK_PX) && canShakeBanana(gameState.world);
+  }
+
+  /** เขย่ากอกล้วย ต้นโยกซ้ายขวาทีละพิกเซล ใบตองกับเชือกกาบกล้วยเด้งเหนือหัวทีละป้าย */
+  private shakeBananaClump(): void {
+    const next = shakeBanana(gameState.world);
+    if (!next) {
+      if (canShakeBanana(gameState.world)) eventBus.emit('player-says', 'bagFull');
+      return;
+    }
+    gameState.setWorld(next);
+    const clump = this.banana;
+    if (clump) {
+      const home = clump.x;
+      this.tweens.addCounter({
+        from: 0,
+        to: BANANA_SHAKE_STEPS,
+        duration: BANANA_SHAKE_MS,
+        onUpdate: (tween) => clump.setX(home + (Math.floor(tween.getValue() ?? 0) % 2 === 0 ? 1 : -1)),
+        onComplete: () => clump.setX(home),
+      });
+    }
+    Object.entries(balance.crafting.banana).forEach(([item, count], order) => {
+      const ingredient = item.startsWith('ing_') ? item.slice('ing_'.length) : null;
+      const icon = ingredient ? `ing_icon_${ingredient}` : item;
+      const name = t((ingredient ? `ingredient.${ingredient}.name` : `item.${item}.name`) as TextKey);
+      this.time.delayedCall(order * SEED_PILL_DELAY_MS, () => {
+        popPill(this, this.player.feetX, this.player.feetY - PLAYER_HEAD_PX, this.textures.exists(icon) ? icon : item, `+${count} ${name}`, gameState.viewport.zoom);
+      });
+    });
   }
 
   /** คุยกับจีโอได้เมื่อจีโออยู่บ้าน นั่งหรือเดินเล่นอยู่ (ไม่ใช่ระหว่างไปหรือกลับจากโพรง) และยืนใกล้ */
@@ -1298,6 +1367,9 @@ export class BaseScene extends Phaser.Scene {
     if (fire) return { icon: 'cook', label: fire };
     if (this.trayInReach()) return { icon: 'tray', label: 'action.tray' };
     if (this.nearGio()) return { icon: 'talk', label: 'action.talk' };
+    // ไอคอนโต๊ะช่างกับเขย่าต้นกล้วยยังไม่มีภาพ ใช้กล่องสีแทนตามกฎทะเบียน
+    if (this.workbenchInReach()) return { icon: 'craft', label: 'action.craft' };
+    if (this.bananaReady()) return { icon: 'shake', label: 'action.shake' };
     if (this.pondSpot()) return gameState.selectedTool === 'rod' ? { icon: 'fish', label: 'action.fish' } : { icon: 'bath', label: 'action.bath' };
     return this.nearDoor() ? { icon: 'sleep', label: 'action.sleep' } : null;
   }

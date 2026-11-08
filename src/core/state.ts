@@ -134,7 +134,7 @@ export interface RecipeBook {
 export type Tool = 'hoe' | 'can' | 'sickle' | 'seeds' | 'rod';
 
 /** ไอคอนบนปุ่มกระทำปุ่มเดียว เปลี่ยนตามจุดที่ยืนและของที่ถือ */
-export type ActionIcon = 'fish' | 'bath' | 'water' | 'till' | 'plant' | 'harvest' | 'cook' | 'sleep' | 'chest' | 'talk' | 'buy' | 'tray' | 'eat';
+export type ActionIcon = 'fish' | 'bath' | 'water' | 'till' | 'plant' | 'harvest' | 'cook' | 'sleep' | 'chest' | 'talk' | 'buy' | 'tray' | 'eat' | 'craft' | 'shake';
 
 export interface ContextAction {
   icon: ActionIcon;
@@ -193,6 +193,16 @@ export interface GioCare {
   report: GioReport | null;
 }
 
+/** งานประดิษฐ์ (งานอาหารโซน 1 ขั้นที่ 4) */
+export interface Crafting {
+  /** วันที่เขย่าต้นกล้วยล่าสุด 0 คือยังไม่เคย */
+  bananaDay: number;
+  /** ของที่ตัวเอกเคยพูดถึงตอนได้ครั้งแรกแล้ว */
+  noticed: string[];
+  /** ถาดตากกับลอบที่มี (ไม่อยู่ในกระเป๋า) */
+  stations: { drying_tray: number; trap: number };
+}
+
 /** ความจริงของเกมที่อยู่ในเซฟ */
 export interface World {
   day: number;
@@ -216,6 +226,7 @@ export interface World {
   gio: GioCare;
   /** ที่ดินที่ซื้อแล้ว (ซื้อตามลำดับ จึงเก็บแค่จำนวน) */
   land: { owned: number };
+  crafting: Crafting;
   /** ของที่ผู้เล่นย้ายแล้ว เก็บตำแหน่งเท้าเป็นพิกเซล ของที่ยังไม่ย้ายใช้ตำแหน่งบนแผนที่ */
   placed: Record<string, Point>;
   tray: Tray;

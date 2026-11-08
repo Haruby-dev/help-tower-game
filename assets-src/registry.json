@@ -11433,8 +11433,7 @@
     "height": 32,
     "source": "public/assets/food/ingredients/banana_leaf.png",
     "file": "food/ingredients/banana_leaf.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "ing_mini_ing_banana_leaf": {
     "type": "local",
@@ -11778,8 +11777,7 @@
     "height": 32,
     "source": "public/assets/items/rice_straw.png",
     "file": "items/rice_straw.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "ing_mini_rice_straw": {
     "type": "local",
@@ -11796,8 +11794,7 @@
     "height": 32,
     "source": "public/assets/items/banana_rope.png",
     "file": "items/banana_rope.png",
-    "jade_tone": false,
-    "lazy": true
+    "jade_tone": false
   },
   "ing_mini_banana_rope": {
     "type": "local",
@@ -11807,6 +11804,152 @@
     "file": "food/ingredients_mini/banana_rope.png",
     "jade_tone": false,
     "lazy": true
+  },
+  "bamboo": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/bamboo.png",
+    "file": "items/bamboo.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "bamboo material (art 9 Nov) · the starting rod id is also bamboo but uses tool_rod art"
+  },
+  "ing_mini_bamboo": {
+    "type": "local",
+    "width": 16,
+    "height": 16,
+    "source": "public/assets/food/ingredients_mini/bamboo.png",
+    "file": "food/ingredients_mini/bamboo.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "bamboo material mini"
+  },
+  "bamboo_cup": {
+    "type": "local",
+    "width": 25,
+    "height": 24,
+    "source": "public/assets/items/bamboo_cup.png",
+    "file": "items/bamboo_cup.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "bamboo cup (crafted once, every drink needs it)"
+  },
+  "ing_mini_bamboo_cup": {
+    "type": "local",
+    "width": 14,
+    "height": 14,
+    "source": "public/assets/food/ingredients_mini/bamboo_cup.png",
+    "file": "food/ingredients_mini/bamboo_cup.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "bamboo cup mini"
+  },
+  "bamboo_cup_48": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "public/assets/ui/cook/bamboo_cup_48.png",
+    "file": "ui/cook/bamboo_cup_48.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "empty bamboo cup beside the fire in the drinks tab"
+  },
+  "small_woven_tray": {
+    "type": "local",
+    "width": 21,
+    "height": 20,
+    "source": "public/assets/items/small_woven_tray.png",
+    "file": "items/small_woven_tray.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "small woven tray (used up when a set is made)"
+  },
+  "ing_mini_small_woven_tray": {
+    "type": "local",
+    "width": 12,
+    "height": 12,
+    "source": "public/assets/food/ingredients_mini/small_woven_tray.png",
+    "file": "food/ingredients_mini/small_woven_tray.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "small woven tray mini"
+  },
+  "medium_woven_tray": {
+    "type": "local",
+    "width": 27,
+    "height": 26,
+    "source": "public/assets/items/medium_woven_tray.png",
+    "file": "items/medium_woven_tray.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "medium woven tray (used up when a set is made)"
+  },
+  "ing_mini_medium_woven_tray": {
+    "type": "local",
+    "width": 15,
+    "height": 15,
+    "source": "public/assets/food/ingredients_mini/medium_woven_tray.png",
+    "file": "food/ingredients_mini/medium_woven_tray.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "medium woven tray mini"
+  },
+  "big_woven_tray": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "public/assets/items/big_woven_tray.png",
+    "file": "items/big_woven_tray.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "big woven tray (used up when a set is made)"
+  },
+  "ing_mini_big_woven_tray": {
+    "type": "local",
+    "width": 16,
+    "height": 15,
+    "source": "public/assets/food/ingredients_mini/big_woven_tray.png",
+    "file": "food/ingredients_mini/big_woven_tray.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "big woven tray mini"
+  },
+  "workbench": {
+    "type": "local",
+    "width": 64,
+    "height": 41,
+    "source": "assets-src/art_2026-11-09/world/workbench.png",
+    "file": "world/yard/workbench.png",
+    "jade_tone": true,
+    "note": "old workbench beside the house (art 9 Nov)"
+  },
+  "banana_clump": {
+    "type": "local",
+    "width": 160,
+    "height": 113,
+    "source": "assets-src/art_2026-11-09/world/banana_clump.png",
+    "file": "world/map/banana_clump.png",
+    "jade_tone": true,
+    "note": "banana clump, 3 trees = one shake point (art 9 Nov 02:37)"
+  },
+  "drying_tray": {
+    "type": "local",
+    "width": 48,
+    "height": 48,
+    "source": "assets-src/art_2026-11-09/world/drying_tray.png",
+    "file": "world/map/drying_tray.png",
+    "jade_tone": true,
+    "note": "drying tray (กระด้ง) station, also the workbench icon"
+  },
+  "trap": {
+    "type": "local",
+    "width": 32,
+    "height": 32,
+    "source": "assets-src/art_2026-11-09/world/trap.png",
+    "file": "world/map/trap.png",
+    "jade_tone": true,
+    "note": "shrimp/crab trap on land, also the workbench icon"
   },
   "bait_chest": {
     "type": "local",

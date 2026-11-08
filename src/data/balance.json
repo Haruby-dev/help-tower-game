@@ -43,6 +43,7 @@
     }
   },
   "hud": {
+    "firstItemDelayMs": 1100,
     "beadsPerGauge": 5,
     "moodHappyFrom": 70,
     "moodNormalFrom": 40,
@@ -442,6 +443,7 @@
         "vesselY": null
       }
     },
+    "drinkNeeds": "bamboo_cup",
     "fastCookMs": 2500,
     "float": {
       "itemMs": 520,
@@ -571,6 +573,11 @@
       "deco_bell_chime": {
         "zone": "frontyard",
         "cols": 1,
+        "rows": 1
+      },
+      "workbench": {
+        "zone": "frontyard",
+        "cols": 2,
         "rows": 1
       }
     }
@@ -829,5 +836,11 @@
       }
     }
   },
-  "crafting": { "materials": ["rice_straw", "banana_rope", "bamboo"] }
+  "crafting": {
+    "materials": ["rice_straw", "banana_rope", "bamboo"],
+    "reachPx": 56,
+    "harvestExtras": { "rice": { "rice_straw": 1 } },
+    "banana": { "ing_banana_leaf": 2, "banana_rope": 1 },
+    "startStations": { "drying_tray": 0, "trap": 1 }
+  }
 }

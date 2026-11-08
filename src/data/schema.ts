@@ -86,6 +86,8 @@ export const balanceSchema = z.strictObject({
     faint: z.strictObject({ skipHours: z.number(), recoverTo: z.number(), gioFee: z.number() }),
   }),
   hud: z.strictObject({
+    /** บทตอนได้ของใหม่ครั้งแรกรอให้ป้ายของเด้งผ่านไปก่อน ฟองจะได้ไม่ทับป้าย */
+    firstItemDelayMs: z.number().nonnegative(),
     beadsPerGauge: z.number().int().positive(),
     moodHappyFrom: z.number(),
     moodNormalFrom: z.number(),
@@ -139,6 +141,8 @@ export const balanceSchema = z.strictObject({
         vesselY: z.number().int().nonnegative().nullable(),
       }),
     ),
+    /** เครื่องดื่มทุกแก้วต้องมีของนี้ในกระเป๋า (แก้วไม้ไผ่ ทำครั้งเดียวใช้ตลอด ไม่หมด) */
+    drinkNeeds: z.string().regex(/^[a-z_]+$/),
     /** ทำครั้งเดียว เวลาเดียว: กดเริ่มทำแล้วนาฬิกาเดินเร็ว เวลาของแรงก์ผ่านไปในเวลาจริงเท่านี้ ระหว่างตัวเอกทำท่าทำอาหาร */
     fastCookMs: z.number().positive(),
     /** วัตถุดิบลอยลงภาชนะในหน้าต่างก่อนปิด: เวลาลอยต่อชิ้น เว้นระหว่างชิ้น และไอน้ำตอนท้าย */
@@ -319,7 +323,17 @@ export const balanceSchema = z.strictObject({
   /** รหัสปุ๋ยในกระเป๋ากับระดับของมัน */
   fertilizer: z.strictObject({ tiers: z.record(z.string().regex(/^fertilizer_[a-z0-9_]+$/), z.number().int().min(2).max(3)) }),
   /** วัสดุคราฟ (zone1 food update 4) ขายไม่ได้ ไม้ไผ่ได้จากเกต 2 (M8) ตอนนี้เสกจากการ์ดเดฟ */
-  crafting: z.strictObject({ materials: z.array(z.string().regex(/^[a-z_]+$/)).min(1) }),
+  /**
+   * วัสดุและงานประดิษฐ์ (งานอาหารโซน 1 ขั้นที่ 4): วัสดุ (เสกได้จากการ์ดเดฟ) · เกี่ยวพืชบางชนิดได้ของแถมต่อช่อง (ข้าว → ฟางข้าว)
+   * เขย่าต้นกล้วยวันละครั้งได้ของตาม banana · startStations คือถาดตากกับลอบที่มีตั้งแต่เกมใหม่ (ลอบเก่าที่ท่าน้ำ 1 อัน)
+   */
+  crafting: z.strictObject({
+    materials: z.array(z.string().regex(/^[a-z_]+$/)).min(1),
+    reachPx: z.number().positive(),
+    harvestExtras: z.record(z.string().regex(/^[a-z_]+$/), z.record(z.string().regex(/^[a-z_]+$/), z.number().int().positive())),
+    banana: z.record(z.string().regex(/^[a-z_]+$/), z.number().int().positive()),
+    startStations: z.strictObject({ drying_tray: z.number().int().nonnegative(), trap: z.number().int().nonnegative() }),
+  }),
   /** มอนสเตอร์มาเยี่ยมและสูตรความชอบ ตาม GDD · rankBase เป็นค่าชั่วคราว (GDD ไม่ได้ระบุ) ปรับใน M10 */
   monsters: z.strictObject({
     rankBase: z.record(z.string().min(1), z.number().positive()),
@@ -653,6 +667,12 @@ export const saveFileSchema = z.strictObject({
     }),
     /** ที่ดินที่ซื้อแล้ว ซื้อตามลำดับจึงเก็บแค่จำนวน */
     land: z.strictObject({ owned: z.number().int().min(0).max(3) }),
+    /** งานประดิษฐ์: วันที่เขย่าต้นกล้วยล่าสุด (0 คือยังไม่เคย) ของที่ตัวเอกเคยพูดถึงแล้ว และจำนวนถาดตากกับลอบที่มี */
+    crafting: z.strictObject({
+      bananaDay: z.number().int().nonnegative(),
+      noticed: z.array(z.string().min(1)),
+      stations: z.strictObject({ drying_tray: z.number().int().nonnegative(), trap: z.number().int().nonnegative() }),
+    }),
     /** ตำแหน่งเท้า (พิกเซล) ของของที่ผู้เล่นย้ายแล้ว */
     placed: z.record(z.string().min(1), z.strictObject({ x: z.number(), y: z.number() })),
     /** ถาดอาหาร: ระดับ (0 = 3 จาน) กับจานแต่ละใบ ใบละ 1 เมนู เมนูเดิมซ้อนในจานเดิม */
@@ -739,6 +759,23 @@ export const ingredientsSchema = z.record(
     anyOf: z.array(z.string().regex(/^(ing|produce|fish)_[a-z_]+$/)).min(2).optional(),
   }),
 );
+
+/**
+ * ของที่ทำที่โต๊ะช่างเก่า: วัสดุที่ใช้ ได้กี่ชิ้น · once ทำครั้งเดียวใช้ตลอด (แก้วไม้ไผ่) · station ถาดตากกับลอบ นับเป็นจำนวนที่มี ไม่อยู่ในกระเป๋า
+ * max คือมีได้มากสุด · afterFirst ทำได้หลังได้ชิ้นแรกแล้ว (ถาดตากใบแรกตัวเอกคิดทำเองหลังเกต 2)
+ */
+export const workbenchSchema = z.record(
+  z.string().regex(/^[a-z_]+$/),
+  z.strictObject({
+    materials: z.record(z.string().regex(/^[a-z_]+$/), z.number().int().positive()),
+    gives: z.number().int().positive(),
+    once: z.literal(true).optional(),
+    station: z.literal(true).optional(),
+    max: z.number().int().positive().optional(),
+    afterFirst: z.literal(true).optional(),
+  }),
+);
+export type Workbench = z.infer<typeof workbenchSchema>;
 
 /** ท็อปปิ้งหนึ่งอย่าง item คือของในกระเป๋าที่ใช้ชิ้นละ 1 ต่อจาน · art คือภาพบนจาน 48 พิกเซล · kind บอกท่าตอนร่วง (ผงฟุ้งเป็นละออง ลูกชิ้นกระเซ็นในซุป) */
 export const toppingsSchema = z.record(
@@ -856,6 +893,8 @@ export const linesSchema = z.strictObject({
     noBait: z.string().min(1),
     baitRanOut: z.string().min(1),
     noMoney: z.string().min(1),
+    /** บทสั้น ๆ ครั้งแรกที่ได้วัสดุหรือวัตถุดิบใหม่ (ความรู้รอบตัวของตัวเอง ไม่ใช่ยายสอน) */
+    firstItem: z.record(z.string().regex(/^[a-z_]+$/), z.string().min(1)),
   }),
   gio: z.strictObject({
     greet: z.string().min(1),

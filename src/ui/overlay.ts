@@ -7,6 +7,7 @@ import display from '../data/display.json';
 import { createChestWindow } from './chest';
 import { createCookingWindow } from './cooking';
 import { createDecorateWindow } from './decorate';
+import { createWorkbenchWindow } from './workbench';
 import { createHud } from './hud';
 import { createJoystick } from './joystick';
 import { createPhone } from './phone';
@@ -91,6 +92,7 @@ export function createOverlay(uiRoot: HTMLElement, appRoot: HTMLElement): void {
   createArrange(uiRoot);
   createCookingWindow(uiRoot);
   createDecorateWindow(uiRoot);
+  createWorkbenchWindow(uiRoot);
   createGioWindows(uiRoot);
   createTrayWindow(uiRoot);
   createWorldBubbles(uiRoot);

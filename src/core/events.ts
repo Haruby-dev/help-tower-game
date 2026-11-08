@@ -29,6 +29,10 @@ export interface GameEvents {
   /** key ของบทพูดตัวเอกใน lines.json */
   'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut' | 'noMoney';
   'cook-open': undefined;
+  /** แตะโต๊ะช่างเก่า เปิดหน้าต่างทำของ */
+  'workbench-open': undefined;
+  /** บทพูดตัวเองที่เป็นข้อความตรง ๆ (เช่น ครั้งแรกที่ได้ของใหม่) */
+  'player-line': string;
   /** อาหารเพิ่งออกจากกองไฟ เปิดหน้าแต่งจาน (item คืออาหารที่ยังไม่แต่ง count คือจำนวนจานที่แต่งพร้อมกัน) */
   'decorate-open': { item: string; count: number };
   'book-open': undefined;

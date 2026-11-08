@@ -19,6 +19,7 @@
 .ck {
   --px: 3px;
   --px2: var(--m2);
+  --px4: var(--m4);
   --ck-cream: #fffaf0;
   --ck-line: #e2be96;
   --ck-dark: #6e4628;
@@ -447,6 +448,29 @@
   left: 0;
 }
 
+/* แก้วไม้ไผ่ข้างกองไฟในแท็บเครื่องดื่ม */
+.ck-cup {
+  position: absolute;
+}
+
+.ck-cup.is-missing {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+
+.ck-cup__label {
+  position: absolute;
+  font-size: 22px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--ck-ok-ink);
+  transform: translate(-50%, -50%);
+}
+
+.ck-cup__label.is-missing {
+  color: var(--ck-bad-ink);
+}
+
 /* วัตถุดิบลอยลงภาชนะตอนกดเริ่มทำ */
 .ck-flyer {
   position: absolute;
@@ -855,4 +879,138 @@
   width: 174px;
   height: 110px;
   font-size: 32px;
+}
+
+/*
+ * หน้าต่างโต๊ะช่างเก่า (งานอาหารโซน 1 ขั้นที่ 4) ยังไม่มีภาพตัวอย่าง ใช้กรอบ สี และขนาดเดียวกับหน้าต่างทำอาหาร
+ * แถวละอย่าง: ภาพ · ชื่อกับจำนวนที่มี · วัสดุ (มี/ต้องใช้) · ปุ่มทำ
+ */
+#workbench-window {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+}
+
+#workbench-window[hidden] {
+  display: none;
+}
+
+.wb-title {
+  position: absolute;
+  top: 34px;
+  left: 44px;
+  margin: 0;
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 60px;
+  white-space: nowrap;
+}
+
+.wb-hint {
+  position: absolute;
+  top: 48px;
+  left: 360px;
+  font-size: 30px;
+  line-height: 40px;
+  white-space: nowrap;
+  color: var(--ck-sub);
+}
+
+.wb-list {
+  position: absolute;
+  top: 124px;
+  right: 30px;
+  bottom: 24px;
+  left: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  touch-action: pan-y;
+}
+
+.wb-list::-webkit-scrollbar {
+  display: none;
+}
+
+.wb-row {
+  display: grid;
+  flex: none;
+  height: 104px;
+  grid-template-columns: 112px 330px 1fr 190px;
+  align-items: center;
+  border: 3px solid var(--ck-line);
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.wb-row__art {
+  justify-self: center;
+}
+
+.wb-row__art--none {
+  width: 64px;
+  height: 64px;
+  background: var(--ck-grey);
+}
+
+.wb-row__name {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wb-row__name b {
+  font-size: 32px;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.wb-row__have {
+  font-size: 22px;
+  color: var(--ck-sub);
+}
+
+.wb-row__materials {
+  display: flex;
+  gap: 22px;
+}
+
+.wb-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ck-ok-ink);
+}
+
+.wb-chip.is-short {
+  color: var(--ck-bad-ink);
+}
+
+.wb-chip__count {
+  font-size: 24px;
+}
+
+.wb-chip__name {
+  font-size: 20px;
+  color: var(--ck-dark);
+}
+
+.wb-make {
+  position: static;
+  justify-self: end;
+  width: 160px;
+  height: 72px;
+  margin-right: 14px;
+  font-size: 30px;
+}
+
+.wb-row.is-owned .wb-make,
+.wb-row.is-max .wb-make {
+  border-color: var(--ck-ok-edge);
+  background: var(--ck-ok);
+  color: #ffffff;
 }

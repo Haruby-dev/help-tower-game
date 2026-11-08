@@ -1,0 +1,8 @@
+{
+  "bamboo_cup": { "materials": { "bamboo": 1 }, "gives": 1, "once": true },
+  "small_woven_tray": { "materials": { "banana_rope": 1, "rice_straw": 2 }, "gives": 3 },
+  "medium_woven_tray": { "materials": { "bamboo": 2, "rice_straw": 2 }, "gives": 2 },
+  "big_woven_tray": { "materials": { "bamboo": 3, "rice_straw": 3 }, "gives": 2 },
+  "drying_tray": { "materials": { "bamboo": 3, "rice_straw": 2 }, "gives": 1, "station": true, "max": 3, "afterFirst": true },
+  "trap": { "materials": { "bamboo": 2, "banana_rope": 2 }, "gives": 1, "station": true, "max": 3 }
+}

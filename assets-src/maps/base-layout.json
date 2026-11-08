@@ -136,6 +136,14 @@
     "rock_small_43": {
       "width": 18,
       "height": 7
+    },
+    "workbench": {
+      "width": 60,
+      "height": 14
+    },
+    "banana_clump": {
+      "width": 120,
+      "height": 16
     }
   },
   "flat": [
@@ -360,6 +368,11 @@
       "id": "food_tray_3",
       "x": 19.6,
       "y": 10.7
+    },
+    {
+      "id": "workbench",
+      "x": 22,
+      "y": 10.2
     },
     {
       "id": "gio_seat",
@@ -1754,6 +1767,11 @@
       "id": "tree_big_0",
       "x": 50.3,
       "y": 29.8
+    },
+    {
+      "id": "banana_clump",
+      "x": 44,
+      "y": 28.6
     }
   ],
   "spawns": {

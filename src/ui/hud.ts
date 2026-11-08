@@ -8,6 +8,7 @@ import { beadFills, isAlert, isDirty, isPulsing, moodOf, type Mood } from '../sy
 import { artUrl, bubbleImage, drawSpeechBubble, type NineSlice } from './pixelArt';
 import { formatMoney } from '../systems/economy';
 import { setMoney } from './money';
+import { noticeNewItems } from '../systems/crafting';
 import { bagArtId, itemName } from './inventory';
 
 const REST_MESSAGE: Record<RestCause, TextKey> = {
@@ -194,6 +195,21 @@ function createLowGaugeBubble(uiRoot: HTMLElement): void {
   };
 
   eventBus.on('player-says', (line) => speak(lines.player[line]));
+  eventBus.on('player-line', (text) => speak(text));
+
+  // ครั้งแรกที่ได้วัสดุหรือวัตถุดิบใหม่ ตัวเอกพูดสั้น ๆ จากความรู้รอบตัว (ได้หลายอย่างพร้อมกันพูดทีละบท)
+  let noticing = false;
+  eventBus.on('world-changed', () => {
+    if (noticing || !gameState.started) return;
+    noticing = true;
+    queueMicrotask(() => {
+      noticing = false;
+      const noticed = noticeNewItems(gameState.world);
+      if (noticed.lines.length === 0) return;
+      gameState.setWorld(noticed.world);
+      noticed.lines.forEach((line, order) => window.setTimeout(() => speak(line), balance.hud.firstItemDelayMs + order * balance.hud.bubbleMs));
+    });
+  });
 
   eventBus.on('world-changed', (world) => {
     for (const gauge of GAUGES) {

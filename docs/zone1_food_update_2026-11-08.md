@@ -309,7 +309,7 @@ Now merge from `docs/dialogue_zone1_draft.json` the lines held back on 7 Nov: fa
 
 ## 9. OPEN (do not build)
 - ~~Mystery food when happiness ≤ 30~~ dropped 9 Nov (see 1.6). Its replacement is decided (happiness ≤ 30 → 15% chance a cooked dish loses 1 star, never below 1) but is **not part of this job** — do not build it now.
-- Mortar entry point: **decided 9 Nov** = the kitchen corner inside the house (one-room interior, bed inside, door = walk in). The house interior is NOT part of this job: keep the dev-card entry for now.
+- Mortar entry point: **decided 9 Nov** = inside an old chest in the house (round empty one-room interior, bed inside, door = walk in; the chest gives the recipe book on day 1 and the mortar after gate 3). The house interior is NOT part of this job: keep the dev-card entry for now.
 - How toppings show on 16/9 px icons.
 - Rank-special recipes and special quests (need rank / daily quest systems).
 - Restaurant reputation sources, monster friends (เพื่อนมอนสเตอร์), restaurant itself.

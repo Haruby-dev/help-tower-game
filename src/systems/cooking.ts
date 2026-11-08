@@ -144,9 +144,12 @@ function takeAll(bag: BagStack[], items: Record<string, number>): BagStack[] | n
   return left;
 }
 
+/** เครื่องดื่มทุกแก้วเทใส่แก้วไม้ไผ่ ต้องมีแก้วในกระเป๋า (ทำครั้งเดียวใช้ตลอด ไม่หมด) */
+export const hasCupFor = (bag: BagStack[], recipe: Recipe): boolean => recipe.category !== 'drink' || countOf(bag, rules.drinkNeeds) > 0;
+
 export function canCook(world: World, id: string, picks: StarPicks = {}): boolean {
   const recipe = recipes[id];
-  return Boolean(recipe && !world.cooking.slot && canUseCampfire(recipe) && hasIngredients(world.bag, recipe, picks));
+  return Boolean(recipe && !world.cooking.slot && canUseCampfire(recipe) && hasCupFor(world.bag, recipe) && hasIngredients(world.bag, recipe, picks));
 }
 
 function put(world: World, bag: BagStack[], slot: CookingSlot): World {

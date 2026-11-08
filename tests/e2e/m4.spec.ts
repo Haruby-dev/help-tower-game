@@ -352,3 +352,44 @@ test('decorates the dishes that just came out: one topping per dish, at most 3 p
   expect(await count(page, 'ing_honey')).toBe(0);
   expect(await count(page, 'ing_fish_ball')).toBe(2);
 });
+
+test('the old workbench makes the bamboo cup once, and the banana clump shakes once a day', async ({ page }) => {
+  await open(page);
+  const near = (key: 'workbench' | 'banana', dy: number): Promise<void> =>
+    page.evaluate(
+      ({ key, dy }) => {
+        const scene = (window as unknown as { __game: { scene: { getScene(k: string): Record<string, { x: number; y: number }> } } }).__game.scene.getScene('Base');
+        (window as unknown as { __state: TestState }).__state.movePlayer({ x: scene[key]!.x, y: scene[key]!.y + dy });
+      },
+      { key, dy },
+    );
+  await page.evaluate(() => {
+    const s = (window as unknown as { __state: TestState }).__state;
+    s.setWorld({ ...s.world, bag: [{ item: 'bamboo', count: 2 }] });
+  });
+  await near('workbench', 30);
+  const act = page.locator('#action-button');
+  await expect(act).toHaveAttribute('aria-label', 'ทำของ');
+  await act.click();
+  const bench = page.locator('#workbench-window');
+  await expect(bench).toBeVisible();
+  await expect(bench.locator('.wb-title')).toHaveText('โต๊ะช่างเก่า');
+  // ถาดตากยังไม่ปลด (ใบแรกตัวเอกคิดทำเองหลังเกต 2) · ลอบมีลอบเก่าอยู่แล้ว 1 อัน
+  await expect(bench.locator('[data-craft="drying_tray"]')).toHaveCount(0);
+  await expect(bench.locator('.wb-row[data-craft="trap"] .wb-row__have')).toHaveText('มี 1/3');
+  await bench.locator('.wb-make[data-craft="bamboo_cup"]').click();
+  await expect(bench.locator('.wb-make[data-craft="bamboo_cup"]')).toHaveText('มีแล้ว');
+  await expect(bench.locator('.wb-make[data-craft="bamboo_cup"]')).toBeDisabled();
+  expect(await count(page, 'bamboo_cup')).toBe(1);
+  expect(await count(page, 'bamboo')).toBe(1);
+  await page.locator('#workbench-close').click();
+  await expect(bench).toBeHidden();
+
+  await near('banana', 30);
+  await expect(act).toHaveAttribute('aria-label', 'เขย่าต้นกล้วย');
+  await act.click();
+  await expect.poll(() => count(page, 'ing_banana_leaf')).toBeGreaterThanOrEqual(2);
+  expect(await count(page, 'banana_rope')).toBe(1);
+  // เขย่าแล้ววันนี้ ไม่มีอะไรทำตรงนี้ ปุ่มกระทำซ่อน
+  await expect(act).toBeHidden();
+});
