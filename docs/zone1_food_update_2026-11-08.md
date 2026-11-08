@@ -70,7 +70,7 @@ Art: `art-src/dishes_1108/crops/` → `lime_stages_v3.png`, `coriander_stages_v3
 The whole crop table in GDD now matches `crops.json`. Blueberry stays a normal shop crop (it already is in code).
 
 ### 1.3 Shrimp and crab in fish.json
-Rows are in GDD "ปลา 8 ชนิดและเหยื่อ": shrimp rank F, all day, any weather, normal bait, 150 · crab rank E, 18:00–02:00, rain, normal bait, 250. Prices are approved; rank/hours/weather are drafts → **DEFAULT**.
+Rows are in GDD "ปลา 8 ชนิดและเหยื่อ": shrimp rank F, all day, any weather, normal bait, 150 · crab rank E, 18:00–02:00, rain, normal bait, 250. Prices are approved; rank/hours/weather are drafts → **approved 9 Nov**.
 - Add a `kind` to fish entries: fish / shrimp / crab / squid. Show them in the fish list with the ingredient icons.
 
 ### 1.4 Dishes (recipes.json) — 20 new + plain rice
@@ -100,7 +100,7 @@ Art: `art-src/dishes_1108/minis/{dishes,dishes_bag,mini16,tray_mini}/<id>.png`; 
 | 20 | grilled_meatball_skewer | ลูกชิ้นปิ้ง | F | savory (snack) | fish_ball or shrimp_ball ×2 · chili · sugar | 500 | campfire | no (snack) |
 | + | plain_rice | ข้าวสวย | F | set part | rice | 300 | campfire | — (not counted as a recipe) |
 
-- **fish (any)** = any entry of kind "fish", any rank (new any-rank fish group). Shrimp, crab and squid never count as "fish" (**DEFAULT** for squid). The existing `ing_fish_F` recipes (grilled_fish, fish_congee) stay "rank-F fish" but must also exclude shrimp/crab (shrimp is rank F). squid_salad = **any squid** (only glow_squid exists in zone 1). mackerel_chili_dip = lost_mackerel only.
+- **fish (any)** = any entry of kind "fish", any rank (new any-rank fish group). Shrimp, crab and squid never count as "fish" (**approved 9 Nov** for squid). The existing `ing_fish_F` recipes (grilled_fish, fish_congee) stay "rank-F fish" but must also exclude shrimp/crab (shrimp is rank F). squid_salad = **any squid** (only glow_squid exists in zone 1). mackerel_chili_dip = lost_mackerel only.
 - **Existing dishes that count as กับข้าว** (GDD): grilled_fish · boiled_egg · scallion_omelet. All other old dishes do not (home_kaprao, fish_congee, corn_egg_fried_rice have rice; baked_potato is a snack; tomato_soup, potato_carrot_stew are western; desserts/drinks).
 - Existing recipe change (GDD 7 Nov): **baked_potato also needs banana_leaf ×1** (hor_mok too, above).
 - Existing desserts: **choco_donut price 1650** (was 1250), **choco_macaron 2350** (was 2000). Other prices stay.
@@ -112,7 +112,7 @@ Art: `art-src/dishes_1108/minis/{dishes,dishes_bag,mini16,tray_mini}/<id>.png`; 
 Replace the 4 existing drink images and add the 2 new ones in `public/assets/food/` (all 4 sizes) with `art-src/cook_ui_1108/drink_1108/drinks_cup_final/{dishes,dishes_bag,mini16,tray_mini}/` (warm_honey_milk, basil_tea, soy_milk, corn_milk, strawberry_juice, tomato_juice). Do NOT use the soy_milk/corn_milk files in `dishes_1108/minis/` (old).
 
 ### 1.6 Remove the mixing (experiment) mode everywhere
-Remove `startExperiment`, its MYSTERY result and the experiment tab. Keep the mystery-food art/data. The GDD gauge penalty "happiness ≤ 30 → 15% mystery food when cooking" is **not built today and stays OPEN** — do not add it now.
+Remove `startExperiment`, its MYSTERY result and the experiment tab. Keep the mystery-food art/data. The GDD gauge penalty "happiness ≤ 30 → 15% mystery food when cooking" is **dropped (her decision 9 Nov 00:11)** — never build it. Mystery food can no longer be made; keep its data/art only so old saves that hold one still load.
 
 ---
 
@@ -141,7 +141,7 @@ Full notes: `docs/cook_ui_k2_2026-11-08.md` (Thai). Mocks: `art-src/cook_ui_1108
 | grill (skewer) | grill_mix/cook_grill_south/ | grill_mix/cook_grill_east/ | stir_v2_north_noladle/ |
 | salad (bowl) | grill_mix/cook_mix_south/ | grill_mix/cook_mix_east/ | stir_v2_north_noladle/ |
 
-  **DEFAULT:** desserts/drinks use the pose of their vessel (bowl → salad pose, clay pot / new pot → boil pose, pan → stir-fry pose, oven → boil pose).
+  **approved 9 Nov:** desserts/drinks use the pose of their vessel (bowl → salad pose, clay pot / new pot → boil pose, pan → stir-fry pose, oven → boil pose).
 
 ---
 
@@ -156,7 +156,7 @@ After dishes come out: "แต่งจาน · <dish name>", the dish in the m
 - Bonus by count: 1 / 2 / 3 pieces = sell price +10% / +20% / +30% and the same steps of extra affection. **The 4th piece passes the heart line = all topping bonus lost + "too much" face 😵.**
 - umami_powder: counts as 1 piece but gives **+20%** (old rule); only one spoon per dish. On savory food monsters notice it: a small sparkle on the dish and a chance to say "นัวว~!".
 - Topping types: savory / sweet / drink. Drinks may also take sweet toppings. Wrong type (savory on sweet/drink, sweet on savory) **can still be put on** but the monster makes a 🤢 face — **no affection loss, no money loss, just no bonus** (the piece does not count in the gauge). Exception: a monster whose favourite topping it is eats it happily (no 🤢, gets ×1.5).
-- **Fish balls and shrimp balls only go on soups/curries** (blocked otherwise, grey + label). DEFAULT soups/curries: tomato_soup, cabbage_shrimp_soup, potato_carrot_stew, fish_congee.
+- **Fish balls and shrimp balls only go on soups/curries** (blocked otherwise, grey + label). approved 9 Nov soups/curries: tomato_soup, cabbage_shrimp_soup, potato_carrot_stew, fish_congee.
 - Favourite topping of a monster = affection ×1.5 + heart sparkle (on top of the steps).
 - A dish keeps its toppings as data (sell price, affection, set rules use them). Show toppings only on 48 px views for now (small 16/9 px icons unchanged — OPEN how to show them small).
 - 🤢 / 😵 = emoji bubble above the monster's head. **Bubble art not made → use a text/emoji placeholder.**
@@ -196,12 +196,12 @@ The first time she gets each new material/ingredient (straw, rope, banana leaf, 
 ### 4.2 Workbench recipes
 | item | materials | gives | note |
 |---|---|---|---|
-| bamboo cup แก้วไม้ไผ่ | bamboo 1 (DEFAULT) | 1, **crafted once, used forever** (not consumed) | all drinks need it → drinks open after gate 2. No icon yet → placeholder |
+| bamboo cup แก้วไม้ไผ่ | bamboo 1 (approved 9 Nov) | 1, **crafted once, used forever** (not consumed) | all drinks need it → drinks open after gate 2. No icon yet → placeholder |
 | small woven tray ถาดเล็ก | banana rope 1 + rice straw 2 | 3 | consumed when a set is made |
 | medium woven tray ถาดกลาง | bamboo 2 + rice straw 2 | 2 | consumed |
 | big woven tray ถาดใหญ่ | bamboo 3 + rice straw 3 | 2 | consumed |
-| drying tray ถาดตาก (#2–3) | bamboo 3 + rice straw 2 (DEFAULT) | 1 | max 3 in zone 1 |
-| trap ลอบ (#2–3) | bamboo 2 + banana rope 2 (DEFAULT) | 1 | max 3 in zone 1 |
+| drying tray ถาดตาก (#2–3) | bamboo 3 + rice straw 2 (approved 9 Nov) | 1 | max 3 in zone 1 |
+| trap ลอบ (#2–3) | bamboo 2 + banana rope 2 (approved 9 Nov) | 1 | max 3 in zone 1 |
 
 Tray art: `art-src/dishes_1108/groupD/final/items/{small,medium,big}_woven_tray.png` + `items_mini/`.
 
@@ -217,7 +217,7 @@ Tray art: `art-src/dishes_1108/groupD/final/items/{small,medium,big}_woven_tray.
 
 ### 5.2 Shrimp/crab trap (ลอบ)
 - First = the old trap at the dock (in game "ลอบเก่า"), usable from day 1 (no craft). More from the workbench after gate 2, max 3.
-- Put in the water in the evening, collect next morning: **1 catch per trap per night**; shrimp 70% / crab 30%, weather has no effect (**DEFAULT**).
+- Put in the water in the evening, collect next morning: **1 catch per trap per night**; shrimp 70% / crab 30%, weather has no effect (**approved 9 Nov**).
 - Art `art-src/dishes_1108/props/trap_A.png` (on land) and `trap_A_in_water_noripple.png` (in water). The in-water sprite has no ripple: draw the ripple ring in code like the pond rocks (Pond.ts ~642, objects named `rock*` get ripple #beebe8 + a mask so sparkles/lilies do not cover it). Check in the real game that it does not look like it floats.
 
 ### 5.3 Stone mortar (ครกหินเก่า) + pounding minigame
@@ -227,7 +227,7 @@ Tray art: `art-src/dishes_1108/groupD/final/items/{small,medium,big}_woven_tray.
 - One round makes any number of batches (like cooking). Game time: chili dips + fish cake 25 min (rank E), balls/powders 15 min per round.
 - Recipes at the mortar:
   - fish_ball: fish 1 + salt 1 → 2 · shrimp_ball: shrimp 1 + salt 1 → 2
-  - **DEFAULT:** umami_powder: dried_shrimp 1 + dried_fish 1 → 3 spoons · chili_flakes: dried_chili 2 → 3 spoons · ground_dried_shrimp: dried_shrimp 1 → 2 spoons
+  - **approved 9 Nov:** umami_powder: dried_shrimp 1 + dried_fish 1 → 3 spoons · chili_flakes: dried_chili 2 → 3 spoons · ground_dried_shrimp: dried_shrimp 1 → 2 spoons
   - mackerel_chili_dip, kapi_chili_dip, fish_cake (dishes, table 1.4)
 - Finding the mortar also teaches the recipes **fish_cake** and **grilled_meatball_skewer** (her own knowledge, a short line).
 
@@ -251,14 +251,14 @@ Table in GDD (search "สูตรคอมโบโซน 1"). Order does not m
 
 ### 6.4 Where sets go
 - **Small tray** set: on a tower-tray plate spot or a normal table. **Medium/large**: only on the **big table**.
-- **Big table** (โต๊ะใหญ่) 96×41 `art-src/dishes_1108/groupD/final/world/big_table.png`: buy in Geo Mart "บ้าน&ฟาร์ม" **6000**, placed with arrange mode, holds 1 set. DEFAULT: visiting monsters can eat a set from it with the same rule as the tower tray.
+- **Big table** (โต๊ะใหญ่) 96×41 `art-src/dishes_1108/groupD/final/world/big_table.png`: buy in Geo Mart "บ้าน&ฟาร์ม" **6000**, placed with arrange mode, holds 1 set. Approved 9 Nov: visiting monsters can eat a set from it with the same rule as the tower tray.
 - **Set item art = composite in code** (no per-set art): the tray image + `tray_mini` dish images placed on spots. Slot centres (fraction of the tray image): small (0.3,0.45) (0.7,0.45) · medium (0.3,0.38) (0.7,0.38) (0.5,0.68) · large (0.3,0.33) (0.7,0.33) (0.3,0.66) (0.7,0.66), dish centred on the spot, 1 px up. Reference script + mocks: `art-src/cook_ui_1108/set_1108/setitem/` (`setitem_py.txt`, `set_icons.png`, `set_scene.png`). On the tower tray the small set is shrunk to fit one plate spot (about 13 px).
 
 ### 6.5 Restaurant reputation (ชื่อเสียงร้าน) — counter only for now
 One number, only goes up, shown as ★1–5. Thresholds: ★1 0 · ★2 150 · ★3 500 · ★4 1,200 · ★5 2,500.
 - Sources **now**: combo set made small/medium/large **+5 / +10 / +15**, **first time a combo is found +30**.
 - Sources that come with the restaurant (do not build now): dish sold +1, customer's favourite on the menu +3, good review +5, shop cuteness +1/day per 10.
-- DEFAULT display: in the shop "สูตร" page header, e.g. "ชื่อเสียงร้าน ★2 · อีก 40 ถึง ★3" (always say how much is missing).
+- approved 9 Nov display: in the shop "สูตร" page header, e.g. "ชื่อเสียงร้าน ★2 · อีก 40 ถึง ★3" (always say how much is missing).
 - Use: dessert recipes unlock by stars (8.1). Later: floor monsters need stars to visit the restaurant.
 
 ---
@@ -308,7 +308,7 @@ Now merge from `docs/dialogue_zone1_draft.json` the lines held back on 7 Nov: fa
 ---
 
 ## 9. OPEN (do not build)
-- Mystery food when happiness ≤ 30 (1.6).
+- ~~Mystery food when happiness ≤ 30~~ dropped 9 Nov (see 1.6). Its replacement is decided (happiness ≤ 30 → 15% chance a cooked dish loses 1 star, never below 1) but is **not part of this job** — do not build it now.
 - Mortar entry point (house interior).
 - How toppings show on 16/9 px icons.
 - Rank-special recipes and special quests (need rank / daily quest systems).

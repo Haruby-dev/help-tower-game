@@ -29,3 +29,8 @@ Credits: 9.25 (pixen 4: A/B/C rejected + D, rotate 1, import 0.25, hop 3, eat 1)
 - I sent two GIFs with similar names (raw vs fix) and she got confused: send ONE latest file per review.
 - Reply in Thai even after long tool runs (I slipped into English once).
 - Large base64 through device_bash got corrupted: deliver binaries as zip -> device_commit_files -> unzip, then check the pixel hash.
+
+## v2 face fixes (7 Nov 2026, her OK '1' 15:17)
+- Hungry STAND + EAT lacked the dark lid line the hungry hop frames have -> added #823247 above the red iris (hungry_v2/face_fix.py E1). Fur colour unchanged (her: only the face was unclear).
+- Eat frames 1-5 had eye shines on the OUTER side (looked cross-eyed, her '2 3 4 5 ตาเข'): moved 1 px inward in sweet AND hungry (final_v2/eye_shine_fix.py) -> shines point inward in every south frame like stand/hop.
+- Files: art-src/mukmik_1106/final_v2/mookmik_{sweet,hungry}_{stand,walk,eat}.png (public layout/names). Preview final_v2/mookmik_v2_preview.gif. Not in public yet.
