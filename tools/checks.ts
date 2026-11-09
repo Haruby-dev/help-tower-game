@@ -398,15 +398,25 @@ export function checkProject(): string[] {
       continue;
     }
     const map = parsed.data;
-    for (const layer of ['bg', 'fg']) {
-      const entry = registry[`${gate.map}_${layer}`];
-      if (entry?.type !== 'local') problems.push(`assets-src/registry.json: gate ${gate.floor} has no ${gate.map}_${layer} image`);
-      else if (entry.width !== map.size[0] * map.tile || entry.height !== map.size[1] * map.tile) problems.push(`assets-src/registry.json: ${gate.map}_${layer} does not match the map size`);
+    // ฉากกล่องสี (box) วาดด้วยโค้ด ไม่มีภาพพื้นหลัง · บานที่ใช้ต้องบอกมอนสเตอร์เจ้าของชั้นเอง
+    if (gate.map === 'box') {
+      if (!gate.owner) problems.push(`src/data/gates.json: floor ${gate.floor} uses the colour-box scene but has no owner`);
+    } else {
+      for (const layer of ['bg', 'fg']) {
+        const entry = registry[`${gate.map}_${layer}`];
+        if (entry?.type !== 'local') problems.push(`assets-src/registry.json: gate ${gate.floor} has no ${gate.map}_${layer} image`);
+        else if (entry.width !== map.size[0] * map.tile || entry.height !== map.size[1] * map.tile) problems.push(`assets-src/registry.json: ${gate.map}_${layer} does not match the map size`);
+      }
     }
-    for (const id of [map.owner.monster, map.kin.monster]) if (!monsterFile[id]?.art) problems.push(`${label}: monster ${id} has no art`);
-    for (const variant of map.kin.variants) {
-      for (const kind of ['stand', 'walk', 'eat']) {
-        if (!registry[`${gate.map}_kin_${variant}_sweet_${kind}`]) problems.push(`assets-src/registry.json: ${label} kin ${variant} has no ${kind} sheet`);
+    const owner = gate.owner ?? map.owner.monster;
+    if (!monsterFile[owner]?.art) problems.push(`${label}: monster ${owner} has no art`);
+    if (gate.owner && monsterFile[gate.owner]?.floor !== gate.floor) problems.push(`src/data/gates.json: floor ${gate.floor} owner ${gate.owner} does not live on that floor`);
+    if (map.kin) {
+      if (!monsterFile[map.kin.monster]?.art) problems.push(`${label}: monster ${map.kin.monster} has no art`);
+      for (const variant of map.kin.variants) {
+        for (const kind of ['stand', 'walk', 'eat']) {
+          if (!registry[`${gate.map}_kin_${variant}_sweet_${kind}`]) problems.push(`assets-src/registry.json: ${label} kin ${variant} has no ${kind} sheet`);
+        }
       }
     }
     for (const [x, y] of map.blocked) if (x >= map.size[0] || y >= map.size[1]) problems.push(`${label}: blocked cell ${x},${y} is outside the map`);

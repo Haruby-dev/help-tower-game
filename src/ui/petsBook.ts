@@ -46,15 +46,28 @@ function stateOf(pet: PetsData['pets'][number]): PetState {
   return pet.art ? 'notmet' : 'unknown';
 }
 
-/** สมุดดูแลสัตว์ (สมุดมินต์สองหน้า) หน้าซ้ายสัตว์ 15 ตัวตามลำดับเกต หน้าขวาฉากบ้านกับรายละเอียด */
+/** สัตว์ที่ผู้เล่นเจอแล้ว เรียงตามลำดับในไฟล์ · ระบบเจอสัตว์ยังไม่มา (M8b) ตอนนี้จึงว่างเสมอ */
+function metPets(): PetsData['pets'] {
+  return [];
+}
+
+/** สมุดดูแลสัตว์ (สมุดมินต์สองหน้า) หน้าซ้ายสัตว์ที่เจอแล้ว หน้าขวาฉากบ้านกับรายละเอียด */
 export function createPetsBook(uiRoot: HTMLElement): void {
   const shell = createBook(uiRoot, 'pets-book', 'pets', WINDOW, PIECES);
   let picked = data.pets[0]!.id;
 
   function render(): void {
     if (!gameState.started) return;
+    // แสดงเฉพาะสัตว์ที่เจอแล้ว ไม่บอกว่ามีกี่ตัวหรือเจอหลังเกตไหน (แก้จากการเล่นจริง 9 พ.ย. 2026 ข้อ A8)
+    // ระบบเจอสัตว์มาใน M8b ตอนนี้จึงยังไม่มีตัวไหนเจอ หน้าซ้ายมีแค่ชื่อสมุดกับประโยคเดียว
+    const met = metPets();
+    if (met.length === 0) {
+      shell.left.replaceChildren(element('div', 'pt-tt', t('pets.title')), element('div', 'pt-tc', t('pets.none_yet')));
+      shell.right.replaceChildren(bookNote('pt-note', t('pets.none_note'), TAPE, 22, 190));
+      return;
+    }
     const living = 0;
-    const cards = data.pets.map((pet, index) => {
+    const cards = met.map((pet, index) => {
       const state = stateOf(pet);
       const x = CARD_X + (index % PER_ROW) * CARD_STEP;
       const y = CARD_ROWS[Math.floor(index / PER_ROW)]!;
@@ -74,11 +87,11 @@ export function createPetsBook(uiRoot: HTMLElement): void {
     });
     shell.left.replaceChildren(
       element('div', 'pt-tt', t('pets.title')),
-      element('div', 'pt-tc', `${t('pets.living')} ${living}/${data.pets.length} ${t('pets.unit')}`),
+      element('div', 'pt-tc', `${t('pets.living')} ${living} ${t('pets.unit')}`),
       ...cards,
     );
 
-    const pet = data.pets.find((entry) => entry.id === picked)!;
+    const pet = met.find((entry) => entry.id === picked) ?? met[0]!;
     const state = stateOf(pet);
     if (state === 'locked') {
       shell.right.replaceChildren(

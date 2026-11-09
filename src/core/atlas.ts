@@ -23,6 +23,27 @@ export function atlasGroupOf(id: string): string | null {
 /** รหัสภาพทั้งหมดในหมวดนี้ */
 export const idsInGroup = (group: string): string[] => Object.keys(manifest.frames).filter((id) => atlasGroupOf(id) === group);
 
+/**
+ * รหัสรุ่นของแผ่นรวมภาพ คิดจากตำแหน่งภาพบนแผ่นกับลายนิ้วมือของไฟล์ต้นทางทุกไฟล์บนแผ่นนั้น
+ * ชื่อแผ่นเดิมทุกครั้งที่อัปเดต มือถือจึงอาจใช้แผ่นเก่าที่จำไว้กับตำแหน่งใหม่ แล้ววาดภาพผิดชิ้น
+ * (เคยเห็นหีบรางวัลเกตกลายเป็นถาดอาหาร 9 พ.ย. 2026 ข้อ B2) ต่อท้ายที่อยู่ด้วยรหัสนี้ แผ่นเปลี่ยนเมื่อไหร่ที่อยู่ก็เปลี่ยน
+ */
+export function atlasPageVersion(index: number): string {
+  let hash = 5381;
+  const add = (text: string): void => {
+    for (let at = 0; at < text.length; at += 1) hash = ((hash * 33) ^ text.charCodeAt(at)) >>> 0;
+  };
+  for (const [id, frame] of Object.entries(manifest.frames)) {
+    if (frame[0] !== index) continue;
+    add(id);
+    add(frame.join(','));
+    const entry = registry[id];
+    const file = entry?.type === 'local' ? entry.file : undefined;
+    if (file) add(manifest.hashes[file] ?? '');
+  }
+  return hash.toString(36);
+}
+
 function loadImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const image = new Image();
@@ -37,7 +58,7 @@ export function loadAtlasGroup(group: string): Promise<void> {
   const known = groups.get(group);
   if (known) return known;
   const pages = manifest.pages.map((page, index) => ({ page, index })).filter(({ page }) => page.group === group);
-  const job = Promise.all(pages.map(({ page, index }) => loadImage(assetUrl(page.file)).then((image) => ({ image, index }))))
+  const job = Promise.all(pages.map(({ page, index }) => loadImage(`${assetUrl(page.file)}?v=${atlasPageVersion(index)}`).then((image) => ({ image, index }))))
     .then((images) => {
       const byPage = new Map(images.map(({ image, index }) => [index, image]));
       for (const id of idsInGroup(group)) {

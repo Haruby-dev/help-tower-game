@@ -101,11 +101,16 @@ test('cooks the home kaprao at the campfire, then eats it to fill up', async ({ 
   await expect(page.locator('.book-stars')).toHaveAttribute('data-stars', String(stars));
   await expect(page.locator('.book-note')).toContainText('เหมือนสูตรที่บ้าน');
   await expect(page.locator('.book-steam')).toHaveCount(1);
-  await page.locator('#book-next').click();
-  await expect(book).toHaveAttribute('data-recipe', 'scallion_omelet');
-  await expect(page.locator('.book-title')).toHaveText('? ? ?');
-  await expect(page.locator('.book-float')).toHaveCount(0);
-  await expect(page.locator('.book-sparkle')).toHaveCount(3);
+  // เปลี่ยนหน้าเฉพาะสูตรที่รู้แล้ว ไม่มีหน้า ? ? ? (ข้อ A6) ไข่เจียวต้นหอมยังไม่รู้จึงข้ามไป
+  const known = (await state(page) as unknown as { recipes: { known: string[] } }).recipes.known;
+  expect(known).not.toContain('scallion_omelet');
+  for (let turn = 0; turn < 8; turn += 1) {
+    await page.locator('#book-next').click();
+    const shown = await book.getAttribute('data-recipe');
+    expect(known).toContain(shown);
+    await expect(page.locator('.book-title')).not.toHaveText('? ? ?');
+  }
+  await expect(page.locator('.book-note--hint')).toHaveCount(0);
   await page.locator('[data-book-tab="drink"]').click();
   await expect(book).toHaveAttribute('data-theme', 'drink');
   await expect(page.locator('.book-title')).toHaveText('นมอุ่นน้ำผึ้ง');
@@ -124,8 +129,16 @@ test('mystery food left at the campfire from an old save is still collected, and
   await standAtFire(page);
   const act = page.locator('#action-button');
   await act.click();
-  // โหมดทดลองผสมเอาออกแล้ว (zone1 food update 1.6) แท็บคาว หวาน เครื่องดื่ม และจัดชุด (ขั้นที่ 6) แทนที่
+  // โหมดทดลองผสมเอาออกแล้ว (zone1 food update 1.6) · เกมใหม่มีแค่แท็บคาวกับหวาน
+  // แท็บเครื่องดื่มขึ้นเมื่อมีแก้วไม้ไผ่ แท็บจัดชุดขึ้นเมื่อมีถาดสาน (ข้อ A11)
   await expect(page.locator('[data-cook-tab="mix"]')).toHaveCount(0);
+  await expect(page.locator('[data-cook-tab]')).toHaveCount(2);
+  await page.locator('#cook-close').click();
+  await page.evaluate(() => {
+    const s = (window as unknown as { __state: TestState }).__state;
+    s.setWorld({ ...s.world, bag: [...s.world.bag, { item: 'bamboo_cup', count: 1 }, { item: 'small_woven_tray', count: 1 }] });
+  });
+  await act.click();
   await expect(page.locator('[data-cook-tab]')).toHaveCount(4);
   await expect(page.locator('[data-cook-tab="set"]')).toHaveText('จัดชุด');
   await page.locator('#cook-close').click();
@@ -223,7 +236,7 @@ test('the campfire window shows what is missing', async ({ page }) => {
   await open(page);
   await page.evaluate(() => {
     const s = (window as unknown as { __state: TestState }).__state;
-    s.setWorld({ ...s.world, bag: s.world.bag.filter((stack) => stack.item !== 'ing_pork') });
+    s.setWorld({ ...s.world, bag: [...s.world.bag.filter((stack) => stack.item !== 'ing_pork'), { item: 'bamboo_cup', count: 1 }] });
   });
   await standAtFire(page);
   await page.locator('#action-button').click();
@@ -326,7 +339,9 @@ test('decorates the dishes that just came out: one topping per dish, at most 3 p
   // ลูกชิ้นใส่ได้แค่ซุป/แกง · ผงนัวมีชิ้นเดียว ไม่พอทั้งสองจาน
   await expect(decorate.locator('[data-topping="fish_ball"]')).toHaveAttribute('data-block', 'soupOnly');
   await expect(decorate.locator('[data-topping="umami_powder"]')).toHaveAttribute('data-block', 'notEnough');
-  await expect(decorate.locator('[data-topping="honey"]')).toHaveClass(/is-wrong/);
+  // น้ำผึ้งผิดประเภทกับของคาว แต่หน้าแต่งจานไม่บอกเลย (ข้อ A3) การ์ดดูเหมือนท็อปปิ้งอื่นทุกอย่าง
+  await expect(decorate.locator('[data-topping="honey"]')).not.toHaveClass(/is-wrong|is-blocked/);
+  await expect(decorate.locator('.dk-card__yuck')).toHaveCount(0);
   const hour = (await state(page) as unknown as { hour: number }).hour;
   await expect(page.locator('#decorate-count')).toHaveText('0/3');
   await decorate.locator('[data-topping="scallion"]').click();
@@ -489,7 +504,7 @@ test('arranges sets on woven trays, finds a secret set, places a medium set on t
   const cook = page.locator('#cook-window');
   await expect(cook).toBeVisible();
   await page.locator('[data-cook-tab="set"]').click();
-  // ถาดเล็กก่อน (มีถาด) · ของหวานไม่มีป้ายแดงตอนเลือก (เตือนเฉพาะตอนจัดครบแล้วไม่ตรงชุดลับ)
+  // ถาดเล็กก่อน (มีถาด) · ของหวานไม่มีป้ายแดงตอนเลือก
   await expect(page.locator('.sx-chip[data-tray-size="small"]')).toHaveClass(/is-active/);
   await expect(page.locator(`[data-set-dish="${skewer}"] .sx-tag`)).not.toHaveClass(/is-yuck/);
   await expect(page.locator(`[data-set-dish="${skewer}"] .sx-yuck`)).toHaveCount(0);
@@ -516,8 +531,9 @@ test('arranges sets on woven trays, finds a secret set, places a medium set on t
   await page.locator(`[data-set-dish="${egg}"]`).click();
   await page.locator(`[data-set-dish="${skewer}"]`).click();
   await expect(page.locator('.sx-combo')).toHaveCount(0);
-  await expect(page.locator('.sx-progress')).toHaveClass(/is-yuck/);
-  await expect(page.locator('.sx-slot.is-yuck')).toHaveCount(1);
+  // จัดครบแล้วไม่ตรงชุดลับและมีของหวาน: ไม่เตือนอะไรเลย ผู้เล่นรู้เองตอนมอนสเตอร์กิน (ข้อ A2)
+  await expect(page.locator('.sx-progress')).toHaveText('3/3 ชิ้น · จัดตรงสูตรเพื่อเจอชุดลับ');
+  await expect(page.locator('.sx-slot.is-yuck, .sx-yuck')).toHaveCount(0);
   await page.locator('#set-go').click();
   const medium = `set_medium|${egg}|${rice}|${skewer}`;
   expect(await count(page, medium)).toBe(1);
@@ -566,8 +582,9 @@ test('arranges sets on woven trays, finds a secret set, places a medium set on t
   await page.locator('#lock-open').click();
   await page.locator('[data-app="recipes"]').click();
   await page.locator('[data-book-tab="set"]').click();
-  await expect(page.locator('.rb-sets-count')).toContainText('1/15');
-  await expect(page.locator('.rb-set[data-combo="rice_set"]')).toHaveClass(/is-found/);
+  // แสดงเฉพาะชุดที่เจอแล้ว ไม่บอกจำนวนทั้งหมด ไม่มีแถว ? ? ? (ข้อ A7)
+  await expect(page.locator('.rb-sets-count')).toHaveCount(0);
+  await expect(page.locator('.rb-set')).toHaveCount(1);
   await expect(page.locator('.rb-set[data-combo="rice_set"] .rb-set__name')).toHaveText('ชุดข้าว');
-  await expect(page.locator('.rb-set[data-combo="two_shrimp"] .rb-set__name')).toHaveText('? ? ?');
+  await expect(page.locator('.rb-sets-note')).not.toContainText('ตรงสูตรลับ');
 });

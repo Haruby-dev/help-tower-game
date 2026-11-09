@@ -56,23 +56,22 @@ test('gate map: all ten floors drawn open, floor 10 shows its owner on the paper
   await expect(owner).toHaveAttribute('data-art', 'monster_tangkrading_sweet_stand');
 });
 
-test('pets book: a not-met pet is a silhouette on the paper with a green "?", a pet with no art is just a big "?"', async ({ page }) => {
+test('pets and mail books show only what was found: nothing yet means one gentle line, no slots, gate numbers or zones', async ({ page }) => {
   await open(page);
+  // ข้อ A8: ยังไม่เจอสัตว์ตัวไหน ไม่มีการ์ด 15 ช่อง ไม่มี "เกต N"
   await openApp(page, 'pets');
-  const book = page.locator('#pets-book');
-  await book.locator('[data-pet="pangpok"]').click();
-  await expect(book.locator('.pt-scene')).toHaveCount(0);
-  const sil = book.locator('.pt-sil');
-  await expect(sil).toHaveAttribute('src', /sil_pangpok/);
-  // ขยาย 2 เท่า (28×31 → 56×62) กลางที่ x 148 เท้าที่ y 120
-  expect(await sil.evaluate((node) => [(node as HTMLElement).offsetLeft + (node as HTMLElement).offsetWidth / 2, (node as HTMLElement).offsetTop + (node as HTMLElement).offsetHeight, (node as HTMLElement).offsetWidth])).toEqual([148, 120, 56]);
-  await expect(book.locator('.pt-q-sil')).toHaveCSS('color', 'rgb(122, 174, 150)');
-  await book.locator('[data-pet="mumu"]').click();
-  expect(await book.locator('.pt-sil').evaluate((node) => (node as HTMLElement).offsetWidth)).toBe(56);
-  await book.locator('[data-pet="pokpaek"]').click();
-  await expect(book.locator('.pt-sil')).toHaveCount(0);
-  await expect(book.locator('.pt-q-big')).toHaveText('?');
-  await expect(book.locator('.pt-q-big')).toHaveCSS('color', 'rgb(122, 174, 150)');
+  const pets = page.locator('#pets-book');
+  await expect(pets.locator('.pt-tc')).toHaveText('ยังไม่มีเพื่อนตัวไหนมาอยู่ด้วยเลย');
+  await expect(pets.locator('[data-pet]')).toHaveCount(0);
+  await expect(pets).not.toContainText('เกต');
+  // ปิดสมุดแล้วกลับมาหน้าหลักโทรศัพท์
+  await page.keyboard.press('Escape');
+  // ข้อ A9: ยังไม่เคยเก็บขวด ไม่มีเงาขวด 20 ใบ ไม่มี "โซน N" หรือ "คิดถึงบ้าน"
+  await page.locator('[data-app="mail"]').click();
+  const mail = page.locator('#mail-book');
+  await expect(mail.locator('.ml-tc')).toHaveText('ยังไม่เคยเก็บขวดจดหมายเลย');
+  await expect(mail.locator('[data-letter]')).toHaveCount(0);
+  await expect(mail).not.toContainText('โซน');
 });
 
 test('album: a monster that came but is not 100% yet shows its big silhouette photo', async ({ page }) => {

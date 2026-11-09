@@ -48,8 +48,16 @@ export function createMailBook(uiRoot: HTMLElement): void {
 
   function render(): void {
     if (!gameState.started) return;
-    const caught = 0;
-    const cards = data.letters.map((letter, index) => {
+    // แสดงเฉพาะขวดที่เก็บได้แล้ว ไม่บอกว่ามีกี่ฉบับหรือตกได้จากโซนไหน (แก้จากการเล่นจริง 9 พ.ย. 2026 ข้อ A9)
+    // ระบบตกขวดจดหมายยังไม่มา ตอนนี้จึงยังไม่มีฉบับไหน หน้าซ้ายมีแค่ชื่อสมุดกับประโยคเดียว
+    const found = data.letters.filter((letter) => stateOf(letter) === 'caught');
+    if (found.length === 0) {
+      shell.left.replaceChildren(element('div', 'ml-tt', t('mail.title')), element('div', 'ml-tc', t('mail.none_yet')));
+      shell.right.replaceChildren();
+      return;
+    }
+    const caught = found.length;
+    const cards = found.map((letter, index) => {
       const state = stateOf(letter);
       const card = at(element('button', `ml-cd is-${state}${letter.number === picked ? ' is-on' : ''}`), CARD_X + (index % PER_ROW) * CARD_STEP, CARD_Y + Math.floor(index / PER_ROW) * CARD_STEP);
       card.type = 'button';
@@ -66,11 +74,11 @@ export function createMailBook(uiRoot: HTMLElement): void {
     });
     shell.left.replaceChildren(
       element('div', 'ml-tt', t('mail.title')),
-      element('div', 'ml-tc', `${t('mail.bottles')} · ${t('mail.caught')} ${caught}/${data.letters.length} ${t('mail.unit')}`),
+      element('div', 'ml-tc', `${t('mail.bottles')} · ${t('mail.caught')} ${caught} ${t('mail.unit')}`),
       ...cards,
     );
 
-    const letter = data.letters.find((entry) => entry.number === picked)!;
+    const letter = found.find((entry) => entry.number === picked) ?? found[0]!;
     const state = stateOf(letter);
     if (state === 'locked') {
       shell.right.replaceChildren(

@@ -22,7 +22,7 @@ import { nightAlpha } from './BaseScene';
 import { popPill, sparkle } from './farmEffects';
 import { type MonsterArt } from './monsterArt';
 import { softEllipseTexture } from './sceneArt';
-import { itemName } from '../ui/inventory';
+import { bagArtId, itemName } from '../ui/inventory';
 
 /**
  * ฉากในเกต (ทดลองเกต 3 · 9 พ.ย. 2026) ใช้ได้กับทุกบานที่มีแผนที่ใน src/data/gate_maps/
@@ -48,19 +48,28 @@ const CHEST_BODY = { width: 30, height: 12 };
 /** แตะของในฉากได้ภายในรัศมีนี้จากจุดกลางภาพ */
 const TAP_RADIUS = 30;
 /** ญาติมอนสเตอร์เดินไปจุดใหม่ห่างไม่ต่ำกว่า/ไม่เกินเท่านี้ ตรวจทางทุก ๆ PATH_STEP_PX */
+/** ญาติมอนสเตอร์ตัวกว้างราว 24 พิกเซล จุดที่จะไปต้องว่างทั้งซ้ายขวาและเหนือเท้า ไม่ให้ตัวล้นเข้าพุ่มไม้ (ข้อ B3) · ห่างกันอย่างน้อยเท่านี้ ไม่ยืนซ้อนกัน */
+const KIN_HALF_WIDTH_PX = 12;
+const KIN_HEAD_CLEAR_PX = 12;
+const KIN_SPACING_PX = 30;
 const WANDER_MIN_PX = 32;
 const WANDER_MAX_PX = 170;
 const WANDER_TRIES = 24;
-const PATH_STEP_PX = 8;
+const PATH_STEP_PX = 4;
 /** เกิดใต้ปากโพรงบ้าน ไล่ลงทีละนิดจนเจอช่องเดินได้ */
 const BURROW_STEP_PX = 6;
 const BURROW_GAP_PX = 6;
 const CLOUD = { width: 220, height: 130, color: '60, 78, 110', solidUntil: 0.35 };
+/** ฉากกล่องสีของเกตที่ภาพยังไม่มา (ผู้ใช้เลือก 9 พ.ย. 2026): พื้นหญ้า ช่องเดินไม่ได้สีเข้ม ทางออกสีดิน ป้ายชื่อเกต */
+const BOX_SCENE = { map: 'box', grass: 0x8fbf7a, blocked: 0x4f7a4a, edge: 0x3c2a22, exit: 0xd9b98a, labelPx: 10, labelTop: 20 } as const;
 
 interface Kin {
   monster: Monster;
   idleUntil: number;
+  /** จุดที่กำลังเดินไป (ตัวอื่นจะไม่เลือกจุดใกล้ ๆ นี้) */
+  target?: { x: number; y: number } | null;
 }
+type KinState = Kin;
 
 interface Target {
   kind: 'owner' | 'chest' | 'forage';
@@ -164,8 +173,9 @@ export class GateScene extends Phaser.Scene {
 
   /** ภาพของเกตนี้กับมอนสเตอร์เจ้าของชั้นโหลดตอนเข้าเกต (แผ่นรวม) โหลดแผ่นไม่ได้ใช้ไฟล์เดี่ยว */
   private async loadArt(): Promise<void> {
-    const ownerArt = monsterData[this.map.owner.monster]?.art;
-    const groups = [this.info.map!, ...(ownerArt ? [`monster_${this.map.owner.monster}`] : [])];
+    const ownerId = this.ownerId();
+    const ownerArt = monsterData[ownerId]?.art;
+    const groups = [...(this.isBoxScene() ? [] : [this.info.map!]), ...(ownerArt ? [`monster_${ownerId}`] : [])];
     const singles: string[] = [];
     for (const group of groups) {
       try {
@@ -194,8 +204,16 @@ export class GateScene extends Phaser.Scene {
   /** ภาพของป่าในฉากคือไอคอนของในกระเป๋า (ภาพเดียวกัน ขนาดจริง) */
   private forageArt(): string | null {
     const item = this.info.forage?.item;
-    if (!item?.startsWith('ing_')) return null;
-    return `ing_icon_${item.slice('ing_'.length)}`;
+    return item ? bagArtId(item) : null;
+  }
+
+  private isBoxScene(): boolean {
+    return this.info.map === BOX_SCENE.map;
+  }
+
+  /** มอนสเตอร์เจ้าของชั้นที่ยืนในฉาก (ฉากกล่องสีใช้แผนที่เดียวกันทุกบาน จึงบอกใน gates.json) */
+  private ownerId(): string {
+    return this.info.owner ?? this.map.owner.monster;
   }
 
   private px(point: readonly [number, number]): { x: number; y: number } {
@@ -212,8 +230,11 @@ export class GateScene extends Phaser.Scene {
   private build(): void {
     const name = this.info.map!;
     const { width, height } = this.worldSize;
-    this.add.image(0, 0, `${name}_bg`).setOrigin(0).setDepth(DEPTH.bg);
-    this.add.image(0, 0, `${name}_fg`).setOrigin(0).setDepth(DEPTH.fg);
+    if (this.isBoxScene()) this.drawBoxScene();
+    else {
+      this.add.image(0, 0, `${name}_bg`).setOrigin(0).setDepth(DEPTH.bg);
+      this.add.image(0, 0, `${name}_fg`).setOrigin(0).setDepth(DEPTH.fg);
+    }
     this.physics.world.setBounds(0, 0, width, height);
 
     // ช่องเดินไม่ได้ รวมช่องติดกันในแถวเดียวเป็นตัวชนชิ้นเดียว
@@ -225,7 +246,7 @@ export class GateScene extends Phaser.Scene {
         if (solid && start < 0) start = column;
         if (!solid && start >= 0) {
           const runWidth = (column - start) * this.tile;
-          obstacles.add(this.add.zone(start * this.tile + runWidth / 2, row * this.tile + this.tile / 2, runWidth, this.tile));
+          this.solidZone(obstacles, start * this.tile + runWidth / 2, row * this.tile + this.tile / 2, runWidth, this.tile);
           start = -1;
         }
       }
@@ -236,10 +257,11 @@ export class GateScene extends Phaser.Scene {
     // จุดเกิดคือเท้า ตัวชนอยู่เหนือเท้าครึ่งความสูงตัวชน
     this.player.moveTo({ x: spawn.x, y: spawn.y - (this.player.feetY - this.player.body.y) });
     this.player.onWalkFrame = (index) => this.footstep(index);
+    obstacles.refresh();
     this.physics.add.collider(this.player.body, obstacles);
 
     // มอนสเตอร์เจ้าของชั้น ยืนท่าหวานหันหน้าลง
-    const ownerId = this.map.owner.monster;
+    const ownerId = this.ownerId();
     const ownerArt = monsterData[ownerId]?.art;
     if (ownerArt) {
       const at = this.px(this.map.owner.pos);
@@ -289,8 +311,41 @@ export class GateScene extends Phaser.Scene {
     this.followPlayer();
   }
 
+  /** ฉากกล่องสี: วาดพื้นจากช่องในแผนที่ ไม่มีชั้นหน้า ภาพจริงมาแล้วเปลี่ยน map ใน gates.json เป็น gate<N> */
+  private drawBoxScene(): void {
+    const { width, height } = this.worldSize;
+    const ground = this.add.graphics().setDepth(DEPTH.bg);
+    ground.fillStyle(BOX_SCENE.grass, 1).fillRect(0, 0, width, height);
+    const [x0, y0, x1, y1] = this.map.exit_zone.map((value) => value * this.tile) as [number, number, number, number];
+    ground.fillStyle(BOX_SCENE.exit, 1).fillRect(x0, y0, x1 - x0, y1 - y0);
+    ground.fillStyle(BOX_SCENE.blocked, 1);
+    for (const [column, row] of this.map.blocked) ground.fillRect(column * this.tile, row * this.tile, this.tile, this.tile);
+    ground.lineStyle(1, BOX_SCENE.edge, 1).strokeRect(0.5, 0.5, width - 1, height - 1);
+    const label = `${t(`gate.${this.floor}.name` as TextKey)} · ${t('gate.box_note')}`;
+    this.add
+      .text(Math.round(width / 2), BOX_SCENE.labelTop, label, {
+        fontFamily: 'Mali',
+        fontSize: `${BOX_SCENE.labelPx}px`,
+        fontStyle: 'bold',
+        color: '#fff1ee',
+        stroke: '#3c2a22',
+        strokeThickness: 2,
+      })
+      .setOrigin(0.5)
+      .setDepth(DEPTH.fg);
+  }
+
   private addBody(group: Phaser.Physics.Arcade.StaticGroup, feet: { x: number; y: number }, size: { width: number; height: number }): Phaser.GameObjects.Zone {
-    const zone = this.add.zone(feet.x, feet.y - size.height / 2, size.width, size.height);
+    return this.solidZone(group, feet.x, feet.y - size.height / 2, size.width, size.height);
+  }
+
+  /** ตัวชนนิ่ง: ใส่ตัวชนให้ zone ขนาดเท่า zone ก่อนเข้ากลุ่ม แล้วรีเฟรช (ข้อ B1 ผู้เล่นเคยเดินทะลุบนมือถือ) */
+  private solidZone(group: Phaser.Physics.Arcade.StaticGroup, x: number, y: number, width: number, height: number): Phaser.GameObjects.Zone {
+    const zone = this.add.zone(x, y, width, height);
+    this.physics.add.existing(zone, true);
+    const body = zone.body as Phaser.Physics.Arcade.StaticBody;
+    body.setSize(width, height);
+    body.updateFromGameObject();
     group.add(zone);
     return zone;
   }
@@ -298,6 +353,7 @@ export class GateScene extends Phaser.Scene {
   /** ญาติมอนสเตอร์ (กระต่ายสามสี) เกิดใต้โพรงบ้านของตัวเอง เดินเล่นช้า ๆ ในเขตที่กำหนด ไม่คุย */
   private createKin(): void {
     const { kin } = this.map;
+    if (!kin) return;
     const base = monsterData[kin.monster]?.art;
     if (!base) return;
     const name = this.info.map!;
@@ -317,7 +373,11 @@ export class GateScene extends Phaser.Scene {
   private belowBurrow(burrow: { x: number; y: number }): { x: number; y: number } {
     let y = burrow.y;
     while (this.isBlocked(burrow.x, y) && y < this.worldSize.height) y += BURROW_STEP_PX;
-    return { x: Math.round(burrow.x), y: Math.round(y + BURROW_GAP_PX) };
+    y += BURROW_GAP_PX;
+    // หัวยังทับพุ่มไม้หน้าโพรงอยู่ ขยับลงอีกนิดจนทั้งตัวอยู่บนช่องเดินได้ (ข้อ B3)
+    const limit = y + this.tile;
+    while (!this.roomFor(burrow.x, y, PATH_STEP_PX / 2) && y < limit) y += 1;
+    return { x: Math.round(burrow.x), y: Math.round(y) };
   }
 
   private idleMs(): number {
@@ -325,22 +385,41 @@ export class GateScene extends Phaser.Scene {
     return low + this.rng.next() * (high - low);
   }
 
+  /** เท้าอยู่ตรงนี้แล้วตัวไม่ทับช่องเดินไม่ได้ (ว่างซ้าย ขวา และเหนือเท้า) */
+  private roomFor(x: number, y: number, pad = 0): boolean {
+    const side = KIN_HALF_WIDTH_PX + pad;
+    return !this.isBlocked(x, y) && !this.isBlocked(x - side, y) && !this.isBlocked(x + side, y) && !this.isBlocked(x, y - KIN_HEAD_CLEAR_PX - pad);
+  }
+
   private pathClear(from: { x: number; y: number }, to: { x: number; y: number }): boolean {
     const length = Math.hypot(to.x - from.x, to.y - from.y);
     const steps = Math.max(1, Math.ceil(length / PATH_STEP_PX));
+    const cramped = !this.roomFor(from.x, from.y, PATH_STEP_PX / 2);
     for (let step = 1; step <= steps; step += 1) {
       const share = step / steps;
-      if (this.isBlocked(from.x + (to.x - from.x) * share, from.y + (to.y - from.y) * share)) return false;
+      const x = from.x + (to.x - from.x) * share;
+      const y = from.y + (to.y - from.y) * share;
+      // จุดเริ่มเบียดพุ่มไม้อยู่แล้ว (เช่นหน้าโพรง) ช่วงแรกตรวจแค่จุดเท้า ไม่งั้นออกมาไม่ได้เลย
+      const leaving = cramped && share * length < KIN_HALF_WIDTH_PX * 2;
+      // เผื่ออีกครึ่งระยะตรวจ ทางเฉียงจะได้ไม่เฉือนมุมพุ่มไม้ระหว่างจุดที่ตรวจ
+      if (leaving ? this.isBlocked(x, y) : !this.roomFor(x, y, PATH_STEP_PX / 2)) return false;
     }
     return true;
   }
 
-  private wanderTarget(from: { x: number; y: number }): { x: number; y: number } | null {
-    const [x0, y0, x1, y1] = this.map.kin.wander_area.map((value) => value * this.tile) as [number, number, number, number];
+  /** จุดเดินเล่นใหม่: อยู่ในเขต wander_area ทั้งตัว ทางไปไม่ผ่านช่องเดินไม่ได้ และไม่ไปยืนทับญาติตัวอื่น (ข้อ B3) */
+  private wanderTarget(self: KinState): { x: number; y: number } | null {
+    const from = { x: self.monster.feetX, y: self.monster.feetY };
+    const [x0, y0, x1, y1] = this.map.kin!.wander_area.map((value) => value * this.tile) as [number, number, number, number];
+    const left = x0 + KIN_HALF_WIDTH_PX;
+    const right = x1 - KIN_HALF_WIDTH_PX;
+    const top = y0 + KIN_HEAD_CLEAR_PX;
+    const others = this.kin.filter((one) => one !== self).flatMap((one) => [{ x: one.monster.feetX, y: one.monster.feetY }, ...(one.target ? [one.target] : [])]);
     for (let attempt = 0; attempt < WANDER_TRIES; attempt += 1) {
-      const point = { x: Math.round(x0 + this.rng.next() * (x1 - x0)), y: Math.round(y0 + this.rng.next() * (y1 - y0)) };
+      const point = { x: Math.round(left + this.rng.next() * (right - left)), y: Math.round(top + this.rng.next() * (y1 - top)) };
       const distance = Math.hypot(point.x - from.x, point.y - from.y);
       if (distance < WANDER_MIN_PX || distance > WANDER_MAX_PX) continue;
+      if (others.some((other) => Math.hypot(other.x - point.x, other.y - point.y) < KIN_SPACING_PX)) continue;
       if (this.pathClear(from, point)) return point;
     }
     return null;
@@ -357,7 +436,8 @@ export class GateScene extends Phaser.Scene {
         one.idleUntil = 0;
         continue;
       }
-      const target = this.wanderTarget({ x: monster.feetX, y: monster.feetY });
+      const target = this.wanderTarget(one);
+      one.target = target;
       if (target) monster.walkTo([target]);
       // หยุดพักเมื่อถึงที่ (เวลาพักนับจากตอนออกเดิน + เวลาเดินโดยประมาณ)
       const walkMs = target ? (Math.hypot(target.x - monster.feetX, target.y - monster.feetY) / (balance.monsters.walkSpeed * monster.speedMultiplier)) * 1000 : 0;

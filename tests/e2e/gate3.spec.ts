@@ -49,8 +49,8 @@ async function open(page: Page): Promise<void> {
 }
 
 /** เข้าเกต 3 ทางตัวช่วยทดสอบ (ปุ่มทดสอบในตั้งค่าเอาออกแล้ว ประตูเกตในลานมาใน M8) แล้วรอจนภาพเกตโหลดเสร็จ */
-async function enterGate(page: Page): Promise<void> {
-  await page.evaluate(() => (window as unknown as { __enterGate: (floor: number) => void }).__enterGate(3));
+async function enterGate(page: Page, floor = 3): Promise<void> {
+  await page.evaluate((target) => (window as unknown as { __enterGate: (floor: number) => void }).__enterGate(target), floor);
   await page.waitForFunction(() => {
     const game = (window as unknown as Win).__game;
     const scene = game.scene.getScene('Gate') as GateView | undefined;
@@ -192,15 +192,14 @@ test('gate portal in the yard: the floor menu is the tower book, floor 3 opens a
   await expect(page.locator('.gt-fl[data-floor="3"]')).not.toHaveClass(/dk/);
   await expect(page.locator('#gate-book .gt-dot')).toHaveCount(1);
   await expect(page.locator('#gate-book .gt-row').filter({ hasText: 'รางวัลแรก' })).toContainText('???');
-  // ชั้นที่เปิดแล้วแต่ข้างในยังไม่พร้อม (ไม่มีแผนที่) ไม่มีปุ่มเข้า
+  // ชั้นที่ภาพยังไม่มาก็เข้าได้ (ฉากกล่องสี ผู้ใช้เลือก 9 พ.ย. 2026)
   await page.evaluate(() => {
     const state = (window as unknown as { __state: TestState & { world: GateWorld & { monsters: { affection: Record<string, unknown> } } } }).__state;
     const monsters = state.world.monsters;
     state.setWorld({ ...state.world, monsters: { ...monsters, affection: { ...monsters.affection, puinun: { points: 9999, signature: true } } } });
   });
   await page.locator('.gt-fl[data-floor="1"]').click();
-  await expect(page.locator('#gate-enter')).toHaveCount(0);
-  await expect(page.locator('#gate-book .gt-note')).toContainText('ข้างในยังไม่พร้อม');
+  await expect(page.locator('#gate-enter')).toHaveCount(1);
   await page.locator('.gt-fl[data-floor="3"]').click();
   await page.locator('#gate-enter').click();
   await expect(book).toBeHidden();
@@ -240,6 +239,103 @@ test('gate portal in the yard: the floor menu is the tower book, floor 3 opens a
   await expect(page.locator('#gate-enter')).toHaveCount(0);
 });
 
+test('gate 3 collision: the player stops at Mookmik, the reward chest and the top hedge, and can always walk back, also after going out and in again (fix B1)', async ({ page }) => {
+  await open(page);
+  // เข้าแล้วออกหนึ่งรอบก่อน ฉากเกตครั้งที่สองต้องชนได้เหมือนครั้งแรก
+  await enterGate(page);
+  await standAt(page, 13.9, 12.7);
+  await page.keyboard.down('s');
+  await page.waitForFunction(() => (window as unknown as Win).__game.scene.isActive('Base'), undefined, { timeout: 15_000 });
+  await page.keyboard.up('s');
+  await page.waitForTimeout(500);
+  await enterGate(page);
+  const feet = (): Promise<{ x: number; y: number }> => gate(page, (scene) => ({ x: scene.player.feetX, y: scene.player.feetY }));
+  const walk = async (key: string, ms: number): Promise<void> => {
+    await page.keyboard.down(key);
+    await page.waitForTimeout(ms);
+    await page.keyboard.up(key);
+    await page.waitForTimeout(100);
+  };
+  const map = await page.evaluate(() => {
+    const scene = (window as unknown as Win).__game.scene.getScene('Gate') as unknown as { map: { owner: { pos: [number, number] }; reward_chest: { pos: [number, number] } } };
+    return { owner: scene.map.owner.pos, chest: scene.map.reward_chest.pos };
+  });
+
+  // เดินขึ้นหามุกมิกจากข้างล่าง: หยุดก่อนถึงตัว ไม่ทะลุขึ้นไป
+  await standAt(page, map.owner[0], map.owner[1] + 1.2);
+  await walk('w', 1200);
+  expect((await feet()).y).toBeGreaterThan(map.owner[1] * TILE);
+  await walk('s', 500);
+  expect((await feet()).y).toBeGreaterThan(map.owner[1] * TILE + 8);
+
+  // หีบรางวัลก็ชนเหมือนกัน
+  await standAt(page, map.chest[0], map.chest[1] + 1.2);
+  await walk('w', 1200);
+  expect((await feet()).y).toBeGreaterThan(map.chest[1] * TILE);
+
+  // พุ่มไม้ขอบบน (แถว 0–1 เดินไม่ได้): เดินขึ้นจนสุดแล้วหยุดใต้แถว 1 และเดินกลับลงได้เสมอ
+  const topHedge = async (): Promise<void> => {
+    await standAt(page, 9, 3.5);
+    await walk('w', 2500);
+    const top = await feet();
+    expect(top.y).toBeGreaterThanOrEqual(2 * TILE);
+    await walk('s', 800);
+    expect((await feet()).y).toBeGreaterThan(top.y + 8);
+  };
+  await topHedge();
+
+  // หลังเปิดหีบ คุยกับมุกมิก เก็บของป่า และกินของ ก็ยังชนได้เหมือนเดิม (ตามที่ผู้เล่นเจอในเกมจริง)
+  const act = page.locator('#action-button');
+  await standAt(page, 15.0, 4.1);
+  await act.click();
+  await expect.poll(async () => (await world(page)).gates.chests).toEqual([3]);
+  await standAt(page, 14.3, 4.75);
+  await act.click();
+  await standAt(page, 5.44, 4.5);
+  await act.click();
+  await page.waitForTimeout(500);
+  await topHedge();
+  await standAt(page, map.owner[0], map.owner[1] + 1.2);
+  await walk('w', 1200);
+  expect((await feet()).y).toBeGreaterThan(map.owner[1] * TILE);
+  // หีบเปิดแล้วหายไป ตรงนั้นเดินผ่านได้
+  await standAt(page, map.chest[0], map.chest[1] + 1.2);
+  await walk('w', 600);
+  expect((await feet()).y).toBeLessThan((map.chest[1] + 1.2) * TILE - 8);
+});
+
+test('gate 3 rabbits stay inside their wander area with their whole body off the hedges, and do not stand on each other (fix B3)', async ({ page }) => {
+  await open(page);
+  await enterGate(page);
+  // เร่งให้เดินบ่อย: พักสั้น
+  await page.evaluate(() => {
+    const scene = (window as unknown as Win).__game.scene.getScene('Gate') as unknown as { info: { kinIdleMs: [number, number] } };
+    scene.info.kinIdleMs = [100, 200];
+  });
+  const area = await page.evaluate(() => ((window as unknown as Win).__game.scene.getScene('Gate') as unknown as { map: { kin: { wander_area: number[] } } }).map.kin.wander_area);
+  const spawn = await gate(page, (scene) => scene.kin.map((one) => ({ x: one.monster.feetX, y: one.monster.feetY })));
+  const out = spawn.map(() => false);
+  for (let sample = 0; sample < 30; sample += 1) {
+    await page.waitForTimeout(400);
+    const kin = await gate(page, (scene) => scene.kin.map((one) => ({ x: one.monster.feetX, y: one.monster.feetY, sides: [scene.isBlocked(one.monster.feetX - 12, one.monster.feetY), scene.isBlocked(one.monster.feetX + 12, one.monster.feetY), scene.isBlocked(one.monster.feetX, one.monster.feetY - 12)] })));
+    for (const [index, one] of kin.entries()) {
+      // หน้าโพรงติดพุ่มไม้ ตรวจหลังตัวนั้นเดินออกมาไกลกว่า 24 พิกเซลแล้ว (ออกแล้วต้องไม่กลับไปทับพุ่มไม้อีก)
+      out[index] ||= Math.hypot(one.x - spawn[index]!.x, one.y - spawn[index]!.y) > 24;
+      if (out[index]) {
+        expect(one.sides, JSON.stringify({ index, sample, x: one.x, y: one.y, spawn: spawn[index] })).toEqual([false, false, false]);
+        expect(one.x).toBeGreaterThanOrEqual(area[0]! * TILE - 2);
+        expect(one.x).toBeLessThanOrEqual(area[2]! * TILE + 2);
+        expect(one.y).toBeLessThanOrEqual(area[3]! * TILE + 2);
+      }
+    }
+  }
+  // จุดที่แต่ละตัวยืนหรือกำลังเดินไปห่างกันพอ ไม่ซ้อนกัน
+  const spots = await gate(page, (scene) => (scene as unknown as { kin: { target?: { x: number; y: number } | null; monster: { feetX: number; feetY: number } }[] }).kin.map((one) => one.target ?? { x: one.monster.feetX, y: one.monster.feetY }));
+  for (let a = 0; a < spots.length; a += 1) {
+    for (let b = a + 1; b < spots.length; b += 1) expect(Math.hypot(spots[a]!.x - spots[b]!.x, spots[a]!.y - spots[b]!.y)).toBeGreaterThan(20);
+  }
+});
+
 test('gate 3: after 2 game hours the player says a short line and goes back to the yard', async ({ page }) => {
   await open(page);
   await enterGate(page);
@@ -252,4 +348,56 @@ test('gate 3: after 2 game hours the player says a short line and goes back to t
   // WebKit ของเทสต์บางรอบวาดภาพช้า เวลาในฉากเดินช้ากว่านาฬิกาจริง (เคยล้มรอบแรกที่ 10 วินาที) จึงรอนานขึ้น
   await page.waitForFunction(() => (window as unknown as Win).__game.scene.isActive('Base'), undefined, { timeout: 25_000 });
   expect(await page.evaluate(() => (window as unknown as Win).__game.scene.isActive('Gate'))).toBe(false);
+});
+
+test('settings test buttons on the second row can be reached and tapped, also inside a gate (fix B7)', async ({ page }) => {
+  await open(page);
+  await enterGate(page);
+  await page.locator('#settings-button').click();
+  for (const id of ['test-drying-tray', 'test-big-table']) {
+    // เลื่อนกรอบทดสอบเอง (การ์ดตั้งค่าเลื่อนไม่ได้) แล้วจุดกลางปุ่มต้องเป็นปุ่มนั้นจริง ไม่ใช่ฉากหลังมืด
+    const reach = await page.evaluate((buttonId) => {
+      const button = document.getElementById(buttonId)!;
+      const box = document.querySelector('.st-test')!;
+      box.scrollTop = button.offsetTop - box.clientHeight / 2;
+      const card = document.querySelector('.st-card')!;
+      const rect = button.getBoundingClientRect();
+      const hit = document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2);
+      return { cardScroll: card.scrollTop, self: hit === button || button.contains(hit) };
+    }, id);
+    expect(reach).toEqual({ cardScroll: 0, self: true });
+  }
+  await page.locator('#test-big-table').click();
+  await page.locator('#test-drying-tray').click();
+  const after = await page.evaluate(() => (window as unknown as { __state: { world: { crafting: { stations: { drying_tray: number } }; sets: { bigTable: { owned: boolean } } } } }).__state.world);
+  expect(after.crafting.stations.drying_tray).toBe(1);
+  expect(after.sets.bigTable.owned).toBe(true);
+});
+
+test('gates without art use the colour-box scene: the floor monster stands there, gate 2 gives bamboo, gate 5 gives its secret recipe, and the exit goes home', async ({ page }) => {
+  await open(page);
+  const act = page.locator('#action-button');
+  await enterGate(page, 2);
+  await shot(page, 'box_01_gate2');
+  const scene2 = await gate(page, (scene) => ({ owner: scene.owner?.sprite.texture.key, kin: scene.kin.length, chest: scene.chest === null, forage: scene.forage.map((one) => one !== null) }));
+  expect(scene2).toEqual({ owner: 'monster_popcorn_sweet_stand', kin: 0, chest: true, forage: [true, true, true, true] });
+  await standAt(page, 4, 8.5);
+  await expect(act).toHaveAttribute('aria-label', 'เก็บของป่า');
+  await act.click();
+  await page.waitForTimeout(450);
+  expect(await count(page, 'bamboo')).toBe(1);
+  // ทางออกด้านล่างกลับลานบ้าน
+  await standAt(page, 11, 11.4);
+  await page.keyboard.down('s');
+  await page.waitForFunction(() => (window as unknown as Win).__game.scene.isActive('Base'), undefined, { timeout: 10_000 });
+  await page.keyboard.up('s');
+
+  await enterGate(page, 5);
+  expect(await gate(page, (scene) => [scene.owner?.sprite.texture.key, scene.chest === null])).toEqual(['monster_tangkrading_sweet_stand', false]);
+  await standAt(page, 15.3, 4.6);
+  await expect(act).toHaveAttribute('aria-label', 'เปิดหีบ');
+  await act.click();
+  await page.waitForTimeout(450);
+  expect(await page.evaluate(() => (window as unknown as { __state: { world: { recipes: { known: string[] } } } }).__state.world.recipes.known.includes('honey_pancake'))).toBe(true);
+  expect((await world(page)).gates.chests).toEqual([5]);
 });

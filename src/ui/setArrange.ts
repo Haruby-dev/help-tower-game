@@ -4,7 +4,7 @@ import { gameState } from '../core/state';
 import type { TraySize } from '../data/schema';
 import { parseDish, recipes } from '../systems/cooking';
 import { countOf } from '../systems/farm';
-import { TRAY_SIZES, comboOf, parseSet, isYuckPiece, makeSet, pieceKind, setCandidates, setTable, type PieceKind } from '../systems/sets';
+import { TRAY_SIZES, comboOf, parseSet, makeSet, pieceKind, setCandidates, setTable, type PieceKind } from '../systems/sets';
 import { itemName, setImage } from './inventory';
 import { sizedArt } from './pixelArt';
 
@@ -108,18 +108,16 @@ export function createSetArranger(grid: HTMLElement, hint: HTMLElement, scene: H
     trayArt.style.left = `calc(50% - ${(trayWidth * TRAY_SCALE * 3) / 2}px)`;
     const full = pieces.length === tray.pieces;
     const combo = full ? comboOf(size, pieces) : null;
-    const yuck = full && !combo && pieces.some(isYuckPiece);
+    // ไม่เตือนหน้าจะอ้วกตอนจัด ผู้เล่นรู้เองตอนมอนสเตอร์กินชุดนั้น (แก้จากการเล่นจริง 9 พ.ย. 2026 ข้อ A2)
     const slots = tray.ui.map(([dx, dy], index) => {
       const dish = pieces[index];
-      const yuckDish = yuck && dish !== undefined && isYuckPiece(dish);
-      const slot = element('button', `sx-slot${dish ? ' is-filled' : ''}${combo ? ' is-combo' : ''}${yuckDish ? ' is-yuck' : ''}`);
+      const slot = element('button', `sx-slot${dish ? ' is-filled' : ''}${combo ? ' is-combo' : ''}`);
       slot.type = 'button';
       slot.dataset.slot = String(index);
       slot.style.left = `calc(50% + ${dx}px - 66px)`;
       slot.style.top = `${TRAY_CENTER_Y + dy - 66}px`;
       if (dish) {
         slot.append(dishArt(dish, 'sx-slot__art'));
-        if (yuckDish && registry.emote_yuck?.type === 'local') slot.append(sizedArt('emote_yuck', 'sx-yuck', '--px2'));
         slot.setAttribute('aria-label', itemName(dish));
         slot.addEventListener('click', () => {
           pieces = pieces.filter((_, at) => at !== index);
@@ -154,7 +152,7 @@ export function createSetArranger(grid: HTMLElement, hint: HTMLElement, scene: H
       scene.append(line);
       return;
     }
-    const line = element('small', `sx-progress${yuck ? ' is-yuck' : ''}`, yuck ? t('set.yuck_warn') : `${pieces.length}/${tray.pieces} ${t('set.progress')}`);
+    const line = element('small', 'sx-progress', `${pieces.length}/${tray.pieces} ${t('set.progress')}`);
     line.style.top = `${TRAY_CENTER_Y + traySize / 2 + 34}px`;
     line.id = 'set-progress';
     scene.append(line);

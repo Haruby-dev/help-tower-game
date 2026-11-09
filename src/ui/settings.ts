@@ -448,6 +448,8 @@ function createSettingsCard(card: HTMLElement): HTMLElement[] {
   const test = document.createElement('div');
   test.className = 'st-test';
   test.append(Object.assign(document.createElement('div'), { className: 'st-th', textContent: t('settings.test_box') }));
+  // ของทดสอบที่ไม่ใช่ปุ่ม: เหยื่อข้าวโพดกับผักกาดเมฆในถุงเริ่มเกม (แก้จากการเล่นจริง 9 พ.ย. 2026)
+  test.append(Object.assign(document.createElement('p'), { className: 'st-tnote', id: 'test-starter-baits', textContent: t('settings.test_starter_baits') }));
   const spawn = createTestSpawnRow();
   spawn.hidden = true;
   test.append(

@@ -83,8 +83,8 @@ test('buys cat treats and seeds in the system shop, and the money is logged', as
   await expect(page.locator('.ps-row').first()).toHaveAttribute('data-offer', 'recipes:fruit_veg_salad');
   await expect(page.locator('.ps-row').nth(0).locator('.ps-today')).toHaveCount(0);
   await expect(page.locator('.ps-row').nth(1).locator('.ps-today')).toHaveCount(1);
-  await page.locator('[data-shop-tab="equipment"]').click();
-  await expect(page.locator('.ps-closed')).toBeVisible();
+  // หมวดที่ยังไม่มีของขายไม่ขึ้นป้าย (ข้อ B6)
+  await expect(page.locator('[data-shop-tab="equipment"]')).toHaveCount(0);
 });
 
 test('Geo Mart sells ingredients with a daily limit, today’s toppings and the big table (zone1 food update 7)', async ({ page }) => {
@@ -93,7 +93,8 @@ test('Geo Mart sells ingredients with a daily limit, today’s toppings and the 
   await page.locator('#phone-button').click();
   await page.locator('#lock-open').click();
   await page.locator('[data-app="shop"]').click();
-  await expect(page.locator('.ps-chip')).toHaveCount(8);
+  // อุปกรณ์ยังไม่มีของขาย ป้ายหมวดจึงซ่อน (ข้อ B6)
+  await expect(page.locator('.ps-chip')).toHaveCount(7);
   // วัตถุดิบ: เครื่องปรุง 10 ขายทุกวันอยู่บน นมวันละ 2 ขวด ราคาสองเท่าจนกว่าจะมีมูมู่เมฆ
   await page.locator('[data-shop-tab="ingredients"]').click();
   await expect(page.locator('.ps-row').first()).toHaveAttribute('data-offer', 'ingredients:ing_salt');

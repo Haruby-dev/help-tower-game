@@ -12,6 +12,8 @@ import { baits } from '../systems/fishing';
 import { reputationStars, setTable } from '../systems/sets';
 import { toppingTable } from '../systems/toppings';
 import { alreadyOwned, buyOffer, maxQuantity, offersFor, stockLeft, tasteOfTreat, type Offer, type ShopGroup } from '../systems/shop';
+import { hasMet } from '../systems/monsters';
+import th from '../i18n/th.json';
 import { itemImage, itemName } from './inventory';
 import { coinIcon, setMoney } from './money';
 import type { PhonePage } from './phone';
@@ -46,6 +48,17 @@ const ROWS_PER_PAGE = 4;
 const TIP_UNDER = 3;
 const TASTE_TAG = { like: 'shop.taste_like', love: 'shop.taste_love', special: 'shop.taste_special' } as const;
 const REVIEW_STARS: Record<Category, number> = { treats: 5, seeds: 4, fertilizer: 5, ingredients: 5, toppings: 5, recipes: 4, equipment: 5, farm: 5 };
+/** มอนสเตอร์ที่เขียนรีวิวแต่ละหมวด (ตรงกับชื่อใน `shop.review_by_*`) · null = จีโอรีวิวเอง */
+const REVIEWER: Record<Category, string | null> = {
+  treats: null,
+  seeds: 'mookmik',
+  fertilizer: 'yaibaimai',
+  ingredients: 'wingwing',
+  toppings: 'tangkrading',
+  recipes: 'toomtia',
+  equipment: null,
+  farm: 'puinun',
+};
 const PERCENT = 100;
 
 const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className: string, text?: string): HTMLElementTagNameMap[K] => {
@@ -68,7 +81,8 @@ const offerImage = (offer: Offer, scale: number, unit: string): HTMLElement => {
   // โต๊ะใหญ่ยังไม่มีไอคอนบนชั้น 32 พิกเซล แถวในรายการใช้กล่องสี หน้าสินค้าวาดโต๊ะจริงขนาดเท่าภาพ
   if (offer.kind === 'table') {
     if (unit === '--px' && registry[offer.target]?.type === 'local') return sizedArt(offer.target, '', '--px', 1);
-    return element('i', 'item-missing ps-missing', itemName(offer.target));
+    // ชื่อสินค้าอยู่ข้างกล่องแล้ว กล่องสีจึงไม่ต้องเขียนชื่อซ้ำ (ข้อ B5)
+    return element('i', 'item-missing ps-missing');
   }
   const shelf = (shopJson as ShopData).shelfArt[offer.target] ?? `shop_item_${offer.target}`;
   if (registry[shelf]?.type === 'local') return sizedArt(shelf, '', unit, scale);
@@ -120,11 +134,14 @@ function descriptionOf(offer: Offer): string {
   return crop ? `${t('shop.seed_note')} · ${t('shop.desc_grow')} ${crop.growDays} ${t('shop.desc_days')} · ${sold}` : sold;
 }
 
-/** โน้ตจีโอ สูตรบอกวัตถุดิบจริงจากไฟล์สูตร */
+/**
+ * โน้ตจีโอ · สูตรเป็นคำใบ้อ้อม ๆ ต่อสูตร (`shop.gnote_recipe.<id>`) ห้ามบอกวัตถุดิบหรือจำนวน
+ * สูตรที่ยังไม่มีคำใบ้ใช้ประโยคกลาง (แก้จากการเล่นจริง 9 พ.ย. 2026 ข้อ A1: ผู้เล่นต้องค้นพบเอง)
+ */
 function gioNoteOf(offer: Offer): string {
   if (offer.kind === 'recipe') {
-    const parts = Object.entries(recipes[offer.target]?.ingredients ?? {}).map(([item, count]) => `${itemName(item)} ${count}`);
-    return `${t('shop.gnote_recipe')} ${parts.join(' ')}`;
+    const hint = th[`shop.gnote_recipe.${offer.target}` as TextKey] as string | undefined;
+    return hint ?? t('shop.gnote_recipe_generic');
   }
   if (offer.group === 'treats') return t(`shop.gnote_${offer.target}` as TextKey);
   if (offer.group === 'fertilizer') return t(isRandom(offer) ? 'shop.gnote_fertilizer_random' : 'shop.gnote_fertilizer');
@@ -145,21 +162,11 @@ function fameText(points: number): string {
   return toNext === null ? `${head} · ${t('shop.reputation_max')}` : `${head} · ${t('shop.reputation_more')} ${formatMoney(toNext)} ${t('shop.reputation_to')} ★${stars + 1}`;
 }
 
-/** เกร็ดจีโอบนหน้าที่มีของน้อย: ปุ๋ยบอกโอกาสได้ดาวจากไฟล์สมดุล · สูตรบอกว่าสุ่มวันละกี่เมนู */
+/**
+ * เกร็ดจีโอบนหน้าที่มีของน้อย: สูตรบอกว่าสุ่มวันละกี่เมนู
+ * เกร็ดปุ๋ยที่บอกโอกาสได้ดาวเป็นเปอร์เซ็นต์เอาออกแล้ว (ข้อ A4: ห้ามบอกโอกาสเป็นตัวเลข)
+ */
 function tipOf(category: Category): { title: string; lines: string[] } | null {
-  if (category === 'fertilizer') {
-    const rolls = balance.stars.rolls as Record<string, number[]>;
-    const odds = (level: string): string =>
-      (rolls[level] ?? [])
-        .map((chance, index) => ({ chance, stars: index + 1 }))
-        .filter(({ chance, stars }) => chance > 0 && stars > 1)
-        .map(({ chance, stars }) => `${stars} ${t('shop.tip_stars')} ${Math.round(chance * PERCENT)}%`)
-        .join(' · ');
-    return {
-      title: t('shop.tip_fertilizer'),
-      lines: [t('shop.tip_fertilizer_none'), `${t('shop.tip_level')} 2 → ${odds('2')}`, `${t('shop.tip_level')} 3 → ${odds('3')}`],
-    };
-  }
   if (category === 'recipes') {
     return {
       title: `${t('shop.tip_recipes')} ${(shopJson as ShopData).randomRecipes} ${t('shop.tip_recipes_unit')}`,
@@ -214,7 +221,10 @@ export function createShopPage(): PhonePage {
     const price = element('div', 'ps-price');
     setMoney(price, offer.price);
     const review = element('div', 'ps-rev');
-    const head = element('div', 'h', `${t(`shop.review_by_${categoryOf(offer)}` as TextKey)} `);
+    // คนรีวิวที่เป็นมอนสเตอร์ยังไม่เคยเจอ ไม่บอกชื่อ (ข้อ A10) รีวิวของจีโอบอกชื่อเสมอ
+    const reviewer = REVIEWER[categoryOf(offer)];
+    const byline = reviewer && !hasMet(world, reviewer) ? t('shop.review_by_stranger') : t(`shop.review_by_${categoryOf(offer)}` as TextKey);
+    const head = element('div', 'h', `${byline} `);
     head.append(element('b', '', '★'.repeat(REVIEW_STARS[categoryOf(offer)]) + '☆'.repeat(5 - REVIEW_STARS[categoryOf(offer)])));
     review.append(head, element('p', '', `“${t(`shop.review_${categoryOf(offer)}` as TextKey)}”`));
     const note = element('div', 'ps-gnote', `${t('shop.gnote')} “${gioNoteOf(offer)}”`);
@@ -292,8 +302,16 @@ export function createShopPage(): PhonePage {
     setMoney(purse, world.wallet.coins);
     fame.hidden = category !== 'recipes';
     fame.textContent = fameText(world.sets.reputation);
+    // หมวดที่วันนี้ไม่มีของขายเลยไม่แสดงปุ่ม (ข้อ B6) ถ้าหมวดที่เลือกอยู่ว่าง ไปหมวดแรกที่มีของ
+    const forSale = offersFor(world).filter((offer) => !(offer.kind === 'recipe' && world.recipes.known.includes(offer.target)));
+    const stocked = CATEGORIES.filter((entry) => forSale.some((offer) => entry.groups.includes(offer.group)));
+    if (stocked.length > 0 && !stocked.some((entry) => entry.id === category)) {
+      category = stocked[0]!.id;
+      page = 0;
+      picked = null;
+    }
     chips.replaceChildren(
-      ...CATEGORIES.map((entry) => {
+      ...stocked.map((entry) => {
         const chip = element('button', `ps-chip${entry.id === category ? ' is-active' : ''}`);
         chip.type = 'button';
         chip.dataset.shopTab = entry.id;

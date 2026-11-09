@@ -1087,8 +1087,13 @@ export const gatesSchema = z.strictObject({
       z.strictObject({
         floor: z.number().int().positive(),
         scene: z.string().min(1),
-        /** เกตที่เดินเข้าไปได้แล้ว: ชื่อแผนที่ใน src/data/gate_maps/<map>_map.json และภาพ <map>_bg <map>_fg */
-        map: z.string().regex(/^gate\d+$/).optional(),
+        /**
+         * เกตที่เดินเข้าไปได้แล้ว: ชื่อแผนที่ใน src/data/gate_maps/<map>_map.json และภาพ <map>_bg <map>_fg
+         * `box` คือฉากกล่องสีชั่วคราวของเกตที่ภาพยังไม่มา (ผู้ใช้เลือก 9 พ.ย. 2026) ได้ภาพจริงแล้วเปลี่ยนเป็น gate<N>
+         */
+        map: z.string().regex(/^(gate\d+|box)$/).optional(),
+        /** มอนสเตอร์เจ้าของชั้นที่ยืนในฉาก ถ้าต่างจากในไฟล์แผนที่ (ฉากกล่องสีใช้แผนที่เดียวกันทุกบาน) */
+        owner: z.string().min(1).optional(),
         /** หีบรางวัลครั้งแรก ได้ครั้งเดียว: ของเข้ากระเป๋า หรือสูตรลับของเกต (สูตรที่ `source: gate`) */
         reward: z.union([itemCountSchema, z.strictObject({ recipe: z.string().min(1) })]).optional(),
         /** ของป่าต่อจุด เก็บได้วันละครั้งต่อจุด */
@@ -1120,13 +1125,16 @@ export const gateMapSchema = z.strictObject({
   owner: z.strictObject({ monster: z.string().min(1), pos: gateTileSchema }),
   reward_chest: z.strictObject({ pos: gateTileSchema, first_visit: z.string().optional() }),
   forage: z.strictObject({ item: z.string().min(1), respawn: z.literal('daily'), points: z.array(gateTileSchema).min(1) }),
-  kin: z.strictObject({
-    monster: z.string().min(1),
-    count: z.number().int().positive(),
-    variants: z.array(z.string().regex(/^[a-z]+$/)).min(1),
-    wander_area: tileRectSchema,
-    home_burrows: z.array(gateTileSchema).min(1),
-  }),
+  /** ญาติมอนสเตอร์เดินเล่น (ฉากกล่องสีไม่มี) */
+  kin: z
+    .strictObject({
+      monster: z.string().min(1),
+      count: z.number().int().positive(),
+      variants: z.array(z.string().regex(/^[a-z]+$/)).min(1),
+      wander_area: tileRectSchema,
+      home_burrows: z.array(gateTileSchema).min(1),
+    })
+    .optional(),
   burrows: z.array(gateTileSchema),
   ambient: z.array(z.string()).optional(),
   blocked: z.array(z.tuple([z.number().int().nonnegative(), z.number().int().nonnegative()])),

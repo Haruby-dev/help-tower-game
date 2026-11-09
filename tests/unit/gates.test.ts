@@ -6,23 +6,36 @@ import { SAVE_VERSION, parseSaveFile, toSaveFile } from '../../src/systems/save'
 import balance from '../../src/data/balance.json';
 
 describe('gate 3 test map', () => {
-  it('loads the painted map of gate 3 and only gate 3 can be entered for now', () => {
+  it('loads the painted map of gate 3, and every other gate enters the shared colour-box scene until its art comes', () => {
     const map = gateMapOf(3)!;
     expect(map.size).toEqual([28, 16]);
     expect(map.tile).toBe(32);
     expect(map.forage.points).toHaveLength(4);
-    expect(map.kin.variants).toEqual(['brown', 'grey', 'cream']);
-    expect(canEnterGate(3)).toBe(true);
-    for (const floor of [1, 2, 4, 5, 6, 7, 8, 9, 10]) expect(canEnterGate(floor)).toBe(false);
+    expect(map.kin?.variants).toEqual(['brown', 'grey', 'cream']);
+    for (let floor = 1; floor <= 10; floor += 1) expect(canEnterGate(floor)).toBe(true);
+    const box = gateMapOf(1)!;
+    expect(box.kin).toBeUndefined();
+    for (const floor of [1, 2, 4, 5, 6, 7, 8, 9, 10]) expect(gateMapOf(floor)).toBe(box);
+  });
+
+  it('gate 2 gives bamboo as its daily forage (the bamboo cup for drinks needs it)', () => {
+    const world = newWorld();
+    const picked = pickForage(world, 2, 0);
+    if (!picked || picked === 'full') throw new Error('no bamboo');
+    expect(countOf(picked.world.bag, 'bamboo')).toBe(1);
+    expect(forageLeftToday(picked.world, 2)).toBe(true);
+    expect(forageLeftToday(world, 1)).toBe(false);
   });
 
   it('spawns on a walkable cell just above the exit, and the forage, owner and chest stand on walkable cells', () => {
-    const map = gateMapOf(3)!;
-    const blocked = new Set(map.blocked.map(([x, y]) => `${x},${y}`));
-    const free = ([x, y]: readonly [number, number]): boolean => !blocked.has(`${Math.floor(x)},${Math.floor(y)}`);
-    expect(free(map.spawn)).toBe(true);
-    expect(map.spawn[1]).toBeLessThan(map.exit_zone[1]);
-    for (const point of [...map.forage.points, map.owner.pos, map.reward_chest.pos]) expect(free(point)).toBe(true);
+    for (const floor of [3, 1]) {
+      const map = gateMapOf(floor)!;
+      const blocked = new Set(map.blocked.map(([x, y]) => `${x},${y}`));
+      const free = ([x, y]: readonly [number, number]): boolean => !blocked.has(`${Math.floor(x)},${Math.floor(y)}`);
+      expect(free(map.spawn)).toBe(true);
+      expect(map.spawn[1]).toBeLessThan(map.exit_zone[1]);
+      for (const point of [...map.forage.points, map.owner.pos, map.reward_chest.pos]) expect(free(point)).toBe(true);
+    }
   });
 });
 
@@ -81,7 +94,7 @@ describe('gate forage', () => {
     // จุดทองในเมนูเลือกชั้น: วันนี้ยังเหลือของป่าไหม
     expect(forageLeftToday(world, 3)).toBe(false);
     expect(forageLeftToday(tomorrow, 3)).toBe(true);
-    expect(forageLeftToday(tomorrow, 2)).toBe(false);
+    expect(forageLeftToday(tomorrow, 4)).toBe(false);
   });
 
   it('ignores points that do not exist', () => {

@@ -5,7 +5,7 @@ import { gameState } from '../core/state';
 import balance from '../data/balance.json';
 import type { Recipe } from '../data/schema';
 import { parseDish, plainDish, recipes } from '../systems/cooking';
-import { decorateDishes, fitsType, toppingBlock, toppingStock, toppingTable, type ToppingBlock } from '../systems/toppings';
+import { decorateDishes, toppingBlock, toppingStock, toppingTable, type ToppingBlock } from '../systems/toppings';
 import { bagArtId, itemName } from './inventory';
 import { sizedArt } from './pixelArt';
 import { revealWhenReady } from './preload';
@@ -207,8 +207,9 @@ export function createDecorateWindow(uiRoot: HTMLElement): void {
     const info = toppingTable[topping]!;
     const { bag } = gameState.world;
     const block = recipe ? toppingBlock(bag, recipe, placed, topping, count) : 'notEnough';
-    const wrong = recipe ? !fitsType(recipe, topping) : false;
-    const card = element('button', `dk-card${block ? ' is-blocked' : ''}${wrong && !block ? ' is-wrong' : ''}`);
+    // ไม่บอกว่าท็อปปิ้งไหนผิดประเภททุกทาง (ไม่มีหน้าจะอ้วก สีชมพู ข้อความ หรือการเรียงเอาที่เข้ากันขึ้นก่อน) ผู้เล่นรู้เองตอนมอนสเตอร์กิน (ข้อ A3)
+    // การ์ดสีเทาเหลือแค่เรื่องจำนวน (ของไม่พอ หรือใส่ครบ 3 ชิ้นแล้ว)
+    const card = element('button', `dk-card${block ? ' is-blocked' : ''}`);
     card.type = 'button';
     card.dataset.topping = topping;
     card.disabled = block !== null;
@@ -223,25 +224,19 @@ export function createDecorateWindow(uiRoot: HTMLElement): void {
     if (block) {
       card.append(element('small', 'dk-card__block', t(BLOCK_TEXT[block])));
       card.dataset.block = block;
-    } else if (wrong) {
-      // ผิดประเภท ใส่ได้ แต่มอนสเตอร์ทำหน้าจะอ้วก (ไม่มีผลเสีย ไม่ได้โบนัส)
-      card.append(sizedArt('emote_yuck', 'dk-card__yuck', '--px2'));
     }
-    card.setAttribute('aria-label', `${name} ${block ? t(BLOCK_TEXT[block]) : wrong ? t('decorate.wrong_type') : ''}`.trim());
+    card.setAttribute('aria-label', `${name} ${block ? t(BLOCK_TEXT[block]) : ''}`.trim());
     card.addEventListener('click', () => addPiece(topping));
     return card;
   };
 
   const renderTray = (): void => {
     const { bag } = gameState.world;
-    // ใส่ได้และเข้ากับเมนูขึ้นก่อน แล้วที่ผิดประเภท ที่ใส่ไม่ได้อยู่ท้าย
-    const rank = (id: string): number => {
-      if (!recipe || toppingBlock(bag, recipe, placed, id, count)) return 2;
-      return fitsType(recipe, id) ? 0 : 1;
-    };
+    // เรียงตามลำดับในกระเป๋า ไม่เอาที่เข้ากับเมนูขึ้นก่อน (ข้อ A3)
+    const bagOrder = (id: string): number => bag.findIndex((stack) => stack.item === toppingTable[id]!.item);
     const owned = Object.keys(toppingTable)
       .filter((id) => toppingStock(bag, id) > 0)
-      .sort((a, b) => rank(a) - rank(b));
+      .sort((a, b) => bagOrder(a) - bagOrder(b));
     list.replaceChildren(...owned.map(toppingCard));
     if (owned.length === 0) list.append(element('p', 'dk-empty', t('decorate.none')));
   };

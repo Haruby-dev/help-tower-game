@@ -69,22 +69,43 @@ export function createRecipeBook(uiRoot: HTMLElement): void {
   leftPage.classList.add('book-page');
 
   let current = 'home_kaprao';
+  /** แท็บที่ยังไม่รู้สูตรสักสูตร เปิดเป็นหน้าว่างของหมวดนั้น */
+  let emptyTab: Category | null = null;
+
+  /** เปลี่ยนหน้าได้เฉพาะสูตรที่รู้แล้ว ไม่มีหน้า ? ? ? (แก้จากการเล่นจริง 9 พ.ย. 2026 ข้อ A6: ผู้เล่นต้องค้นพบเอง) */
+  const knownIn = (category: Category): string[] =>
+    ORDER.filter((candidate) => recipes[candidate]?.category === category && gameState.world.recipes.known.includes(candidate));
 
   const pageOf = (id: string): { list: string[]; index: number } => {
-    const list = ORDER.filter((candidate) => recipes[candidate]?.category === recipes[id]?.category);
+    const list = knownIn(recipes[id]!.category);
     return { list, index: list.indexOf(id) };
   };
 
+  /** แตะแท็บหมวด: สูตรแรกที่รู้ในหมวดนั้น หรือหน้าว่างถ้ายังไม่รู้เลย */
+  const openTab = (category: Category): void => {
+    const first = knownIn(category)[0];
+    if (first) {
+      emptyTab = null;
+      go(first);
+      return;
+    }
+    if (emptyTab !== category || current !== SETS_PAGE) uiSound('ui_page');
+    emptyTab = category;
+    render();
+  };
+
   const go = (id: string): void => {
-    if (id !== current) uiSound('ui_page');
+    if (id !== current || emptyTab) uiSound('ui_page');
     current = id;
+    emptyTab = null;
     render();
   };
 
   const turn = (step: number): void => {
-    if (current === SETS_PAGE) return;
+    if (current === SETS_PAGE || emptyTab) return;
     const { list, index } = pageOf(current);
-    go(list[(index + step + list.length) % list.length]!);
+    if (list.length === 0) return;
+    go(list[(Math.max(0, index) + step + list.length) % list.length]!);
   };
 
   function dish(recipe: Recipe, id: string, known: boolean, theme: Category): HTMLElement[] {
@@ -138,38 +159,37 @@ export function createRecipeBook(uiRoot: HTMLElement): void {
     for (const { id, label } of TABS) {
       const tab = bookTab(t(label), current !== SETS_PAGE && id === theme, themed('book_tab', theme), themed('book_tab_active', theme));
       tab.dataset.bookTab = id;
-      tab.addEventListener('click', () => go(ORDER.find((candidate) => recipes[candidate]?.category === id)!));
+      tab.addEventListener('click', () => openTab(id));
       tabs.append(tab);
     }
-    const sets = bookTab(t('book.sets_tab'), current === SETS_PAGE, themed('book_tab', theme), themed('book_tab_active', theme));
+    const sets = bookTab(t('book.sets_tab'), current === SETS_PAGE && !emptyTab, themed('book_tab', theme), themed('book_tab_active', theme));
     sets.dataset.bookTab = 'set';
     sets.addEventListener('click', () => go(SETS_PAGE));
     tabs.append(sets);
     return tabs;
   }
 
-  /** แถวชุดหนึ่งแถว: ถาดสานจิ๋ว ชื่อชุด (ยังไม่เคยจัดเป็น ? ? ?) ขนาดถาดกับจำนวนชิ้น */
+  /** แถวชุดที่เคยจัดแล้วหนึ่งแถว: ถาดสานจิ๋ว ชื่อชุด ขนาดถาดกับจำนวนชิ้น */
   function setRow(combo: string, y: number): HTMLElement {
     const info = setTable.combos[combo]!;
     const tray = setTable.trays[info.tray];
-    const found = gameState.world.sets.combos.includes(combo);
-    const row = at(element('div', `rb-set${found ? ' is-found' : ''}`), 22, y);
+    const row = at(element('div', 'rb-set is-found'), 22, y);
     row.dataset.combo = combo;
     const mini = `ing_mini_${tray.item}`;
     const hold = element('span', 'rb-set__hold');
     if (registry[mini]?.type === 'local') hold.append(sizedArt(mini, 'rb-set__tray'));
     row.append(hold);
     row.append(
-      element('b', 'rb-set__name', found ? t(`combo.${combo}.name` as TextKey) : '? ? ?'),
+      element('b', 'rb-set__name', t(`combo.${combo}.name` as TextKey)),
       element('small', 'rb-set__size', `${t(`set.tray_name.${info.tray}` as TextKey)} · ${tray.pieces}`),
     );
     return row;
   }
 
+  /** แสดงเฉพาะชุดที่เจอแล้ว ไม่บอกว่ามีทั้งหมดกี่ชุดหรือถาดขนาดไหน (ข้อ A7) ยังไม่เจอเลยมีประโยคเดียว */
   function renderSets(): void {
     const theme = SETS_THEME;
-    const combos = Object.keys(setTable.combos);
-    const found = combos.filter((combo) => gameState.world.sets.combos.includes(combo)).length;
+    const found = Object.keys(setTable.combos).filter((combo) => gameState.world.sets.combos.includes(combo));
     shell.setPieces(piecesFor(theme));
     leftPage.dataset.theme = theme;
     leftPage.dataset.recipe = SETS_PAGE;
@@ -178,22 +198,51 @@ export function createRecipeBook(uiRoot: HTMLElement): void {
       pageArt(themed('book_apron', theme), 259, 12, 'rb-apron', 'scaleX(-1)'),
       tabRow(theme),
       element('div', 'rb-dname book-title rb-sets-title', t('book.sets_title')),
-      at(element('div', 'rb-lab rb-sets-count', `${t('book.sets_count')} ${found}/${combos.length}`), 22, 72),
-      ...combos.slice(0, SETS_LEFT).map((combo, index) => setRow(combo, 90 + index * SET_ROW_PX)),
+      ...(found.length === 0 ? [at(element('div', 'rb-lab rb-sets-none', t('book.sets_none')), 22, 90)] : []),
+      ...found.slice(0, SETS_LEFT).map((combo, index) => setRow(combo, 90 + index * SET_ROW_PX)),
     );
     const note = bookNote('rb-note book-note rb-sets-note', t('book.sets_note'), book('book_tape'), 30, 168);
     shell.right.replaceChildren(
       pageArt(themed('book_corner_plant', theme), 5, 219, 'rb-plant'),
-      ...combos.slice(SETS_LEFT).map((combo, index) => setRow(combo, 16 + index * SET_ROW_PX)),
+      ...found.slice(SETS_LEFT).map((combo, index) => setRow(combo, 16 + index * SET_ROW_PX)),
       note,
     );
   }
 
+  /** แท็บที่ยังไม่รู้สูตรสักสูตร: แท็บกับประโยคสั้น ๆ ไม่มีหน้า ? ? ? */
+  function renderEmpty(theme: Category): void {
+    shell.setPieces(piecesFor(theme));
+    leftPage.dataset.theme = theme;
+    leftPage.dataset.recipe = `@empty-${theme}`;
+    shell.root.querySelector('.bk')!.setAttribute('data-recipe-theme', theme);
+    shell.left.replaceChildren(
+      pageArt(themed('book_apron', theme), 259, 12, 'rb-apron', 'scaleX(-1)'),
+      tabRow(theme),
+      at(element('div', 'rb-lab rb-empty', t('book.tab_empty')), 22, 90),
+      pageArt(themed('book_corner_plant', theme), 248, 219, 'rb-plant', 'scaleX(-1)'),
+    );
+    shell.right.replaceChildren(pageArt(themed('book_corner_plant', theme), 5, 219, 'rb-plant'));
+  }
+
   function render(): void {
     if (!gameState.started) return;
+    if (emptyTab) {
+      renderEmpty(emptyTab);
+      return;
+    }
     if (current === SETS_PAGE) {
       renderSets();
       return;
+    }
+    // สูตรที่ค้างไว้ไม่รู้แล้ว (เช่น เปลี่ยนเซฟ) ไปสูตรแรกที่รู้ของหมวดนั้น หรือหน้าว่าง
+    if (!gameState.world.recipes.known.includes(current)) {
+      const category = recipes[current]?.category ?? 'savory';
+      const first = knownIn(category)[0] ?? knownIn('savory')[0];
+      if (!first) {
+        renderEmpty(category);
+        return;
+      }
+      current = first;
     }
     const recipe = recipes[current]!;
     const theme = recipe.category;
@@ -247,17 +296,17 @@ export function createRecipeBook(uiRoot: HTMLElement): void {
       row.append(bullet, element('p', known ? 'book-step' : 'book-step is-hidden', known ? text : '· · ·'));
       stepList.append(row);
     });
+    // เลขสูตรนับเฉพาะสูตรที่รู้แล้วในหมวดนี้ ไม่ให้เลขข้ามบอกว่ามีสูตรที่ยังไม่เจอ
     const parts: HTMLElement[] = [
       pageArt(themed('book_corner_plant', theme), 5, 219, 'rb-plant'),
-      at(element('div', 'rb-no book-number', `No.${String(ORDER.indexOf(current) + 1).padStart(2, '0')}`), 22, 16),
+      at(element('div', 'rb-no book-number', `No.${String(pageOf(current).index + 1).padStart(2, '0')}`), 22, 16),
       at(element('div', 'rb-lab', t('book.steps')), 22, 36),
       stepList,
       divider(150, 'rb-div--b'),
     ];
     const noteKey = known ? NOTES[current] : undefined;
-    if (noteKey || !known) {
-      const text = noteKey ? t(noteKey) : `${t('book.hint_kinds')} ${Object.keys(recipe.ingredients).length} ${t('book.hint_kinds_end')}`;
-      const note = bookNote(`rb-note book-note${known ? '' : ' book-note--hint'}`, text, book('book_tape'), 30, 168);
+    if (noteKey) {
+      const note = bookNote('rb-note book-note', t(noteKey), book('book_tape'), 30, 168);
       note.dataset.bookNote = '';
       parts.push(note);
     }
