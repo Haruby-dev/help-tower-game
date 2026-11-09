@@ -52,7 +52,7 @@
       {
         "item": "ing_fish_sauce",
         "price": 10
-      },
+      }, { "item": "ing_pork", "price": 150 },
       {
         "item": "ing_milk",
         "price": 120,

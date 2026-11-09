@@ -25,6 +25,10 @@ describe('Geo Mart ingredients (zone1 food update 7.1)', () => {
     }
   });
 
+  it('sells minced pork every day at 150 with no limit, so the home kaprao (floor 6 heart menu) can always be cooked (user chose 9 Nov 2026)', () => {
+    expect(offer(newWorld(), 'ingredients:ing_pork')).toMatchObject({ tab: 'daily', price: 150, stock: null });
+  });
+
   it('sells milk 2, butter 1 and honey 1 a day at double price before the matching pet', () => {
     const world = newWorld();
     expect(offer(world, 'ingredients:ing_milk')).toMatchObject({ tab: 'daily', price: 240, stock: 2, pricierUntil: 'mumu' });
