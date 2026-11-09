@@ -149,6 +149,8 @@ if (params.has('test')) {
   (window as unknown as { __mortarAuto: (judge: 'perfect' | 'good' | 'miss' | null) => void }).__mortarAuto = (judge) => {
     mortarTestHooks.auto = judge;
   };
+  // ปุ่มทดสอบเข้าเกต 3 เอาออกแล้ว (ผู้ใช้ดูภาพเกตแล้ว 9 พ.ย. 2026) ฉากเกตยังอยู่รอประตูเกตในลานกับเมนูเลือกชั้นใน M8 เทสต์จึงเข้าทางนี้
+  (window as unknown as { __enterGate: (floor: number) => void }).__enterGate = (floor) => eventBus.emit('gate-enter', floor);
 }
 // การทดสอบที่ไม่ได้สนใจเซฟข้ามหน้าเลือกช่อง
 if (params.has('test') && !params.has('saves')) gameState.startGame(1, newWorld());

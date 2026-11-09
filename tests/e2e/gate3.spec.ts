@@ -48,10 +48,9 @@ async function open(page: Page): Promise<void> {
   await page.waitForFunction(() => (window as unknown as Partial<Win>).__game?.scene.isActive('Base'));
 }
 
-/** ปุ่มทดสอบในตั้งค่า "เข้าเกต 3 (ทดสอบ)" แล้วรอจนภาพเกตโหลดเสร็จ */
+/** เข้าเกต 3 ทางตัวช่วยทดสอบ (ปุ่มทดสอบในตั้งค่าเอาออกแล้ว ประตูเกตในลานมาใน M8) แล้วรอจนภาพเกตโหลดเสร็จ */
 async function enterGate(page: Page): Promise<void> {
-  await page.locator('#settings-button').click();
-  await page.locator('#test-gate3').click();
+  await page.evaluate(() => (window as unknown as { __enterGate: (floor: number) => void }).__enterGate(3));
   await page.waitForFunction(() => {
     const game = (window as unknown as Win).__game;
     const scene = game.scene.getScene('Gate') as GateView | undefined;
@@ -71,7 +70,7 @@ const standAt = (page: Page, x: number, y: number): Promise<void> =>
     [x * TILE, y * TILE],
   );
 
-test('gate 3 test: enter from settings, layers, chest once, forage once a day, talk to Mookmik, rabbits wander, walk out to the yard', async ({ page }) => {
+test('gate 3: enter, layers, chest once, forage once a day, talk to Mookmik, rabbits wander, walk out to the yard', async ({ page }) => {
   await open(page);
   await enterGate(page);
   await shot(page, '01_enter');
@@ -167,7 +166,7 @@ test('gate 3 test: enter from settings, layers, chest once, forage once a day, t
   expect(await gate(page, (scene) => [scene.chest === null, scene.forage.map((one) => one !== null)])).toEqual([true, [true, true, true, true]]);
 });
 
-test('gate 3 test: after 2 game hours the player says a short line and goes back to the yard', async ({ page }) => {
+test('gate 3: after 2 game hours the player says a short line and goes back to the yard', async ({ page }) => {
   await open(page);
   await enterGate(page);
   await page.evaluate(() => {
