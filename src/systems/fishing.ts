@@ -36,9 +36,13 @@ const rankIndex = (rank: string): number => RANKS.indexOf(rank);
 const rodAllows = (owned: string[], fish: Fish): boolean =>
   owned.some((rod) => rods[rod] !== undefined && rankIndex(rods[rod].maxRank) >= rankIndex(fish.rank));
 
-/** คันเบ็ดที่ดีที่สุดเป็นตัวกำหนด ฝนตกหรือกลางคืนหีบออกง่ายขึ้น */
-export function chestChance(world: World, hour: number): number {
-  const base = Math.max(0, ...world.fishing.rods.map((rod) => rods[rod]?.chestChance ?? 0));
+/**
+ * คันเบ็ดที่ดีที่สุดเป็นตัวกำหนด ฝนตกหรือกลางคืนหีบออกง่ายขึ้น
+ * เหยื่อเรียกหีบใช้โอกาสของเหยื่อแทนคันเบ็ด (30% ฝนหรือกลางคืน 32%) ไม่ได้หีบก็ได้ปลาธรรมดา
+ */
+export function chestChance(world: World, hour: number, bait?: string): number {
+  const lure = bait === undefined ? undefined : baits[bait]?.chestChance;
+  const base = lure ?? Math.max(0, ...world.fishing.rods.map((rod) => rods[rod]?.chestChance ?? 0));
   return base + (world.weather === 'rain' || isNight(hour) ? rules.chestBonus : 0);
 }
 
@@ -66,7 +70,7 @@ export const autoHooks = (rng: Rng): boolean => rng.next() < rules.autoCatchChan
 
 /** หีบมาแทนปลาในครั้งนั้น */
 export function rollCatch(world: World, bait: string, hour: number, rng: Rng): Catch | null {
-  if (rng.next() < chestChance(world, hour)) return { kind: 'chest', tier: rollChestTier(rng) };
+  if (rng.next() < chestChance(world, hour, bait)) return { kind: 'chest', tier: rollChestTier(rng) };
   const ids = biteCandidates(world, bait, hour);
   return ids.length > 0 ? { kind: 'fish', fish: pickWeighted(ids, rng) } : null;
 }

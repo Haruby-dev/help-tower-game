@@ -31,6 +31,7 @@ describe('clock', () => {
       // งานประดิษฐ์: ยังไม่เคยเขย่าต้นกล้วย มีลอบเก่าที่ท่าน้ำ 1 อัน (งานอาหารโซน 1 ขั้นที่ 4)
       crafting: { bananaDay: 0, noticed: [], stations: { drying_tray: 0, trap: 1 }, drying: [], traps: [], mortar: false },
       sets: { reputation: 0, combos: [], bigTable: { owned: false, sets: [null, null, null] } },
+      shop: { day: 0, bought: {} },
       placed: {},
       tray: { level: 0, plates: [null, null, null] },
       monsters: { affection: {}, plannedDay: 0, arrivals: [], twins: { revealed: false, revealDay: 0, quizWon: false }, tasted: {} },

@@ -69,6 +69,7 @@ export function newWorld(): World {
     land: { owned: 0 },
     crafting: newCrafting(),
     sets: { reputation: 0, combos: [], bigTable: { owned: false, sets: setsJson.bigTable.slots.map(() => null) } },
+    shop: { day: 0, bought: {} },
     placed: {},
     tray: newTray(),
     monsters: newMonsters(),

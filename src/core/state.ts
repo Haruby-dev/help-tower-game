@@ -250,6 +250,8 @@ export interface World {
   land: { owned: number };
   crafting: Crafting;
   sets: SetState;
+  /** ร้านจีโอมาร์ท: ของจำนวนจำกัดที่ซื้อไปแล้วในวัน day (วันอื่นนับใหม่) */
+  shop: { day: number; bought: Record<string, number> };
   /** ของที่ผู้เล่นย้ายแล้ว เก็บตำแหน่งเท้าเป็นพิกเซล ของที่ยังไม่ย้ายใช้ตำแหน่งบนแผนที่ */
   placed: Record<string, Point>;
   tray: Tray;

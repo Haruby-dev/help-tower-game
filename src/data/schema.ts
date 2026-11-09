@@ -465,6 +465,12 @@ export const audioSchema = z.strictObject({
 export const soundGroupSchema = z.enum(['bgm', 'sfx', 'voice', 'amb']);
 export const audioIndexSchema = z.record(z.string().regex(/^[a-z0-9_]+$/), soundGroupSchema);
 
+/** ช่วงจำนวนเต็ม [น้อยสุด, มากสุด] */
+const rangeSchema = z
+  .array(z.number().int().positive())
+  .length(2)
+  .refine(([low = 0, high = 0]) => low <= high, 'range must be [low, high]');
+
 export const shopSchema = z.strictObject({
   treats: z
     .array(z.strictObject({ item: z.string().regex(/^treat_[a-z_]+$/), price: z.number().int().positive(), taste: z.enum(['like', 'love', 'special']) }))
@@ -476,6 +482,23 @@ export const shopSchema = z.strictObject({
   fertilizers: z
     .array(z.strictObject({ item: z.string().regex(/^fertilizer_[a-z0-9_]+$/), price: z.number().int().positive(), tab: z.enum(['daily', 'random']), chance: z.number().min(0).max(1) }))
     .min(1),
+  /**
+   * วัตถุดิบ (งานอาหารโซน 1 ขั้นที่ 7): daily ขายทุกวัน perDay คือจำนวนต่อวัน (ไม่มีคือไม่จำกัด)
+   * pet คือสัตว์เลี้ยงที่ให้ของนี้ ก่อนมีสัตว์ตัวนั้นราคาคูณ beforePetMultiplier · random ขายบางวันตาม chance มีของ stock [น้อยสุด, มากสุด] ชิ้น
+   */
+  ingredients: z.strictObject({
+    beforePetMultiplier: z.number().positive(),
+    daily: z
+      .array(z.strictObject({ item: z.string().regex(/^(ing|bait)_[a-z_]+$/), price: z.number().int().positive(), perDay: z.number().int().positive().optional(), pet: z.string().regex(/^[a-z_]+$/).optional() }))
+      .min(1),
+    random: z.array(z.strictObject({ item: z.string().regex(/^(ing|bait)_[a-z_]+$/), price: z.number().int().positive(), chance: z.number().min(0).max(1), stock: rangeSchema })),
+  }),
+  /** ท็อปปิ้ง: สุ่มวันละ kinds ชนิด ชนิดละ stock ชิ้น ทุกแถวเป็นของ "วันนี้" */
+  toppings: z.strictObject({
+    kinds: rangeSchema,
+    stock: rangeSchema,
+    items: z.array(z.strictObject({ item: z.string().regex(/^ing_[a-z_]+$/), price: z.number().int().positive() })).min(1),
+  }),
   /** ภาพบนชั้นร้านของสินค้าที่รหัสไม่ตรงกับชื่อภาพ (อุปกรณ์ครัว ถาด) ของที่ไม่มีในนี้ใช้ shop_item_<รหัส> หรือกล่องสี */
   shelfArt: z.record(z.string().regex(/^[a-z0-9_]+$/), z.string().regex(/^shop_item_[a-z0-9_]+$/)),
 });
@@ -689,6 +712,8 @@ export const saveFileSchema = z.strictObject({
       combos: z.array(z.string().min(1)),
       bigTable: z.strictObject({ owned: z.boolean(), sets: z.array(z.string().min(1).nullable()) }),
     }),
+    /** ร้านจีโอมาร์ท: ของที่มีจำนวนจำกัดซื้อไปแล้วกี่ชิ้นในวัน day (วันอื่นนับใหม่) */
+    shop: z.strictObject({ day: z.number().int().nonnegative(), bought: z.record(z.string().min(1), z.number().int().positive()) }),
     /** ตำแหน่งเท้า (พิกเซล) ของของที่ผู้เล่นย้ายแล้ว */
     placed: z.record(z.string().min(1), z.strictObject({ x: z.number(), y: z.number() })),
     /** ถาดอาหาร: ระดับ (0 = 3 จาน) กับจานแต่ละใบ ใบละ 1 เมนู เมนูเดิมซ้อนในจานเดิม */
@@ -916,6 +941,8 @@ export const baitsSchema = z.record(
     produce: z.string().min(1).nullable(),
     yield: z.number().int().positive(),
     source: z.enum(['start', 'shop', 'gate']),
+    /** เหยื่อเรียกหีบ: โอกาสได้หีบต่อครั้งแทนโอกาสของคันเบ็ด (ฝนหรือกลางคืนบวก chestBonus เหมือนเดิม) */
+    chestChance: z.number().min(0).max(1).optional(),
   }),
 );
 export type Baits = z.infer<typeof baitsSchema>;

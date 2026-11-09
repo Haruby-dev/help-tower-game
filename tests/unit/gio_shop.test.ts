@@ -182,7 +182,7 @@ describe('system shop', () => {
     ]);
     expect(offers.filter((offer) => offer.group === 'seeds').map((offer) => offer.price).sort((a, b) => a - b)).toEqual([80, 80, 80, 100, 300, 300, 350, 400]);
     expect(offers.filter((offer) => offer.group === 'random_seeds')).toHaveLength(3);
-    expect(offers.filter((offer) => offer.group === 'recipes')).toHaveLength(2);
+    expect(offers.filter((offer) => offer.group === 'recipes' && offer.tab === 'random')).toHaveLength(2);
   });
 
   it('keeps the same random stock all day and changes it on another day', () => {
@@ -261,7 +261,7 @@ describe('save version 10', () => {
     const { newsDay: _news, ...oldGio } = world.gio;
     const report = { day: 2, sold: [{ item: 'produce_tomato', count: 1 }], returned: [], gross: 1000, commission: 300, coins: 700 };
     const parsed = parseSaveFile({ version: 9, savedAt: '2026-11-05T00:00:00.000Z', world: { ...world, gio: { ...oldGio, report } } })!;
-    expect(parsed.version).toBe(21);
+    expect(parsed.version).toBe(22);
     expect(parsed.world.gio.newsDay).toBe(0);
     expect(parsed.world.gio.report).toMatchObject({ gift: null, tier: 2 });
   });
@@ -273,7 +273,7 @@ describe('save version 9', () => {
     const { gio: _gio, ...rest } = world;
     const v8 = { version: 8, savedAt: '2026-11-04T00:00:00.000Z', world: { ...rest, stash: { gio_lick_treat: 2, other: 1 } } };
     const parsed = parseSaveFile(v8)!;
-    expect(SAVE_VERSION).toBe(21);
+    expect(SAVE_VERSION).toBe(22);
     expect(parsed.world.gio.happiness).toBe(balance.gioCare.startHappiness);
     expect(parsed.world.gio.consignment).toBeNull();
     expect(countOf(parsed.world.bag, 'treat_special')).toBe(2);

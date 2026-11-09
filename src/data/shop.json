@@ -38,6 +38,93 @@
       "chance": 0.3
     }
   ],
+  "ingredients": {
+    "beforePetMultiplier": 2,
+    "daily": [
+      {
+        "item": "ing_salt",
+        "price": 10
+      },
+      {
+        "item": "ing_sugar",
+        "price": 10
+      },
+      {
+        "item": "ing_fish_sauce",
+        "price": 10
+      },
+      {
+        "item": "ing_milk",
+        "price": 120,
+        "perDay": 2,
+        "pet": "mumu"
+      },
+      {
+        "item": "ing_butter",
+        "price": 200,
+        "perDay": 1,
+        "pet": "mumu"
+      },
+      {
+        "item": "ing_honey",
+        "price": 120,
+        "perDay": 1,
+        "pet": "boomboom"
+      }
+    ],
+    "random": [
+      {
+        "item": "ing_cherry",
+        "price": 100,
+        "chance": 0.4,
+        "stock": [
+          3,
+          5
+        ]
+      },
+      {
+        "item": "bait_chest",
+        "price": 10000,
+        "chance": 0.3,
+        "stock": [
+          5,
+          5
+        ]
+      }
+    ]
+  },
+  "toppings": {
+    "kinds": [
+      2,
+      3
+    ],
+    "stock": [
+      5,
+      10
+    ],
+    "items": [
+      {
+        "item": "ing_fried_garlic",
+        "price": 50
+      },
+      {
+        "item": "ing_toasted_sesame",
+        "price": 50
+      },
+      {
+        "item": "ing_coconut_jelly",
+        "price": 60
+      },
+      {
+        "item": "ing_rainbow_sprinkles",
+        "price": 80
+      },
+      {
+        "item": "ing_whipped_cream",
+        "price": 100
+      }
+    ]
+  },
   "shelfArt": {
     "pot_pan": "shop_item_kitchen_pots_pans",
     "oven_mortar": "shop_item_kitchen_oven_mortar",

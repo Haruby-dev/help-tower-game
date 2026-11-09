@@ -77,11 +77,54 @@ test('buys cat treats and seeds in the system shop, and the money is logged', as
   const prices = await page.locator('.ps-rprice').allInnerTexts();
   const values = prices.map((text) => Number(text.replace(/[^\d]/g, '')));
   expect([...values].sort((a, b) => a - b)).toEqual(values);
+  // หมวดสูตร: สูตรขายถาวร 1 แถวอยู่บน สูตรสุ่ม "วันนี้" 2 แถวอยู่ล่าง (ขั้นที่ 7)
   await page.locator('[data-shop-tab="recipes"]').click();
-  await expect(page.locator('.ps-row')).toHaveCount(2);
-  await expect(page.locator('.ps-tip')).toBeVisible();
+  await expect(page.locator('.ps-row')).toHaveCount(3);
+  await expect(page.locator('.ps-row').first()).toHaveAttribute('data-offer', 'recipes:fruit_veg_salad');
+  await expect(page.locator('.ps-row').nth(0).locator('.ps-today')).toHaveCount(0);
+  await expect(page.locator('.ps-row').nth(1).locator('.ps-today')).toHaveCount(1);
   await page.locator('[data-shop-tab="equipment"]').click();
   await expect(page.locator('.ps-closed')).toBeVisible();
+});
+
+test('Geo Mart sells ingredients with a daily limit, today’s toppings and the big table (zone1 food update 7)', async ({ page }) => {
+  await open(page);
+  await change(page, { wallet: { ...(await state(page)).wallet, coins: 10_000 } });
+  await page.locator('#phone-button').click();
+  await page.locator('#lock-open').click();
+  await page.locator('[data-app="shop"]').click();
+  await expect(page.locator('.ps-chip')).toHaveCount(8);
+  // วัตถุดิบ: เครื่องปรุง 10 ขายทุกวันอยู่บน นมวันละ 2 ขวด ราคาสองเท่าจนกว่าจะมีมูมู่เมฆ
+  await page.locator('[data-shop-tab="ingredients"]').click();
+  await expect(page.locator('.ps-row').first()).toHaveAttribute('data-offer', 'ingredients:ing_salt');
+  await page.locator('[data-offer="ingredients:ing_milk"]').click();
+  await expect(page.locator('#shop-card .ps-price')).toContainText('240');
+  await expect(page.locator('[data-offer="ingredients:ing_milk"] .ps-left')).toHaveText('เหลือ 2');
+  // ขายวันละ 2 ขวด ปุ่ม + จึงหยุดที่ 2
+  await page.locator('#shop-more').click();
+  await expect(page.locator('#shop-qty')).toHaveText('2');
+  await expect(page.locator('#shop-more')).toBeDisabled();
+  const milkBefore = await count(page, 'ing_milk');
+  await page.locator('#shop-buy').click();
+  await expect.poll(() => count(page, 'ing_milk')).toBe(milkBefore + 2);
+  await expect(page.locator('[data-offer="ingredients:ing_milk"]')).toHaveClass(/is-soldout/);
+  await expect(page.locator('[data-offer="ingredients:ing_milk"] .ps-left')).toHaveText('หมด');
+  await expect(page.locator('#shop-buy')).toBeDisabled();
+  await expect(page.locator('#shop-buy')).toHaveText('หมดแล้ววันนี้');
+  // ท็อปปิ้ง: สุ่ม 2–3 ชนิด ทุกแถวเป็นของ "วันนี้" มีจำนวนเหลือ
+  await page.locator('[data-shop-tab="toppings"]').click();
+  const toppings = await page.locator('.ps-row').count();
+  expect(toppings).toBeGreaterThanOrEqual(2);
+  expect(toppings).toBeLessThanOrEqual(3);
+  await expect(page.locator('.ps-row .ps-today')).toHaveCount(toppings);
+  await expect(page.locator('.ps-row .ps-left')).toHaveCount(toppings);
+  // บ้าน&ฟาร์ม: โต๊ะใหญ่ 6,000 ซื้อแล้วมีโต๊ะ ซื้อซ้ำไม่ได้
+  await page.locator('[data-shop-tab="farm"]').click();
+  await page.locator('[data-offer="farm:big_table"]').click();
+  await page.locator('#shop-buy').click();
+  await expect.poll(() => page.evaluate(() => (window as unknown as { __state: { world: { sets: { bigTable: { owned: boolean } } } } }).__state.world.sets.bigTable.owned)).toBe(true);
+  await expect(page.locator('#shop-buy')).toHaveText('มีแล้ว');
+  await expect(page.locator('#shop-coins')).toHaveText('3,520');
 });
 
 test('Gio stays home all day when nothing is consigned, where she can talk, give a treat and pet him', async ({ page }) => {

@@ -5,24 +5,35 @@ import { createRng } from '../core/rng';
 import { canUseCampfire, recipes } from './cooking';
 import { applyTransaction } from './economy';
 import { addToBag, crops, seedItem } from './farm';
+import { giveBigTable, setTable } from './sets';
 
 const shop = shopJson as ShopData;
 /** สุ่มของวันนี้จาก seed ของเซฟกับวันที่ เปิดร้านกี่ครั้งก็ได้ของเดิม */
 const DAY_MIX = 7919;
+/** หมวดใหม่สุ่มคนละสาย ของสุ่มเดิมของแต่ละวัน (เมล็ด ปุ๋ย สูตร) จึงไม่เปลี่ยน */
+const INGREDIENT_STREAM = 101;
+const TOPPING_STREAM = 211;
 
 export type ShopTab = 'daily' | 'random';
-export type ShopGroup = 'treats' | 'seeds' | 'fertilizer' | 'random_seeds' | 'recipes';
+export type ShopGroup = 'treats' | 'seeds' | 'fertilizer' | 'random_seeds' | 'recipes' | 'ingredients' | 'toppings' | 'farm';
 
 export interface Offer {
   id: string;
   tab: ShopTab;
   group: ShopGroup;
-  kind: 'item' | 'recipe';
-  /** ไอเท็มในกระเป๋า หรือรหัสสูตร */
+  /** item ของเข้ากระเป๋า · recipe สูตร · table โต๊ะใหญ่ (มีได้ชิ้นเดียว ไม่อยู่ในกระเป๋า) */
+  kind: 'item' | 'recipe' | 'table';
+  /** ไอเท็มในกระเป๋า รหัสสูตร หรือรหัสโต๊ะ */
   target: string;
   price: number;
   currency: 'coins';
+  /** จำนวนที่ขายวันนี้ null คือไม่จำกัด */
+  stock: number | null;
+  /** ราคาคูณเพราะยังไม่มีสัตว์เลี้ยงตัวนี้ */
+  pricierUntil?: string;
 }
+
+type Rng = ReturnType<typeof createRng>;
 
 const seedOffer = (crop: string, tab: ShopTab, group: ShopGroup): Offer => ({
   id: `${group}:${crop}`,
@@ -32,19 +43,100 @@ const seedOffer = (crop: string, tab: ShopTab, group: ShopGroup): Offer => ({
   target: seedItem(crop),
   price: crops[crop]!.seedPrice!,
   currency: 'coins',
+  stock: null,
 });
 
-function pick<T>(items: T[], count: number, rng: ReturnType<typeof createRng>): T[] {
+function pick<T>(items: T[], count: number, rng: Rng): T[] {
   const pool = [...items];
   const chosen: T[] = [];
   while (chosen.length < count && pool.length > 0) chosen.push(pool.splice(Math.floor(rng.next() * pool.length), 1)[0]!);
   return chosen;
 }
 
-/** ขายทุกวัน: แมวเลีย 4 รส เมล็ดพืชเริ่มเกม และปุ๋ยระดับ 2 · สุ่มวันนี้: เมล็ดจากร้าน 3 ชนิด ปุ๋ยระดับ 3 (บางวัน) และสูตรที่ยังไม่รู้และทำที่กองไฟได้ 2 สูตร */
+/** จำนวนเต็มสุ่มในช่วง [น้อยสุด, มากสุด] ของไฟล์ข้อมูล */
+const between = ([low = 0, high = low]: readonly number[], rng: Rng): number => low + Math.floor(rng.next() * (high - low + 1));
+
+/** สัตว์เลี้ยงยังไม่มีในเกม (มาใน M8) จึงยังไม่มีตัวไหน นม เนย น้ำผึ้ง จึงราคาสองเท่าไปก่อน */
+const hasPet = (_pet: string): boolean => false;
+
+const recipeOffer = (id: string, tab: ShopTab): Offer => ({
+  id: `recipes:${id}`,
+  tab,
+  group: 'recipes',
+  kind: 'recipe',
+  target: id,
+  price: Math.round(recipes[id]!.price * shop.recipePriceMultiplier),
+  currency: 'coins',
+  stock: null,
+});
+
+/** วัตถุดิบ: เครื่องปรุงไม่จำกัด นม เนย น้ำผึ้ง จำกัดต่อวัน · สุ่มวันนี้ เชอร์รีกับเหยื่อเรียกหีบ */
+function ingredientOffers(world: World): Offer[] {
+  const { daily, random, beforePetMultiplier } = shop.ingredients;
+  const rng = createRng(world.seed + world.day * DAY_MIX + INGREDIENT_STREAM);
+  const everyDay = daily.map((entry): Offer => {
+    const pricier = entry.pet !== undefined && !hasPet(entry.pet);
+    return {
+      id: `ingredients:${entry.item}`,
+      tab: 'daily',
+      group: 'ingredients',
+      kind: 'item',
+      target: entry.item,
+      price: pricier ? Math.round(entry.price * beforePetMultiplier) : entry.price,
+      currency: 'coins',
+      stock: entry.perDay ?? null,
+      ...(pricier && entry.pet !== undefined ? { pricierUntil: entry.pet } : {}),
+    };
+  });
+  // สุ่มทุกแถวทุกวันเสมอ ลำดับการสุ่มจึงไม่ขึ้นกับว่าแถวก่อนออกหรือไม่
+  const today = random.flatMap((entry): Offer[] => {
+    const shows = rng.next() < entry.chance;
+    const stock = between(entry.stock, rng);
+    return shows
+      ? [{ id: `ingredients:${entry.item}`, tab: 'random', group: 'ingredients', kind: 'item', target: entry.item, price: entry.price, currency: 'coins', stock }]
+      : [];
+  });
+  return [...everyDay, ...today];
+}
+
+/** ท็อปปิ้ง: สุ่มวันละ 2–3 ชนิด ชนิดละ 5–10 ชิ้น ทุกแถวเป็นของ "วันนี้" */
+function toppingOffers(world: World): Offer[] {
+  const rng = createRng(world.seed + world.day * DAY_MIX + TOPPING_STREAM);
+  const chosen = pick(shop.toppings.items, between(shop.toppings.kinds, rng), rng);
+  return shop.toppings.items
+    .filter((entry) => chosen.includes(entry))
+    .map(
+      (entry): Offer => ({
+        id: `toppings:${entry.item}`,
+        tab: 'random',
+        group: 'toppings',
+        kind: 'item',
+        target: entry.item,
+        price: entry.price,
+        currency: 'coins',
+        stock: between(shop.toppings.stock, rng),
+      }),
+    );
+}
+
+const bigTableOffer = (): Offer => ({
+  id: `farm:${setTable.bigTable.item}`,
+  tab: 'daily',
+  group: 'farm',
+  kind: 'table',
+  target: setTable.bigTable.item,
+  price: setTable.bigTable.price,
+  currency: 'coins',
+  stock: null,
+});
+
+/**
+ * ขายทุกวัน: แมวเลีย 4 รส เมล็ดพืชเริ่มเกม ปุ๋ยระดับ 2 สูตรขายถาวร วัตถุดิบ และโต๊ะใหญ่
+ * สุ่มวันนี้: เมล็ดจากร้าน 3 ชนิด ปุ๋ยระดับ 3 (บางวัน) สูตรที่ยังไม่รู้และทำที่กองไฟได้ 2 สูตร วัตถุดิบบางอย่าง และท็อปปิ้ง
+ */
 export function offersFor(world: World): Offer[] {
   const treats = shop.treats.map(
-    (treat): Offer => ({ id: `treats:${treat.item}`, tab: 'daily', group: 'treats', kind: 'item', target: treat.item, price: treat.price, currency: 'coins' }),
+    (treat): Offer => ({ id: `treats:${treat.item}`, tab: 'daily', group: 'treats', kind: 'item', target: treat.item, price: treat.price, currency: 'coins', stock: null }),
   );
   const starter = Object.entries(crops)
     // พืชเริ่มเกมกับพืชที่ขายทุกวัน (มะนาว ผักชี)
@@ -59,48 +151,61 @@ export function offersFor(world: World): Offer[] {
     .filter(([id, recipe]) => recipe.source === 'shop' && canUseCampfire(recipe) && !world.recipes.known.includes(id))
     .map(([id]) => id)
     .sort();
-  const recipeOffers = pick(unknown, shop.randomRecipes, rng).map(
-    (id): Offer => ({
-      id: `recipes:${id}`,
-      tab: 'random',
-      group: 'recipes',
-      kind: 'recipe',
-      target: id,
-      price: Math.round(recipes[id]!.price * shop.recipePriceMultiplier),
-      currency: 'coins',
-    }),
-  );
+  const recipeOffers = pick(unknown, shop.randomRecipes, rng).map((id) => recipeOffer(id, 'random'));
+  // สูตรขายถาวรอยู่เหนือสูตรสุ่ม (ขั้นที่ 7) ซื้อแล้วหายจากชั้นเหมือนสูตรอื่น
+  const permanent = Object.entries(recipes)
+    .filter(([, recipe]) => recipe.source === 'shop_permanent')
+    .map(([id]) => recipeOffer(id, 'daily'));
   // ปุ๋ยสุ่มหลังของเดิม ของสุ่มเดิมของแต่ละวันจึงไม่เปลี่ยน
   const fertilizers = shop.fertilizers
     .filter((entry) => entry.tab === 'daily' || rng.next() < entry.chance)
-    .map((entry): Offer => ({ id: `fertilizer:${entry.item}`, tab: entry.tab, group: 'fertilizer', kind: 'item', target: entry.item, price: entry.price, currency: 'coins' }));
+    .map(
+      (entry): Offer => ({ id: `fertilizer:${entry.item}`, tab: entry.tab, group: 'fertilizer', kind: 'item', target: entry.item, price: entry.price, currency: 'coins', stock: null }),
+    );
   const daily = fertilizers.filter((offer) => offer.tab === 'daily');
   const random = fertilizers.filter((offer) => offer.tab === 'random');
-  return [...treats, ...starter, ...daily, ...randomSeeds, ...random, ...recipeOffers];
+  return [...treats, ...starter, ...daily, ...randomSeeds, ...random, ...permanent, ...recipeOffers, ...ingredientOffers(world), ...toppingOffers(world), bigTableOffer()];
 }
 
 export const tasteOfTreat = (item: string): ShopData['treats'][number]['taste'] | null =>
   shop.treats.find((treat) => treat.item === item)?.taste ?? null;
 
-/** สูตรซื้อได้ครั้งเดียว ของอื่นซื้อได้ตามจำนวนที่เงินพอ */
+/** ซื้อของจำนวนจำกัดไปแล้วกี่ชิ้นวันนี้ */
+export const boughtToday = (world: World, offer: Offer): number => (world.shop.day === world.day ? (world.shop.bought[offer.id] ?? 0) : 0);
+
+/** เหลือขายวันนี้กี่ชิ้น ของไม่จำกัดตอบ Infinity */
+export const stockLeft = (world: World, offer: Offer): number => (offer.stock === null ? Infinity : Math.max(0, offer.stock - boughtToday(world, offer)));
+
+/** สูตรที่รู้แล้วกับโต๊ะที่มีแล้วซื้อซ้ำไม่ได้ */
+export const alreadyOwned = (world: World, offer: Offer): boolean =>
+  (offer.kind === 'recipe' && world.recipes.known.includes(offer.target)) || (offer.kind === 'table' && world.sets.bigTable.owned);
+
+/** สูตรกับโต๊ะซื้อได้ครั้งเดียว ของอื่นซื้อได้ตามจำนวนที่เงินพอและของที่เหลือวันนี้ */
 export const maxQuantity = (world: World, offer: Offer): number => {
-  if (offer.kind === 'recipe') return world.recipes.known.includes(offer.target) ? 0 : 1;
-  return Math.floor(world.wallet.coins / offer.price);
+  if (offer.kind !== 'item') return alreadyOwned(world, offer) || offer.price > world.wallet.coins ? 0 : 1;
+  return Math.min(Math.floor(world.wallet.coins / offer.price), stockLeft(world, offer));
 };
 
-/** เหรียญไม่พอ กระเป๋าเต็ม หรือรู้สูตรแล้ว ตอบ null เงินจึงไม่หาย · ทุกการซื้อเขียนรายการในกระเป๋าเงิน */
+/** เหรียญไม่พอ กระเป๋าเต็ม ของหมด หรือมีแล้ว ตอบ null เงินจึงไม่หาย · ทุกการซื้อเขียนรายการในกระเป๋าเงิน */
 export function buyOffer(world: World, offer: Offer, quantity: number): World | null {
   if (!Number.isInteger(quantity) || quantity < 1) return null;
   const cost = offer.price * quantity;
-  if (cost > world.wallet.coins) return null;
+  if (cost > world.wallet.coins || quantity > stockLeft(world, offer) || alreadyOwned(world, offer)) return null;
   let next: World;
   if (offer.kind === 'recipe') {
-    if (quantity !== 1 || world.recipes.known.includes(offer.target)) return null;
+    if (quantity !== 1) return null;
     next = { ...world, recipes: { ...world.recipes, known: [...world.recipes.known, offer.target] } };
+  } else if (offer.kind === 'table') {
+    if (quantity !== 1) return null;
+    next = giveBigTable(world);
   } else {
     const bag = addToBag(world.bag, offer.target, quantity);
     if (!bag) return null;
     next = { ...world, bag };
+  }
+  if (offer.stock !== null) {
+    const bought = world.shop.day === world.day ? world.shop.bought : {};
+    next = { ...next, shop: { day: world.day, bought: { ...bought, [offer.id]: boughtToday(world, offer) + quantity } } };
   }
   return applyTransaction(next, offer.currency, -cost, 'wallet.shop_buy', 'wallet.category_shop');
 }

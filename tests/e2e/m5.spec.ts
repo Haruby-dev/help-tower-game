@@ -131,7 +131,9 @@ test('the bait strip shows the real bait pictures, counts, and greys out bait sh
   await open(page);
   await page.keyboard.press('5');
   await expect(page.locator('#bait-strip')).toBeVisible();
-  await expect(page.locator('.bait-slot')).toHaveCount(3);
+  // เหยื่อ 4 ชนิด รวมเหยื่อเรียกหีบจากจีโอมาร์ท (ขั้นที่ 7) ยังไม่มีจึงเป็นสีเทา
+  await expect(page.locator('.bait-slot')).toHaveCount(4);
+  await expect(page.locator('.bait-slot[data-bait="chest"]')).toBeDisabled();
   await expect(page.locator('.bait-slot[data-bait="corn"] img')).toHaveAttribute('src', /items\/bait_corn\.png/);
   await expect(page.locator('.bait-slot[data-bait="corn"]')).toContainText('×5');
   await expect(page.locator('.bait-slot[data-bait="normal"]')).toBeDisabled();

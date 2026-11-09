@@ -10,7 +10,7 @@ import setsJson from '../data/sets.json';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 import { cookingStarterBag, firstWeather, fishingStarterBag, newFarm, newFishing, newRecipeBook, newSeed, starterBag } from './gauges';
 
-export const SAVE_VERSION = 21;
+export const SAVE_VERSION = 22;
 const PLAIN_RICE = 'plain_rice';
 /** ผู้ใช้ตัดสิน 4 พ.ย. 2026: ตัวเลขเหรียญทั้งเกมใหญ่ขึ้น 10 เท่า สัดส่วนเศรษฐกิจเท่าเดิม */
 export const COIN_SCALE = 10;
@@ -153,6 +153,8 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
     const sets = setsJson.bigTable.slots.map((_, index) => (index === 0 ? placed : null));
     return { ...save, world: { ...world, sets: { ...world.sets, bigTable: { owned, sets } } } };
   },
+  // เวอร์ชัน 22 ร้านจีโอมาร์ท (zone1 food update 7): ยังไม่เคยซื้อของจำนวนจำกัด
+  21: (save) => ({ ...save, world: { ...(save.world as object), shop: { day: 0, bought: {} } } }),
 };
 
 /** เซฟเก่าไม่ได้เก็บช่วงความสุขของสรุปยอด เดาจากสัดส่วนค่าคอม */
