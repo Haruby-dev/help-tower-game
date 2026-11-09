@@ -1,10 +1,22 @@
 {
   "stayHours": 2,
+  "yardReturn": { "x": 800, "y": 126 },
   "zones": [{ "zone": 1, "weather": "ui_weather_sun" }],
   "gates": [
     { "floor": 1, "scene": "gate_scene_gate1" },
     { "floor": 2, "scene": "gate_scene_gate2" },
-    { "floor": 3, "scene": "gate_scene_gate3" },
+    {
+      "floor": 3,
+      "scene": "gate_scene_gate3",
+      "map": "gate3",
+      "reward": { "item": "seed_cloud_lettuce", "count": 5 },
+      "forage": { "item": "ing_wild_cloud_lettuce", "count": 1 },
+      "outside": "#7b9a7f",
+      "kinSpeed": 0.5,
+      "kinIdleMs": [1500, 4500],
+      "kinNibbleChance": 0.35,
+      "cloudShadows": { "count": 3, "alpha": 0.14, "driftPxPerSecond": 4 }
+    },
     { "floor": 4, "scene": "gate_scene_gate4" },
     { "floor": 5, "scene": "gate_scene_gate5" },
     { "floor": 6, "scene": "gate_scene_gate6" },

@@ -255,6 +255,8 @@ export interface World {
   sets: SetState;
   /** ร้านจีโอมาร์ท: ของจำนวนจำกัดที่ซื้อไปแล้วในวัน day (วันอื่นนับใหม่) */
   shop: { day: number; bought: Record<string, number> };
+  /** เกต: ชั้นที่เปิดหีบรางวัลแล้ว และจุดของป่าที่เก็บแล้วในวัน day ต่อชั้น */
+  gates: { chests: number[]; forage: Record<string, { day: number; picked: number[] }> };
   /** ของที่ผู้เล่นย้ายแล้ว เก็บตำแหน่งเท้าเป็นพิกเซล ของที่ยังไม่ย้ายใช้ตำแหน่งบนแผนที่ */
   placed: Record<string, Point>;
   tray: Tray;

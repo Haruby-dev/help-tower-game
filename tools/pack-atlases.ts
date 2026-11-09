@@ -2,7 +2,7 @@
  * รวมภาพเล็ก ๆ เป็นแผ่นใหญ่ตามหมวด เกมจะได้โหลดไม่กี่ไฟล์แทนเกือบพันไฟล์ (มือถือรอทีละไฟล์จนเปิดเกมช้า)
  * เกมตัดแผ่นกลับเป็นภาพเดิมในเครื่องตอนโหลด ทุกพิกเซลเหมือนเดิม ไม่ย่อไม่ขยาย
  *
- * หมวด: boot = ภาพที่ Phaser ใช้ตั้งแต่เปิดเกม · ui = ภาพหน้าจอ (lazy) · monster_<id> = มอนสเตอร์แต่ละตัว โหลดตอนจะมาเยี่ยม
+ * หมวด: boot = ภาพที่ Phaser ใช้ตั้งแต่เปิดเกม · ui = ภาพหน้าจอ (lazy) · monster_<id> = มอนสเตอร์แต่ละตัว โหลดตอนจะมาเยี่ยม · gate<N> = ภาพในเกตบานนั้น โหลดตอนเข้าเกต
  * ไม่รวม: ชุดพื้นแผนที่ (Tiled ต้องใช้ภาพจริง) และภาพที่กว้างเกินแผ่น
  * รันเองด้วย npm run pack-atlases (fetch-assets เรียกให้ตอนจบ) · validate ตรวจว่าแผ่นตรงกับไฟล์ต้นทาง
  */
@@ -51,7 +51,10 @@ export function atlasGroups(): Map<string, Item[]> {
     if (entry.type !== 'character' && (entry.width > MAX || entry.height > MAX)) continue;
     const monster = monsterPrefixes.find(({ prefix }) => id.startsWith(prefix));
     const sheet = entry.type === 'character' || (entry.type === 'local' && entry.frame_width !== undefined);
-    if (monster && sheet) add(monster.group, id, entry.file);
+    // ภาพในเกตแต่ละบาน (gate3_bg, gate3_kin_…) โหลดตอนเข้าเกตนั้น เปิดเกมจึงไม่ช้าลง
+    const gate = /^(gate\d+)_/.exec(id)?.[1];
+    if (gate) add(gate, id, entry.file);
+    else if (monster && sheet) add(monster.group, id, entry.file);
     else if (entry.type === 'local' && entry.lazy && !sheet) add('ui', id, entry.file);
     else add('boot', id, entry.file);
   }

@@ -3,7 +3,7 @@ import { footY } from '../core/assets';
 import { direction4From } from '../core/movement';
 import type { Rng } from '../core/rng';
 import balance from '../data/balance.json';
-import { artTopPx, eyeLevel, moteKey, prepareMonsterArt, sheetKey, DIRECTIONS, type Facing, type MonsterArt, type SheetKind } from '../scenes/monsterArt';
+import { artTopPx, eyeLevel, feetSheetKey, moteKey, prepareMonsterArt, sheetKey, DIRECTIONS, type Facing, type MonsterArt, type SheetKind } from '../scenes/monsterArt';
 
 type Point = { x: number; y: number };
 
@@ -349,7 +349,7 @@ export class Monster {
    * ภาพช่วงกลางที่สร้างตอนเล่นใช้จุดเท้าของภาพหิวต้นฉบับ
    */
   private placeFeet(kind: SheetKind): void {
-    const sheet = sheetKey(this.art, 0, kind === 'eat' ? 'eat' : 'stand');
+    const sheet = feetSheetKey(this.scene, this.art, kind === 'eat' ? 'eat' : 'stand');
     // ท่ายืนบางทิศของเจ้าทุ่งทองย่ำเท้าต่ำกว่าทิศใต้ ค่าที่วัดทั้งแผ่นจึงต่ำไป ใช้แถวเท้าทิศใต้จากเอกสารส่งงานแทน
     const line = kind !== 'eat' && this.art.feetRow !== undefined ? this.art.feetRow + 1 : footY(sheet);
     this.sprite.setOrigin(0.5, line / this.art.frame);

@@ -27,7 +27,9 @@ export interface GameEvents {
   'fertilize-requested': { plot: number; item: string };
   'fertilize-confirmed': number;
   /** key ของบทพูดตัวเอกใน lines.json */
-  'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut' | 'noMoney' | 'trapTooEarly' | 'trapWaiting' | 'dryingWaiting' | 'dryingTrayIdea' | 'mortarFound';
+  'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut' | 'noMoney' | 'trapTooEarly' | 'trapWaiting' | 'dryingWaiting' | 'dryingTrayIdea' | 'mortarFound' | 'gateTimeUp';
+  /** เข้าเกตชั้นนี้ (ตอนนี้จากปุ่มทดสอบในตั้งค่า) */
+  'gate-enter': number;
   /** แตะถาดตากใบที่ว่าง เปิดหน้าเลือกของตาก */
   'drying-open': number;
   /** เปิดครกหินเก่า (ตอนนี้จากปุ่มทดสอบ) */

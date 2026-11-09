@@ -15,8 +15,8 @@ describe('phone cases are gone', () => {
       owned: { ...file.world.cosmetics.owned, cases: ['case_pink_cat', 'case_mint'], canSkins: ['can_blue', 'can_mint'] },
     };
     const parsed = parseSaveFile({ ...file, version: 15, world: { ...file.world, cosmetics } })!;
-    expect(SAVE_VERSION).toBe(23);
-    expect(parsed.version).toBe(23);
+    expect(SAVE_VERSION).toBe(24);
+    expect(parsed.version).toBe(24);
     expect(parsed.world.cosmetics.equipped).not.toHaveProperty('case');
     expect(parsed.world.cosmetics.owned).not.toHaveProperty('cases');
     expect(parsed.world.cosmetics.owned.canSkins).toEqual(['can_blue', 'can_mint']);

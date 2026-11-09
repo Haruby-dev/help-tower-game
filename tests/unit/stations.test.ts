@@ -138,7 +138,7 @@ describe('save version 19', () => {
     const file = toSaveFile(newWorld());
     const { drying: _d, traps: _t, mortar: _m, ...oldCrafting } = file.world.crafting;
     const parsed = parseSaveFile({ ...file, version: 18, world: { ...file.world, crafting: oldCrafting } })!;
-    expect(SAVE_VERSION).toBe(23);
+    expect(SAVE_VERSION).toBe(24);
     expect(parsed.world.crafting).toMatchObject({ drying: [], traps: [], mortar: false });
   });
 });

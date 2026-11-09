@@ -26,6 +26,12 @@ export function sheetKey(art: MonsterArt, level: number | 'sweet', kind: SheetKi
   return level <= 0 || art.hungryEye === null ? `${art.sheet}_hungry_${kind}` : `${art.sheet}_eye${level}_${kind}`;
 }
 
+/** แผ่นที่ใช้วัดเส้นเท้า: ภาพหิวต้นฉบับ ถ้าไม่มี (ญาติมอนสเตอร์ในเกตมีแต่ภาพหวาน) ใช้ภาพหวาน */
+export function feetSheetKey(scene: Phaser.Scene, art: MonsterArt, kind: SheetKind): string {
+  const hungry = sheetKey(art, 0, kind);
+  return scene.textures.exists(hungry) ? hungry : sheetKey(art, 'sweet', kind);
+}
+
 /** ระดับสีตาจากเปอร์เซ็นต์ความชอบ */
 export function eyeLevel(percent: number, cleared: boolean): number | 'sweet' {
   if (cleared) return 'sweet';
@@ -81,7 +87,8 @@ function makeEyeSheets(scene: Phaser.Scene, art: MonsterArt): void {
 
 function makeAnimations(scene: Phaser.Scene, art: MonsterArt, level: number | 'sweet'): void {
   const walk = sheetKey(art, level, 'walk');
-  if (scene.anims.exists(`${walk}_south`)) return;
+  // ญาติมอนสเตอร์ในเกตมีแต่ภาพหวาน ระดับที่ไม่มีภาพจึงข้าม
+  if (scene.anims.exists(`${walk}_south`) || !scene.textures.exists(walk)) return;
   const walkFrames = 6;
   // ผู้เฝ้าทุ่งกระโดดบนฐาน เวลาแต่ละเฟรมไม่เท่ากัน Phaser ใช้ duration ของเฟรมแทนเวลาปกติ
   const perFrame = Array.isArray(art.walkMs) ? art.walkMs : null;

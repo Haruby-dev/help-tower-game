@@ -722,6 +722,11 @@ export const saveFileSchema = z.strictObject({
     }),
     /** ร้านจีโอมาร์ท: ของที่มีจำนวนจำกัดซื้อไปแล้วกี่ชิ้นในวัน day (วันอื่นนับใหม่) */
     shop: z.strictObject({ day: z.number().int().nonnegative(), bought: z.record(z.string().min(1), z.number().int().positive()) }),
+    /** เกต: ชั้นที่เปิดหีบรางวัลแล้ว (ได้ครั้งเดียว) และจุดของป่าที่เก็บไปแล้วในวัน day ต่อชั้น (วันอื่นเก็บใหม่ได้) */
+    gates: z.strictObject({
+      chests: z.array(z.number().int().positive()),
+      forage: z.record(z.string().regex(/^[0-9]+$/), z.strictObject({ day: z.number().int().nonnegative(), picked: z.array(z.number().int().nonnegative()) })),
+    }),
     /** ตำแหน่งเท้า (พิกเซล) ของของที่ผู้เล่นย้ายแล้ว */
     placed: z.record(z.string().min(1), z.strictObject({ x: z.number(), y: z.number() })),
     /** ถาดอาหาร: ระดับ (0 = 3 จาน) กับจานแต่ละใบ ใบละ 1 เมนู เมนูเดิมซ้อนในจานเดิม */
@@ -1029,6 +1034,8 @@ export const linesSchema = z.strictObject({
     dryingWaiting: z.string().min(1),
     dryingTrayIdea: z.string().min(1),
     mortarFound: z.string().min(1),
+    /** อยู่ในเกตครบเวลาแล้ว กลับลานบ้านเอง */
+    gateTimeUp: z.string().min(1),
     /** บทสั้น ๆ ครั้งแรกที่ได้วัสดุหรือวัตถุดิบใหม่ (ความรู้รอบตัวของตัวเอง ไม่ใช่ยายสอน) */
     firstItem: z.record(z.string().regex(/^[a-z_]+$/), z.string().min(1)),
   }),
@@ -1068,11 +1075,64 @@ export const petsSchema = z.strictObject({
 });
 
 /** แผนที่หอคอย (ข้อมูลนิ่ง ระบบเข้าเกตมาใน M8) ฉากในเกตต่อชั้น และไอคอนอากาศของโซน */
+const itemCountSchema = z.strictObject({ item: z.string().min(1), count: z.number().int().positive() });
+
 export const gatesSchema = z.strictObject({
   stayHours: z.number().positive(),
+  /** ออกจากเกตแล้วยืนตรงนี้ในลาน (หน้าประตูเกต พิกเซลกลางตัวชน) */
+  yardReturn: z.strictObject({ x: z.number(), y: z.number() }),
   zones: z.array(z.strictObject({ zone: z.number().int().positive(), weather: z.string().min(1) })).min(1),
-  gates: z.array(z.strictObject({ floor: z.number().int().positive(), scene: z.string().min(1) })).length(10),
+  gates: z
+    .array(
+      z.strictObject({
+        floor: z.number().int().positive(),
+        scene: z.string().min(1),
+        /** เกตที่เดินเข้าไปได้แล้ว: ชื่อแผนที่ใน src/data/gate_maps/<map>_map.json และภาพ <map>_bg <map>_fg */
+        map: z.string().regex(/^gate\d+$/).optional(),
+        /** หีบรางวัลครั้งแรก ได้ครั้งเดียว */
+        reward: itemCountSchema.optional(),
+        /** ของป่าต่อจุด เก็บได้วันละครั้งต่อจุด */
+        forage: itemCountSchema.optional(),
+        /** สีพื้นนอกภาพ ตอนจอกว้างกว่าแผนที่ (สีขอบป่าในภาพ) */
+        outside: z.string().regex(/^#[0-9a-f]{6}$/).optional(),
+        /** ญาติมอนสเตอร์เดินช้ากว่ามอนสเตอร์มาเยี่ยมเท่านี้ · พักนานสุ่มในช่วงนี้ (ms) · ตอนพักมีโอกาสแทะหญ้าเท่านี้ */
+        kinSpeed: z.number().positive().optional(),
+        kinIdleMs: z.tuple([z.number().int().positive(), z.number().int().positive()]).optional(),
+        kinNibbleChance: z.number().min(0).max(1).optional(),
+        /** เงาเมฆลอยช้า ๆ (คูณสี จาง ๆ) */
+        cloudShadows: z.strictObject({ count: z.number().int().positive(), alpha: z.number().min(0).max(1), driftPxPerSecond: z.number().positive() }).optional(),
+      }),
+    )
+    .length(10),
 });
+
+const gateTileSchema = z.tuple([z.number(), z.number()]);
+const tileRectSchema = z.tuple([z.number(), z.number(), z.number(), z.number()]);
+
+/** แผนที่ในเกต (ภาพวาดหนึ่งภาพ + ชั้นหน้า + ช่องเดินไม่ได้) ตำแหน่งเป็นช่อง 32 พิกเซล ตำแหน่งตัวละครคือเท้า (กลางล่าง) */
+export const gateMapSchema = z.strictObject({
+  size: z.tuple([z.number().int().positive(), z.number().int().positive()]),
+  tile: z.number().int().positive(),
+  image_px_to_tiles: z.string().optional(),
+  spawn: gateTileSchema,
+  /** x0 y0 x1 y1 */
+  exit_zone: tileRectSchema,
+  owner: z.strictObject({ monster: z.string().min(1), pos: gateTileSchema }),
+  reward_chest: z.strictObject({ pos: gateTileSchema, first_visit: z.string().optional() }),
+  forage: z.strictObject({ item: z.string().min(1), respawn: z.literal('daily'), points: z.array(gateTileSchema).min(1) }),
+  kin: z.strictObject({
+    monster: z.string().min(1),
+    count: z.number().int().positive(),
+    variants: z.array(z.string().regex(/^[a-z]+$/)).min(1),
+    wander_area: tileRectSchema,
+    home_burrows: z.array(gateTileSchema).min(1),
+  }),
+  burrows: z.array(gateTileSchema),
+  ambient: z.array(z.string()).optional(),
+  blocked: z.array(z.tuple([z.number().int().nonnegative(), z.number().int().nonnegative()])),
+});
+
+export type GateMap = z.infer<typeof gateMapSchema>;
 
 /** ขวดจดหมาย 20 ฉบับ (ข้อมูลนิ่ง ระบบตกขวดมาทีหลัง) โซนที่เริ่มตกได้ และกระดาษตามคนเขียน */
 export const mailSchema = z.strictObject({

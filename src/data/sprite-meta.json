@@ -6328,5 +6328,82 @@
     "footY": {
       "default": 29
     }
+  },
+  "gate3_bg": {
+    "footY": {
+      "default": 512
+    }
+  },
+  "gate3_fg": {
+    "footY": {
+      "default": 512
+    }
+  },
+  "gate3_kin_brown_sweet_stand": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "gate3_kin_brown_sweet_walk": {
+    "footY": {
+      "default": 158,
+      "south": 38,
+      "east": 37,
+      "north": 38,
+      "west": 37
+    }
+  },
+  "gate3_kin_brown_sweet_eat": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "gate3_kin_grey_sweet_stand": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "gate3_kin_grey_sweet_walk": {
+    "footY": {
+      "default": 158,
+      "south": 38,
+      "east": 37,
+      "north": 38,
+      "west": 37
+    }
+  },
+  "gate3_kin_grey_sweet_eat": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "gate3_kin_cream_sweet_stand": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "gate3_kin_cream_sweet_walk": {
+    "footY": {
+      "default": 158,
+      "south": 38,
+      "east": 37,
+      "north": 38,
+      "west": 37
+    }
+  },
+  "gate3_kin_cream_sweet_eat": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "gate_reward_chest": {
+    "footY": {
+      "default": 38
+    }
+  },
+  "ing_icon_wild_cloud_lettuce": {
+    "footY": {
+      "default": 26
+    }
   }
 }

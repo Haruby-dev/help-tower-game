@@ -467,6 +467,12 @@ function createSettingsCard(card: HTMLElement): HTMLElement[] {
       if (!gameState.started || gameState.world.sets.bigTable.owned) return;
       gameState.setWorld(giveBigTable(gameState.world));
     }),
+    // ทดลองเดินในเกต 3 (9 พ.ย. 2026) ประตูเกตในลานกับเมนูเลือกชั้นมาใน M8
+    testButton('test-gate3', t('settings.test_gate3'), () => {
+      if (!gameState.started) return;
+      document.getElementById('settings-close')?.click();
+      eventBus.emit('gate-enter', 3);
+    }),
     // ครกหินเก่าอยู่ในหีบเก่าในบ้าน (ตัดสิน 9 พ.ย. 2026) แต่ยังไม่มีฉากในบ้าน จึงเปิดจากปุ่มทดสอบ ครั้งแรกได้สูตรทอดมันกับลูกชิ้นปิ้งด้วย
     testButton('test-mortar', t('settings.test_mortar'), () => {
       if (!gameState.started) return;

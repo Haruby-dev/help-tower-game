@@ -12976,5 +12976,175 @@
     "jade_tone": false,
     "lazy": true,
     "note": "mortar without pestle for the pounding minigame (pestle drawn in code)"
+  },
+  "gate3_bg": {
+    "type": "local",
+    "width": 896,
+    "height": 512,
+    "source": "art-src/gate_maps_1109/gate3_final/gate3_bg.png",
+    "file": "gates/gate3/gate3_bg.png",
+    "jade_tone": false,
+    "note": "gate 3 painted background, 28x16 tiles, 1:1 (gate maps 9 Nov, do not jade-tone)"
+  },
+  "gate3_fg": {
+    "type": "local",
+    "width": 896,
+    "height": 512,
+    "source": "art-src/gate_maps_1109/gate3_final/gate3_fg.png",
+    "file": "gates/gate3/gate3_fg.png",
+    "jade_tone": false,
+    "note": "gate 3 foreground drawn above the player and sprites (bottom hedge edge)"
+  },
+  "gate3_kin_brown_sweet_stand": {
+    "type": "local",
+    "width": 160,
+    "height": 40,
+    "source": "art-src/gate_maps_1109/gate3_final/sprites/mookmik_kin_brown_stand.png",
+    "file": "gates/gate3/kin_brown_stand.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 4,
+    "note": "gate 3 rabbit kin (brown), same frame layout as monster_mookmik_sweet_stand"
+  },
+  "gate3_kin_brown_sweet_walk": {
+    "type": "local",
+    "width": 240,
+    "height": 160,
+    "source": "art-src/gate_maps_1109/gate3_final/sprites/mookmik_kin_brown_walk.png",
+    "file": "gates/gate3/kin_brown_walk.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 24,
+    "rows": [
+      "south",
+      "east",
+      "north",
+      "west"
+    ],
+    "note": "gate 3 rabbit kin (brown), same frame layout as monster_mookmik_sweet_walk"
+  },
+  "gate3_kin_brown_sweet_eat": {
+    "type": "local",
+    "width": 320,
+    "height": 40,
+    "source": "art-src/gate_maps_1109/gate3_final/sprites/mookmik_kin_brown_eat.png",
+    "file": "gates/gate3/kin_brown_eat.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 8,
+    "note": "gate 3 rabbit kin (brown), same frame layout as monster_mookmik_sweet_eat"
+  },
+  "gate3_kin_grey_sweet_stand": {
+    "type": "local",
+    "width": 160,
+    "height": 40,
+    "source": "art-src/gate_maps_1109/gate3_final/sprites/mookmik_kin_grey_stand.png",
+    "file": "gates/gate3/kin_grey_stand.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 4,
+    "note": "gate 3 rabbit kin (grey), same frame layout as monster_mookmik_sweet_stand"
+  },
+  "gate3_kin_grey_sweet_walk": {
+    "type": "local",
+    "width": 240,
+    "height": 160,
+    "source": "art-src/gate_maps_1109/gate3_final/sprites/mookmik_kin_grey_walk.png",
+    "file": "gates/gate3/kin_grey_walk.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 24,
+    "rows": [
+      "south",
+      "east",
+      "north",
+      "west"
+    ],
+    "note": "gate 3 rabbit kin (grey), same frame layout as monster_mookmik_sweet_walk"
+  },
+  "gate3_kin_grey_sweet_eat": {
+    "type": "local",
+    "width": 320,
+    "height": 40,
+    "source": "art-src/gate_maps_1109/gate3_final/sprites/mookmik_kin_grey_eat.png",
+    "file": "gates/gate3/kin_grey_eat.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 8,
+    "note": "gate 3 rabbit kin (grey), same frame layout as monster_mookmik_sweet_eat"
+  },
+  "gate3_kin_cream_sweet_stand": {
+    "type": "local",
+    "width": 160,
+    "height": 40,
+    "source": "art-src/gate_maps_1109/gate3_final/sprites/mookmik_kin_cream_stand.png",
+    "file": "gates/gate3/kin_cream_stand.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 4,
+    "note": "gate 3 rabbit kin (cream), same frame layout as monster_mookmik_sweet_stand"
+  },
+  "gate3_kin_cream_sweet_walk": {
+    "type": "local",
+    "width": 240,
+    "height": 160,
+    "source": "art-src/gate_maps_1109/gate3_final/sprites/mookmik_kin_cream_walk.png",
+    "file": "gates/gate3/kin_cream_walk.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 24,
+    "rows": [
+      "south",
+      "east",
+      "north",
+      "west"
+    ],
+    "note": "gate 3 rabbit kin (cream), same frame layout as monster_mookmik_sweet_walk"
+  },
+  "gate3_kin_cream_sweet_eat": {
+    "type": "local",
+    "width": 320,
+    "height": 40,
+    "source": "art-src/gate_maps_1109/gate3_final/sprites/mookmik_kin_cream_eat.png",
+    "file": "gates/gate3/kin_cream_eat.png",
+    "jade_tone": false,
+    "frame_width": 40,
+    "frame_height": 40,
+    "frames": 8,
+    "note": "gate 3 rabbit kin (cream), same frame layout as monster_mookmik_sweet_eat"
+  },
+  "gate_reward_chest": {
+    "type": "local",
+    "width": 39,
+    "height": 38,
+    "source": "art-src/gate_maps_1109/gate3_final/sprites/gate_reward_chest.png",
+    "file": "gates/gate_reward_chest.png",
+    "jade_tone": false,
+    "note": "first-visit reward chest in every gate (the house chest art)"
+  },
+  "ing_icon_wild_cloud_lettuce": {
+    "type": "local",
+    "width": 32,
+    "height": 26,
+    "source": "art-src/gate_maps_1109/gate3_final/sprites/wild_cloud_lettuce.png",
+    "file": "food/ingredients/wild_cloud_lettuce.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "wild cloud lettuce: gate 3 forage in the scene and the bag icon (placeholder ingredient)"
+  },
+  "seed_cloud_lettuce": {
+    "type": "placeholder",
+    "width": 16,
+    "height": 16,
+    "color": "#9fd8c8",
+    "labelKey": "item.seed_cloud_lettuce.name"
   }
 }

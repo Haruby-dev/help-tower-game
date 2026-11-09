@@ -7,6 +7,7 @@ import { computeViewport, fitZoom, homeScreenAppSize, isHomeScreenApp, type View
 import display from './data/display.json';
 import { BaseScene } from './scenes/BaseScene';
 import { BootScene } from './scenes/BootScene';
+import { GateScene } from './scenes/GateScene';
 import { visitTestHooks } from './scenes/visits';
 import { changeMoney } from './systems/economy';
 import { newWorld } from './systems/gauges';
@@ -79,7 +80,7 @@ const game = new Phaser.Game({
   render: { pixelArt: true, roundPixels: true, antialias: false, autoMobilePipeline: false },
   physics: { default: 'arcade', arcade: { gravity: { x: 0, y: 0 } } },
   banner: false,
-  scene: [BootScene, BaseScene],
+  scene: [BootScene, BaseScene, GateScene],
 });
 
 eventBus.on('rotation-required-changed', (required) => {
@@ -122,7 +123,7 @@ const WEBGL_RELOAD_GAP_MS = 30_000;
 document.addEventListener(
   'webglcontextlost',
   () => {
-    if (game.scene.isActive('Base')) return;
+    if (game.scene.isActive('Base') || game.scene.isSleeping('Base')) return;
     try {
       const last = Number(window.sessionStorage.getItem(WEBGL_RELOAD_KEY) ?? 0);
       if (Date.now() - last < WEBGL_RELOAD_GAP_MS) return;

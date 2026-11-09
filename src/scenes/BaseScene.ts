@@ -45,6 +45,7 @@ import { Visits } from './visits';
 import { summonNow } from '../systems/monsters';
 import { ownedDecor } from '../systems/decor';
 import { SurfaceMap, type Surface } from './surface';
+import { canEnterGate, gates } from '../systems/gates';
 
 /** เสียงบรรยากาศตามระยะคิดทุกเท่านี้ (มิลลิวินาที) และปัดระดับเป็นขั้นละ 1/20 จะได้ไม่สั่งเสียงทุกเฟรม */
 const NEAR_AMBIENCE_EVERY_MS = 150;
@@ -110,6 +111,8 @@ const BATH_SPREAD_PX = 12;
 /** ปลายคันในภาพทิศตะวันออก กลับด้านเป็นทิศตะวันตกด้วย 87 − x */
 const FRAME_LAST_PX = 87;
 const SEED_PILL_DELAY_MS = 450;
+/** ภาพมืดลงแล้วสว่างขึ้นตอนเข้าและออกจากเกต */
+const GATE_FADE_MS = 250;
 
 type FishingPhase = 'cast' | 'wait' | 'nibble' | 'bite' | 'reel';
 
@@ -224,12 +227,15 @@ export class BaseScene extends Phaser.Scene {
   private bath: BathTrip | null = null;
   private readonly fishRng = createRng(Date.now());
   private readonly farmRng = createRng(Date.now() + 1);
+  /** กดเข้าเกตแล้ว กำลังมืดลงหรือหลับอยู่ระหว่างอยู่ในเกต */
+  private toGate = false;
 
   constructor() {
     super('Base');
   }
 
   create(): void {
+    this.toGate = false;
     this.labels = [];
     this.pondObjects = [];
     this.fishing = null;
@@ -430,6 +436,15 @@ export class BaseScene extends Phaser.Scene {
     });
     // นอนหรือเป็นลมข้ามเวลา แขกที่ยังเดินอยู่หายไป (ระบบกินจากถาดแทนถ้ายังไม่ได้มาถึงถาด)
     const stopRest = eventBus.on('rest-finished', () => this.visits?.destroy());
+    const stopGate = eventBus.on('gate-enter', (floor) => this.enterGate(floor));
+    // กลับจากเกต: ลานบ้านตื่นมาที่หน้าประตูเกต (เป็นลมในเกตตื่นที่หน้าบ้าน ระบบย้ายตัวเอกไว้แล้ว)
+    this.events.on(Phaser.Scenes.Events.WAKE, () => {
+      this.toGate = false;
+      const point = gameState.world.player ?? gates.yardReturn;
+      this.player.moveTo(point);
+      this.applyViewport(gameState.viewport);
+      this.cameras.main.fadeIn(GATE_FADE_MS);
+    });
     const stopSummon = eventBus.on('monster-summon', () => {
       if (!gameState.started) return;
       const next = summonNow(gameState.world);
@@ -451,7 +466,26 @@ export class BaseScene extends Phaser.Scene {
       stopRestart();
       stopRest();
       stopSummon();
+      stopGate();
+      this.events.off(Phaser.Scenes.Events.WAKE);
       this.visits?.destroy();
+    });
+  }
+
+  /**
+   * เข้าเกต (ตอนนี้จากปุ่มทดสอบ): ลานบ้านหลับไว้ทั้งฉาก ฉากเกตเปิดขึ้นแทน ออกจากเกตแล้วปลุกกลับมา
+   * ตำแหน่งในเซฟเป็นหน้าประตูเกตตั้งแต่ตอนเข้า เซฟระหว่างอยู่ในเกตแล้วเปิดใหม่จึงอยู่ที่ลานบ้าน
+   */
+  private enterGate(floor: number): void {
+    if (!this.sys.isActive() || !gameState.started || !canEnterGate(floor)) return;
+    if (this.arranger.active || this.player.busy || this.fishing || this.bath || this.fainting) return;
+    gameState.setAction(null);
+    this.toGate = true;
+    gameState.trackPlayer(gates.yardReturn);
+    this.cameras.main.fadeOut(GATE_FADE_MS);
+    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+      this.scene.launch('Gate', { floor, home: { ...this.door } });
+      this.scene.sleep();
     });
   }
 
@@ -479,7 +513,8 @@ export class BaseScene extends Phaser.Scene {
     }
     if (this.arranger.active) this.arranger.draw(this.playerRect());
     else this.followPlayer();
-    gameState.trackPlayer({ x: this.player.body.x, y: this.player.body.y });
+    // กำลังเข้าเกต: ตำแหน่งในเซฟเป็นหน้าประตูเกตแล้ว ไม่รายงานตำแหน่งในลานทับ
+    if (!this.toGate) gameState.trackPlayer({ x: this.player.body.x, y: this.player.body.y });
     const camera = this.cameras.main;
     const screenScale = camera.zoom / window.devicePixelRatio;
     gameState.trackPlayerScreen({
@@ -661,7 +696,8 @@ export class BaseScene extends Phaser.Scene {
 
   /** ทุกท่าล็อกการเดิน กดปุ่มเดิมอีกครั้งเพื่อหยุด · ท่าทำสวนสั้นจึงทำจนจบเอง */
   private useAction(): void {
-    if (this.arranger.active) return;
+    // ระหว่างอยู่ในเกต ลานบ้านหลับอยู่ ปุ่มกระทำเป็นของฉากเกต
+    if (this.arranger.active || !this.sys.isActive()) return;
     if (this.fishing) {
       if (this.fishing.phase === 'bite') this.finishFishing(true);
       else if (this.fishing.phase !== 'reel') this.cancelFishing();
@@ -1349,6 +1385,7 @@ export class BaseScene extends Phaser.Scene {
   /** เข้าโหมดจัดวาง: นาฬิกาหยุด กล้องเลื่อนไปที่ลานหน้าบ้าน · ออก: กลับไปตามตัวเอก */
   private setArranging(on: boolean): void {
     if (on === this.arranger.active) return;
+    if (on && !this.sys.isActive()) return;
     if (on) {
       if (!gameState.started || this.player.busy || this.fishing || this.bath) return;
       this.arranger.enter();

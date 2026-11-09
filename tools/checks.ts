@@ -15,6 +15,7 @@ import {
   cropsSchema,
   dialogueSchema,
   gatesSchema,
+  gateMapSchema,
   mailSchema,
   petsSchema,
   fishSchema,
@@ -365,6 +366,41 @@ export function checkProject(): string[] {
       const key = match[1] ?? match[2];
       if (key && !translations[key]) problems.push(`${label}: missing text key ${key}`);
     }
+  }
+
+  // เกตที่เดินเข้าไปได้: แผนที่ผ่าน schema มีภาพพื้นหลัง ชั้นหน้า ญาติมอนสเตอร์ครบ และของรางวัลกับของป่ามีชื่อในเกม
+  const gatesFile = gatesSchema.parse(readJson('src/data/gates.json'));
+  const monsterFile = monstersSchema.parse(readJson('src/data/monsters.json'));
+  const itemNamed = (item: string): boolean =>
+    item.startsWith('ing_') ? Boolean(translations[`ingredient.${item.slice('ing_'.length)}.name`] && ingredientIds[item.slice('ing_'.length)]) : Boolean(translations[`item.${item}.name`]);
+  for (const gate of gatesFile.gates) {
+    if (!gate.map) continue;
+    const label = `src/data/gate_maps/${gate.map}_map.json`;
+    if (!existsSync(join(projectRoot, label))) {
+      problems.push(`src/data/gates.json: floor ${gate.floor} map ${gate.map} has no ${label}`);
+      continue;
+    }
+    const parsed = gateMapSchema.safeParse(readJson(label));
+    if (!parsed.success) {
+      problems.push(`${label}: ${parsed.error.issues.map((issue) => `${issue.path.join('.')} ${issue.message}`).join('; ')}`);
+      continue;
+    }
+    const map = parsed.data;
+    for (const layer of ['bg', 'fg']) {
+      const entry = registry[`${gate.map}_${layer}`];
+      if (entry?.type !== 'local') problems.push(`assets-src/registry.json: gate ${gate.floor} has no ${gate.map}_${layer} image`);
+      else if (entry.width !== map.size[0] * map.tile || entry.height !== map.size[1] * map.tile) problems.push(`assets-src/registry.json: ${gate.map}_${layer} does not match the map size`);
+    }
+    for (const id of [map.owner.monster, map.kin.monster]) if (!monsterFile[id]?.art) problems.push(`${label}: monster ${id} has no art`);
+    for (const variant of map.kin.variants) {
+      for (const kind of ['stand', 'walk', 'eat']) {
+        if (!registry[`${gate.map}_kin_${variant}_sweet_${kind}`]) problems.push(`assets-src/registry.json: ${label} kin ${variant} has no ${kind} sheet`);
+      }
+    }
+    for (const [x, y] of map.blocked) if (x >= map.size[0] || y >= map.size[1]) problems.push(`${label}: blocked cell ${x},${y} is outside the map`);
+    if (gate.reward && !itemNamed(gate.reward.item)) problems.push(`src/data/gates.json: floor ${gate.floor} reward ${gate.reward.item} has no name`);
+    if (gate.forage && !itemNamed(gate.forage.item)) problems.push(`src/data/gates.json: floor ${gate.floor} forage ${gate.forage.item} has no name`);
+    if (gate.reward && !registry.gate_reward_chest) problems.push('assets-src/registry.json: gate_reward_chest is missing');
   }
 
   return problems;
