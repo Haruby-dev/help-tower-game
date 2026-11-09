@@ -3,7 +3,7 @@
   "yardReturn": { "x": 800, "y": 126 },
   "zones": [{ "zone": 1, "weather": "ui_weather_sun" }],
   "gates": [
-    { "floor": 1, "scene": "gate_scene_gate1", "map": "box", "outside": "#5f7f62", "owner": "puinun" },
+    { "floor": 1, "scene": "gate_scene_gate1", "map": "box", "outside": "#5f7f62", "owner": "puinun", "forage": { "item": "ing_daisy", "count": 1 } },
     { "floor": 2, "scene": "gate_scene_gate2", "map": "box", "outside": "#5f7f62", "owner": "popcorn", "forage": { "item": "bamboo", "count": 1 } },
     {
       "floor": 3,
@@ -17,12 +17,12 @@
       "kinNibbleChance": 0.35,
       "cloudShadows": { "count": 3, "alpha": 0.14, "driftPxPerSecond": 4 }
     },
-    { "floor": 4, "scene": "gate_scene_gate4", "map": "box", "outside": "#5f7f62", "owner": "toomtia" },
-    { "floor": 5, "scene": "gate_scene_gate5", "map": "box", "outside": "#5f7f62", "owner": "tangkrading", "reward": { "recipe": "honey_pancake" } },
-    { "floor": 6, "scene": "gate_scene_gate6", "map": "box", "outside": "#5f7f62", "owner": "yaibaimai" },
-    { "floor": 7, "scene": "gate_scene_gate7", "map": "box", "outside": "#5f7f62", "owner": "wingwing" },
-    { "floor": 8, "scene": "gate_scene_gate8", "map": "box", "outside": "#5f7f62", "owner": "tubpong" },
-    { "floor": 9, "scene": "gate_scene_gate9", "map": "box", "outside": "#5f7f62", "owner": "jaotungtong", "reward": { "recipe": "strawberry_milk_pudding" } },
-    { "floor": 10, "scene": "gate_scene_gate10", "map": "box", "outside": "#5f7f62", "owner": "puefaotung" }
+    { "floor": 4, "scene": "gate_scene_gate4", "map": "box", "outside": "#5f7f62", "owner": "toomtia", "forage": { "item": "ing_field_mushroom", "count": 1 } },
+    { "floor": 5, "scene": "gate_scene_gate5", "map": "box", "outside": "#5f7f62", "owner": "tangkrading", "reward": { "recipe": "honey_pancake" }, "forage": { "item": "ing_sweet_flower", "count": 1 } },
+    { "floor": 6, "scene": "gate_scene_gate6", "map": "box", "outside": "#5f7f62", "owner": "yaibaimai", "forage": { "item": "ing_twig_leaf", "count": 1 } },
+    { "floor": 7, "scene": "gate_scene_gate7", "map": "box", "outside": "#5f7f62", "owner": "wingwing", "forage": { "item": "ing_pink_salt", "count": 1 } },
+    { "floor": 8, "scene": "gate_scene_gate8", "map": "box", "outside": "#5f7f62", "owner": "tubpong", "forage": { "item": "ing_marsh_herb", "count": 1 } },
+    { "floor": 9, "scene": "gate_scene_gate9", "map": "box", "outside": "#5f7f62", "owner": "jaotungtong", "reward": { "recipe": "strawberry_milk_pudding" }, "forage": { "item": "ing_wild_golden_wheat", "count": 1 } },
+    { "floor": 10, "scene": "gate_scene_gate10", "map": "box", "outside": "#5f7f62", "owner": "puefaotung", "forage": { "item": "ing_wild_fruit", "count": 1 } }
   ]
 }

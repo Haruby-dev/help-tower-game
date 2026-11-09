@@ -102,6 +102,13 @@
   color: #ffffff;
 }
 
+/* แท็บที่ขึ้นแล้วแต่ตอนนี้ใช้ไม่ได้ (จัดชุดเมื่อถาดสานหมด) สีเทา กดไม่ได้ */
+.ck-tab.is-off {
+  background: #e4dde0;
+  color: #a99aa2;
+  cursor: default;
+}
+
 .ck-close {
   position: absolute;
   top: 24px;

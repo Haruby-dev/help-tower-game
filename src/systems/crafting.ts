@@ -1,6 +1,7 @@
 import type { Crafting, World } from '../core/state';
 import balance from '../data/balance.json';
 import linesJson from '../data/lines.json';
+import setsJson from '../data/sets.json';
 import type { Workbench } from '../data/schema';
 import workbenchJson from '../data/workbench.json';
 import { addToBag, countOf, takeFromBag } from './farm';
@@ -76,13 +77,21 @@ export const harvestExtras = (crop: string): [string, number][] => Object.entrie
 /** บทของตัวเอกตอนได้ของนี้ครั้งแรก null คือของที่ไม่มีบท */
 export const firstItemLine = (item: string): string | null => firstLines[baseItem(item)] ?? null;
 
-/** ของใหม่ที่เพิ่งเข้ากระเป๋าและยังไม่เคยพูดถึง ตอบบทที่ต้องพูดและโลกที่จำว่าพูดแล้ว */
+/** ถาดสานจำไว้ว่าเคยมีแล้ว (ไม่มีบทพูด) แท็บจัดชุดจึงยังอยู่เป็นสีเทาเมื่อใช้ถาดหมด (ผู้ใช้ตัดสิน 10 พ.ย. 2026) */
+export const WOVEN_TRAYS: readonly string[] = Object.values(setsJson.trays).map((tray) => tray.item);
+
+/** เคยมีถาดสานแล้ว (เซฟเก่าที่ยังไม่ได้จำ ดูจากถาดหรือชุดในกระเป๋าแทน) */
+export const hadWovenTray = (world: World): boolean => WOVEN_TRAYS.some((item) => world.crafting.noticed.includes(item));
+
+/** ของใหม่ที่เพิ่งเข้ากระเป๋าและยังไม่เคยพูดถึง ตอบบทที่ต้องพูดและโลกที่จำว่าพูดแล้ว (ถาดสานจำไว้เฉย ๆ ไม่มีบท) */
 export function noticeNewItems(world: World): { world: World; lines: string[] } {
-  const fresh = [...new Set(world.bag.map((stack) => baseItem(stack.item)))].filter((item) => firstItemLine(item) !== null && !world.crafting.noticed.includes(item));
+  const fresh = [...new Set(world.bag.map((stack) => baseItem(stack.item)))].filter(
+    (item) => (firstItemLine(item) !== null || WOVEN_TRAYS.includes(item)) && !world.crafting.noticed.includes(item),
+  );
   if (fresh.length === 0) return { world, lines: [] };
   return {
     world: { ...world, crafting: { ...world.crafting, noticed: [...world.crafting.noticed, ...fresh] } },
-    lines: fresh.map((item) => firstItemLine(item)!),
+    lines: fresh.flatMap((item) => firstItemLine(item) ?? []),
   };
 }
 

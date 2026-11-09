@@ -205,7 +205,7 @@ function createLowGaugeBubble(uiRoot: HTMLElement): void {
     queueMicrotask(() => {
       noticing = false;
       const noticed = noticeNewItems(gameState.world);
-      if (noticed.lines.length === 0) return;
+      if (noticed.world === gameState.world) return;
       gameState.setWorld(noticed.world);
       noticed.lines.forEach((line, order) => window.setTimeout(() => speak(line), balance.hud.firstItemDelayMs + order * balance.hud.bubbleMs));
     });

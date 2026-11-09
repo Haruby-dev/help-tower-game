@@ -215,7 +215,8 @@ test('gate portal in the yard: the floor menu is the tower book, floor 3 opens a
   await expect.poll(async () => (await world(page)).gates.chests).toEqual([3]);
   await page.evaluate(() => {
     const state = (window as unknown as Win).__state;
-    state.setWorld({ ...state.world, gates: { ...state.world.gates, forage: { '3': { day: state.world.day, picked: [0, 1, 2, 3] } } } });
+    // ชั้น 1 เปิดแล้วด้วย (ฉากกล่องสีมีดอกเดซี่) เก็บครบทั้งสองชั้น จุดทองจึงหายหมด
+    state.setWorld({ ...state.world, gates: { ...state.world.gates, forage: { '1': { day: state.world.day, picked: [0, 1, 2, 3] }, '3': { day: state.world.day, picked: [0, 1, 2, 3] } } } });
   });
   await standAt(page, 13.9, 12.7);
   await page.keyboard.down('s');

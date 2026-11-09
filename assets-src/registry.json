@@ -13146,5 +13146,61 @@
     "height": 16,
     "color": "#9fd8c8",
     "labelKey": "item.seed_cloud_lettuce.name"
+  },
+  "ing_icon_daisy": {
+    "type": "placeholder",
+    "width": 16,
+    "height": 16,
+    "color": "#f4f1d8",
+    "labelKey": "ingredient.daisy.name"
+  },
+  "ing_icon_field_mushroom": {
+    "type": "placeholder",
+    "width": 16,
+    "height": 16,
+    "color": "#c99a78",
+    "labelKey": "ingredient.field_mushroom.name"
+  },
+  "ing_icon_sweet_flower": {
+    "type": "placeholder",
+    "width": 16,
+    "height": 16,
+    "color": "#f6b8d0",
+    "labelKey": "ingredient.sweet_flower.name"
+  },
+  "ing_icon_twig_leaf": {
+    "type": "placeholder",
+    "width": 16,
+    "height": 16,
+    "color": "#a8875e",
+    "labelKey": "ingredient.twig_leaf.name"
+  },
+  "ing_icon_pink_salt": {
+    "type": "placeholder",
+    "width": 16,
+    "height": 16,
+    "color": "#f2c4cc",
+    "labelKey": "ingredient.pink_salt.name"
+  },
+  "ing_icon_marsh_herb": {
+    "type": "placeholder",
+    "width": 16,
+    "height": 16,
+    "color": "#8cc79a",
+    "labelKey": "ingredient.marsh_herb.name"
+  },
+  "ing_icon_wild_golden_wheat": {
+    "type": "placeholder",
+    "width": 16,
+    "height": 16,
+    "color": "#e8c867",
+    "labelKey": "ingredient.wild_golden_wheat.name"
+  },
+  "ing_icon_wild_fruit": {
+    "type": "placeholder",
+    "width": 16,
+    "height": 16,
+    "color": "#e48a8a",
+    "labelKey": "ingredient.wild_fruit.name"
   }
 }

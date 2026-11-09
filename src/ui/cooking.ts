@@ -27,6 +27,7 @@ import { sizedArt } from './pixelArt';
 import { revealWhenReady } from './preload';
 import { createSetArranger } from './setArrange';
 import { TRAY_SIZES, isSet, setTable } from '../systems/sets';
+import { hadWovenTray } from '../systems/crafting';
 
 /**
  * หน้าต่างทำอาหาร K2 "หม้อกลางกองไฟ" (docs/cook_ui_k2_2026-11-08.md ภาพตัวอย่าง art-src/cook_ui_1108/k2_mock_v3.png)
@@ -42,16 +43,24 @@ const TABS: { id: Tab; label: TextKey }[] = [
   { id: 'set', label: 'set.tab' },
 ];
 
-/** แท็บเครื่องดื่มต้องมีแก้วไม้ไผ่ (อยู่ในกระเป๋าตลอดเมื่อทำแล้ว) · แท็บจัดชุดต้องมีถาดสานหรือชุดในกระเป๋า หรือเคยจัดชุดลับแล้ว */
+const hasWovenTray = (): boolean => {
+  const trays = TRAY_SIZES.map((size) => setTable.trays[size].item);
+  return gameState.world.bag.some((stack) => trays.includes(stack.item));
+};
+
+/**
+ * แท็บเครื่องดื่มต้องมีแก้วไม้ไผ่ (อยู่ในกระเป๋าตลอดเมื่อทำแล้ว)
+ * แท็บจัดชุดขึ้นเมื่อเคยมีถาดสาน (หรือมีชุดในกระเป๋า หรือเคยจัดชุดลับแล้ว) ก่อนนั้นไม่แสดงเลย (ข้อ A11)
+ */
 function tabUnlocked(id: Tab): boolean {
   const world = gameState.world;
   if (id === 'drink') return world.bag.some((stack) => stack.item === balance.cooking.drinkNeeds);
-  if (id === 'set') {
-    const trays = TRAY_SIZES.map((size) => setTable.trays[size].item);
-    return world.bag.some((stack) => trays.includes(stack.item) || isSet(stack.item)) || world.sets.combos.length > 0;
-  }
+  if (id === 'set') return hadWovenTray(world) || hasWovenTray() || world.bag.some((stack) => isSet(stack.item)) || world.sets.combos.length > 0;
   return true;
 }
+
+/** แท็บที่ขึ้นแล้วแต่ตอนนี้ใช้ไม่ได้: จัดชุดเมื่อไม่มีถาดสานเหลือในกระเป๋า เป็นสีเทา กดไม่ได้ (ผู้ใช้ตัดสิน 10 พ.ย. 2026) */
+const tabUsable = (id: Tab): boolean => id !== 'set' || hasWovenTray();
 
 /** ช่องวัตถุดิบรอบกองไฟ (พิกเซลภาพตัวอย่าง นับจากมุมซ้ายบนของฉาก) แถวละ 3 ช่อง */
 const SLOT = { left: 360, top: 35, stepX: 92, stepY: 112, size: 66, perRow: 3 } as const;
@@ -381,8 +390,8 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
   function render(): void {
     // แท็บเครื่องดื่มขึ้นเมื่อมีแก้วไม้ไผ่ใบแรก แท็บจัดชุดขึ้นเมื่อมีถาดสาน (หรือเคยจัดชุดแล้ว) ก่อนนั้นไม่แสดงเลย (ข้อ A11)
     const shown = TABS.filter(({ id }) => tabUnlocked(id));
-    if (!shown.some(({ id }) => id === tab)) {
-      tab = shown[0]?.id ?? 'savory';
+    if (!shown.some(({ id }) => id === tab && tabUsable(id))) {
+      tab = shown.find(({ id }) => tabUsable(id))?.id ?? 'savory';
       batch = 1;
       picks = {};
     }
@@ -390,9 +399,10 @@ export function createCookingWindow(uiRoot: HTMLElement): void {
     panel.dataset.theme = tab;
     tabs.replaceChildren(
       ...shown.map(({ id, label }) => {
-        const button = element('button', `ck-button ck-tab${id === tab ? ' is-active' : ''}`, t(label));
+        const button = element('button', `ck-button ck-tab${id === tab ? ' is-active' : ''}${tabUsable(id) ? '' : ' is-off'}`, t(label));
         button.type = 'button';
         button.dataset.cookTab = id;
+        button.disabled = !tabUsable(id);
         button.addEventListener('click', () => {
           if (busy || tab === id) return;
           tab = id;

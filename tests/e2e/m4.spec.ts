@@ -141,6 +141,18 @@ test('mystery food left at the campfire from an old save is still collected, and
   await act.click();
   await expect(page.locator('[data-cook-tab]')).toHaveCount(4);
   await expect(page.locator('[data-cook-tab="set"]')).toHaveText('จัดชุด');
+  await expect(page.locator('[data-cook-tab="set"]')).toBeEnabled();
+  await page.locator('#cook-close').click();
+  // ใช้ถาดสานหมดแล้ว แท็บจัดชุดยังอยู่แต่เป็นสีเทา กดไม่ได้ (ผู้ใช้ตัดสิน 10 พ.ย. 2026)
+  await page.waitForFunction(() => (window as unknown as { __state: TestState & { world: { crafting: { noticed: string[] } } } }).__state.world.crafting.noticed.includes('small_woven_tray'));
+  await page.evaluate(() => {
+    const s = (window as unknown as { __state: TestState }).__state;
+    s.setWorld({ ...s.world, bag: s.world.bag.filter((stack) => stack.item !== 'small_woven_tray') });
+  });
+  await act.click();
+  await expect(page.locator('[data-cook-tab]')).toHaveCount(4);
+  await expect(page.locator('[data-cook-tab="set"]')).toBeDisabled();
+  await expect(page.locator('[data-cook-tab="set"]')).toHaveClass(/is-off/);
   await page.locator('#cook-close').click();
   await page.evaluate(() => {
     const s = (window as unknown as { __state: TestState }).__state;

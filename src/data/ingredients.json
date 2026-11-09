@@ -48,6 +48,30 @@
   "wild_cloud_lettuce": {
     "value": 150
   },
+  "daisy": {
+    "value": 50
+  },
+  "field_mushroom": {
+    "value": 80
+  },
+  "sweet_flower": {
+    "value": 60
+  },
+  "twig_leaf": {
+    "value": 20
+  },
+  "pink_salt": {
+    "value": 50
+  },
+  "marsh_herb": {
+    "value": 60
+  },
+  "wild_golden_wheat": {
+    "value": 180
+  },
+  "wild_fruit": {
+    "value": 80
+  },
   "slime_jelly_scrap": {
     "value": 50
   },

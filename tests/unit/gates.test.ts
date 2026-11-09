@@ -24,7 +24,7 @@ describe('gate 3 test map', () => {
     if (!picked || picked === 'full') throw new Error('no bamboo');
     expect(countOf(picked.world.bag, 'bamboo')).toBe(1);
     expect(forageLeftToday(picked.world, 2)).toBe(true);
-    expect(forageLeftToday(world, 1)).toBe(false);
+    expect(forageLeftToday(world, 1)).toBe(true);
   });
 
   it('spawns on a walkable cell just above the exit, and the forage, owner and chest stand on walkable cells', () => {
@@ -94,7 +94,7 @@ describe('gate forage', () => {
     // จุดทองในเมนูเลือกชั้น: วันนี้ยังเหลือของป่าไหม
     expect(forageLeftToday(world, 3)).toBe(false);
     expect(forageLeftToday(tomorrow, 3)).toBe(true);
-    expect(forageLeftToday(tomorrow, 4)).toBe(false);
+    expect(forageLeftToday(tomorrow, 11)).toBe(false);
   });
 
   it('ignores points that do not exist', () => {
@@ -129,5 +129,12 @@ describe('gate save', () => {
     delete old.world.gates;
     const migrated = parseSaveFile(JSON.parse(JSON.stringify({ ...old, version: 23 })));
     expect(migrated?.world.gates).toEqual({ chests: [], forage: {} });
+  });
+});
+
+describe('temporary forage of the colour-box gates (user OK 10 Nov 2026)', () => {
+  it('every gate 1–10 has a daily forage item with a name', () => {
+    const items = gates.gates.map((gate) => gate.forage?.item);
+    expect(items).toEqual(['ing_daisy', 'bamboo', 'ing_wild_cloud_lettuce', 'ing_field_mushroom', 'ing_sweet_flower', 'ing_twig_leaf', 'ing_pink_salt', 'ing_marsh_herb', 'ing_wild_golden_wheat', 'ing_wild_fruit']);
   });
 });

@@ -3,7 +3,7 @@ import type { World } from '../../src/core/state';
 import lines from '../../src/data/lines.json';
 import workbench from '../../src/data/workbench.json';
 import { canCook } from '../../src/systems/cooking';
-import { canShakeBanana, craft, craftStatus, giveFirstDryingTray, noticeNewItems, ownedCount, shakeBanana } from '../../src/systems/crafting';
+import { canShakeBanana, craft, craftStatus, giveFirstDryingTray, hadWovenTray, noticeNewItems, ownedCount, shakeBanana } from '../../src/systems/crafting';
 import { applyFarmAction, countOf } from '../../src/systems/farm';
 import { newWorld } from '../../src/systems/gauges';
 import { SAVE_VERSION, parseSaveFile, toSaveFile } from '../../src/systems/save';
@@ -111,5 +111,16 @@ describe('save version 18 (and later)', () => {
     expect(SAVE_VERSION).toBe(24);
     expect(parsed.version).toBe(24);
     expect(parsed.world.crafting).toEqual({ bananaDay: 0, noticed: ['fish_shrimp'], stations: { drying_tray: 0, trap: 1 }, drying: [], traps: [], mortar: false });
+  });
+});
+
+describe('woven tray memory (set tab stays, greyed, after the last tray is used · user 10 Nov 2026)', () => {
+  it('remembers the first woven tray without a spoken line', () => {
+    const world = { ...newWorld(), bag: [{ item: 'small_woven_tray', count: 1 }] };
+    expect(hadWovenTray(world)).toBe(false);
+    const noticed = noticeNewItems(world);
+    expect(noticed.lines).toEqual([]);
+    expect(hadWovenTray(noticed.world)).toBe(true);
+    expect(hadWovenTray({ ...noticed.world, bag: [] })).toBe(true);
   });
 });
