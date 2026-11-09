@@ -247,8 +247,8 @@ describe('save versions 20 and 21', () => {
     const file = toSaveFile(newWorld());
     const { sets: _sets, ...oldWorld } = file.world;
     const parsed = parseSaveFile({ ...file, version: 19, world: oldWorld })!;
-    expect(SAVE_VERSION).toBe(24);
-    expect(parsed.version).toBe(24);
+    expect(SAVE_VERSION).toBe(25);
+    expect(parsed.version).toBe(25);
     expect(parsed.world.sets).toEqual({ reputation: 0, combos: [], bigTable: { owned: false, sets: [null, null, null] } });
   });
 

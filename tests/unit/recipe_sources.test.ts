@@ -167,8 +167,8 @@ describe('save version 23', () => {
     const { fragments: _fragments, ...recipes } = file.world.recipes;
     const oldWorld = { ...file.world, recipes, chests: { sinceCosmetic: 3 } };
     const parsed = parseSaveFile({ ...file, version: 22, world: oldWorld })!;
-    expect(SAVE_VERSION).toBe(24);
-    expect(parsed.version).toBe(24);
+    expect(SAVE_VERSION).toBe(25);
+    expect(parsed.version).toBe(25);
     expect(parsed.world.recipes.fragments).toEqual({});
     expect(parsed.world.chests).toEqual({ sinceCosmetic: 3, sinceRareFragment: 0 });
   });

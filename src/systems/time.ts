@@ -7,6 +7,7 @@ import { growFarm } from './farm';
 import { gioMorning, settleGio } from './gio';
 import { planVisits, settleVisits } from './monsters';
 import { gainTips } from './news';
+import { petsMorning } from './pets';
 import { rainOnFarm, weatherFor } from './weather';
 import { decayAwake, recoverFromFaint, shouldFaint, sleepUntilMorning } from './gauges';
 
@@ -20,7 +21,8 @@ function nextMorning(world: World, restful: boolean): World {
   const day = world.day + 1;
   const weather = weatherFor(world.seed, day);
   const farm = growFarm(world.farm);
-  return decorMorning({
+  // สัตว์เลี้ยงทำงานหลังแปลงแห้งแล้ว หนึบหนับจึงรดน้ำแปลงของเช้านี้
+  return petsMorning(decorMorning({
     ...world,
     day,
     weather,
@@ -29,7 +31,7 @@ function nextMorning(world: World, restful: boolean): World {
     farm: weather === 'rain' ? rainOnFarm(farm) : farm,
     cooking: finishOvernight(world.cooking),
     gio: gioMorning(world.gio),
-  });
+  }));
 }
 
 /** ชื่อหน้าต่างที่หยุดนาฬิการะหว่างท่าเป็นลม */

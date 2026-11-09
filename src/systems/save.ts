@@ -10,7 +10,7 @@ import setsJson from '../data/sets.json';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 import { cookingStarterBag, firstWeather, fishingStarterBag, newFarm, newFishing, newRecipeBook, newSeed, starterBag } from './gauges';
 
-export const SAVE_VERSION = 24;
+export const SAVE_VERSION = 25;
 const PLAIN_RICE = 'plain_rice';
 /** ผู้ใช้ตัดสิน 4 พ.ย. 2026: ตัวเลขเหรียญทั้งเกมใหญ่ขึ้น 10 เท่า สัดส่วนเศรษฐกิจเท่าเดิม */
 export const COIN_SCALE = 10;
@@ -162,6 +162,8 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
   },
   // เวอร์ชัน 24 ทดลองเกต 3: ยังไม่เคยเปิดหีบรางวัลเกต ยังไม่เคยเก็บของป่า
   23: (save) => ({ ...save, world: { ...(save.world as object), gates: { chests: [], forage: {} } } }),
+  // เวอร์ชัน 25 สัตว์เลี้ยง (M8b): ยังไม่เจอตัวไหน
+  24: (save) => ({ ...save, world: { ...(save.world as object), pets: {} } }),
 };
 
 /** เซฟเก่าไม่ได้เก็บช่วงความสุขของสรุปยอด เดาจากสัดส่วนค่าคอม */

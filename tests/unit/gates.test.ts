@@ -117,7 +117,7 @@ describe('gate stay limit', () => {
 
 describe('gate save', () => {
   it('keeps opened chests and picked forage in the save (version 24) and old saves start empty', () => {
-    expect(SAVE_VERSION).toBe(24);
+    expect(SAVE_VERSION).toBe(25);
     const opened = openGateChest(newWorld(), 3);
     if (!opened || opened === 'full') throw new Error('chest did not open');
     const picked = pickForage(opened.world, 3, 1);

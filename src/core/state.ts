@@ -64,6 +64,22 @@ export interface PlotState {
 
 export const emptyPlot = (): PlotState => ({ tilled: false, watered: false, crop: null, fertilizer: 0 });
 
+/**
+ * สัตว์เลี้ยงหนึ่งตัว: treating รักษาอยู่ (วันละครั้ง) → needs_home หายแล้วรอบ้าน → living อยู่ด้วยแล้ว
+ * fedDay pettedDay คือวันที่ให้อาหารและลูบล่าสุด · stored ผลผลิตที่รอเก็บ
+ */
+export interface PetState {
+  stage: 'treating' | 'needs_home' | 'living';
+  treatedDays: number;
+  lastTreatDay: number;
+  boosted: boolean;
+  homeOwned: boolean;
+  bond: number;
+  fedDay: number;
+  pettedDay: number;
+  stored: number;
+}
+
 /** ถาดอาหาร จานละ 1 เมนู เมนูเดิมซ้อนในจานเดิม · level 0 / 1 / 2 คือ 3 / 6 / 10 จาน */
 export interface Tray {
   level: number;
@@ -257,6 +273,8 @@ export interface World {
   shop: { day: number; bought: Record<string, number> };
   /** เกต: ชั้นที่เปิดหีบรางวัลแล้ว และจุดของป่าที่เก็บแล้วในวัน day ต่อชั้น */
   gates: { chests: number[]; forage: Record<string, { day: number; picked: number[] }> };
+  /** สัตว์เลี้ยงที่เจอแล้ว (M8b) */
+  pets: Record<string, PetState>;
   /** ของที่ผู้เล่นย้ายแล้ว เก็บตำแหน่งเท้าเป็นพิกเซล ของที่ยังไม่ย้ายใช้ตำแหน่งบนแผนที่ */
   placed: Record<string, Point>;
   tray: Tray;

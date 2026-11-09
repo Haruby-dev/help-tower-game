@@ -148,8 +148,8 @@ describe('save version 22', () => {
     const file = toSaveFile(newWorld());
     const { shop: _shop, ...oldWorld } = file.world;
     const parsed = parseSaveFile({ ...file, version: 21, world: oldWorld })!;
-    expect(SAVE_VERSION).toBe(24);
-    expect(parsed.version).toBe(24);
+    expect(SAVE_VERSION).toBe(25);
+    expect(parsed.version).toBe(25);
     expect(parsed.world.shop).toEqual({ day: 0, bought: {} });
   });
 });

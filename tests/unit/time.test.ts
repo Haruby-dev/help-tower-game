@@ -33,6 +33,7 @@ describe('clock', () => {
       sets: { reputation: 0, combos: [], bigTable: { owned: false, sets: [null, null, null] } },
       shop: { day: 0, bought: {} },
       gates: { chests: [], forage: {} },
+      pets: {},
       placed: {},
       tray: { level: 0, plates: [null, null, null] },
       monsters: { affection: {}, plannedDay: 0, arrivals: [], twins: { revealed: false, revealDay: 0, quizWon: false }, tasted: {} },

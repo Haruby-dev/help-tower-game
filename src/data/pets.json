@@ -1,20 +1,180 @@
 {
-  "bondLevels": [30, 80, 150, 250],
+  "bondLevels": [
+    30,
+    80,
+    150,
+    250
+  ],
+  "bondPerCare": {
+    "fed": 5,
+    "petted": 5
+  },
+  "produceByLevel": [
+    1,
+    1,
+    2,
+    2,
+    3
+  ],
+  "maxStoredDays": 3,
+  "speedUpItems": [
+    "ing_daisy",
+    "ing_sweet_flower",
+    "ing_marsh_herb"
+  ],
   "pets": [
-    { "id": "pangpok", "gate": 2, "art": true, "homePrice": 6000, "treatDays": 2 },
-    { "id": "nuebnub", "gate": 4, "art": true, "homePrice": null, "treatDays": 3 },
-    { "id": "boomboom", "gate": 5, "art": true, "homePrice": 12000, "treatDays": 3 },
-    { "id": "bubble", "gate": 6, "art": true, "homePrice": null, "treatDays": 2 },
-    { "id": "mumu", "gate": 8, "art": true, "homePrice": 20000, "treatDays": 4 },
-    { "id": "pokpaek", "gate": 10, "art": false, "homePrice": null, "treatDays": null },
-    { "id": "fishy", "gate": 12, "art": false, "homePrice": null, "treatDays": null },
-    { "id": "salt_crab", "gate": 15, "art": false, "homePrice": null, "treatDays": null },
-    { "id": "fufu", "gate": 20, "art": false, "homePrice": null, "treatDays": null },
-    { "id": "firefly", "gate": 25, "art": false, "homePrice": null, "treatDays": null },
-    { "id": "mochi_moon", "gate": 28, "art": false, "homePrice": null, "treatDays": null },
-    { "id": "puff", "gate": 33, "art": false, "homePrice": null, "treatDays": null },
-    { "id": "puyhang", "gate": 38, "art": false, "homePrice": null, "treatDays": null },
-    { "id": "oodood", "gate": 42, "art": false, "homePrice": null, "treatDays": null },
-    { "id": "snowkid", "gate": 53, "art": false, "homePrice": null, "treatDays": null }
+    {
+      "id": "pangpok",
+      "gate": 2,
+      "art": true,
+      "homePrice": 6000,
+      "treatDays": 2,
+      "care": {
+        "treat": {
+          "produce_corn": 2,
+          "basil_bandage": 1
+        },
+        "home": "home_coop_kaipok",
+        "produce": "ing_egg"
+      }
+    },
+    {
+      "id": "nuebnub",
+      "gate": 4,
+      "art": true,
+      "homePrice": null,
+      "treatDays": 3,
+      "care": {
+        "treat": {
+          "produce_tomato": 2
+        },
+        "home": null,
+        "waters": [
+          6,
+          9,
+          13,
+          16,
+          20
+        ]
+      }
+    },
+    {
+      "id": "boomboom",
+      "gate": 5,
+      "art": true,
+      "homePrice": 12000,
+      "treatDays": 3,
+      "care": {
+        "treat": {
+          "dish:strawberry_juice": 1
+        },
+        "home": "home_hive_boomboom",
+        "produce": "ing_honey"
+      }
+    },
+    {
+      "id": "bubble",
+      "gate": 6,
+      "art": true,
+      "homePrice": null,
+      "treatDays": 2,
+      "care": {
+        "treat": {},
+        "bath": true,
+        "home": null,
+        "cleanBonus": [
+          20,
+          25,
+          30,
+          35,
+          40
+        ]
+      }
+    },
+    {
+      "id": "mumu",
+      "gate": 8,
+      "art": true,
+      "homePrice": 20000,
+      "treatDays": 4,
+      "care": {
+        "treat": {
+          "produce_rice": 3,
+          "produce_carrot": 3
+        },
+        "home": "home_barn_mumumek",
+        "produce": "ing_milk"
+      }
+    },
+    {
+      "id": "pokpaek",
+      "gate": 10,
+      "art": false,
+      "homePrice": null,
+      "treatDays": null
+    },
+    {
+      "id": "fishy",
+      "gate": 12,
+      "art": false,
+      "homePrice": null,
+      "treatDays": null
+    },
+    {
+      "id": "salt_crab",
+      "gate": 15,
+      "art": false,
+      "homePrice": null,
+      "treatDays": null
+    },
+    {
+      "id": "fufu",
+      "gate": 20,
+      "art": false,
+      "homePrice": null,
+      "treatDays": null
+    },
+    {
+      "id": "firefly",
+      "gate": 25,
+      "art": false,
+      "homePrice": null,
+      "treatDays": null
+    },
+    {
+      "id": "mochi_moon",
+      "gate": 28,
+      "art": false,
+      "homePrice": null,
+      "treatDays": null
+    },
+    {
+      "id": "puff",
+      "gate": 33,
+      "art": false,
+      "homePrice": null,
+      "treatDays": null
+    },
+    {
+      "id": "puyhang",
+      "gate": 38,
+      "art": false,
+      "homePrice": null,
+      "treatDays": null
+    },
+    {
+      "id": "oodood",
+      "gate": 42,
+      "art": false,
+      "homePrice": null,
+      "treatDays": null
+    },
+    {
+      "id": "snowkid",
+      "gate": 53,
+      "art": false,
+      "homePrice": null,
+      "treatDays": null
+    }
   ]
 }

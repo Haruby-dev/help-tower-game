@@ -726,6 +726,21 @@ export const saveFileSchema = z.strictObject({
       chests: z.array(z.number().int().positive()),
       forage: z.record(z.string().regex(/^[0-9]+$/), z.strictObject({ day: z.number().int().nonnegative(), picked: z.array(z.number().int().nonnegative()) })),
     }),
+    /** สัตว์เลี้ยงที่เจอแล้ว (M8b): ระยะรักษา บ้าน ความผูกพัน ผลผลิตที่รอเก็บ */
+    pets: z.record(
+      z.string().regex(/^[a-z_]+$/),
+      z.strictObject({
+        stage: z.enum(['treating', 'needs_home', 'living']),
+        treatedDays: z.number().int().nonnegative(),
+        lastTreatDay: z.number().int().nonnegative(),
+        boosted: z.boolean(),
+        homeOwned: z.boolean(),
+        bond: z.number().int().nonnegative(),
+        fedDay: z.number().int().nonnegative(),
+        pettedDay: z.number().int().nonnegative(),
+        stored: z.number().int().nonnegative(),
+      }),
+    ),
     /** ตำแหน่งเท้า (พิกเซล) ของของที่ผู้เล่นย้ายแล้ว */
     placed: z.record(z.string().min(1), z.strictObject({ x: z.number(), y: z.number() })),
     /** ถาดอาหาร: ระดับ (0 = 3 จาน) กับจานแต่ละใบ ใบละ 1 เมนู เมนูเดิมซ้อนในจานเดิม */
@@ -1058,8 +1073,30 @@ export const linesSchema = z.strictObject({
  * สมุดดูแลสัตว์ (ข้อมูลนิ่งจาก GDD ระบบสัตว์เลี้ยงมาใน M8) สัตว์ 15 ตัวเรียงตามเกตที่ต้องปลด
  * art = มีภาพการ์ดและฉากแล้ว · homePrice ราคาบ้านในร้าน (เหรียญ ×10 แล้ว) null = ไม่ต้องมีบ้าน · ความผูกพันระดับ 2–5 ต้องการแต้มตาม bondLevels
  */
+/**
+ * การดูแลสัตว์เลี้ยง M8b (ตาราง GDD "สัตว์เลี้ยง 5 ตัวใน MVP"): ของที่ใช้รักษาวันละครั้ง (`dish:<สูตร>` คืออาหารสูตรนั้นดาวไหนก็ได้
+ * ผักดาวไหนก็ได้) · bath รักษาด้วยการอาบน้ำที่บ่อด้วยกัน · บ้านที่ต้องซื้อ (null คืออยู่ริมบ่อหรือในบ่อ)
+ * ผลผลิตทุกเช้า (produce) · หนึบหนับรดน้ำแปลงตามระดับ (waters) · บับเบิ้ลอาบน้ำสะอาดเพิ่มตามระดับ (cleanBonus)
+ */
+const petCareSchema = z.strictObject({
+  treat: z.record(z.string().regex(/^(produce_[a-z_]+|ing_[a-z_]+|dish:[a-z_]+|[a-z_]+)$/), z.number().int().positive()),
+  bath: z.literal(true).optional(),
+  home: z.string().min(1).nullable(),
+  produce: z.string().regex(/^ing_[a-z_]+$/).optional(),
+  waters: z.array(z.number().int().nonnegative()).length(5).optional(),
+  cleanBonus: z.array(z.number().nonnegative()).length(5).optional(),
+});
+
 export const petsSchema = z.strictObject({
   bondLevels: z.array(z.number().int().positive()).length(4),
+  /** แต้มผูกพันต่อวัน: ให้อาหาร + ลูบ (GDD วันละ 10) */
+  bondPerCare: z.strictObject({ fed: z.number().int().nonnegative(), petted: z.number().int().nonnegative() }),
+  /** ผลผลิตต่อวันตามระดับผูกพัน 1–5 (GDD 1 → 3) */
+  produceByLevel: z.array(z.number().int().nonnegative()).length(5),
+  /** ผลผลิตที่ยังไม่เก็บสะสมได้ไม่เกินกี่วัน */
+  maxStoredDays: z.number().int().positive(),
+  /** ของช่วยให้หายเร็วขึ้น 1 วัน (ใช้ได้ครั้งเดียวต่อการรักษา) */
+  speedUpItems: z.array(z.string().min(1)),
   pets: z
     .array(
       z.strictObject({
@@ -1068,6 +1105,7 @@ export const petsSchema = z.strictObject({
         art: z.boolean(),
         homePrice: z.number().int().positive().nullable(),
         treatDays: z.number().int().positive().nullable(),
+        care: petCareSchema.optional(),
       }),
     )
     .length(15),
