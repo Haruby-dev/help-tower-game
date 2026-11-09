@@ -8,7 +8,7 @@
   "bonus": { "free": 1, "freeRice": 1.1, "combo": { "small": 1.2, "medium": 1.35, "large": 1.5 } },
   "comboAffection": 1.2,
   "reputation": { "combo": { "small": 5, "medium": 10, "large": 15 }, "firstCombo": 30, "stars": [0, 150, 500, 1200, 2500] },
-  "bigTable": { "item": "big_table", "price": 6000 },
+  "bigTable": { "item": "big_table", "price": 6000, "slots": [18, 48, 78], "trayBottom": 27 },
   "groups": {
     "side": { "flag": "sideDish" },
     "soup": { "flag": "soup" },

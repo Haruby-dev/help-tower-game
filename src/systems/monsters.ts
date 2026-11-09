@@ -7,7 +7,7 @@ import type { MonsterData } from '../data/schema';
 import { parseDish, recipes } from './cooking';
 import { applyTransaction } from './economy';
 import { toppingAffectionFactor } from './toppings';
-import { isSet, parseSet, setCombo, setTable } from './sets';
+import { isSet, parseSet, setCombo, setTable, tableSlots, withTableSlot } from './sets';
 import { removeFromPlate } from './tray';
 
 export const monsterTable = monstersJson as MonsterData;
@@ -387,25 +387,35 @@ export function planVisit(world: World, id: string, rng: Rng): VisitPlan {
   return { takes, pouts, asks: asking && !signaturePlate ? signatureOf(id).recipe : null };
 }
 
-/** จานพิเศษของโต๊ะใหญ่ในแผนการหยิบ (ถาดหอคอยใช้เลขจาน 0 ขึ้นไป) */
-export const BIG_TABLE_PLATE = -1;
+/** จานของโต๊ะใหญ่ในแผนการหยิบเป็นเลขติดลบ ช่อง 0 = −1 ช่อง 1 = −2 … (ถาดหอคอยใช้เลขจาน 0 ขึ้นไป) */
+export const bigTablePlate = (slot: number): number => -1 - slot;
+/** ช่องโต๊ะใหญ่ของจานนี้ หรือ null ถ้าเป็นจานถาดหอคอย */
+export const tableSlotOf = (plate: number): number | null => (plate < 0 ? -1 - plate : null);
 
-function removeFromBigTable(world: World, item: string): { tray: World['tray']; sets: World['sets']; taken: number } {
-  const table = world.sets.bigTable;
-  if (table.set !== item) return { tray: world.tray, sets: world.sets, taken: 0 };
-  return { tray: world.tray, sets: { ...world.sets, bigTable: { ...table, set: null } }, taken: 1 };
+function removeFromBigTable(world: World, slot: number, item: string): { tray: World['tray']; sets: World['sets']; taken: number } {
+  if (tableSlots(world)[slot] !== item) return { tray: world.tray, sets: world.sets, taken: 0 };
+  return { tray: world.tray, sets: withTableSlot(world, slot, null), taken: 1 };
 }
 
-/** ชุดบนโต๊ะใหญ่: หยิบด้วยกฎเดียวกับถาดหอคอย (มีจานที่ชอบอย่างน้อย 1 จาน) ตอบสิ่งที่หยิบ หรือ null */
+const TABLE_RANK = { signature: 0, favourite: 1, like: 2 } as const;
+
+/**
+ * ชุดบนโต๊ะใหญ่: หยิบด้วยกฎเดียวกับถาดหอคอย (มีจานที่ชอบอย่างน้อย 1 จาน) มาครั้งหนึ่งหยิบจากโต๊ะได้ 1 ชุด
+ * เลือกชุดที่มีเมนูประจำใจก่อน แล้วชุดที่มีเมนูโปรด แล้วชุดที่ชอบ เท่ากันเอาช่องซ้ายก่อน ตอบสิ่งที่หยิบ หรือ null
+ */
 export function planBigTable(world: World, id: string, plan: VisitPlan): PlateTake | null {
-  const item = world.sets.bigTable.set;
-  if (!item || isCleared(world, id)) return null;
+  if (isCleared(world, id)) return null;
   const taken = plan.takes.reduce((sum, take) => sum + take.count, 0);
   if (taken >= rules.appetiteMax) return null;
-  const taste = setTaste(id, item);
-  if (wantsSignature(world, id) && isSignatureDish(id, item)) return { plate: BIG_TABLE_PLATE, item, count: 1, reaction: 'signature' };
-  if (taste !== 'favourite' && taste !== 'like') return null;
-  return { plate: BIG_TABLE_PLATE, item, count: 1, reaction: taste };
+  let best: PlateTake | null = null;
+  for (const [slot, item] of tableSlots(world).entries()) {
+    if (!item) continue;
+    const reaction = wantsSignature(world, id) && isSignatureDish(id, item) ? 'signature' : setTaste(id, item);
+    if (reaction !== 'signature' && reaction !== 'favourite' && reaction !== 'like') continue;
+    if (best && TABLE_RANK[best.reaction as keyof typeof TABLE_RANK] <= TABLE_RANK[reaction]) continue;
+    best = { plate: bigTablePlate(slot), item, count: 1, reaction };
+  }
+  return best;
 }
 
 /** สิ่งที่จำไว้ระหว่างการมาครั้งหนึ่ง: จานที่กินต่อเมนู (ความหลากหลาย) และความชอบจากเมนูโปรดกับเครื่องดื่มโปรดที่ใช้คิดโบนัสเซ็ต */
@@ -432,7 +442,8 @@ export interface Taken {
 
 /** หยิบจากจานแล้วกินทีละที่ ความชอบเข้าทันที (ภาพค่อย ๆ เล่นตามทีหลัง) · ครบเซ็ตครั้งแรกได้โบนัส (setBonus − 1) × ความชอบของคู่นั้น */
 export function takePlate(world: World, id: string, take: PlateTake, memo: VisitMemo): Taken {
-  const removed = take.plate === BIG_TABLE_PLATE ? removeFromBigTable(world, take.item) : { ...removeFromPlate(world.tray, take.plate, take.item, take.count), sets: world.sets };
+  const slot = tableSlotOf(take.plate);
+  const removed = slot !== null ? removeFromBigTable(world, slot, take.item) : { ...removeFromPlate(world.tray, take.plate, take.item, take.count), sets: world.sets };
   const recipe = isSet(take.item) ? take.item : parseDish(take.item).recipe;
   let next: World = { ...world, tray: removed.tray, sets: removed.sets };
   if (removed.taken > 0) for (const tasted of recipesIn(take.item)) next = noteTasted(next, id, tasted);

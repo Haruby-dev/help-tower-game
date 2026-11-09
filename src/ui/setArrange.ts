@@ -10,7 +10,8 @@ import { sizedArt } from './pixelArt';
 
 /**
  * แท็บ "จัดชุด" ในหน้าต่างทำอาหาร (งานอาหารโซน 1 ขั้นที่ 6 · ภาพตัวอย่าง art-src/cook_ui_1108/set_1108/set_free_mock.png set_combo.gif)
- * ซ้ายอาหารที่ทำแล้วในกระเป๋า (กับข้าวขึ้นก่อน ที่ไม่ใช่กับข้าวมีป้ายกับหน้าจะอ้วก) ขวาถาดที่เลือกพร้อมช่องว่าง แตะอาหารลงช่อง แตะช่องเอาคืน
+ * ซ้ายอาหารที่ทำแล้วในกระเป๋า (กับข้าวขึ้นก่อน) ขวาถาดที่เลือกพร้อมช่องว่าง แตะอาหารลงช่อง แตะช่องเอาคืน
+ * เตือนหน้าจะอ้วกเฉพาะตอนจัดครบถาดแล้วไม่ตรงชุดลับและมีของหวานหรือเครื่องดื่ม (ผู้ใช้ตัดสิน 9 พ.ย. 2026 ชุดลับหลายชุดต้องใช้ของหวานกับเครื่องดื่ม)
  * ครบถาดแล้วตรงสูตรลับ ชื่อชุดเด้งขึ้น กด "จัดชุด" ได้ชุดหนึ่งชิ้น ถาดใช้แล้วหมด · ขนาดเป็นพิกเซลภาพตัวอย่างเหมือนหน้าต่างทำอาหาร
  */
 const KIND_ORDER: PieceKind[] = ['rice', 'side', 'sweet', 'drink', 'other'];
@@ -49,7 +50,6 @@ export function createSetArranger(grid: HTMLElement, hint: HTMLElement, scene: H
 
   const card = (dish: string): HTMLElement => {
     const kind = pieceKind(dish);
-    const yuck = isYuckPiece(dish);
     const remaining = left(dish);
     const box = element('button', `ck-card sx-card${remaining > 0 ? '' : ' is-missing'}`);
     box.type = 'button';
@@ -58,8 +58,7 @@ export function createSetArranger(grid: HTMLElement, hint: HTMLElement, scene: H
     const name = itemName(dish);
     const label = element('span', 'ck-card__name sx-card__name', name);
     label.dataset.size = name.length > NAME_LONG ? 's' : 'l';
-    box.append(label, element('b', `sx-tag${yuck ? ' is-yuck' : ''}`, t(TAG_TEXT[kind])), element('b', 'sx-count', String(remaining)));
-    if (yuck && registry.emote_yuck?.type === 'local') box.append(sizedArt('emote_yuck', 'sx-yuck', '--px2'));
+    box.append(label, element('b', 'sx-tag', t(TAG_TEXT[kind])), element('b', 'sx-count', String(remaining)));
     box.setAttribute('aria-label', `${name} ${t(TAG_TEXT[kind])} ${remaining}`);
     box.addEventListener('click', () => {
       if (remaining < 1 || pieces.length >= setTable.trays[size].pieces) return;
@@ -109,15 +108,18 @@ export function createSetArranger(grid: HTMLElement, hint: HTMLElement, scene: H
     trayArt.style.left = `calc(50% - ${(trayWidth * TRAY_SCALE * 3) / 2}px)`;
     const full = pieces.length === tray.pieces;
     const combo = full ? comboOf(size, pieces) : null;
+    const yuck = full && !combo && pieces.some(isYuckPiece);
     const slots = tray.ui.map(([dx, dy], index) => {
       const dish = pieces[index];
-      const slot = element('button', `sx-slot${dish ? ' is-filled' : ''}${combo ? ' is-combo' : ''}`);
+      const yuckDish = yuck && dish !== undefined && isYuckPiece(dish);
+      const slot = element('button', `sx-slot${dish ? ' is-filled' : ''}${combo ? ' is-combo' : ''}${yuckDish ? ' is-yuck' : ''}`);
       slot.type = 'button';
       slot.dataset.slot = String(index);
       slot.style.left = `calc(50% + ${dx}px - 66px)`;
       slot.style.top = `${TRAY_CENTER_Y + dy - 66}px`;
       if (dish) {
         slot.append(dishArt(dish, 'sx-slot__art'));
+        if (yuckDish && registry.emote_yuck?.type === 'local') slot.append(sizedArt('emote_yuck', 'sx-yuck', '--px2'));
         slot.setAttribute('aria-label', itemName(dish));
         slot.addEventListener('click', () => {
           pieces = pieces.filter((_, at) => at !== index);
@@ -152,7 +154,7 @@ export function createSetArranger(grid: HTMLElement, hint: HTMLElement, scene: H
       scene.append(line);
       return;
     }
-    const line = element('small', 'sx-progress', `${pieces.length}/${tray.pieces} ${t('set.progress')}`);
+    const line = element('small', `sx-progress${yuck ? ' is-yuck' : ''}`, yuck ? t('set.yuck_warn') : `${pieces.length}/${tray.pieces} ${t('set.progress')}`);
     line.style.top = `${TRAY_CENTER_Y + traySize / 2 + 34}px`;
     line.id = 'set-progress';
     scene.append(line);

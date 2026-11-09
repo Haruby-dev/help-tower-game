@@ -2,6 +2,7 @@ import { createRng } from '../core/rng';
 import { defaultCosmetics, emptyPlot, emptyWallet, type BagStack, type Farm, type Fishing, type GaugeValues, type RecipeBook, type Weather, type World } from '../core/state';
 import balance from '../data/balance.json';
 import recipesJson from '../data/recipes.json';
+import setsJson from '../data/sets.json';
 import { newGioCare } from './gio';
 import { newMonsters } from './monsters';
 import { newTray } from './tray';
@@ -67,7 +68,7 @@ export function newWorld(): World {
     gio: newGioCare(),
     land: { owned: 0 },
     crafting: newCrafting(),
-    sets: { reputation: 0, combos: [], bigTable: { owned: false, set: null } },
+    sets: { reputation: 0, combos: [], bigTable: { owned: false, sets: setsJson.bigTable.slots.map(() => null) } },
     placed: {},
     tray: newTray(),
     monsters: newMonsters(),

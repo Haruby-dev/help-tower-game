@@ -157,8 +157,8 @@ describe('save version 17', () => {
     const file = toSaveFile(newWorld());
     const known = file.world.recipes.known.filter((id) => id !== 'plain_rice');
     const parsed = parseSaveFile({ ...file, version: 16, world: { ...file.world, recipes: { ...file.world.recipes, known } } })!;
-    expect(SAVE_VERSION).toBe(20);
-    expect(parsed.version).toBe(20);
+    expect(SAVE_VERSION).toBe(21);
+    expect(parsed.version).toBe(21);
     expect(parsed.world.recipes.known).toContain('plain_rice');
   });
 });

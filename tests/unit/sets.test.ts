@@ -4,7 +4,7 @@ import type { World } from '../../src/core/state';
 import { countOf } from '../../src/systems/farm';
 import { newWorld } from '../../src/systems/gauges';
 import { saleValue } from '../../src/systems/gio';
-import { feed, planBigTable, planVisit, takePlate, newVisitMemo, dishPoints, BIG_TABLE_PLATE } from '../../src/systems/monsters';
+import { feed, planBigTable, planVisit, takePlate, newVisitMemo, dishPoints, bigTablePlate, tableSlotOf } from '../../src/systems/monsters';
 import { gainTips, tipText } from '../../src/systems/news';
 import { SAVE_VERSION, parseSaveFile, toSaveFile } from '../../src/systems/save';
 import {
@@ -19,6 +19,7 @@ import {
   setBonus,
   setItem,
   setTable,
+  tableSlots,
   takeFromBigTable,
 } from '../../src/systems/sets';
 import { canServe } from '../../src/systems/tray';
@@ -136,12 +137,31 @@ describe('where sets go (spec 6.4)', () => {
     expect(putOnBigTable(world, set)).toBeNull();
     const owned = giveBigTable(world);
     const placed = putOnBigTable(owned, set)!;
-    expect(placed.sets.bigTable.set).toBe(set);
+    expect(placed.sets.bigTable.sets).toEqual([set, null, null]);
     expect(countOf(placed.bag, set)).toBe(0);
-    expect(putOnBigTable({ ...placed, bag: [{ item: set, count: 1 }] }, set)).toBeNull();
-    const back = takeFromBigTable(placed)!;
-    expect(back.sets.bigTable.set).toBeNull();
+    const back = takeFromBigTable(placed, 0)!;
+    expect(back.sets.bigTable.sets).toEqual([null, null, null]);
     expect(countOf(back.bag, set)).toBe(1);
+    expect(takeFromBigTable(back, 0)).toBeNull();
+  });
+
+  it('the big table holds 3 sets, one per slot (her choice 9 Nov 2026)', () => {
+    const medium = setItem('medium', [rice, fish, egg]);
+    const large = setItem('large', [rice, fish, egg, corn]);
+    expect(setTable.bigTable.slots).toHaveLength(3);
+    let world = giveBigTable(withBag([{ item: medium, count: 2 }, { item: large, count: 2 }]));
+    world = putOnBigTable(world, medium)!;
+    world = putOnBigTable(world, large, 2)!;
+    expect(tableSlots(world)).toEqual([medium, null, large]);
+    expect(putOnBigTable(world, large, 2)).toBeNull();
+    world = putOnBigTable(world, large)!;
+    expect(tableSlots(world)).toEqual([medium, large, large]);
+    expect(putOnBigTable(world, medium)).toBeNull();
+    expect(countOf(world.bag, medium)).toBe(1);
+    expect(countOf(world.bag, large)).toBe(0);
+    world = takeFromBigTable(world, 1)!;
+    expect(tableSlots(world)).toEqual([medium, null, large]);
+    expect(countOf(world.bag, large)).toBe(1);
   });
 });
 
@@ -171,15 +191,30 @@ describe('monsters eat sets (spec 6.3, 6.4)', () => {
 
   it('walks to the big table for a set with a favourite dish', () => {
     const set = setItem('medium', [rice, skewer, egg]);
-    const world: World = { ...newWorld(), sets: { reputation: 0, combos: [], bigTable: { owned: true, set } } };
+    const world: World = { ...newWorld(), sets: { reputation: 0, combos: [], bigTable: { owned: true, sets: [null, set, null] } } };
     const plan = planVisit(world, 'puinun', createRng(1));
     const take = planBigTable(world, 'puinun', plan)!;
-    expect(take).toEqual({ plate: BIG_TABLE_PLATE, item: set, count: 1, reaction: 'favourite' });
+    expect(take).toEqual({ plate: bigTablePlate(1), item: set, count: 1, reaction: 'favourite' });
+    expect(tableSlotOf(take.plate)).toBe(1);
+    expect(tableSlotOf(0)).toBeNull();
     const eaten = takePlate(world, 'puinun', take, newVisitMemo());
-    expect(eaten.world.sets.bigTable.set).toBeNull();
+    expect(eaten.world.sets.bigTable.sets).toEqual([null, null, null]);
     expect(eaten.world.monsters.affection.puinun!.points).toBeGreaterThan(0);
-    const plain = { ...world, sets: { ...world.sets, bigTable: { owned: true, set: setItem('medium', [rice, fish, egg]) } } };
+    const plain = { ...world, sets: { ...world.sets, bigTable: { owned: true, sets: [setItem('medium', [rice, fish, egg]), null, null] } } };
     expect(planBigTable(plain, 'puinun', planVisit(plain, 'puinun', createRng(1)))).toBeNull();
+  });
+
+  it('takes one set from the big table per visit, the best one first', () => {
+    const liked = setItem('medium', [rice, corn, egg]);
+    const favourite = setItem('large', [rice, skewer, egg, fish]);
+    const world: World = { ...newWorld(), sets: { reputation: 0, combos: [], bigTable: { owned: true, sets: [liked, favourite, liked] } } };
+    const plan = planVisit(world, 'puinun', createRng(1));
+    const take = planBigTable(world, 'puinun', plan)!;
+    expect(take).toEqual({ plate: bigTablePlate(1), item: favourite, count: 1, reaction: 'favourite' });
+    const eaten = takePlate(world, 'puinun', take, newVisitMemo()).world;
+    expect(tableSlots(eaten)).toEqual([liked, null, liked]);
+    // the next guest takes the leftmost liked set
+    expect(planBigTable(eaten, 'puinun', planVisit(eaten, 'puinun', createRng(1)))).toEqual({ plate: bigTablePlate(0), item: liked, count: 1, reaction: 'like' });
   });
 });
 
@@ -205,13 +240,21 @@ describe('gio hints one secret set at a time (spec 6.2)', () => {
   });
 });
 
-describe('save version 20', () => {
+describe('save versions 20 and 21', () => {
   it('adds the sets block to an old save', () => {
     const file = toSaveFile(newWorld());
     const { sets: _sets, ...oldWorld } = file.world;
     const parsed = parseSaveFile({ ...file, version: 19, world: oldWorld })!;
-    expect(SAVE_VERSION).toBe(20);
-    expect(parsed.version).toBe(20);
-    expect(parsed.world.sets).toEqual({ reputation: 0, combos: [], bigTable: { owned: false, set: null } });
+    expect(SAVE_VERSION).toBe(21);
+    expect(parsed.version).toBe(21);
+    expect(parsed.world.sets).toEqual({ reputation: 0, combos: [], bigTable: { owned: false, sets: [null, null, null] } });
+  });
+
+  it('moves the one set on the big table into the first of 3 slots', () => {
+    const set = setItem('medium', [rice, fish, egg]);
+    const file = toSaveFile(newWorld());
+    const oldWorld = { ...file.world, sets: { reputation: 40, combos: ['mackerel_tray'], bigTable: { owned: true, set } } };
+    const parsed = parseSaveFile({ ...file, version: 20, world: oldWorld })!;
+    expect(parsed.world.sets).toEqual({ reputation: 40, combos: ['mackerel_tray'], bigTable: { owned: true, sets: [set, null, null] } });
   });
 });

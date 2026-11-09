@@ -6,10 +6,11 @@ import { newMonsters, newTwins } from './monsters';
 import { newTray } from './tray';
 import { firstItemLine, newCrafting } from './crafting';
 import balance from '../data/balance.json';
+import setsJson from '../data/sets.json';
 import { saveFileSchema, type SaveFile } from '../data/schema';
 import { cookingStarterBag, firstWeather, fishingStarterBag, newFarm, newFishing, newRecipeBook, newSeed, starterBag } from './gauges';
 
-export const SAVE_VERSION = 20;
+export const SAVE_VERSION = 21;
 const PLAIN_RICE = 'plain_rice';
 /** ผู้ใช้ตัดสิน 4 พ.ย. 2026: ตัวเลขเหรียญทั้งเกมใหญ่ขึ้น 10 เท่า สัดส่วนเศรษฐกิจเท่าเดิม */
 export const COIN_SCALE = 10;
@@ -145,6 +146,13 @@ const MIGRATIONS: Record<number, (save: Record<string, unknown>) => Record<strin
   },
   // เวอร์ชัน 20 จัดชุด (zone1 food update 6): ชื่อเสียงร้าน 0 ยังไม่เคยจัดคอมโบ ยังไม่มีโต๊ะใหญ่
   19: (save) => ({ ...save, world: { ...(save.world as object), sets: { reputation: 0, combos: [], bigTable: { owned: false, set: null } } } }),
+  // เวอร์ชัน 21 โต๊ะใหญ่ถือได้ 3 ชุด (ผู้ใช้เลือก 9 พ.ย. 2026): ชุดที่วางอยู่ย้ายไปช่องแรก
+  20: (save) => {
+    const world = save.world as { sets: { bigTable: { owned: boolean; set: string | null } } };
+    const { owned, set: placed } = world.sets.bigTable;
+    const sets = setsJson.bigTable.slots.map((_, index) => (index === 0 ? placed : null));
+    return { ...save, world: { ...world, sets: { ...world.sets, bigTable: { owned, sets } } } };
+  },
 };
 
 /** เซฟเก่าไม่ได้เก็บช่วงความสุขของสรุปยอด เดาจากสัดส่วนค่าคอม */

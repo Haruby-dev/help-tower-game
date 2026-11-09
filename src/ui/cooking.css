@@ -1517,8 +1517,12 @@
   color: #966e46;
 }
 
-.sx-tag.is-yuck {
-  background: #ffe8e8;
+.sx-slot.is-filled.is-yuck {
+  border-color: var(--ck-bad-ink);
+}
+
+.ck-scene > .sx-progress.is-yuck {
+  font-size: 21px;
   color: var(--ck-bad-ink);
 }
 
@@ -1539,8 +1543,8 @@
 
 .sx-yuck {
   position: absolute;
-  top: 6px;
-  left: 6px;
+  top: -14px;
+  right: -14px;
 }
 
 .ck-scene > .sx-chips {
@@ -1793,6 +1797,37 @@
   position: absolute;
   top: 0;
   left: 0;
+}
+
+/* ช่องวางชุดบนโต๊ะ 3 ช่อง: ชุดที่เลือกจะเก็บคืนมีกรอบส้ม ช่องว่างที่ชุดจะลงมีกรอบเส้นประ */
+.bt-stage > .bt-slot {
+  width: calc(var(--dpx) * 32);
+  height: calc(var(--dpx) * 32);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.bt-slot > .bt-slot__set {
+  position: absolute;
+}
+
+.bt-slot.is-selected {
+  outline: 5px solid var(--ck-orange);
+  outline-offset: 2px;
+}
+
+/* เส้นประวาดด้วยพื้นหลัง เพราะ border dashed ใต้ zoom ไม่วาดด้านซ้ายขวา */
+.bt-slot.is-target::before {
+  position: absolute;
+  inset: 4px;
+  content: '';
+  background:
+    linear-gradient(90deg, var(--ck-orange) 50%, transparent 0) top / 24px 5px repeat-x,
+    linear-gradient(90deg, var(--ck-orange) 50%, transparent 0) bottom / 24px 5px repeat-x,
+    linear-gradient(0deg, var(--ck-orange) 50%, transparent 0) left / 5px 24px repeat-y,
+    linear-gradient(0deg, var(--ck-orange) 50%, transparent 0) right / 5px 24px repeat-y;
 }
 
 .bt .bt-caption {

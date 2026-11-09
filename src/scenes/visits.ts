@@ -11,7 +11,7 @@ import dialogueJson from '../data/dialogue.json';
 import type { Dialogue } from '../data/schema';
 import { Monster } from '../entities/Monster';
 import { parseDish, recipes } from '../systems/cooking';
-import { isYuckPiece, parseSet, setCombo } from '../systems/sets';
+import { isYuckPiece, parseSet, setCombo, setTable, tableSlots } from '../systems/sets';
 import { dishToppingEffect, favouriteToppingOf } from '../systems/toppings';
 import type { ArrivalKind } from '../core/state';
 import {
@@ -42,6 +42,7 @@ import {
   type EatPlace,
   type Reaction,
   planBigTable,
+  tableSlotOf,
   recipesIn,
   type PlateTake,
   type VisitMemo,
@@ -156,8 +157,8 @@ export class Visits {
     private readonly places: VisitPlaces,
     private readonly tray: () => TrayView | null,
     private readonly toScreen: ToScreen,
-    /** เท้าโต๊ะใหญ่ (null คือยังไม่มีโต๊ะ) มอนสเตอร์เดินไปหยิบชุดที่หน้าโต๊ะ */
-    private readonly bigTable: () => Point | null = () => null,
+    /** เท้าโต๊ะใหญ่ (กลางโต๊ะ) กับความกว้างภาพ (null คือยังไม่มีโต๊ะ) มอนสเตอร์เดินไปหยิบชุดที่หน้าช่องนั้น */
+    private readonly bigTable: () => (Point & { width: number }) | null = () => null,
   ) {}
 
   update(deltaMs: number, time: number, player: Point): void {
@@ -462,7 +463,9 @@ export class Visits {
       yield* this.goHome(run, 'yard');
       return;
     }
-    if (servingsOnTray(gameState.world.tray) === 0) {
+    // ถาดว่างและโต๊ะใหญ่ไม่มีชุด (หรือยังไม่มีโต๊ะ) บอกว่าถาดว่างแล้วกลับบ้าน · ถาดว่างแต่มีชุดบนโต๊ะ เดินไปดูโต๊ะต่อ
+    const tableHasSets = this.bigTable() !== null && tableSlots(gameState.world).some((item) => item !== null);
+    if (servingsOnTray(gameState.world.tray) === 0 && !tableHasSets) {
       monster.stand('north');
       this.say(run, 'emptyTray', true);
       yield { kind: 'ms', left: rules.thinkMs };
@@ -503,11 +506,12 @@ export class Visits {
       if (!take) continue;
       yield* this.takeAndShow(run, take, memo, meals);
     }
-    // ชุดบนโต๊ะใหญ่: เดินไปหน้าโต๊ะแล้วหยิบด้วยกฎเดียวกับถาด (สเปก 6.4)
+    // ชุดบนโต๊ะใหญ่: เดินไปหน้าช่องที่จะหยิบแล้วหยิบด้วยกฎเดียวกับถาด (สเปก 6.4) มาครั้งหนึ่งหยิบจากโต๊ะได้ 1 ชุด
     const tableAt = this.bigTable();
     const tableTake = tableAt ? planBigTable(gameState.world, id, plan) : null;
     if (tableAt && tableTake) {
-      yield* this.walk(run, [{ x: tableAt.x, y: tableAt.y + TABLE_FRONT_PX }]);
+      const slotX = setTable.bigTable.slots[tableSlotOf(tableTake.plate) ?? 0] ?? tableAt.width / 2;
+      yield* this.walk(run, [{ x: Math.round(tableAt.x - tableAt.width / 2 + slotX), y: tableAt.y + TABLE_FRONT_PX }]);
       monster.stand('north');
       yield { kind: 'ms', left: rules.browseMs };
       yield* this.takeAndShow(run, tableTake, memo, meals);

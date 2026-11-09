@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import type { World } from '../core/state';
 import { isDryingReady, stationTable, trapSet } from '../systems/stations';
 import { parseDish } from '../systems/cooking';
-import { parseSet, setTable } from '../systems/sets';
+import { parseSet, setTable, tableSlots } from '../systems/sets';
 import { footY } from '../core/assets';
 
 /**
@@ -21,7 +21,6 @@ const MINI_STEPS = [1, 4, 7];
 const SPARKLE_LIFT = { x: 12, y: -40 };
 /** ช่องที่อยากวางโต๊ะใหญ่ครั้งแรก (ช่องแผนที่ ลานหน้าบ้าน ย้ายได้) และขอบล่างถาดชุดบนพื้นโต๊ะ (พิกเซลจากขอบบนภาพโต๊ะ) */
 const TABLE_PREFER = { x: 17.5, y: 13 };
-const TABLE_TRAY_BOTTOM = 27;
 
 export interface Station {
   kind: 'drying' | 'trap';
@@ -87,8 +86,8 @@ export class StationsView {
   }
 
   private syncTable(world: World): void {
-    const { owned, set } = world.sets.bigTable;
-    if (!owned) return;
+    if (!world.sets.bigTable.owned) return;
+    const slots = tableSlots(world);
     if (!this.table) {
       const id = setTable.bigTable.item;
       this.table = this.scene.add.image(0, 0, id).setOrigin(0.5, footY(id) / 41);
@@ -96,26 +95,31 @@ export class StationsView {
       this.table.setPosition((prefer.x + 0.5) * TILE, (prefer.y + 1) * TILE).setDepth(this.table.y);
       this.onNewTable(this.table);
     }
-    const key = `${set ?? ''}:${this.table.x},${this.table.y}`;
+    const key = `${slots.join('/')}:${this.table.x},${this.table.y}`;
     if (key === this.tableKey) return;
     this.tableKey = key;
     for (const piece of this.tableSet) piece.destroy();
     this.tableSet = [];
-    const parts = set ? parseSet(set) : null;
-    if (!parts) return;
-    const tray = setTable.trays[parts.size];
     const corner = this.table.getTopLeft();
-    const trayImage = this.scene.add.image(Math.round(this.table.x), Math.round(corner.y + TABLE_TRAY_BOTTOM), tray.item).setOrigin(0.5, 1).setDepth(this.table.depth + 0.01);
-    this.tableSet.push(trayImage);
-    const trayCorner = trayImage.getTopLeft();
-    parts.dishes.forEach((dish, index) => {
-      const art = `tray_mini_${parseDish(dish).recipe}`;
-      if (!this.scene.textures.exists(art)) return;
-      const [fx, fy] = tray.slots[index]!;
-      const frame = this.scene.textures.getFrame(art);
-      const x = Math.round(trayCorner.x + fx * trayImage.width - frame.width / 2);
-      const y = Math.round(trayCorner.y + fy * trayImage.height - frame.height / 2) - 1;
-      this.tableSet.push(this.scene.add.image(x, y, art).setOrigin(0).setDepth(this.table!.depth + 0.02 + index * 0.001));
+    // ช่องละ 1 ชุด ถาดวางกลางช่องตาม sets.json ขอบล่างถาดอยู่ที่ trayBottom ช่องขวาวาดทับช่องซ้าย
+    slots.forEach((item, slot) => {
+      const parts = item ? parseSet(item) : null;
+      if (!parts) return;
+      const tray = setTable.trays[parts.size];
+      const depth = this.table!.depth + 0.01 + slot * 0.01;
+      const trayImage = this.scene.add.image(0, 0, tray.item).setOrigin(0, 1).setDepth(depth);
+      trayImage.setPosition(Math.round(corner.x + setTable.bigTable.slots[slot]! - trayImage.width / 2), Math.round(corner.y + setTable.bigTable.trayBottom));
+      this.tableSet.push(trayImage);
+      const trayCorner = trayImage.getTopLeft();
+      parts.dishes.forEach((dish, index) => {
+        const art = `tray_mini_${parseDish(dish).recipe}`;
+        if (!this.scene.textures.exists(art)) return;
+        const [fx, fy] = tray.slots[index]!;
+        const frame = this.scene.textures.getFrame(art);
+        const x = Math.round(trayCorner.x + fx * trayImage.width - frame.width / 2);
+        const y = Math.round(trayCorner.y + fy * trayImage.height - frame.height / 2) - 1;
+        this.tableSet.push(this.scene.add.image(x, y, art).setOrigin(0).setDepth(depth + 0.001 + index * 0.0001));
+      });
     });
   }
 

@@ -489,9 +489,10 @@ test('arranges sets on woven trays, finds a secret set, places a medium set on t
   const cook = page.locator('#cook-window');
   await expect(cook).toBeVisible();
   await page.locator('[data-cook-tab="set"]').click();
-  // ถาดเล็กก่อน (มีถาด) · ของหวานมีป้ายกับหน้าจะอ้วก
+  // ถาดเล็กก่อน (มีถาด) · ของหวานไม่มีป้ายแดงตอนเลือก (เตือนเฉพาะตอนจัดครบแล้วไม่ตรงชุดลับ)
   await expect(page.locator('.sx-chip[data-tray-size="small"]')).toHaveClass(/is-active/);
-  await expect(page.locator(`[data-set-dish="${skewer}"] .sx-tag`)).toHaveClass(/is-yuck/);
+  await expect(page.locator(`[data-set-dish="${skewer}"] .sx-tag`)).not.toHaveClass(/is-yuck/);
+  await expect(page.locator(`[data-set-dish="${skewer}"] .sx-yuck`)).toHaveCount(0);
   await expect(page.locator('#set-go')).toBeDisabled();
   await page.locator(`[data-set-dish="${rice}"]`).click();
   await page.locator(`[data-set-dish="${fish}"]`).click();
@@ -502,8 +503,8 @@ test('arranges sets on woven trays, finds a secret set, places a medium set on t
   const small = `set_small|${fish}|${rice}`;
   expect(await count(page, small)).toBe(1);
   expect(await count(page, 'small_woven_tray')).toBe(0);
-  const sets = (): Promise<{ reputation: number; combos: string[]; bigTable: { owned: boolean; set: string | null } }> =>
-    page.evaluate(() => (window as unknown as { __state: { world: { sets: { reputation: number; combos: string[]; bigTable: { owned: boolean; set: string | null } } } } }).__state.world.sets);
+  type Sets = { reputation: number; combos: string[]; bigTable: { owned: boolean; sets: (string | null)[] } };
+  const sets = (): Promise<Sets> => page.evaluate(() => (window as unknown as { __state: { world: { sets: Sets } } }).__state.world.sets);
   expect((await sets()).reputation).toBe(35);
 
   // ถาดกลาง: ชุดอิสระ 3 ชิ้น (แตะช่องเอาคืนได้)
@@ -515,6 +516,8 @@ test('arranges sets on woven trays, finds a secret set, places a medium set on t
   await page.locator(`[data-set-dish="${egg}"]`).click();
   await page.locator(`[data-set-dish="${skewer}"]`).click();
   await expect(page.locator('.sx-combo')).toHaveCount(0);
+  await expect(page.locator('.sx-progress')).toHaveClass(/is-yuck/);
+  await expect(page.locator('.sx-slot.is-yuck')).toHaveCount(1);
   await page.locator('#set-go').click();
   const medium = `set_medium|${egg}|${rice}|${skewer}`;
   expect(await count(page, medium)).toBe(1);
@@ -541,8 +544,21 @@ test('arranges sets on woven trays, finds a secret set, places a medium set on t
   await expect(table).toBeVisible();
   await expect(table.locator('.bt-row')).toHaveCount(1);
   await page.locator('#table-go').click();
-  expect((await sets()).bigTable.set).toBe(medium);
+  // โต๊ะถือได้ 3 ชุด ช่องละชุด (ผู้ใช้เลือก 9 พ.ย. 2026)
+  expect((await sets()).bigTable.sets).toEqual([medium, null, null]);
+  await expect(table.locator('.bt-slot.is-filled')).toHaveCount(1);
+  await expect(table.locator('.bt-sub')).toContainText('1/3');
+  await expect(page.locator('#table-go')).toBeDisabled();
+  await table.locator('.bt-slot[data-table-slot="0"]').click();
   await expect(page.locator('#table-go')).toHaveText('เก็บคืน');
+  await page.locator('#table-go').click();
+  expect((await sets()).bigTable.sets).toEqual([null, null, null]);
+  expect(await count(page, medium)).toBe(1);
+  // แตะช่องว่างทางขวาเพื่อเลือกช่องที่จะวาง
+  await table.locator('.bt-slot[data-table-slot="2"]').click();
+  await expect(table.locator('.bt-slot[data-table-slot="2"]')).toHaveClass(/is-target/);
+  await page.locator('#table-go').click();
+  expect((await sets()).bigTable.sets).toEqual([null, null, medium]);
   await page.locator('#table-close').click();
 
   // สมุดสูตร หน้าชุดที่เคยจัด

@@ -683,11 +683,11 @@ export const saveFileSchema = z.strictObject({
       traps: z.array(z.strictObject({ day: z.number().int().positive() }).nullable()),
       mortar: z.boolean(),
     }),
-    /** จัดชุด: ชื่อเสียงร้าน (ขึ้นอย่างเดียว) ชุดคอมโบที่เคยจัด และโต๊ะใหญ่ (มีแล้วไหม ชุดที่วางอยู่) */
+    /** จัดชุด: ชื่อเสียงร้าน (ขึ้นอย่างเดียว) ชุดคอมโบที่เคยจัด และโต๊ะใหญ่ (มีแล้วไหม ชุดในแต่ละช่อง ช่องว่างเป็น null) */
     sets: z.strictObject({
       reputation: z.number().nonnegative(),
       combos: z.array(z.string().min(1)),
-      bigTable: z.strictObject({ owned: z.boolean(), set: z.string().min(1).nullable() }),
+      bigTable: z.strictObject({ owned: z.boolean(), sets: z.array(z.string().min(1).nullable()) }),
     }),
     /** ตำแหน่งเท้า (พิกเซล) ของของที่ผู้เล่นย้ายแล้ว */
     placed: z.record(z.string().min(1), z.strictObject({ x: z.number(), y: z.number() })),
@@ -796,7 +796,8 @@ export const setsSchema = z.strictObject({
   bonus: z.strictObject({ free: z.number().positive(), freeRice: z.number().positive(), combo: z.record(traySizeSchema, z.number().positive()) }),
   comboAffection: z.number().positive(),
   reputation: z.strictObject({ combo: z.record(traySizeSchema, z.number().int().nonnegative()), firstCombo: z.number().int().nonnegative(), stars: z.array(z.number().int().nonnegative()).length(5) }),
-  bigTable: z.strictObject({ item: z.string().regex(/^[a-z_]+$/), price: z.number().int().positive() }),
+  /** โต๊ะใหญ่: ราคา จุดกลางของแต่ละช่องวางชุด (x นับจากซ้ายของภาพโต๊ะ) และขอบล่างของถาด (y นับจากขอบบนของภาพโต๊ะ) */
+  bigTable: z.strictObject({ item: z.string().regex(/^[a-z_]+$/), price: z.number().int().positive(), slots: z.array(z.number().int().nonnegative()).min(1), trayBottom: z.number().int().positive() }),
   groups: z.record(
     z.string().regex(/^[a-z_]+$/),
     z.union([

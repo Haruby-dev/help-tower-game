@@ -198,7 +198,8 @@ export interface GioCare {
 export interface SetState {
   reputation: number;
   combos: string[];
-  bigTable: { owned: boolean; set: string | null };
+  /** ชุดในแต่ละช่องของโต๊ะใหญ่ ตามลำดับช่องใน sets.json ช่องว่างเป็น null */
+  bigTable: { owned: boolean; sets: (string | null)[] };
 }
 
 /** งานประดิษฐ์ (งานอาหารโซน 1 ขั้นที่ 4) */

@@ -174,22 +174,33 @@ export function makeSet(world: World, size: TraySize, dishes: string[]): MadeSet
 
 // ---------- โต๊ะใหญ่ ----------
 
-/** วางชุดถาดกลางหรือใหญ่บนโต๊ะใหญ่ (ถือได้ 1 ชุด) */
-export function putOnBigTable(world: World, item: string): World | null {
-  const table = world.sets.bigTable;
-  if (!table.owned || table.set !== null || !needsBigTable(item)) return null;
-  const bag = takeFromBag(world.bag, item, 1);
-  if (!bag) return null;
-  return { ...world, bag, sets: { ...world.sets, bigTable: { ...table, set: item } } };
+/** ช่องบนโต๊ะใหญ่ ยาวเท่าจำนวนช่องใน sets.json เสมอ ช่องว่างเป็น null */
+export const tableSlots = (world: World): (string | null)[] => setTable.bigTable.slots.map((_, index) => world.sets.bigTable.sets[index] ?? null);
+
+/** ชุดใหม่ของโต๊ะใหญ่ที่ช่องนี้เปลี่ยนเป็น item (null คือช่องว่าง) */
+export function withTableSlot(world: World, slot: number, item: string | null): World['sets'] {
+  const sets = tableSlots(world);
+  sets[slot] = item;
+  return { ...world.sets, bigTable: { ...world.sets.bigTable, sets } };
 }
 
-/** เก็บชุดคืนจากโต๊ะใหญ่ ตอบ null เมื่อกระเป๋าเต็ม */
-export function takeFromBigTable(world: World): World | null {
-  const table = world.sets.bigTable;
-  if (!table.set) return null;
-  const bag = addToBag(world.bag, table.set, 1);
+/** วางชุดถาดกลางหรือใหญ่บนโต๊ะใหญ่ ลงช่องที่บอกหรือช่องว่างแรก (โต๊ะถือได้ 3 ชุด ผู้ใช้เลือก 9 พ.ย. 2026 แทน 1 ชุดในสเปก) */
+export function putOnBigTable(world: World, item: string, slot?: number): World | null {
+  const sets = tableSlots(world);
+  const at = slot ?? sets.indexOf(null);
+  if (!world.sets.bigTable.owned || at < 0 || at >= sets.length || sets[at] !== null || !needsBigTable(item)) return null;
+  const bag = takeFromBag(world.bag, item, 1);
   if (!bag) return null;
-  return { ...world, bag, sets: { ...world.sets, bigTable: { ...table, set: null } } };
+  return { ...world, bag, sets: withTableSlot(world, at, item) };
+}
+
+/** เก็บชุดในช่องนี้คืนจากโต๊ะใหญ่ ตอบ null เมื่อช่องว่างหรือกระเป๋าเต็ม */
+export function takeFromBigTable(world: World, slot: number): World | null {
+  const item = tableSlots(world)[slot];
+  if (!item) return null;
+  const bag = addToBag(world.bag, item, 1);
+  if (!bag) return null;
+  return { ...world, bag, sets: withTableSlot(world, slot, null) };
 }
 
 /** ปุ่มทดสอบ: โต๊ะใหญ่ (ซื้อได้ในจีโอมาร์ทในขั้นที่ 7) */

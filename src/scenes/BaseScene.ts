@@ -315,7 +315,7 @@ export class BaseScene extends Phaser.Scene {
       { burrow: spawn('gio_burrow'), route: [...tripRoute].reverse().slice(0, MONSTER_ROUTE_POINTS), eatSpots },
       () => this.trayView,
       (x, y) => this.toScreen(x, y),
-      () => (this.stationsView?.table ? { x: this.stationsView.table.x, y: this.stationsView.table.y } : null),
+      () => (this.stationsView?.table ? { x: this.stationsView.table.x, y: this.stationsView.table.y, width: this.stationsView.table.width } : null),
     );
 
     this.physics.add.collider(this.player.body, obstacles);

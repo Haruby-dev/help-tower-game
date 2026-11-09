@@ -60,7 +60,7 @@ describe('Gio news (GDD: 2 tips · 1 tip · 1 tip every 2 days by happiness)', (
     const world = newWorld();
     const { tips: _tips, tipsReportDay: _day, lastTipDay: _last, ...oldGio } = world.gio;
     const parsed = parseSaveFile({ version: 12, savedAt: 'x', world: { ...world, gio: { ...oldGio, report: report(4, 0) } } })!;
-    expect(parsed.version).toBe(20);
+    expect(parsed.version).toBe(21);
     expect(parsed.world.gio.tips).toEqual([]);
     expect(parsed.world.gio.tipsReportDay).toBe(4);
     expect(gainTips(parsed.world).gio.tips).toEqual([]);
