@@ -18,6 +18,10 @@ import { countOf, seedItem } from '../systems/farm';
 import { canShakeBanana, shakeBanana } from '../systems/crafting';
 import { collectDrying, collectTrap, dryingSlot, isDryingReady, isTrapReady, setTrap, trapSet } from '../systems/stations';
 import { StationsView, type Station } from './stationsView';
+import { PetsView, type PetSpot } from './petsView';
+import dialogue from '../data/dialogue.json';
+import { bathBonus, careForPet, carePets, meadowOpen, missingForTreat, petActionOf, petHungry, treatByBath, treatPet } from '../systems/pets';
+import { itemName } from '../ui/inventory';
 import setTableData from '../data/sets.json';
 import { ACTION_LABEL, actionFor, applyFarmAction, canStoreHarvest, isWithered, produceItem, type FarmAction } from '../systems/farm';
 import { withStars } from '../systems/stars';
@@ -80,6 +84,11 @@ const LABEL_FONT_PX = 8;
 const PRICE_FONT_PX = 9;
 /** ตำแหน่งตัวเลขราคาเหนือจุดเท้าของป้าย */
 const PRICE_LIFT_PX = 30;
+
+/** ป้ายปุ่มกระทำกับสัตว์เลี้ยง (aria-label ไอคอนเป็นอุ้งเท้า) */
+const PET_LABEL: Record<'treat' | 'bath' | 'collect' | 'feed' | 'pet', TextKey> = { treat: 'action.pet_treat', bath: 'action.pet_bath', collect: 'action.pet_collect', feed: 'action.pet_feed', pet: 'action.pet_pet' };
+const CELL_PX = 32;
+const FULL_GAUGE = 100;
 
 const STANDING_STILL: Vector = { x: 0, y: 0 };
 const PLAYER_HEAD_PX = 66;
@@ -193,6 +202,11 @@ export class BaseScene extends Phaser.Scene {
   private landClutter: { destroy(): void }[][] = [];
   private landSigns: { x: number; y: number }[] = [];
   private landShown = -1;
+  /** สัตว์เลี้ยงในลาน (M8b) · บ้านสัตว์ที่ซื้อแล้ว · ตัวกันเดินกับหมอกของทุ่งสัตว์เลี้ยง หายไปเมื่อมีบ้านหลังแรก */
+  private petsView: PetsView | null = null;
+  private petHomes = new Map<string, Phaser.GameObjects.Image>();
+  private meadowLocks: { destroy(): void }[] = [];
+  private meadowShown = false;
   /** โหมดจัดวางของบนตาราง */
   private arranger!: Arranger;
   private movableBlockers = new Map<string, Phaser.GameObjects.Zone>();
@@ -254,6 +268,9 @@ export class BaseScene extends Phaser.Scene {
     this.ground = ground;
     this.landShown = -1;
     this.landClutter = balance.land.lands.map(() => []);
+    this.meadowLocks = [];
+    this.meadowShown = false;
+    this.petHomes = new Map();
     this.landSigns = [];
     this.landLayers = balance.land.lands.map((_, index) => map.createLayer(`land_${index + 1}`, tilesets)!.setDepth(DEPTH.ground).setVisible(false));
     this.surfaces = new SurfaceMap(this, () => [...this.landLayers, this.ground]);
@@ -281,6 +298,7 @@ export class BaseScene extends Phaser.Scene {
       // ตัวกันเดินของที่ดินที่ยังไม่ซื้อ และหินในรั้ว หายไปพร้อมกันตอนซื้อ
       const land = /^land_(\d)$/.exec(rect.name ?? '')?.[1] ?? landAt(zone.x / map.tileWidth, zone.y / map.tileHeight);
       if (land !== null && land !== undefined) this.landClutter[Number(land)]?.push(zone);
+      if (this.inMeadow(zone.x, zone.y)) this.meadowLocks.push(zone);
     }
 
     for (const object of map.getObjectLayer('flowers')!.objects) {
@@ -296,6 +314,10 @@ export class BaseScene extends Phaser.Scene {
       (image) => this.placeMovable(setTableData.bigTable.item, image),
     );
     for (const effect of map.getObjectLayer('effects')!.objects) this.placeEffect(effect);
+    this.petsView = new PetsView(this, createRng(Date.now()), (home) => {
+      const image = this.petHomes.get(home);
+      return image ? { x: image.x, y: image.y } : null;
+    });
 
     const spawns = map.getObjectLayer('spawns')!.objects;
     const spawn = (name: string): { x: number; y: number } => {
@@ -395,6 +417,11 @@ export class BaseScene extends Phaser.Scene {
       const tray = this.trayView?.image;
       if (tray && this.trayInReach() && Phaser.Math.Distance.Between(pointer.worldX, pointer.worldY, tray.x, tray.y - TRAY_TAP_LIFT) < DOOR_TAP_RADIUS) {
         eventBus.emit('tray-open', undefined);
+        return;
+      }
+      const pet = this.petInReach();
+      if (pet && this.petsView?.hit(pet.id, pointer.worldX, pointer.worldY)) {
+        this.usePet(pet);
         return;
       }
       // แตะโต๊ะช่างหรือกอกล้วยตรง ๆ เมื่อยืนใกล้
@@ -510,6 +537,11 @@ export class BaseScene extends Phaser.Scene {
     if (gameState.started) this.followPlaced();
     if (gameState.started) this.syncDecor();
     if (gameState.started) this.stationsView?.sync(gameState.world);
+    if (gameState.started) {
+      this.followMeadow();
+      this.petsView?.sync(gameState.world);
+      this.petsView?.update(deltaMs, time, !gameState.clockRunning);
+    }
     if (gameState.started) {
       this.updateNearAmbience(time);
       this.ringChimeWhenNear(time);
@@ -680,6 +712,14 @@ export class BaseScene extends Phaser.Scene {
     } else if (effect.name === 'fog') {
       const key = softEllipseTexture(this, { width, height, color: '238, 243, 240', alpha: 0.72, solidUntil: 0.45 });
       const fog = this.add.image(x, y, key).setDepth(y + height / 2);
+      if (this.inMeadow(x, y)) {
+        this.meadowLocks.push({
+          destroy: () => {
+            this.tweens.killTweensOf(fog);
+            fog.destroy();
+          },
+        });
+      }
       this.tweens.add({
         targets: fog,
         x: x + FOG_DRIFT_PX,
@@ -728,6 +768,7 @@ export class BaseScene extends Phaser.Scene {
     else if (this.campfireAction()) this.useCampfire();
     else if (this.trayInReach()) eventBus.emit('tray-open', undefined);
     else if (this.nearGio()) eventBus.emit('gio-talk', undefined);
+    else if (this.petInReach()) this.usePet(this.petInReach()!);
     else if (this.workbenchInReach()) eventBus.emit('workbench-open', undefined);
     else if (this.bananaReady()) this.shakeBananaClump();
     else if (this.stationInReach()) this.useStation(this.stationInReach()!);
@@ -1223,7 +1264,11 @@ export class BaseScene extends Phaser.Scene {
     this.bath.stopSounds();
     this.bath = null;
     sound.play('bath_sparkle');
-    gameState.setWorld(finishBath(gameState.world, minutes));
+    // อาบน้ำด้วยกัน: บับเบิ้ลที่รักษาอยู่นับวันนี้ · บับเบิ้ลที่อยู่ด้วยแล้วช่วยให้สะอาดเพิ่ม (M8b)
+    const bathed = finishBath(gameState.world, minutes);
+    const bonus = bathBonus(bathed);
+    const cleaned = bonus > 0 ? { ...bathed, gauges: { ...bathed.gauges, cleanliness: Math.min(FULL_GAUGE, bathed.gauges.cleanliness + bonus) } } : bathed;
+    gameState.setWorld(treatByBath(cleaned));
     this.player.endPose();
   }
 
@@ -1427,6 +1472,98 @@ export class BaseScene extends Phaser.Scene {
     this.reportArrange();
   }
 
+  private inMeadow(x: number, y: number): boolean {
+    const { meadow } = balance.pets;
+    return x > meadow.x * CELL_PX && x < (meadow.x + meadow.width) * CELL_PX && y > meadow.y * CELL_PX && y < (meadow.y + meadow.height) * CELL_PX;
+  }
+
+  /** ทุ่งสัตว์เลี้ยงเปิดเมื่อมีบ้านหลังแรก (หมอกกับตัวกันเดินหาย) · บ้านที่ซื้อแล้ววางที่จุดเริ่มหรือที่ผู้เล่นย้ายไว้ */
+  private followMeadow(): void {
+    const world = gameState.world;
+    if (!this.meadowShown && meadowOpen(world)) {
+      this.meadowShown = true;
+      for (const lock of this.meadowLocks) lock.destroy();
+      this.meadowLocks = [];
+    }
+    for (const pet of carePets()) {
+      const home = pet.care?.home;
+      if (!home || !world.pets[pet.id]?.homeOwned || this.petHomes.has(home)) continue;
+      if (!registerSlice(this.textures, home) && !this.textures.exists(home)) continue;
+      const spot = (balance.pets.homeSpots as Record<string, number[]>)[home];
+      if (!spot) continue;
+      const height = this.textures.get(home).getSourceImage().height;
+      const [column = 0, row = 0] = spot;
+      const image = this.add.image(column * CELL_PX, row * CELL_PX, home).setOrigin(0.5, footY(home) / height).setDepth(row * CELL_PX);
+      this.petHomes.set(home, image);
+      this.placeMovable(home, image);
+    }
+  }
+
+  /** สัตว์เลี้ยงในระยะเอื้อม */
+  private petInReach(): PetSpot | null {
+    if (!this.petsView || !gameState.clockRunning || this.player.busy) return null;
+    return this.petsView.nearest(this.player.feetX, this.player.feetY);
+  }
+
+  /** ปุ่มเดียวกับสัตว์: รักษา (วันละครั้ง) · บับเบิ้ลบอกให้ไปอาบน้ำที่บ่อด้วยกัน · อยู่ด้วยแล้ว เก็บผลผลิต → ให้อาหาร → ลูบ */
+  private usePet(pet: PetSpot): void {
+    const world = gameState.world;
+    const action = petActionOf(world, pet.id);
+    if (action === 'treat') {
+      const result = treatPet(world, pet.id);
+      if (result === 'missing') {
+        const missing = missingForTreat(world, pet.id).map((row) => `${itemName(row.item.startsWith('dish:') ? `dish_${row.item.slice('dish:'.length)}_1` : row.item)} ${row.have}/${row.need}`);
+        popPill(this, pet.x, pet.headY, '__WHITE', `${t('pet.treat_needs')} ${missing.join(' · ')}`, gameState.viewport.zoom);
+      }
+      else if (result === 'done_today') eventBus.emit('player-says', 'petTreatedToday');
+      else if (result) {
+        gameState.setWorld(result.world);
+        sparkle(this, pet.x, pet.headY);
+        if (result.healed) eventBus.emit('player-says', 'petHealed');
+      }
+      return;
+    }
+    if (action === 'bath') {
+      eventBus.emit('player-says', 'petBathTogether');
+      return;
+    }
+    const cared = careForPet(world, pet.id);
+    if (cared === 'full') {
+      eventBus.emit('player-says', 'bagFull');
+      return;
+    }
+    if (!cared) {
+      this.petSpeak(pet, 'idle');
+      return;
+    }
+    gameState.setWorld(cared.world);
+    if (cared.kind === 'collected' && cared.item) {
+      const icon = `ing_icon_${cared.item.slice('ing_'.length)}`;
+      popPill(this, pet.x, pet.headY, this.textures.exists(icon) ? icon : '__WHITE', `+${cared.count ?? 1}`, gameState.viewport.zoom);
+      this.petSpeak(pet, 'produce', true);
+    } else {
+      sparkle(this, pet.x, pet.headY);
+      this.petSpeak(pet, 'pet', true);
+    }
+  }
+
+  /** ฟองคำพูดสัตว์ (บทใน dialogue.json หัวข้อ pets) บทปกติขึ้นตามโอกาส บทผลผลิตกับลูบขึ้นเสมอ */
+  private petSpeak(pet: PetSpot, beat: string, always = false): void {
+    const lines = (dialogue.pets as Record<string, Record<string, string[]> | undefined>)[pet.id];
+    const pool = lines?.[petHungry(gameState.world, pet.id) && beat === 'idle' ? 'hungry' : beat] ?? [];
+    if (pool.length === 0 || (!always && Math.random() > balance.pets.speakChance)) return;
+    const text = pool[Math.floor(Math.random() * pool.length)]!;
+    const view = this.petsView;
+    eventBus.emit('speech', {
+      speaker: `pet:${pet.id}`,
+      text,
+      anchor: () => {
+        const now = view?.spot(pet.id);
+        return now ? this.toScreen(now.x, now.headY) : null;
+      },
+    });
+  }
+
   /** ที่ดินที่ซื้อแล้ว: ชั้นแปลงผักแสดง ของรกในรั้วหาย เดินเข้าได้ และมีแปลงผักเพิ่มตามเซฟ */
   private followLand(): void {
     const owned = gameState.world.land.owned;
@@ -1526,6 +1663,8 @@ export class BaseScene extends Phaser.Scene {
     if (fire) return { icon: 'cook', label: fire };
     if (this.trayInReach()) return { icon: 'tray', label: 'action.tray' };
     if (this.nearGio()) return { icon: 'talk', label: 'action.talk' };
+    const pet = this.petInReach();
+    if (pet) return { icon: 'interact', label: PET_LABEL[petActionOf(gameState.world, pet.id) ?? 'pet'] };
     // จุดกดใช้ทั่วไป (โต๊ะช่าง ต้นกล้วย และจุดใหม่ในโซนหลัง) ใช้ไอคอนอุ้งเท้าเดียวกัน ชื่อท่ายังบอกใน aria-label (ผู้ใช้ตัดสิน 9 พ.ย. 2026)
     if (this.workbenchInReach()) return { icon: 'interact', label: 'action.craft' };
     if (this.bananaReady()) return { icon: 'interact', label: 'action.shake' };

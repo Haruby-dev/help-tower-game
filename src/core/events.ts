@@ -27,7 +27,7 @@ export interface GameEvents {
   'fertilize-requested': { plot: number; item: string };
   'fertilize-confirmed': number;
   /** key ของบทพูดตัวเอกใน lines.json */
-  'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut' | 'noMoney' | 'trapTooEarly' | 'trapWaiting' | 'dryingWaiting' | 'dryingTrayIdea' | 'mortarFound' | 'gateTimeUp';
+  'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut' | 'noMoney' | 'trapTooEarly' | 'trapWaiting' | 'dryingWaiting' | 'dryingTrayIdea' | 'mortarFound' | 'gateTimeUp' | 'petTreatedToday' | 'petHealed' | 'petBathTogether';
   /** เข้าเกตชั้นนี้ (ตอนนี้จากปุ่มทดสอบในตั้งค่า) */
   'gate-enter': number;
   /** ยืนหน้าประตูเกตในลานแล้วกดปุ่มกระทำ เปิดเมนูเลือกชั้น (สมุดแผนที่หอคอยที่มีปุ่มเข้าเกต) */

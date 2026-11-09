@@ -2693,6 +2693,8 @@
 
 .pt-pill.no { background: #9cc9b3; }
 .pt-pill.heal { background: #e9b949; }
+.pt-pill.ok { background: #5fb893; }
+.pt-pill.hurt { background: #e9798f; }
 
 .pt-row {
   display: flex;

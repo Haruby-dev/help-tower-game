@@ -553,7 +553,8 @@
         "y": 9,
         "width": 13,
         "height": 6
-      }
+      },
+      "meadow": { "x": 5, "y": 16, "width": 11, "height": 6 }
     },
     "items": {
       "campfire": {
@@ -584,8 +585,24 @@
       "drying_tray_1": { "zone": "frontyard", "cols": 2, "rows": 1 },
       "drying_tray_2": { "zone": "frontyard", "cols": 2, "rows": 1 },
       "drying_tray_3": { "zone": "frontyard", "cols": 2, "rows": 1 },
-      "big_table": { "zone": "frontyard", "cols": 3, "rows": 1 }
+      "big_table": { "zone": "frontyard", "cols": 3, "rows": 1 },
+      "home_coop_kaipok": { "zone": "meadow", "cols": 2, "rows": 1 },
+      "home_hive_boomboom": { "zone": "meadow", "cols": 2, "rows": 1 },
+      "home_barn_mumumek": { "zone": "meadow", "cols": 3, "rows": 1 }
     }
+  },
+  "pets": {
+    "meadow": { "x": 4, "y": 15.5, "width": 12, "height": 7.5 },
+    "sickSpots": [[12.5, 14.2], [13.7, 14.2], [14.9, 14.2], [16.1, 14.2], [17.3, 14.2]],
+    "pondSpots": { "nuebnub": [17.8, 19.8], "bubble": [25, 17.8] },
+    "homeSpots": { "home_coop_kaipok": [7, 18], "home_hive_boomboom": [10.5, 18], "home_barn_mumumek": [13, 21] },
+    "beside": [26, 6],
+    "wanderPx": 18,
+    "wanderMs": [2500, 6000],
+    "speedPx": 14,
+    "bobMs": 900,
+    "reachPx": 38,
+    "speakChance": 0.4
   },
   "test": {
     "stars": 100

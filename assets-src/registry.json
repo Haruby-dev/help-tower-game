@@ -13147,6 +13147,63 @@
     "color": "#9fd8c8",
     "labelKey": "item.seed_cloud_lettuce.name"
   },
+  "basil_bandage": {
+    "type": "placeholder",
+    "width": 16,
+    "height": 16,
+    "color": "#9fd59a",
+    "labelKey": "item.basil_bandage.name"
+  },
+  "pet_pangpok_south": {
+    "type": "local",
+    "width": 64,
+    "height": 64,
+    "source": "art-src/phone_ui_1106/pets/src/pangpok_south_64.png",
+    "file": "pets/pangpok_south.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "pet standing still facing down (PixelLab rotation south, as made) · used in the yard and in gates until walk sheets come"
+  },
+  "pet_nuebnub_south": {
+    "type": "local",
+    "width": 64,
+    "height": 64,
+    "source": "art-src/phone_ui_1106/pets/src/nuebnub_south_64.png",
+    "file": "pets/nuebnub_south.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "pet standing still facing down (PixelLab rotation south, as made) · used in the yard and in gates until walk sheets come"
+  },
+  "pet_boomboom_south": {
+    "type": "local",
+    "width": 64,
+    "height": 64,
+    "source": "art-src/phone_ui_1106/pets/src/boomboom_south_64.png",
+    "file": "pets/boomboom_south.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "pet standing still facing down (PixelLab rotation south, as made) · used in the yard and in gates until walk sheets come"
+  },
+  "pet_bubble_south": {
+    "type": "local",
+    "width": 64,
+    "height": 64,
+    "source": "art-src/phone_ui_1106/pets/src/bubble_south_64.png",
+    "file": "pets/bubble_south.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "pet standing still facing down (PixelLab rotation south, as made) · used in the yard and in gates until walk sheets come"
+  },
+  "pet_mumu_south": {
+    "type": "local",
+    "width": 64,
+    "height": 64,
+    "source": "art-src/phone_ui_1106/pets/src/mumu_south_64.png",
+    "file": "pets/mumu_south.png",
+    "jade_tone": false,
+    "lazy": true,
+    "note": "pet standing still facing down (PixelLab rotation south, as made) · used in the yard and in gates until walk sheets come"
+  },
   "ing_icon_daisy": {
     "type": "placeholder",
     "width": 16,

@@ -6405,5 +6405,30 @@
     "footY": {
       "default": 26
     }
+  },
+  "pet_pangpok_south": {
+    "footY": {
+      "default": 56
+    }
+  },
+  "pet_nuebnub_south": {
+    "footY": {
+      "default": 58
+    }
+  },
+  "pet_boomboom_south": {
+    "footY": {
+      "default": 58
+    }
+  },
+  "pet_bubble_south": {
+    "footY": {
+      "default": 56
+    }
+  },
+  "pet_mumu_south": {
+    "footY": {
+      "default": 55
+    }
   }
 }

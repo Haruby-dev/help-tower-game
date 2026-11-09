@@ -11,7 +11,7 @@ import { formatMoney } from '../systems/economy';
 import { baits } from '../systems/fishing';
 import { reputationStars, setTable } from '../systems/sets';
 import { toppingTable } from '../systems/toppings';
-import { alreadyOwned, buyOffer, maxQuantity, offersFor, stockLeft, tasteOfTreat, type Offer, type ShopGroup } from '../systems/shop';
+import { alreadyOwned, buyOffer, maxQuantity, offersFor, petOfHome, stockLeft, tasteOfTreat, type Offer, type ShopGroup } from '../systems/shop';
 import { hasMet } from '../systems/monsters';
 import th from '../i18n/th.json';
 import { itemImage, itemName } from './inventory';
@@ -120,6 +120,7 @@ function descriptionOf(offer: Offer): string {
     return `${t(`shop.topping_for_${type}` as TextKey)} · ${t('shop.desc_stock_today')} ${offer.stock ?? 0} ${t('shop.desc_piece')}`;
   }
   if (offer.kind === 'table') return `${t('table.hint')} ${setTable.bigTable.slots.length} ${t('table.hint_end')}`;
+  if (offer.kind === 'home') return `${t('shop.desc_home')} ${t(`pet.${petOfHome(offer.target) ?? ''}.name` as TextKey)}`;
   if (offer.group === 'treats') {
     const taste = tasteOfTreat(offer.target)!;
     const gain = taste === 'special' ? balance.gioCare.specialWeeklyGain : balance.gioCare.treatGains[0]!;
@@ -148,6 +149,7 @@ function gioNoteOf(offer: Offer): string {
   }
   if (offer.group === 'toppings') return t('shop.gnote_toppings');
   if (offer.kind === 'table') return t('shop.gnote_big_table');
+  if (offer.kind === 'home') return t('shop.gnote_home');
   return t('shop.gnote_seeds');
 }
 
@@ -280,7 +282,7 @@ export function createShopPage(): PhonePage {
     if (isRandom(offer)) name.append(element('span', 'ps-today', t('shop.today_tag')));
     // ของจำนวนจำกัดบอกว่าวันนี้เหลือกี่ชิ้น โต๊ะที่มีแล้วบอกว่ามีแล้ว
     if (offer.stock !== null) name.append(element('span', `ps-left${left < 1 ? ' is-out' : ''}`, left < 1 ? t('shop.sold_out_short') : `${t('shop.left')} ${left}`));
-    if (offer.kind === 'table' && gone) name.append(element('span', 'ps-left is-out', t('shop.owned')));
+    if ((offer.kind === 'table' || offer.kind === 'home') && gone) name.append(element('span', 'ps-left is-out', t('shop.owned')));
     const price = element('span', 'ps-rprice', formatMoney(offer.price));
     price.append(coinIcon('coin-icon--small'));
     button.append(tile, name, price);

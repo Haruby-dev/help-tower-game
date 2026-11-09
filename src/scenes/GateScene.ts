@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { assetUrl, registry } from '../core/assets';
+import { assetUrl, footY, registry } from '../core/assets';
 import { idsInGroup, loadAtlasGroup, registerAtlasGroup, registerSlice } from '../core/atlas';
 import { audioSettings, sound } from '../core/audio';
 import { eventBus } from '../core/events';
@@ -16,6 +16,7 @@ import type { GateMap, MonsterData } from '../data/schema';
 import { Monster } from '../entities/Monster';
 import { Player } from '../entities/Player';
 import { eatItem } from '../systems/cooking';
+import { injuredPetIn, takePetHome } from '../systems/pets';
 import { chestOpened, forageReady, gateInfo, gateMapOf, gates, gateTimeUp, openGateChest, pickForage, type GateInfo } from '../systems/gates';
 import { advanceClock } from '../systems/time';
 import { nightAlpha } from './BaseScene';
@@ -45,6 +46,9 @@ const TIME_UP_READ_MS = 1400;
 /** ตัวชนของมอนสเตอร์เจ้าของชั้นกับหีบ (พิกเซลรอบเท้า) */
 const OWNER_BODY = { width: 20, height: 10 };
 const CHEST_BODY = { width: 30, height: 12 };
+/** สัตว์เลี้ยงบาดเจ็บนอนนิ่ง ๆ สั่นเบา ๆ 1 พิกเซลให้รู้ว่าเจ็บ (ภาพท่าบาดเจ็บยังไม่มา) */
+const PET_BODY = { width: 22, height: 10 };
+const PET_SHIVER_MS = 700;
 /** แตะของในฉากได้ภายในรัศมีนี้จากจุดกลางภาพ */
 const TAP_RADIUS = 30;
 /** ญาติมอนสเตอร์เดินไปจุดใหม่ห่างไม่ต่ำกว่า/ไม่เกินเท่านี้ ตรวจทางทุก ๆ PATH_STEP_PX */
@@ -72,7 +76,7 @@ interface Kin {
 type KinState = Kin;
 
 interface Target {
-  kind: 'owner' | 'chest' | 'forage';
+  kind: 'owner' | 'chest' | 'forage' | 'pet';
   x: number;
   y: number;
   /** จุดของป่าที่เท่าไหร่ */
@@ -102,6 +106,8 @@ export class GateScene extends Phaser.Scene {
   private chest: Phaser.GameObjects.Image | null = null;
   private chestBody: Phaser.GameObjects.Zone | null = null;
   private forage: (Phaser.GameObjects.Image | null)[] = [];
+  /** สัตว์เลี้ยงที่บาดเจ็บอยู่ในเกตนี้ (M8b) */
+  private pet: { id: string; image: Phaser.GameObjects.Image; body: Phaser.GameObjects.Zone } | null = null;
   private clouds: { image: Phaser.GameObjects.Image; speed: number }[] = [];
   private night!: Phaser.GameObjects.Rectangle;
   private keys!: MoveKeys;
@@ -134,6 +140,7 @@ export class GateScene extends Phaser.Scene {
     this.chest = null;
     this.chestBody = null;
     this.forage = [];
+    this.pet = null;
     this.clouds = [];
     this.rng = createRng(Date.now());
     this.entered = { day: gameState.world.day, hour: gameState.world.hour };
@@ -187,6 +194,8 @@ export class GateScene extends Phaser.Scene {
     }
     const forageIcon = this.forageArt();
     if (forageIcon && !registerSlice(this.textures, forageIcon)) singles.push(forageIcon);
+    const pet = injuredPetIn(gameState.world, this.floor);
+    if (pet && !registerSlice(this.textures, `pet_${pet.id}_south`)) singles.push(`pet_${pet.id}_south`);
     const missing = singles.filter((id) => !this.textures.exists(id));
     if (missing.length === 0) return;
     for (const id of missing) {
@@ -282,6 +291,7 @@ export class GateScene extends Phaser.Scene {
       return this.add.image(Math.round(at.x), Math.round(at.y), forageIcon).setOrigin(0.5, 1).setDepth(at.y);
     });
 
+    this.createInjuredPet(obstacles);
     this.createKin();
     this.createClouds();
 
@@ -309,6 +319,31 @@ export class GateScene extends Phaser.Scene {
 
     this.ready = true;
     this.followPlayer();
+  }
+
+  /** สัตว์เลี้ยงบาดเจ็บของเกตนี้ (ยังไม่เคยพากลับบ้าน) นอนที่ pet_spot */
+  private createInjuredPet(obstacles: Phaser.Physics.Arcade.StaticGroup): void {
+    const pet = injuredPetIn(gameState.world, this.floor);
+    const spot = this.map.pet_spot;
+    const key = pet ? `pet_${pet.id}_south` : '';
+    if (!pet || !spot || !this.textures.exists(key)) return;
+    const at = this.px(spot);
+    const image = this.add.image(Math.round(at.x), Math.round(at.y), key).setOrigin(0.5, footY(key) / this.textures.get(key).getSourceImage().height).setDepth(at.y);
+    this.tweens.add({ targets: image, x: image.x + 1, duration: PET_SHIVER_MS, yoyo: true, repeat: -1, ease: 'Stepped' });
+    this.pet = { id: pet.id, image, body: this.addBody(obstacles, at, PET_BODY) };
+  }
+
+  /** พาสัตว์ที่บาดเจ็บกลับบ้าน ไปรักษาต่อที่ลานหน้าบ้าน */
+  private takePet(): void {
+    const pet = this.pet;
+    if (!pet) return;
+    gameState.setWorld(takePetHome(gameState.world, pet.id));
+    const { x, y } = pet.image;
+    sparkle(this, x, y - this.tile / 2);
+    popPill(this, x, y - this.tile, '__WHITE', `${t('pet.took_home')} ${t(`pet.${pet.id}.name` as TextKey)}`, gameState.viewport.zoom);
+    pet.image.destroy();
+    pet.body.destroy();
+    this.pet = null;
   }
 
   /** ฉากกล่องสี: วาดพื้นจากช่องในแผนที่ ไม่มีชั้นหน้า ภาพจริงมาแล้วเปลี่ยน map ใน gates.json เป็น gate<N> */
@@ -560,6 +595,7 @@ export class GateScene extends Phaser.Scene {
     const options: Target[] = [];
     if (this.owner) options.push({ kind: 'owner', x: this.owner.feetX, y: this.owner.feetY });
     if (this.chest) options.push({ kind: 'chest', x: this.chest.x, y: this.chest.y });
+    if (this.pet) options.push({ kind: 'pet', x: this.pet.image.x, y: this.pet.image.y });
     this.forage.forEach((image, index) => {
       if (image) options.push({ kind: 'forage', x: image.x, y: image.y, index });
     });
@@ -582,6 +618,7 @@ export class GateScene extends Phaser.Scene {
     const target = this.target();
     if (!target) return null;
     if (target.kind === 'owner') return { icon: 'talk', label: 'action.talk' };
+    if (target.kind === 'pet') return { icon: 'interact', label: 'action.pet_take' };
     return { icon: 'interact', label: target.kind === 'chest' ? 'action.open_chest' : 'action.forage' };
   }
 
@@ -596,6 +633,7 @@ export class GateScene extends Phaser.Scene {
     if (!target) return;
     if (target.kind === 'owner') this.talkToOwner();
     else if (target.kind === 'chest') this.openChest();
+    else if (target.kind === 'pet') this.takePet();
     else if (target.index !== undefined) this.pick(target.index);
   }
 

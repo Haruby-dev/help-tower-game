@@ -173,6 +173,25 @@ export const balanceSchema = z.strictObject({
     zones: z.record(z.string().regex(/^[a-z_]+$/), z.strictObject({ x: z.number(), y: z.number(), width: z.number().positive(), height: z.number().positive() })),
     items: z.record(z.string().regex(/^[a-z0-9_]+$/), z.strictObject({ zone: z.string().min(1), cols: z.number().int().positive(), rows: z.number().int().positive() })),
   }),
+  /**
+   * สัตว์เลี้ยงในลานบ้าน (M8b) ตำแหน่งเป็นช่องแผนที่ (เท้า): ทุ่งสัตว์เลี้ยงที่เปิดเมื่อมีบ้านหลังแรก · จุดนอนรักษาหน้าบ้าน
+   * จุดของตัวที่อยู่ริมบ่อหรือในบ่อ · จุดเริ่มของบ้านแต่ละหลัง · เดินเล่นรอบจุดของตัวเองไม่เกิน wanderPx
+   */
+  pets: z.strictObject({
+    meadow: z.strictObject({ x: z.number(), y: z.number(), width: z.number().positive(), height: z.number().positive() }),
+    sickSpots: z.array(z.tuple([z.number(), z.number()])).min(5),
+    pondSpots: z.record(z.string().regex(/^[a-z_]+$/), z.tuple([z.number(), z.number()])),
+    homeSpots: z.record(z.string().regex(/^home_[a-z_]+$/), z.tuple([z.number(), z.number()])),
+    /** ตัวที่อยู่บ้านยืนห่างจากเท้าบ้านเท่านี้ (พิกเซล x y) */
+    beside: z.tuple([z.number(), z.number()]),
+    wanderPx: z.number().nonnegative(),
+    wanderMs: z.tuple([z.number().int().positive(), z.number().int().positive()]),
+    speedPx: z.number().positive(),
+    bobMs: z.number().int().positive(),
+    reachPx: z.number().positive(),
+    /** โอกาสพูดบทปกติ (บทผลผลิตกับบทลูบขึ้นเสมอ) */
+    speakChance: z.number().min(0).max(1),
+  }),
   /** ปุ่มลับช่วงทดสอบ ต้องเอาออกก่อนปล่อยจริง */
   test: z.strictObject({ stars: z.number().int().positive() }),
   land: z.strictObject({
@@ -1050,6 +1069,10 @@ export const linesSchema = z.strictObject({
     mortarFound: z.string().min(1),
     /** อยู่ในเกตครบเวลาแล้ว กลับลานบ้านเอง */
     gateTimeUp: z.string().min(1),
+    /** สัตว์เลี้ยง (M8b): รักษาแล้ววันนี้ · หายแล้ว · บับเบิ้ลรักษาด้วยการอาบน้ำด้วยกัน */
+    petTreatedToday: z.string().min(1),
+    petHealed: z.string().min(1),
+    petBathTogether: z.string().min(1),
     /** บทสั้น ๆ ครั้งแรกที่ได้วัสดุหรือวัตถุดิบใหม่ (ความรู้รอบตัวของตัวเอง ไม่ใช่ยายสอน) */
     firstItem: z.record(z.string().regex(/^[a-z_]+$/), z.string().min(1)),
   }),
@@ -1173,6 +1196,8 @@ export const gateMapSchema = z.strictObject({
     })
     .optional(),
   burrows: z.array(gateTileSchema),
+  /** จุดที่สัตว์เลี้ยงบาดเจ็บนอนอยู่ (เกตที่มีสัตว์ให้ช่วย M8b) */
+  pet_spot: gateTileSchema.optional(),
   ambient: z.array(z.string()).optional(),
   blocked: z.array(z.tuple([z.number().int().nonnegative(), z.number().int().nonnegative()])),
 });

@@ -147,6 +147,9 @@
     ]
   },
   "shelfArt": {
+    "home_coop_kaipok": "shop_item_pet_coop",
+    "home_hive_boomboom": "shop_item_pet_beehive",
+    "home_barn_mumumek": "shop_item_pet_pen",
     "pot_pan": "shop_item_kitchen_pots_pans",
     "oven_mortar": "shop_item_kitchen_oven_mortar",
     "magic_kitchen": "shop_item_kitchen_magic",

@@ -5,6 +5,7 @@ import { createRng } from '../core/rng';
 import { canUseCampfire, recipes } from './cooking';
 import { applyTransaction } from './economy';
 import { addToBag, crops, seedItem } from './farm';
+import { carePets, ownHome } from './pets';
 import { hasMet, monsterTable } from './monsters';
 import { giveBigTable, reputationStars, setTable } from './sets';
 
@@ -23,7 +24,7 @@ export interface Offer {
   tab: ShopTab;
   group: ShopGroup;
   /** item ของเข้ากระเป๋า · recipe สูตร · table โต๊ะใหญ่ (มีได้ชิ้นเดียว ไม่อยู่ในกระเป๋า) */
-  kind: 'item' | 'recipe' | 'table';
+  kind: 'item' | 'recipe' | 'table' | 'home';
   /** ไอเท็มในกระเป๋า รหัสสูตร หรือรหัสโต๊ะ */
   target: string;
   price: number;
@@ -128,6 +129,15 @@ function toppingOffers(world: World): Offer[] {
     );
 }
 
+/** บ้านสัตว์เลี้ยง (M8b): ขายเฉพาะตัวที่เจอแล้วและต้องมีบ้าน ราคาตาม pets.json (GDD × 10) ซื้อครั้งเดียว */
+const homeOffers = (world: World): Offer[] =>
+  carePets()
+    .filter((pet) => pet.homePrice !== null && pet.care?.home && world.pets[pet.id] !== undefined)
+    .map((pet) => ({ id: `farm:${pet.care!.home!}`, tab: 'daily', group: 'farm', kind: 'home', target: pet.care!.home!, price: pet.homePrice!, currency: 'coins', stock: null }));
+
+/** สัตว์ที่อยู่บ้านหลังนี้ */
+export const petOfHome = (home: string): string | null => carePets().find((pet) => pet.care?.home === home)?.id ?? null;
+
 const bigTableOffer = (): Offer => ({
   id: `farm:${setTable.bigTable.item}`,
   tab: 'daily',
@@ -173,7 +183,7 @@ export function offersFor(world: World): Offer[] {
     );
   const daily = fertilizers.filter((offer) => offer.tab === 'daily');
   const random = fertilizers.filter((offer) => offer.tab === 'random');
-  return [...treats, ...starter, ...daily, ...randomSeeds, ...random, ...permanent, ...recipeOffers, ...ingredientOffers(world), ...toppingOffers(world), bigTableOffer()];
+  return [...treats, ...starter, ...daily, ...randomSeeds, ...random, ...permanent, ...recipeOffers, ...ingredientOffers(world), ...toppingOffers(world), bigTableOffer(), ...homeOffers(world)];
 }
 
 export const tasteOfTreat = (item: string): ShopData['treats'][number]['taste'] | null =>
@@ -187,7 +197,9 @@ export const stockLeft = (world: World, offer: Offer): number => (offer.stock ==
 
 /** สูตรที่รู้แล้วกับโต๊ะที่มีแล้วซื้อซ้ำไม่ได้ */
 export const alreadyOwned = (world: World, offer: Offer): boolean =>
-  (offer.kind === 'recipe' && world.recipes.known.includes(offer.target)) || (offer.kind === 'table' && world.sets.bigTable.owned);
+  (offer.kind === 'recipe' && world.recipes.known.includes(offer.target)) ||
+  (offer.kind === 'table' && world.sets.bigTable.owned) ||
+  (offer.kind === 'home' && world.pets[petOfHome(offer.target) ?? '']?.homeOwned === true);
 
 /** สูตรกับโต๊ะซื้อได้ครั้งเดียว ของอื่นซื้อได้ตามจำนวนที่เงินพอและของที่เหลือวันนี้ */
 export const maxQuantity = (world: World, offer: Offer): number => {
@@ -207,6 +219,10 @@ export function buyOffer(world: World, offer: Offer, quantity: number): World | 
   } else if (offer.kind === 'table') {
     if (quantity !== 1) return null;
     next = giveBigTable(world);
+  } else if (offer.kind === 'home') {
+    const pet = petOfHome(offer.target);
+    if (quantity !== 1 || !pet) return null;
+    next = ownHome(world, pet);
   } else {
     const bag = addToBag(world.bag, offer.target, quantity);
     if (!bag) return null;

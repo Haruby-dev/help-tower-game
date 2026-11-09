@@ -225,7 +225,8 @@ export function checkProject(): string[] {
   const isMaterial = (item: string): boolean => craftBalance.materials.includes(item) || knownItem(item);
   for (const [id, recipe] of Object.entries(workbenchSchema.parse(readJson('src/data/workbench.json')))) {
     if (!translations[`item.${id}.name`]) problems.push(`src/i18n/th.json: workbench item ${id} has no name`);
-    if (registry[id]?.type !== 'local') problems.push(`assets-src/registry.json: workbench item ${id} has no image`);
+    // ของที่ภาพยังไม่มาใช้กล่องสีในทะเบียนได้ (ผ้าพันแผลกะเพรา M8b)
+    if (registry[id]?.type !== 'local' && registry[id]?.type !== 'placeholder') problems.push(`assets-src/registry.json: workbench item ${id} has no image`);
     for (const item of Object.keys(recipe.materials)) if (!isMaterial(item)) problems.push(`src/data/workbench.json: ${id} uses unknown material ${item}`);
   }
   for (const item of [...Object.keys(craftBalance.banana), ...Object.values(craftBalance.harvestExtras).flatMap((extras) => Object.keys(extras))]) {

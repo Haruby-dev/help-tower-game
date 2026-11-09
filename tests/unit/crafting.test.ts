@@ -19,6 +19,8 @@ describe('workbench recipes (spec 4.2)', () => {
       medium_woven_tray: { materials: { bamboo: 2, rice_straw: 2 }, gives: 2 },
       big_woven_tray: { materials: { bamboo: 3, rice_straw: 3 }, gives: 2 },
       drying_tray: { materials: { bamboo: 3, rice_straw: 2 }, gives: 1, station: true, max: 3, afterFirst: true },
+      // GDD สัตว์เลี้ยง: ผ้าพันแผลกะเพรา คราฟต์จากกะเพรา 2 ใบ (M8b)
+      basil_bandage: { materials: { produce_basil: 2 }, gives: 1 },
       trap: { materials: { bamboo: 2, banana_rope: 2 }, gives: 1, station: true, max: 3 },
     });
   });

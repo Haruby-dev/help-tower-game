@@ -1,34 +1,36 @@
 import { registry } from '../core/assets';
 import { eventBus } from '../core/events';
-import { t } from '../core/i18n';
+import { t, type TextKey } from '../core/i18n';
 import { gameState } from '../core/state';
 import petsJson from '../data/pets.json';
 import type { PetsData } from '../data/schema';
+import { formatMoney } from '../systems/economy';
+import { bondLevel, daysToHeal, missingForTreat, pets, petInfo, treatedToday } from '../systems/pets';
 import { at, bookNote, createBook, pageArt } from './book';
+import { itemName } from './inventory';
 
 const data = petsJson as PetsData;
 const WINDOW = 'pets-book';
 const PIECES = { cloth: 'book_pet_cloth', frame: 'book_pet_frame_9slice', ribbon: 'book_pet_ribbon' };
 const TAPE = 'book_pet_tape';
-/** เกตในโซน 1 (ชั้น 1–10) สัตว์ที่เจอหลังเกตเกินนี้ล็อกไว้ก่อน */
-const OPEN_GATES = 10;
 const CARD_X = 18;
 const CARD_STEP = 53;
 const CARD_ROWS = [62, 124, 186];
 const PER_ROW = 5;
 
-type PetState = 'notmet' | 'unknown' | 'locked';
-
-/**
- * ยังไม่เจอ: เงาบนกระดาษ ไม่มีกรอบทุ่ง (art update 2026-11-07b) กลางที่ x 148 เท้าที่ y 120
- * สัตว์ตัวเล็กขยาย 2 เท่า มูมู่เมฆตัวใหญ่ 1 เท่า บึ้มบึ้มลอยอยู่ เท้าที่ y 110 · "?" อยู่เหนือหัว 30 พิกเซล
- */
-const SIL_X = 148;
-const SIL_FEET_Y = 120;
-const SIL_SCALE: Record<string, number> = { mumu: 1 };
-const SIL_FEET: Record<string, number> = { boomboom: 110 };
-const SIL_Q_GAP = 30;
-const DEFAULT_SIL_SCALE = 2;
+/** ฉากบ้าน 253×100 บนสุดของหน้าขวา แถวข้อมูลเริ่มที่ y นี้ ห่างกันแถวละ ROW_STEP */
+const SCENE_X = 22;
+const SCENE_Y = 16;
+const INFO_TOP = 146;
+const ROW_STEP = 17;
+const INFO_X = 24;
+const HEARTS = 5;
+/** สถานะบนการ์ดกับป้ายหน้าขวา: อยู่ด้วย (เขียว) · รักษา (เหลือง) · รอบ้าน (ชมพู) */
+const PILL: Record<string, { css: string; label: TextKey }> = {
+  living: { css: 'ok', label: 'pets.living_pill' },
+  treating: { css: 'heal', label: 'pets.treating' },
+  needs_home: { css: 'hurt', label: 'pets.needs_home' },
+};
 
 const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className: string, text?: string): HTMLElementTagNameMap[K] => {
   const node = document.createElement(tag);
@@ -37,19 +39,13 @@ const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className: strin
   return node;
 };
 
-/**
- * สถานะของสัตว์ ระบบสัตว์เลี้ยง (พบ รักษา ย้ายมาอยู่) ยังไม่มา จึงยังไม่มีตัวไหนอยู่ด้วยหรือกำลังรักษา
- * มีภาพแล้ว = ยังไม่เจอ (เงา + เกต N) · ยังไม่มีภาพ = "?" · เกตหลังโซน 1 = ล็อก
- */
-function stateOf(pet: PetsData['pets'][number]): PetState {
-  if (pet.gate > OPEN_GATES) return 'locked';
-  return pet.art ? 'notmet' : 'unknown';
+/** สัตว์ที่ผู้เล่นเจอแล้ว (พากลับบ้านจากเกตแล้ว) เรียงตามลำดับในไฟล์ */
+function metPets(): PetsData['pets'] {
+  return data.pets.filter((pet) => gameState.world.pets[pet.id] !== undefined);
 }
 
-/** สัตว์ที่ผู้เล่นเจอแล้ว เรียงตามลำดับในไฟล์ · ระบบเจอสัตว์ยังไม่มา (M8b) ตอนนี้จึงว่างเสมอ */
-function metPets(): PetsData['pets'] {
-  return [];
-}
+/** ชื่อของที่ใช้รักษา (`dish:<สูตร>` คืออาหารสูตรนั้น) */
+const needName = (item: string): string => (item.startsWith('dish:') ? t(`dish.${item.slice('dish:'.length)}.name` as TextKey) : itemName(item));
 
 /** สมุดดูแลสัตว์ (สมุดมินต์สองหน้า) หน้าซ้ายสัตว์ที่เจอแล้ว หน้าขวาฉากบ้านกับรายละเอียด */
 export function createPetsBook(uiRoot: HTMLElement): void {
@@ -66,19 +62,18 @@ export function createPetsBook(uiRoot: HTMLElement): void {
       shell.right.replaceChildren(bookNote('pt-note', t('pets.none_note'), TAPE, 22, 190));
       return;
     }
-    const living = 0;
+    const world = gameState.world;
+    const living = met.filter((pet) => world.pets[pet.id]?.stage === 'living').length;
     const cards = met.map((pet, index) => {
-      const state = stateOf(pet);
+      const stage = world.pets[pet.id]!.stage;
       const x = CARD_X + (index % PER_ROW) * CARD_STEP;
       const y = CARD_ROWS[Math.floor(index / PER_ROW)]!;
-      const card = at(element('button', `pt-cd is-${state}${pet.id === picked ? ' is-on' : ''}`), x, y);
+      const card = at(element('button', `pt-cd is-${stage}${pet.id === picked ? ' is-on' : ''}`), x, y);
       card.type = 'button';
       card.dataset.pet = pet.id;
-      card.dataset.state = state;
-      const picture = state === 'notmet' ? `pets_card_${pet.id}_sil` : state === 'unknown' ? 'pets_card_unknown' : 'pets_card_locked';
-      card.append(pageArt(picture, 2, 2, 'pt-pic'));
-      if (state === 'unknown') card.append(element('b', 'pt-q', '?'));
-      card.append(element('span', `pt-st ${state === 'locked' ? 'lock' : 'no'}`, `${t('pets.gate')} ${pet.gate}`));
+      card.dataset.state = stage;
+      card.append(pageArt(stage === 'living' ? `pets_card_${pet.id}` : `pets_card_${pet.id}_sick`, 2, 2, 'pt-pic'));
+      card.append(element('span', `pt-st ${PILL[stage]!.css}`, t(PILL[stage]!.label)));
       card.addEventListener('click', () => {
         picked = pet.id;
         render();
@@ -92,36 +87,57 @@ export function createPetsBook(uiRoot: HTMLElement): void {
     );
 
     const pet = met.find((entry) => entry.id === picked) ?? met[0]!;
-    const state = stateOf(pet);
-    if (state === 'locked') {
-      shell.right.replaceChildren(
-        pageArt('book_pet_padlock', 126, 62, 'bk-lockbig', '', 4),
-        element('div', 'bk-lockmsg', t('pets.locked')),
-        element('div', 'bk-locksub', `${t('pets.locked_sub')} ${OPEN_GATES + 2} ${t('pets.locked_sub_end')}`),
-      );
-      return;
-    }
-    const picture = silhouette(pet.id);
-    const nameRow = at(element('div', 'pt-nmrow'), 24, 130);
-    nameRow.append(element('span', 'pt-nm', '???'));
-    const kind = element('span', 'pt-kd');
-    kind.append(element('span', 'pt-pill no', t('pets.not_met')));
-    nameRow.append(kind);
-    const when = at(element('div', 'pt-row'), 24, 160);
-    when.append(element('span', 'pt-lab2', t('pets.will_meet')), element('span', '', `${t('pets.after_gate')} ${pet.gate}`));
-    shell.right.replaceChildren(...picture, nameRow, when, bookNote('pt-note', t(pet.art ? 'pets.wait_note' : 'pets.no_art_note'), TAPE, 22, 190));
+    shell.right.replaceChildren(...details(pet));
   }
 
-  /** เงาสัตว์บนกระดาษพร้อม "?" เหนือหัว · สัตว์ที่ยังไม่มีภาพ มีแค่ "?" ตัวใหญ่ */
-  function silhouette(id: string): HTMLElement[] {
-    const entry = registry[`pets_sil_${id}`];
-    if (entry?.type !== 'local') return [element('b', 'pt-q-big', '?')];
-    const scale = SIL_SCALE[id] ?? DEFAULT_SIL_SCALE;
-    const feet = SIL_FEET[id] ?? SIL_FEET_Y;
-    const height = entry.height * scale;
-    const art = pageArt(`pets_sil_${id}`, SIL_X - (entry.width * scale) / 2, feet - height, 'pt-sil', '', scale);
-    const question = at(element('b', 'pt-q-sil', '?'), 0, feet - height - SIL_Q_GAP);
-    return [art, question];
+  /**
+   * หน้าขวาของสัตว์ที่เจอแล้ว: ฉากบ้าน ชื่อกับสถานะ แล้วแถวข้อมูล
+   * รักษาอยู่: อาการ ของที่ใช้ (มี/ต้องใช้) วันที่รักษาแล้ว วันนี้ทำแล้วหรือยัง · รอบ้าน: บ้านที่ต้องซื้อกับราคา
+   * อยู่ด้วย: หัวใจผูกพัน 1–5 กับแต้ม วันนี้ให้อาหารและลูบแล้วหรือยัง ผลผลิต
+   */
+  function details(pet: PetsData['pets'][number]): HTMLElement[] {
+    const world = gameState.world;
+    const state = world.pets[pet.id]!;
+    const care = petInfo(pet.id)?.care;
+    const nodes: HTMLElement[] = [];
+    const scene = registry[`pets_scene_${pet.id}`]?.type === 'local' ? `pets_scene_${pet.id}` : null;
+    if (scene) nodes.push(pageArt(scene, SCENE_X, SCENE_Y, 'pt-scene'));
+    const nameRow = at(element('div', 'pt-nmrow'), INFO_X, INFO_TOP - 22);
+    nameRow.append(element('span', 'pt-nm', t(`pet.${pet.id}.name` as TextKey)));
+    const pill = PILL[state.stage]!;
+    nameRow.append(element('span', `pt-pill ${pill.css}`, t(pill.label)));
+    nodes.push(nameRow);
+    const rows: [string, string][] = [];
+    if (state.stage === 'treating') {
+      rows.push([t('pets.symptom'), t(`pet.${pet.id}.symptom` as TextKey)]);
+      if (care?.bath) rows.push([t('pets.treat_with'), t('pets.bath_treat')]);
+      else {
+        const missing = new Map(missingForTreat(world, pet.id).map((row) => [row.item, row.have]));
+        const parts = Object.entries(care?.treat ?? {}).map(([item, need]) => `${needName(item)} ${Math.min(need, missing.get(item) ?? need)}/${need}`);
+        rows.push([t('pets.treat_with'), `${parts.join(' · ')} (${t('pets.once_a_day')})`]);
+      }
+      rows.push([t('pets.days_label'), `${state.treatedDays}/${daysToHeal(pet.id, state)} ${t('pets.days')}`]);
+      rows.push([t('pets.today'), t(treatedToday(world, pet.id) ? 'pets.today_done' : 'pets.today_todo')]);
+      if (care?.home && pet.homePrice !== null) rows.push([t('pets.home_need'), `${itemName(care.home)} ${formatMoney(pet.homePrice)}`]);
+    } else if (state.stage === 'needs_home' && care?.home) {
+      rows.push([t('pets.home_need'), `${itemName(care.home)} ${formatMoney(pet.homePrice ?? 0)}`]);
+    } else {
+      const level = bondLevel(state.bond);
+      const next = pets.bondLevels[level - 1];
+      rows.push([t('pets.bond'), `${'♥'.repeat(level)}${'♡'.repeat(HEARTS - level)} ${state.bond}${next !== undefined ? `/${next}` : ''}`]);
+      const fed = state.fedDay === world.day ? '✓' : '·';
+      const petted = state.pettedDay === world.day ? '✓' : '·';
+      rows.push([t('pets.today'), `${t('pets.fed')} ${fed}  ${t('pets.petted')} ${petted}`]);
+      if (care?.produce) rows.push([t('pets.produce'), `${itemName(care.produce)} ${pets.produceByLevel[level - 1] ?? 1} ${t('pets.per_day')}`]);
+      else rows.push([t('pets.produce'), t(`pet.${pet.id}.helps` as TextKey)]);
+    }
+    rows.forEach(([label, value], index) => {
+      const row = at(element('div', 'pt-row'), INFO_X, INFO_TOP + index * ROW_STEP);
+      row.dataset.row = String(index);
+      row.append(element('span', 'pt-lab2', label), element('span', '', value));
+      nodes.push(row);
+    });
+    return nodes;
   }
 
   eventBus.on('app-open', (app) => {
