@@ -98,10 +98,7 @@ test('Geo Mart sells ingredients with a daily limit, today’s toppings and the 
   // วัตถุดิบ: เครื่องปรุง 10 ขายทุกวันอยู่บน นมวันละ 2 ขวด ราคาปกติตลอด (ผู้ใช้ตัดสิน 10 พ.ย. 2026)
   await page.locator('[data-shop-tab="ingredients"]').click();
   await expect(page.locator('.ps-row').first()).toHaveAttribute('data-offer', 'ingredients:ing_salt');
-  // หมูสับ 150 ขายทุกวันไม่จำกัด (ผู้ใช้เลือก 9 พ.ย. 2026) อยู่หน้าแรกถัดจากเครื่องปรุง นมเลยไปอยู่หน้า 2
-  await expect(page.locator('[data-offer="ingredients:ing_pork"]')).toBeVisible();
-  await expect(page.locator('[data-offer="ingredients:ing_pork"] .ps-left')).toHaveCount(0);
-  await page.locator('#shop-next').click();
+  // นม 120 อยู่หน้าแรกถัดจากเครื่องปรุง (เรียงถูกไปแพง)
   await page.locator('[data-offer="ingredients:ing_milk"]').click();
   await expect(page.locator('#shop-card .ps-price')).toContainText('120');
   await expect(page.locator('[data-offer="ingredients:ing_milk"] .ps-left')).toHaveText('เหลือ 2');
@@ -116,6 +113,10 @@ test('Geo Mart sells ingredients with a daily limit, today’s toppings and the 
   await expect(page.locator('[data-offer="ingredients:ing_milk"] .ps-left')).toHaveText('หมด');
   await expect(page.locator('#shop-buy')).toBeDisabled();
   await expect(page.locator('#shop-buy')).toHaveText('หมดแล้ววันนี้');
+  // หมูสับ 150 ขายทุกวันไม่จำกัด (ผู้ใช้เลือก 9 พ.ย. 2026) อยู่หน้า 2
+  await page.locator('#shop-next').click();
+  await expect(page.locator('[data-offer="ingredients:ing_pork"]')).toBeVisible();
+  await expect(page.locator('[data-offer="ingredients:ing_pork"] .ps-left')).toHaveCount(0);
   // ท็อปปิ้ง: สุ่ม 2–3 ชนิด ทุกแถวเป็นของ "วันนี้" มีจำนวนเหลือ
   await page.locator('[data-shop-tab="toppings"]').click();
   const toppings = await page.locator('.ps-row').count();
@@ -129,7 +130,7 @@ test('Geo Mart sells ingredients with a daily limit, today’s toppings and the 
   await page.locator('#shop-buy').click();
   await expect.poll(() => page.evaluate(() => (window as unknown as { __state: { world: { sets: { bigTable: { owned: boolean } } } } }).__state.world.sets.bigTable.owned)).toBe(true);
   await expect(page.locator('#shop-buy')).toHaveText('มีแล้ว');
-  await expect(page.locator('#shop-coins')).toHaveText('3,520');
+  await expect(page.locator('#shop-coins')).toHaveText('3,760');
 });
 
 test('Gio stays home all day when nothing is consigned, where she can talk, give a treat and pet him', async ({ page }) => {
