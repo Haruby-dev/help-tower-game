@@ -7,6 +7,7 @@
 > - ใช้เครดิต PixelLab ต้องบอกราคาและรอเธอโอเคทุกครั้ง งานวาดมือ/โค้ด 0 เครดิตไม่ต้องขอ
 > - ให้ตัวเลือกเป็นข้อ ๆ ติด ⭐ ที่แนะนำ และมีทางที่ประหยัดกว่าเสมอ · เธอพิมพ์ครึ่งประโยคบ่อย ให้เดา 2–3 ความหมายแล้วถาม
 > - บันทึก 01_status และ handoff เขียนเป็นภาษาไทยตั้งแต่ 7 พ.ย. 2026 23:50
+> - **เขียน handoff ใหม่ทุกครั้ง: บนสุดของไฟล์ next ต้องมีกล่อง "ข้อความเริ่มแชตใหม่" แบบเต็ม** (โฟลเดอร์เกม · อ่าน 00_where_is_what + 00_rules + 04_us + ท้าย 01_status ตั้งแต่เวลาไหน + ไฟล์ next · git log · สกิลที่ต้องโหลด · ตอบภาษาไทย) และแก้กล่องเดียวกันใน 00_where_is_what · ห้ามเขียนแค่ "พิมพ์ว่า อ่าน handoff ต่อ" (9 พ.ย. 20:2x: handoff 22–23 ทำแบบนั้น 00_rules + 04_us หลุด เธอท้อมาก)
 
 
 > **FIRST read `00_where_is_what.md` (status of every feature: in game / prompt sent / approved / lost) and run `git log` before any work. Mock existing screens on the REAL game only. Update that file on every approval, prompt and commit.** (added 2026-11-07 after the shop-E and bag-outside mix-ups)
