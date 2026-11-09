@@ -4,8 +4,10 @@ import { t, type TextKey } from '../core/i18n';
 import { gameState, type World } from '../core/state';
 import gatesJson from '../data/gates.json';
 import type { GatesData } from '../data/schema';
+import { canEnterGate, chestOpened, forageLeftToday, type GateReward } from '../systems/gates';
 import { affectionPercent, barOwner, floorOpen, monsterTable } from '../systems/monsters';
 import { at, bookArrow, bookNote, createBook, pageArt } from './book';
+import { itemName } from './inventory';
 import { artUrl } from './pixelArt';
 import { uiSound } from './sound';
 
@@ -49,11 +51,18 @@ const opened = (world: World, floor: number): boolean => {
 const met = (world: World, id: string): boolean =>
   world.monsters.affection[id] !== undefined || world.monsters.arrivals.some((arrival) => arrival.monster === id && arrival.done);
 
-/** แผนที่หอคอย (สมุดม่วงลาเวนเดอร์สองหน้า) ดูข้อมูลอย่างเดียว เข้าเกตที่ลานเกต */
+const rewardName = (reward: GateReward): string =>
+  'recipe' in reward ? t(`dish.${reward.recipe}.name` as TextKey) : `${itemName(reward.item)} ×${reward.count}`;
+
+/**
+ * แผนที่หอคอย (สมุดม่วงลาเวนเดอร์สองหน้า) · เปิดจากแอปในโทรศัพท์ = ดูข้อมูลอย่างเดียว
+ * เปิดจากประตูเกตในลาน = เมนูเลือกชั้น มีปุ่ม "เข้าเกต" ที่หน้าขวาของชั้นที่เปิดแล้ว (M8a ผู้ใช้อนุมัติ 9 พ.ย. 2026 ใช้หน้าตาสมุดเดิม)
+ */
 export function createGateBook(uiRoot: HTMLElement): void {
   const shell = createBook(uiRoot, 'gate-book', 'gate', WINDOW, PIECES);
   let zone = 1;
   let floor = 1;
+  let atPortal = false;
 
   const labelTop = (index: number): number => TOWER_Y + TOWER_TOP + (FLOORS - 1 - index) * FLOOR_PX + 4;
 
@@ -96,8 +105,8 @@ export function createGateBook(uiRoot: HTMLElement): void {
         render();
       });
       parts.push(label);
-      // ของป่าเก็บได้ทุกวัน: ระบบเข้าเกตยังไม่มา จึงยังไม่เคยเก็บ จุดทองเสมอ
-      if (open) parts.push(at(element('i', 'gt-dot'), DOT_X, labelTop(index) + 4));
+      // จุดทอง: วันนี้ยังเก็บของป่าในเกตชั้นนี้ได้ (ชั้นที่ข้างในยังไม่พร้อมไม่มีจุด)
+      if (open && forageLeftToday(world, number)) parts.push(at(element('i', 'gt-dot'), DOT_X, labelTop(index) + 4));
     }
     parts.push(at(element('i', 'gt-sel'), TOWER_X + 4, labelTop(floor - first) - 6));
     shell.left.replaceChildren(...parts);
@@ -116,7 +125,6 @@ export function createGateBook(uiRoot: HTMLElement): void {
     const owner = ownerOf(floor);
     const open = opened(world, floor);
     // ภาพฉากเกต (gate.scene) พักไว้ ไม่แสดงตอนนี้ (ผู้ใช้ตัดสิน) ไฟล์ยังอยู่
-    void gate;
     const picture = open && owner ? ownerStand(owner) : padlock();
     const name = at(element('div', 'gt-nmrow', `${t('stuck.floor')} ${floor}`), 24, 128);
     name.append(element('b', '', open ? t(`gate.${floor}.name` as TextKey) : '???'));
@@ -130,12 +138,31 @@ export function createGateBook(uiRoot: HTMLElement): void {
     const percent = owner && ownerKnown ? Math.floor(affectionPercent(world, barOwner(world, owner))) : null;
     const ownerRow = row(164, 'gate.owner', `${ownerName} `);
     if (percent !== null) ownerRow.append(element('span', percent >= 100 ? 'gt-ok' : 'gt-soft', `♥ ${percent}%`));
-    // รางวัลครั้งแรกได้ตอนเข้าเกตครั้งแรก ระบบเข้าเกตยังไม่มา จึงยังเป็น ???
-    const reward = row(182, 'gate.reward', element('span', 'gt-soft', '???'));
+    // รางวัลครั้งแรก: เปิดหีบในเกตแล้วจึงรู้ว่าได้อะไร
+    const got = gate.reward && chestOpened(world, floor) ? gate.reward : null;
+    const reward = row(182, 'gate.reward', got ? element('span', 'gt-ok', `${rewardName(got)} ✓`) : element('span', 'gt-soft', '???'));
     const forage = row(202, 'gate.forage', open ? `${t(`gate.${floor}.forage` as TextKey)} ` : '???');
-    if (open) forage.append(element('span', 'gt-gold-text', `● ${t('gate.forage_ready')}`));
-    const note = open ? `${t('gate.note')} ${data.stayHours} ${t('gate.note_hours')}` : t('gate.note_shut');
-    shell.right.replaceChildren(picture, name, ownerRow, reward, forage, bookNote('gt-note', note, TAPE, 22, 222));
+    if (open && canEnterGate(floor)) {
+      forage.append(forageLeftToday(world, floor) ? element('span', 'gt-gold-text', `● ${t('gate.forage_ready')}`) : element('span', 'gt-soft', t('gate.forage_done')));
+    }
+    shell.right.replaceChildren(picture, name, ownerRow, reward, forage, footer(open));
+  }
+
+  /** ท้ายหน้าขวา: เปิดจากประตูเกตและชั้นนี้เปิดแล้ว = ปุ่มเข้าเกต (หรือบอกว่าข้างในยังไม่พร้อม) · นอกนั้นเป็นโน้ตเดิม */
+  function footer(open: boolean): HTMLElement {
+    if (atPortal && open && canEnterGate(floor)) {
+      const enter = at(element('button', 'gt-enter', t('gate.enter')), 24, 222);
+      enter.type = 'button';
+      enter.id = 'gate-enter';
+      const target = floor;
+      enter.addEventListener('click', () => {
+        shell.hide();
+        eventBus.emit('gate-enter', target);
+      });
+      return enter;
+    }
+    if (atPortal && open) return bookNote('gt-note', t('gate.no_scene'), TAPE, 22, 222);
+    return bookNote('gt-note', open ? `${t('gate.note')} ${data.stayHours} ${t('gate.note_hours')}` : t('gate.note_shut'), TAPE, 22, 222);
   }
 
   /** เฟรมแรก (หันหน้าลง) ของท่ายืนตอนหวาน ขนาดจริง ชั้น 5 เป็นแฝดพี่ */
@@ -174,6 +201,21 @@ export function createGateBook(uiRoot: HTMLElement): void {
 
   eventBus.on('app-open', (app) => {
     if (app !== 'gate') return;
+    atPortal = false;
+    render();
+    shell.show();
+  });
+
+  // ประตูเกตในลาน: เปิดที่ชั้นบนสุดที่เข้าได้ ถ้ายังไม่มีชั้นไหนเข้าได้เปิดที่ชั้นที่ดูค้างไว้
+  eventBus.on('gate-menu-open', () => {
+    if (!gameState.started) return;
+    atPortal = true;
+    const enterable = Array.from({ length: FLOORS * OPEN_ZONES }, (_, index) => index + 1).filter((number) => opened(gameState.world, number) && canEnterGate(number));
+    if (enterable.length > 0) {
+      floor = enterable[enterable.length - 1]!;
+      zone = Math.ceil(floor / FLOORS);
+    }
+    uiSound('ui_page');
     render();
     shell.show();
   });

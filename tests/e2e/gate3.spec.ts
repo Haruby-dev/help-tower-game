@@ -166,6 +166,80 @@ test('gate 3: enter, layers, chest once, forage once a day, talk to Mookmik, rab
   expect(await gate(page, (scene) => [scene.chest === null, scene.forage.map((one) => one !== null)])).toEqual([true, [true, true, true, true]]);
 });
 
+test('gate portal in the yard: the floor menu is the tower book, floor 3 opens after Mookmik reaches 100%, the enter button goes in, and the book then shows the reward and forage of today', async ({ page }) => {
+  await open(page);
+  const act = page.locator('#action-button');
+  const book = page.locator('#gate-book');
+  // ยืนหน้าประตูเกตบนลานเกต ปุ่มกระทำเป็นอุ้งเท้า "ประตูเกต"
+  await page.evaluate(() => (window as unknown as { __state: { movePlayer(at: { x: number; y: number }): void } }).__state.movePlayer({ x: 800, y: 126 }));
+  await expect(act).toHaveAttribute('aria-label', 'ประตูเกต');
+  await expect(act).toHaveAttribute('data-icon', 'interact');
+  await act.click();
+  await expect(book).toBeVisible();
+  // มุกมิกยังไม่ครบ 100% ชั้น 3 ยังปิด ไม่มีปุ่มเข้า
+  await expect(page.locator('#gate-enter')).toHaveCount(0);
+  await page.locator('#gate-book-close').click();
+  await expect(book).toBeHidden();
+
+  await page.evaluate(() => {
+    const state = (window as unknown as { __state: TestState & { world: GateWorld & { monsters: { affection: Record<string, unknown> } } } }).__state;
+    const monsters = state.world.monsters;
+    state.setWorld({ ...state.world, monsters: { ...monsters, affection: { ...monsters.affection, mookmik: { points: 9999, signature: true } } } });
+  });
+  await act.click();
+  await expect(book).toBeVisible();
+  // เปิดที่ชั้นบนสุดที่เข้าได้ (ชั้น 3) มีจุดทองของป่าวันนี้
+  await expect(page.locator('.gt-fl[data-floor="3"]')).not.toHaveClass(/dk/);
+  await expect(page.locator('#gate-book .gt-dot')).toHaveCount(1);
+  await expect(page.locator('#gate-book .gt-row').filter({ hasText: 'รางวัลแรก' })).toContainText('???');
+  // ชั้นที่เปิดแล้วแต่ข้างในยังไม่พร้อม (ไม่มีแผนที่) ไม่มีปุ่มเข้า
+  await page.evaluate(() => {
+    const state = (window as unknown as { __state: TestState & { world: GateWorld & { monsters: { affection: Record<string, unknown> } } } }).__state;
+    const monsters = state.world.monsters;
+    state.setWorld({ ...state.world, monsters: { ...monsters, affection: { ...monsters.affection, puinun: { points: 9999, signature: true } } } });
+  });
+  await page.locator('.gt-fl[data-floor="1"]').click();
+  await expect(page.locator('#gate-enter')).toHaveCount(0);
+  await expect(page.locator('#gate-book .gt-note')).toContainText('ข้างในยังไม่พร้อม');
+  await page.locator('.gt-fl[data-floor="3"]').click();
+  await page.locator('#gate-enter').click();
+  await expect(book).toBeHidden();
+  await page.waitForFunction(() => {
+    const game = (window as unknown as Win).__game;
+    return game.scene.isActive('Gate') && (game.scene.getScene('Gate') as GateView).ready;
+  });
+
+  // เปิดหีบ เก็บของป่าทุกจุด แล้วออกมาดูในสมุด: รางวัลแรกมีชื่อ ของป่าวันนี้เก็บหมดแล้ว จุดทองหาย
+  await page.waitForTimeout(400);
+  await standAt(page, 15.0, 4.1);
+  await act.click();
+  await expect.poll(async () => (await world(page)).gates.chests).toEqual([3]);
+  await page.evaluate(() => {
+    const state = (window as unknown as Win).__state;
+    state.setWorld({ ...state.world, gates: { ...state.world.gates, forage: { '3': { day: state.world.day, picked: [0, 1, 2, 3] } } } });
+  });
+  await standAt(page, 13.9, 12.7);
+  await page.keyboard.down('s');
+  await page.waitForFunction(() => (window as unknown as Win).__game.scene.isActive('Base'), undefined, { timeout: 10_000 });
+  await page.keyboard.up('s');
+  await page.waitForTimeout(400);
+  await expect(act).toHaveAttribute('aria-label', 'ประตูเกต');
+  await act.click();
+  await expect(page.locator('#gate-book .gt-row').filter({ hasText: 'รางวัลแรก' })).toContainText('เมล็ดผักกาดเมฆ ×5 ✓');
+  await expect(page.locator('#gate-book .gt-row').filter({ hasText: 'ของป่า' })).toContainText('เก็บแล้ววันนี้');
+  await expect(page.locator('#gate-book .gt-dot')).toHaveCount(0);
+  await page.locator('#gate-book-close').click();
+
+  // แอปเกตในโทรศัพท์ดูข้อมูลอย่างเดียว ไม่มีปุ่มเข้าเกต (ยืนหน้าประตูอยู่ก็ตาม)
+  await page.locator('#phone-button').click();
+  await page.locator('#lock-open').click();
+  await page.locator('[data-app="gate"]').click();
+  await expect(book).toBeVisible();
+  await page.locator('.gt-fl[data-floor="3"]').click();
+  await expect(page.locator('#gate-book .gt-row').filter({ hasText: 'รางวัลแรก' })).toContainText('✓');
+  await expect(page.locator('#gate-enter')).toHaveCount(0);
+});
+
 test('gate 3: after 2 game hours the player says a short line and goes back to the yard', async ({ page }) => {
   await open(page);
   await enterGate(page);
@@ -175,6 +249,7 @@ test('gate 3: after 2 game hours the player says a short line and goes back to t
   });
   await expect(page.locator('#player-bubble')).toContainText('อยู่ในเกตนานแล้ว');
   await shot(page, '07_time_up');
-  await page.waitForFunction(() => (window as unknown as Win).__game.scene.isActive('Base'), undefined, { timeout: 10_000 });
+  // WebKit ของเทสต์บางรอบวาดภาพช้า เวลาในฉากเดินช้ากว่านาฬิกาจริง (เคยล้มรอบแรกที่ 10 วินาที) จึงรอนานขึ้น
+  await page.waitForFunction(() => (window as unknown as Win).__game.scene.isActive('Base'), undefined, { timeout: 25_000 });
   expect(await page.evaluate(() => (window as unknown as Win).__game.scene.isActive('Gate'))).toBe(false);
 });

@@ -18,11 +18,11 @@
       "cloudShadows": { "count": 3, "alpha": 0.14, "driftPxPerSecond": 4 }
     },
     { "floor": 4, "scene": "gate_scene_gate4" },
-    { "floor": 5, "scene": "gate_scene_gate5" },
+    { "floor": 5, "scene": "gate_scene_gate5", "reward": { "recipe": "honey_pancake" } },
     { "floor": 6, "scene": "gate_scene_gate6" },
     { "floor": 7, "scene": "gate_scene_gate7" },
     { "floor": 8, "scene": "gate_scene_gate8" },
-    { "floor": 9, "scene": "gate_scene_gate9" },
+    { "floor": 9, "scene": "gate_scene_gate9", "reward": { "recipe": "strawberry_milk_pudding" } },
     { "floor": 10, "scene": "gate_scene_gate10" }
   ]
 }

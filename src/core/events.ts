@@ -30,6 +30,8 @@ export interface GameEvents {
   'player-says': 'bagFull' | 'mysteryFood' | 'fishEscaped' | 'noBait' | 'baitRanOut' | 'noMoney' | 'trapTooEarly' | 'trapWaiting' | 'dryingWaiting' | 'dryingTrayIdea' | 'mortarFound' | 'gateTimeUp';
   /** เข้าเกตชั้นนี้ (ตอนนี้จากปุ่มทดสอบในตั้งค่า) */
   'gate-enter': number;
+  /** ยืนหน้าประตูเกตในลานแล้วกดปุ่มกระทำ เปิดเมนูเลือกชั้น (สมุดแผนที่หอคอยที่มีปุ่มเข้าเกต) */
+  'gate-menu-open': undefined;
   /** แตะถาดตากใบที่ว่าง เปิดหน้าเลือกของตาก */
   'drying-open': number;
   /** เปิดครกหินเก่า (ตอนนี้จากปุ่มทดสอบ) */

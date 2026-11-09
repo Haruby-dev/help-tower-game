@@ -3,6 +3,7 @@ import { assetUrl, registry } from '../core/assets';
 import { idsInGroup, loadAtlasGroup, registerAtlasGroup, registerSlice } from '../core/atlas';
 import { audioSettings, sound } from '../core/audio';
 import { eventBus } from '../core/events';
+import { t, type TextKey } from '../core/i18n';
 import type { Vector } from '../core/movement';
 import { createRng, type Rng } from '../core/rng';
 import { gameState, type ContextAction } from '../core/state';
@@ -544,7 +545,11 @@ export class GateScene extends Phaser.Scene {
     this.chest = null;
     this.chestBody?.destroy();
     this.chestBody = null;
-    this.pill(result.item, result.count, x, y - this.tile);
+    const { reward } = result;
+    if ('recipe' in reward) {
+      const icon = `dish_icon_${reward.recipe}`;
+      popPill(this, x, y - this.tile, this.textures.exists(icon) ? icon : '__WHITE', `${t('recipe.learned')} ${t(`dish.${reward.recipe}.name` as TextKey)}`, gameState.viewport.zoom);
+    } else this.pill(reward.item, reward.count, x, y - this.tile);
   }
 
   private pick(index: number): void {

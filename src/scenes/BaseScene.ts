@@ -86,6 +86,8 @@ const PLAYER_HEAD_PX = 66;
 /** ครึ่งความกว้างที่ยืนใช้โต๊ะช่างกับกอกล้วยได้รอบฐาน (พิกเซลเกม) */
 const WORKBENCH_SLACK_PX = 24;
 const BANANA_SLACK_PX = 56;
+/** ประตูเกตกว้างราว 64 พิกเซล ยืนหน้าประตูช่วงไหนก็เปิดเมนูเลือกชั้นได้ */
+const GATE_PORTAL_SLACK_PX = 24;
 const TABLE_SLACK_PX = 40;
 /** กอกล้วยโยกซ้ายขวา 1 พิกเซล */
 const BANANA_SHAKE_STEPS = 8;
@@ -212,6 +214,7 @@ export class BaseScene extends Phaser.Scene {
   /** โต๊ะช่างเก่า (ย้ายได้ในโหมดจัดวาง) กับกอกล้วยมุมล่างขวา */
   private workbench: Phaser.GameObjects.Image | null = null;
   private banana: Phaser.GameObjects.Image | null = null;
+  private gatePortal: Phaser.GameObjects.Image | null = null;
   private visits: Visits | null = null;
   private cookingShown: boolean | null = null;
   /** ทำครั้งเดียว เวลาเดียว: ระหว่างตัวเอกทำท่าทำอาหาร นาฬิกาเดินเร็วขึ้นเท่านี้ เวลาของแรงก์จึงผ่านไปใน balance.cooking.fastCookMs */
@@ -408,6 +411,10 @@ export class BaseScene extends Phaser.Scene {
         this.useStation(station);
         return;
       }
+      if (this.gatePortalInReach() && this.gatePortal?.getBounds().contains(pointer.worldX, pointer.worldY)) {
+        eventBus.emit('gate-menu-open', undefined);
+        return;
+      }
       if (this.tableInReach() && this.stationsView?.table?.getBounds().contains(pointer.worldX, pointer.worldY)) {
         eventBus.emit('table-open', undefined);
         return;
@@ -575,6 +582,7 @@ export class BaseScene extends Phaser.Scene {
     if (id.startsWith('food_tray')) this.trayView = new TrayView(this, image);
     if (id === 'workbench') this.workbench = image;
     if (id === 'banana_clump') this.banana = image;
+    if (id === 'gate_portal') this.gatePortal = image;
     // ของหน้าบ้านย้ายได้ในโหมดจัดวาง กองไฟพาแสงเรืองไปด้วย ตะกร้าพาจีโอไปด้วย
     this.arranger.register(id, image, this.movableBlockers.get(id) ?? null, flat, (feet) => {
       if (id === 'campfire') {
@@ -724,6 +732,7 @@ export class BaseScene extends Phaser.Scene {
     else if (this.bananaReady()) this.shakeBananaClump();
     else if (this.stationInReach()) this.useStation(this.stationInReach()!);
     else if (this.tableInReach()) eventBus.emit('table-open', undefined);
+    else if (this.gatePortalInReach()) eventBus.emit('gate-menu-open', undefined);
     else if (this.pondSpot()) {
       if (gameState.selectedTool === 'rod') this.startFishing();
       else this.startBath();
@@ -845,6 +854,11 @@ export class BaseScene extends Phaser.Scene {
 
   private workbenchInReach(): boolean {
     return this.nearObject(this.workbench, WORKBENCH_SLACK_PX);
+  }
+
+  /** ยืนหน้าประตูเกตบนลานเกต (เกตบานเดียว M8a) */
+  private gatePortalInReach(): boolean {
+    return this.nearObject(this.gatePortal, GATE_PORTAL_SLACK_PX);
   }
 
   /** กอกล้วยกว้าง 3 ต้น ยืนตรงไหนรอบฐานก็เขย่าได้ วันละครั้ง */
@@ -1518,6 +1532,7 @@ export class BaseScene extends Phaser.Scene {
     const station = this.stationInReach();
     if (station) return { icon: 'interact', label: this.stationLabel(station) };
     if (this.tableInReach()) return { icon: 'interact', label: 'action.table' };
+    if (this.gatePortalInReach()) return { icon: 'interact', label: 'action.gate' };
     if (this.pondSpot()) return gameState.selectedTool === 'rod' ? { icon: 'fish', label: 'action.fish' } : { icon: 'bath', label: 'action.bath' };
     return this.nearDoor() ? { icon: 'sleep', label: 'action.sleep' } : null;
   }

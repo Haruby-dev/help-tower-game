@@ -1089,8 +1089,8 @@ export const gatesSchema = z.strictObject({
         scene: z.string().min(1),
         /** เกตที่เดินเข้าไปได้แล้ว: ชื่อแผนที่ใน src/data/gate_maps/<map>_map.json และภาพ <map>_bg <map>_fg */
         map: z.string().regex(/^gate\d+$/).optional(),
-        /** หีบรางวัลครั้งแรก ได้ครั้งเดียว */
-        reward: itemCountSchema.optional(),
+        /** หีบรางวัลครั้งแรก ได้ครั้งเดียว: ของเข้ากระเป๋า หรือสูตรลับของเกต (สูตรที่ `source: gate`) */
+        reward: z.union([itemCountSchema, z.strictObject({ recipe: z.string().min(1) })]).optional(),
         /** ของป่าต่อจุด เก็บได้วันละครั้งต่อจุด */
         forage: itemCountSchema.optional(),
         /** สีพื้นนอกภาพ ตอนจอกว้างกว่าแผนที่ (สีขอบป่าในภาพ) */

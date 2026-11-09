@@ -373,6 +373,18 @@ export function checkProject(): string[] {
   const monsterFile = monstersSchema.parse(readJson('src/data/monsters.json'));
   const itemNamed = (item: string): boolean =>
     item.startsWith('ing_') ? Boolean(translations[`ingredient.${item.slice('ing_'.length)}.name`] && ingredientIds[item.slice('ing_'.length)]) : Boolean(translations[`item.${item}.name`]);
+  // รางวัลครั้งแรกของทุกบาน: ของต้องมีชื่อในเกม สูตรต้องเป็นสูตรของเกต และสูตรของเกตทุกสูตรต้องมีบานที่ให้
+  const gateRecipes = new Set<string>();
+  for (const gate of gatesFile.gates) {
+    if (!gate.reward) continue;
+    if ('recipe' in gate.reward) {
+      gateRecipes.add(gate.reward.recipe);
+      if (recipesData[gate.reward.recipe]?.source !== 'gate') problems.push(`src/data/gates.json: floor ${gate.floor} reward ${gate.reward.recipe} is not a gate recipe`);
+    } else if (!itemNamed(gate.reward.item)) problems.push(`src/data/gates.json: floor ${gate.floor} reward ${gate.reward.item} has no name`);
+  }
+  for (const [id, recipe] of Object.entries(recipesData)) {
+    if (recipe.source === 'gate' && !gateRecipes.has(id)) problems.push(`src/data/recipes.json: ${id} is a gate recipe but no gate gives it`);
+  }
   for (const gate of gatesFile.gates) {
     if (!gate.map) continue;
     const label = `src/data/gate_maps/${gate.map}_map.json`;
@@ -398,7 +410,6 @@ export function checkProject(): string[] {
       }
     }
     for (const [x, y] of map.blocked) if (x >= map.size[0] || y >= map.size[1]) problems.push(`${label}: blocked cell ${x},${y} is outside the map`);
-    if (gate.reward && !itemNamed(gate.reward.item)) problems.push(`src/data/gates.json: floor ${gate.floor} reward ${gate.reward.item} has no name`);
     if (gate.forage && !itemNamed(gate.forage.item)) problems.push(`src/data/gates.json: floor ${gate.floor} forage ${gate.forage.item} has no name`);
     if (gate.reward && !registry.gate_reward_chest) problems.push('assets-src/registry.json: gate_reward_chest is missing');
   }

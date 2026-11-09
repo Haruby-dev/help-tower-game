@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { newWorld } from '../../src/systems/gauges';
-import { canEnterGate, chestOpened, forageReady, gateMapOf, gateTimeUp, gates, hoursInGate, openGateChest, pickForage, pickedToday } from '../../src/systems/gates';
+import { canEnterGate, chestOpened, forageLeftToday, forageReady, gateMapOf, gateTimeUp, gates, hoursInGate, openGateChest, pickForage, pickedToday } from '../../src/systems/gates';
 import { countOf } from '../../src/systems/farm';
 import { SAVE_VERSION, parseSaveFile, toSaveFile } from '../../src/systems/save';
 import balance from '../../src/data/balance.json';
@@ -31,8 +31,7 @@ describe('gate reward chest', () => {
     const world = newWorld();
     const first = openGateChest(world, 3);
     if (!first || first === 'full') throw new Error('chest did not open');
-    expect(first.item).toBe('seed_cloud_lettuce');
-    expect(first.count).toBe(5);
+    expect(first.reward).toEqual({ item: 'seed_cloud_lettuce', count: 5 });
     expect(countOf(first.world.bag, 'seed_cloud_lettuce')).toBe(5);
     expect(chestOpened(first.world, 3)).toBe(true);
     expect(openGateChest(first.world, 3)).toBeNull();
@@ -47,6 +46,20 @@ describe('gate reward chest', () => {
 
   it('gates without a reward give nothing', () => {
     expect(openGateChest(newWorld(), 1)).toBeNull();
+  });
+
+  it('gates 5 and 9 teach their secret recipe once, even with a full bag', () => {
+    const world = newWorld();
+    const full = { ...world, bag: Array.from({ length: balance.farm.bag.slots }, (_, index) => ({ item: `fish_test_${index}`, count: balance.farm.bag.stack })) };
+    for (const [floor, recipe] of [[5, 'honey_pancake'], [9, 'strawberry_milk_pudding']] as const) {
+      expect(world.recipes.known).not.toContain(recipe);
+      const opened = openGateChest(full, floor);
+      if (!opened || opened === 'full') throw new Error(`gate ${floor} chest did not open`);
+      expect(opened.reward).toEqual({ recipe });
+      expect(opened.world.recipes.known.filter((id) => id === recipe)).toHaveLength(1);
+      expect(opened.world.bag).toEqual(full.bag);
+      expect(openGateChest(opened.world, floor)).toBeNull();
+    }
   });
 });
 
@@ -65,6 +78,10 @@ describe('gate forage', () => {
     const tomorrow = { ...world, day: world.day + 1 };
     expect(pickedToday(tomorrow, 3)).toEqual([]);
     expect(forageReady(tomorrow, 3, 2)).toBe(true);
+    // จุดทองในเมนูเลือกชั้น: วันนี้ยังเหลือของป่าไหม
+    expect(forageLeftToday(world, 3)).toBe(false);
+    expect(forageLeftToday(tomorrow, 3)).toBe(true);
+    expect(forageLeftToday(tomorrow, 2)).toBe(false);
   });
 
   it('ignores points that do not exist', () => {
