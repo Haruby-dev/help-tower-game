@@ -93,6 +93,31 @@
       }
     ]
   },
+  "reputationRecipes": {
+    "2": [
+      "whip_cream_mumu",
+      "caramel_pudding",
+      "honey_macaron",
+      "strawberry_jelly"
+    ],
+    "3": [
+      "cream_puff",
+      "swiss_roll",
+      "soda_ice_cream",
+      "berry_pudding",
+      "blueberry_macaron"
+    ],
+    "4": [
+      "soda_jelly_dessert",
+      "cherry_cream_macaron",
+      "choco_donut"
+    ],
+    "5": [
+      "strawberry_parfait",
+      "choco_macaron",
+      "choco_parfait"
+    ]
+  },
   "toppings": {
     "kinds": [
       2,

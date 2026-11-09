@@ -122,9 +122,11 @@ describe('what toppings change', () => {
   it('raise monster affection by the same steps', () => {
     const base = newWorld();
     const plain = feed(base, 'puinun', 'dish_strawberry_skewer_1', 0).points;
-    const topped = feed(base, 'puinun', 'dish_strawberry_skewer_1~honey.strawberry', 0).points;
+    const topped = feed(base, 'puinun', 'dish_strawberry_skewer_1~honey.whipped_cream', 0).points;
     expect(topped).toBeCloseTo(plain * 1.2);
     expect(feed(base, 'puinun', 'dish_strawberry_skewer_1~scallion', 0).points).toBeCloseTo(plain);
+    // ปุยนุ่นชอบสตรอว์เบอร์รีหั่น (GDD ท็อปปิ้งที่ชอบ) ×1.5 เพิ่ม
+    expect(feed(base, 'puinun', 'dish_strawberry_skewer_1~strawberry', 0).points).toBeCloseTo(plain * 1.1 * 1.5);
   });
 });
 

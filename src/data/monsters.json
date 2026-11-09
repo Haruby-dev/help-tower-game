@@ -5,12 +5,13 @@
     "points": 30,
     "personality": "shy",
     "favourite": [
-      "strawberry_skewer"
+      "fruit_veg_salad"
     ],
     "favouriteDrink": "strawberry_juice",
+    "favouriteTopping": "strawberry",
     "likes": [
-      "grilled_corn",
-      "warm_honey_milk"
+      "strawberry_skewer",
+      "cucumber_salad"
     ],
     "dislikes": [
       "grilled_fish"
@@ -48,12 +49,13 @@
     "points": 32,
     "personality": "cheerful",
     "favourite": [
-      "boiled_egg"
+      "buttered_corn"
     ],
-    "favouriteDrink": "basil_tea",
+    "favouriteDrink": "corn_milk",
+    "favouriteTopping": "rainbow_sprinkles",
     "likes": [
-      "scallion_omelet",
-      "honey_pancake"
+      "boiled_egg",
+      "corn_egg_fried_rice"
     ],
     "dislikes": [
       "tomato_soup"
@@ -92,9 +94,10 @@
       "tomato_soup"
     ],
     "favouriteDrink": "tomato_juice",
+    "favouriteTopping": "scallion",
     "likes": [
       "potato_carrot_stew",
-      "honey_apple_grill"
+      "cabbage_crispy_shrimp"
     ],
     "dislikes": [
       "boiled_egg"
@@ -103,6 +106,12 @@
       "recipe": "scallion_omelet",
       "stars": 1
     },
+    "teaches": [
+      {
+        "at": 0.25,
+        "recipe": "tomato_soup"
+      }
+    ],
     "art": {
       "sheet": "monster_mookmik",
       "frame": 40,
@@ -131,9 +140,10 @@
       "baked_potato"
     ],
     "favouriteDrink": "warm_honey_milk",
+    "favouriteTopping": "fried_garlic",
     "likes": [
-      "fish_congee",
-      "potato_carrot_stew"
+      "hor_mok",
+      "fish_congee"
     ],
     "dislikes": [
       "strawberry_skewer"
@@ -171,9 +181,10 @@
       "grilled_fish"
     ],
     "favouriteDrink": "tomato_juice",
+    "favouriteTopping": "chili_flakes",
     "likes": [
       "home_kaprao",
-      "boiled_egg"
+      "kaprao_shrimp"
     ],
     "dislikes": [
       "grilled_corn"
@@ -211,9 +222,10 @@
       "grilled_corn"
     ],
     "favouriteDrink": "warm_honey_milk",
+    "favouriteTopping": "blueberry",
     "likes": [
-      "boiled_egg",
-      "warm_honey_milk"
+      "garlic_shrimp",
+      "squid_salad"
     ],
     "dislikes": [
       "grilled_fish"
@@ -249,12 +261,13 @@
     "points": 38,
     "personality": "elder",
     "favourite": [
-      "fish_congee"
+      "kapi_chili_dip"
     ],
     "favouriteDrink": "basil_tea",
+    "favouriteTopping": "umami_powder",
     "likes": [
-      "tomato_soup",
-      "warm_honey_milk"
+      "cabbage_shrimp_soup",
+      "boiled_egg"
     ],
     "dislikes": [
       "grilled_corn"
@@ -263,6 +276,16 @@
       "recipe": "home_kaprao",
       "stars": 1
     },
+    "teaches": [
+      {
+        "at": 0.25,
+        "recipe": "kapi_chili_dip"
+      },
+      {
+        "at": 0.5,
+        "recipe": "cabbage_shrimp_soup"
+      }
+    ],
     "art": {
       "sheet": "monster_yaibaimai",
       "frame": 48,
@@ -289,12 +312,13 @@
     "points": 40,
     "personality": "shy",
     "favourite": [
-      "warm_honey_milk"
+      "pumpkin_custard"
     ],
     "favouriteDrink": "strawberry_juice",
+    "favouriteTopping": "honey",
     "likes": [
-      "strawberry_skewer",
-      "honey_pancake"
+      "honey_pancake",
+      "strawberry_skewer"
     ],
     "dislikes": [
       "grilled_fish"
@@ -329,12 +353,13 @@
     "points": 42,
     "personality": "lazy",
     "favourite": [
-      "scallion_omelet"
+      "grilled_shrimp"
     ],
-    "favouriteDrink": "basil_tea",
+    "favouriteDrink": "soy_milk",
+    "favouriteTopping": "fish_ball",
     "likes": [
-      "baked_potato",
-      "corn_egg_fried_rice"
+      "scallion_omelet",
+      "fish_rice_ball"
     ],
     "dislikes": [
       "strawberry_skewer"
@@ -372,9 +397,10 @@
       "honey_pancake"
     ],
     "favouriteDrink": "strawberry_juice",
+    "favouriteTopping": "whipped_cream",
     "likes": [
       "honey_apple_grill",
-      "strawberry_milk_pudding"
+      "steamed_crab"
     ],
     "dislikes": [
       "baked_potato"
@@ -383,6 +409,16 @@
       "recipe": "warm_honey_milk",
       "stars": 1
     },
+    "teaches": [
+      {
+        "at": 0.25,
+        "recipe": "honey_apple_grill"
+      },
+      {
+        "at": 0.5,
+        "recipe": "strawberry_juice"
+      }
+    ],
     "art": {
       "sheet": "monster_jaotungtong",
       "frame": 64,
@@ -412,9 +448,10 @@
       "strawberry_milk_pudding"
     ],
     "favouriteDrink": "basil_tea",
+    "favouriteTopping": "toasted_sesame",
     "likes": [
-      "home_kaprao",
-      "fish_congee"
+      "mackerel_chili_dip",
+      "lime_steamed_fish"
     ],
     "dislikes": [
       "corn_egg_fried_rice"

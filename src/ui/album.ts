@@ -4,7 +4,7 @@ import { t, type TextKey } from '../core/i18n';
 import { gameState, type World } from '../core/state';
 import shopJson from '../data/shop.json';
 import type { ShopData } from '../data/schema';
-import { affectionPercent, barOwner, floorOpen, isCleared, monsterTable, tasteKnown, twinA, twinB } from '../systems/monsters';
+import { affectionPercent, barOwner, floorOpen, hasMet, isCleared, monsterTable, tasteKnown, twinA, twinB } from '../systems/monsters';
 import { tasteOfTreat } from '../systems/shop';
 import { at, bookArrow, bookNote, bookTab, createBook, pageArt } from './book';
 import { artUrl } from './pixelArt';
@@ -51,12 +51,7 @@ const ownerOfFloor = (floor: number): string | null =>
 /** เคยมาเยี่ยมแล้ว: มีความชอบ เคยได้กินหรืองอน หรือเคยโผล่มาแล้ว · แฝดนับรวมทั้งสองตัว */
 function visited(world: World, id: string): boolean {
   const ids = id === twinA ? [twinA, twinB] : [id];
-  return ids.some(
-    (one) =>
-      world.monsters.affection[one] !== undefined ||
-      (world.monsters.tasted[one]?.length ?? 0) > 0 ||
-      world.monsters.arrivals.some((arrival) => arrival.monster === one && arrival.done),
-  );
+  return ids.some((one) => hasMet(world, one));
 }
 
 type SlotState = 'friend' | 'met' | 'unknown' | 'locked';

@@ -91,7 +91,7 @@ test('Puinun (warm, 50%) comes out of the burrow, takes a favourite tower, eats 
   await page.evaluate(() => (window as unknown as Win).__visitSpeed(3));
   await patch(
     page,
-    `(w) => ({ ...w, hour: 13, gauges: { ...w.gauges, cleanliness: 50 }, monsters: { ...w.monsters, affection: { puinun: { points: 15, signature: false } } }, tray: { level: 0, plates: [{ item: 'dish_grilled_fish_1', count: 2 }, { item: 'dish_strawberry_skewer_1', count: 6 }, { item: 'dish_boiled_egg_1', count: 2 }] } })`,
+    `(w) => ({ ...w, hour: 13, gauges: { ...w.gauges, cleanliness: 50 }, monsters: { ...w.monsters, affection: { puinun: { points: 15, signature: false } } }, tray: { level: 0, plates: [{ item: 'dish_grilled_fish_1', count: 2 }, { item: 'dish_fruit_veg_salad_1', count: 6 }, { item: 'dish_boiled_egg_1', count: 2 }] } })`,
   );
   await standAtTray(page);
   await patch(page, `(w) => ({ ...w, monsters: { ...w.monsters, arrivals: [{ monster: 'puinun', day: w.day, hour: w.hour, done: false }] } })`);
@@ -102,14 +102,14 @@ test('Puinun (warm, 50%) comes out of the burrow, takes a favourite tower, eats 
   await shot(page, '03_puinun_out');
   // หยิบเมนูโปรดเป็นหอคอย 3–5 ที่ ไม่แตะปลาย่าง (ไม่ชอบ) รวมไม่เกิน 5 ที่
   await expect.poll(async () => (await world(page)).tray.plates[1]?.count ?? 0, { timeout: 60_000 }).toBeLessThan(6);
-  // หอคอยเหนือหัวใช้จาน D1 กับภาพถังหูลู่จิ๋ว (ผู้ใช้เลือก 6 พ.ย. 2026 14:18)
+  // หอคอยเหนือหัวใช้จาน D1 กับภาพสลัดผักผลไม้จิ๋ว เมนูโปรดของปุยนุ่นตาม GDD (ผู้ใช้เลือก 6 พ.ย. 2026 14:18)
   const towerKeys = await page.evaluate(() =>
     ((window as unknown as Win).__game.scene.getScene('Base') as { children: { list: { name: string; texture?: { key: string } }[] } }).children.list
       .filter((child) => child.name === 'tower_layer')
       .map((child) => child.texture?.key),
   );
-  // อาจหยิบไข่ต้ม (เฉย ๆ) ขึ้นหอคอยก่อนตรวจทัน จึงเช็กแค่ว่ามีจาน D1 กับถังหูลู่
-  expect(towerKeys).toEqual(expect.arrayContaining(['tower_plate', 'tray_mini_strawberry_skewer']));
+  // อาจหยิบไข่ต้ม (เฉย ๆ) ขึ้นหอคอยก่อนตรวจทัน จึงเช็กแค่ว่ามีจาน D1 กับสลัด
+  expect(towerKeys).toEqual(expect.arrayContaining(['tower_plate', 'tray_mini_fruit_veg_salad']));
   await expect.poll(async () => (await world(page)).monsters.arrivals[0]?.done).toBe(true);
   await page.waitForTimeout(2500);
   await shot(page, '04_tower');
@@ -207,11 +207,12 @@ const textures = (page: Page): Promise<string[]> =>
     return [...scene.visits.runs.values()].map((run) => run.monster.sprite.texture.key);
   });
 
-test('M7b: a wary Popcorn grabs her boiled egg tower and runs straight back into the burrow without sitting to eat', async ({ page }, info) => {
+test('M7b: a wary Popcorn grabs her buttered corn tower and runs straight back into the burrow without sitting to eat', async ({ page }, info) => {
   test.skip(info.project.name !== 'desktop', 'one full visit on desktop is enough');
   await open(page);
   await page.evaluate(() => (window as unknown as Win).__visitSpeed(3));
-  await patch(page, `(w) => ({ ...w, hour: 13, tray: { level: 0, plates: [{ item: 'dish_boiled_egg_1', count: 5 }, null, null] } })`);
+  // เมนูโปรดของป๊อปคอร์นคือข้าวโพดคลุกเนย (GDD รสนิยมอาหาร 7 พ.ย.)
+  await patch(page, `(w) => ({ ...w, hour: 13, tray: { level: 0, plates: [{ item: 'dish_buttered_corn_1', count: 5 }, null, null] } })`);
   await page.evaluate(() => (window as unknown as Win).__state.movePlayer({ x: 700, y: 420 }));
   await patch(page, `(w) => ({ ...w, monsters: { ...w.monsters, arrivals: [{ monster: 'popcorn', day: w.day, hour: w.hour, done: false }] } })`);
   await expect.poll(() => monsterTexture(page)).toContain('monster_popcorn_hungry');
@@ -237,7 +238,7 @@ test('M7b: Puinun takes her favourite food and favourite drink together and says
   await page.evaluate(() => (window as unknown as Win).__visitSpeed(3));
   await patch(
     page,
-    `(w) => ({ ...w, hour: 13, monsters: { ...w.monsters, affection: { puinun: { points: 15, signature: false } } }, tray: { level: 0, plates: [{ item: 'dish_strawberry_skewer_1', count: 3 }, { item: 'dish_strawberry_juice_1', count: 2 }, null] } })`,
+    `(w) => ({ ...w, hour: 13, monsters: { ...w.monsters, affection: { puinun: { points: 15, signature: false } } }, tray: { level: 0, plates: [{ item: 'dish_fruit_veg_salad_1', count: 3 }, { item: 'dish_strawberry_juice_1', count: 2 }, null] } })`,
   );
   await page.evaluate(() => (window as unknown as Win).__state.movePlayer({ x: 700, y: 420 }));
   await patch(page, `(w) => ({ ...w, monsters: { ...w.monsters, arrivals: [{ monster: 'puinun', day: w.day, hour: w.hour, done: false }] } })`);

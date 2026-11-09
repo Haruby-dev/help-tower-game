@@ -41,16 +41,18 @@ const withTray = (world: World, plates: ({ item: string; count: number } | null)
 const fixed = (value: number) => ({ next: () => value, between: (min: number, max: number) => min + value * (max - min) });
 
 describe('monster data (GDD stage 3)', () => {
-  it('has floors 1–10 with the GDD points (twins 36 each) and Puinun likes strawberry tanghulu most', () => {
+  it('has floors 1–10 with the GDD points (twins 36 each) and Puinun likes fruit and veg salad most (GDD tastes 7 Nov)', () => {
     expect(Object.values(monsters).map((monster) => monster.points)).toEqual([30, 32, 33, 35, 36, 36, 38, 40, 42, 44, 47]);
-    expect(monsters.puinun.favourite).toEqual(['strawberry_skewer']);
+    expect(monsters.puinun.favourite).toEqual(['fruit_veg_salad']);
+    expect(monsters.puinun.likes).toEqual(['strawberry_skewer', 'cucumber_salad']);
+    expect(monsters.puinun.favouriteTopping).toBe('strawberry');
     expect(monsters.puinun.signature).toEqual({ recipe: 'baked_potato', stars: 1 });
     expect(monsters.puefaotung.signature).toEqual({ recipe: 'strawberry_skewer', stars: 3 });
   });
 
   it('reads tastes: favourite, like, neutral, dislike', () => {
-    expect(tasteOf(PUINUN, 'strawberry_skewer')).toBe('favourite');
-    expect(tasteOf(PUINUN, 'warm_honey_milk')).toBe('like');
+    expect(tasteOf(PUINUN, 'fruit_veg_salad')).toBe('favourite');
+    expect(tasteOf(PUINUN, 'strawberry_skewer')).toBe('like');
     expect(tasteOf(PUINUN, 'boiled_egg')).toBe('neutral');
     expect(tasteOf(PUINUN, 'grilled_fish')).toBe('dislike');
   });
@@ -59,16 +61,17 @@ describe('monster data (GDD stage 3)', () => {
 describe('affection formula', () => {
   it('= rank base × taste × variety × stars × cleanliness', () => {
     const base = rules.rankBase.F;
+    const salad = rules.rankBase.E;
     expect(dishPoints(PUINUN, 'boiled_egg', 1, 0, 50)).toBeCloseTo(base);
-    expect(dishPoints(PUINUN, 'strawberry_skewer', 1, 0, 50)).toBeCloseTo(base * 3);
-    expect(dishPoints(PUINUN, 'grilled_corn', 2, 0, 50)).toBeCloseTo(base * 1.5 * 1.2);
-    expect(dishPoints(PUINUN, 'strawberry_skewer', 3, 1, 50)).toBeCloseTo(base * 3 * 0.6 * 1.5);
-    expect(dishPoints(PUINUN, 'strawberry_skewer', 1, 4, 50)).toBeCloseTo(base * 3 * 0.3);
+    expect(dishPoints(PUINUN, 'fruit_veg_salad', 1, 0, 50)).toBeCloseTo(salad * 3);
+    expect(dishPoints(PUINUN, 'strawberry_skewer', 2, 0, 50)).toBeCloseTo(base * 1.5 * 1.2);
+    expect(dishPoints(PUINUN, 'fruit_veg_salad', 3, 1, 50)).toBeCloseTo(salad * 3 * 0.6 * 1.5);
+    expect(dishPoints(PUINUN, 'fruit_veg_salad', 1, 4, 50)).toBeCloseTo(salad * 3 * 0.3);
     expect(dishPoints(PUINUN, 'grilled_fish', 3, 0, 100)).toBe(0);
   });
 
   it('gives drinks a smaller base than food', () => {
-    expect(dishPoints(PUINUN, 'warm_honey_milk', 1, 0, 50)).toBeCloseTo(rules.rankBase.E * rules.drinkBaseShare * 1.5);
+    expect(dishPoints(PUINUN, 'warm_honey_milk', 1, 0, 50)).toBeCloseTo(rules.rankBase.E * rules.drinkBaseShare);
   });
 
   it('uses ×1.1 when clean (70+) and ×0.8 when dirty (30 or less)', () => {
@@ -178,7 +181,7 @@ describe('tray and taking', () => {
     const world = withTray(plain(), [
       { item: dishItem('grilled_fish', 1), count: 4 },
       { item: dishItem('boiled_egg', 1), count: 4 },
-      { item: dishItem('strawberry_skewer', 1), count: 9 },
+      { item: dishItem('fruit_veg_salad', 1), count: 9 },
     ]);
     for (const roll of [0, 0.5, 0.99]) {
       const plan = planVisit(world, PUINUN, fixed(roll));
@@ -194,11 +197,11 @@ describe('tray and taking', () => {
   it('takes 1 of each liked plate before neutral ones', () => {
     const world = withTray(plain(), [
       { item: dishItem('boiled_egg', 1), count: 3 },
-      { item: dishItem('grilled_corn', 1), count: 3 },
+      { item: dishItem('strawberry_skewer', 1), count: 3 },
       null,
     ]);
     const plan = planVisit(world, PUINUN, fixed(0));
-    expect(plan.takes).toEqual([{ plate: 1, item: 'dish_grilled_corn_1', count: 1, reaction: 'like' }]);
+    expect(plan.takes).toEqual([{ plate: 1, item: 'dish_strawberry_skewer_1', count: 1, reaction: 'like' }]);
   });
 
   it('asks for the signature dish at 90% and takes it first when it is on the tray', () => {
@@ -210,18 +213,18 @@ describe('tray and taking', () => {
   });
 
   it('removes what it takes from the plate and credits affection per serving with variety', () => {
-    const world = withTray(plain(), [{ item: dishItem('strawberry_skewer', 1), count: 3 }, null, null]);
+    const world = withTray(plain(), [{ item: dishItem('fruit_veg_salad', 1), count: 3 }, null, null]);
     const memo = newVisitMemo();
-    const result = takePlate(world, PUINUN, { plate: 0, item: dishItem('strawberry_skewer', 1), count: 3, reaction: 'favourite' }, memo);
+    const result = takePlate(world, PUINUN, { plate: 0, item: dishItem('fruit_veg_salad', 1), count: 3, reaction: 'favourite' }, memo);
     expect(result.taken).toBe(3);
     expect(result.world.tray.plates[0]).toBeNull();
-    const base = rules.rankBase.F * 3;
+    const base = rules.rankBase.E * 3;
     expect(result.gains.map((gain) => Number(gain.toFixed(4)))).toEqual([base, base * 0.6, base * 0.3].map((gain) => Number(gain.toFixed(4))));
-    expect(memo.eaten.strawberry_skewer).toBe(3);
+    expect(memo.eaten.fruit_veg_salad).toBe(3);
   });
 
   it('gives the set bonus once when the favourite food and favourite drink are both eaten in one visit', () => {
-    const world = withTray(plain(), [{ item: dishItem('strawberry_skewer', 1), count: 3 }, { item: dishItem('strawberry_juice', 1), count: 3 }, null]);
+    const world = withTray(plain(), [{ item: dishItem('fruit_veg_salad', 1), count: 3 }, { item: dishItem('strawberry_juice', 1), count: 3 }, null]);
     const plan = planVisit(world, PUINUN, fixed(0.99));
     // หอคอยอาหารเว้นที่ให้น้ำ 1 แก้ว
     expect(plan.takes.map((take) => [take.plate, take.count])).toEqual([[0, 3], [1, 1]]);

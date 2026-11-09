@@ -45,7 +45,7 @@ describe('Gio news (GDD: 2 tips · 1 tip · 1 tip every 2 days by happiness)', (
     expect(monsterTips(world)).toHaveLength(2);
     expect(unreadTips(world)).toBe(world.gio.tips.length);
     expect(unreadTips(readTips(world))).toBe(0);
-    expect(tipText({ monster: 'puinun', kind: 'favourite', day: 2, read: false })).toContain('ถังหูลู่สตรอว์เบอร์รี');
+    expect(tipText({ monster: 'puinun', kind: 'favourite', day: 2, read: false })).toContain('สลัดผักผลไม้');
     expect(tipText({ monster: 'puinun', kind: 'drink', day: 2, read: false })).toContain('น้ำสตรอว์เบอร์รี');
     expect(tipText({ monster: 'puinun', kind: 'signature', day: 2, read: false })).toContain('มันฝรั่งเผา');
     expect(tipText({ monster: 'puefaotung', kind: 'signature', day: 2, read: false })).toContain('3 ดาว');
@@ -60,7 +60,7 @@ describe('Gio news (GDD: 2 tips · 1 tip · 1 tip every 2 days by happiness)', (
     const world = newWorld();
     const { tips: _tips, tipsReportDay: _day, lastTipDay: _last, ...oldGio } = world.gio;
     const parsed = parseSaveFile({ version: 12, savedAt: 'x', world: { ...world, gio: { ...oldGio, report: report(4, 0) } } })!;
-    expect(parsed.version).toBe(22);
+    expect(parsed.version).toBe(23);
     expect(parsed.world.gio.tips).toEqual([]);
     expect(parsed.world.gio.tipsReportDay).toBe(4);
     expect(gainTips(parsed.world).gio.tips).toEqual([]);

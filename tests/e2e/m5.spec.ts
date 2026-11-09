@@ -180,7 +180,9 @@ test('opens a golden chest from the bag, pops out the rewards and keeps the cosm
   await page.locator('[data-item="chest_golden"]').click();
   await page.locator('#bag-open-chest').click();
   await expect(page.locator('#chest-window')).toBeVisible();
-  await expect(page.locator('.chest-reward')).toHaveCount(4, { timeout: 10_000 });
+  // เหรียญ ของ 3 ชิ้น และเศษม้วนสูตร 1 ชิ้น (ขั้นที่ 8)
+  await expect(page.locator('.chest-reward')).toHaveCount(5, { timeout: 10_000 });
+  await expect(page.locator('.chest-reward[data-fragment]')).toHaveCount(1);
   await expect(page.locator('[data-reward="coins"] .coin-icon')).toHaveAttribute('src', /coin_paw_12/);
   const world = await state(page);
   expect(world.wallet.coins).toBeGreaterThanOrEqual(100);

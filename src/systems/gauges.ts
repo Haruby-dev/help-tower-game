@@ -45,6 +45,7 @@ export const newRecipeBook = (): RecipeBook => ({
     .filter(([, recipe]) => recipe.source === 'start')
     .map(([id]) => id),
   bestStars: {},
+  fragments: {},
 });
 
 export function newWorld(): World {
@@ -62,7 +63,7 @@ export function newWorld(): World {
     seed: newSeed(),
     weather: firstWeather,
     fishing: newFishing(),
-    chests: { sinceCosmetic: 0 },
+    chests: { sinceCosmetic: 0, sinceRareFragment: 0 },
     toys: [],
     stash: {},
     gio: newGioCare(),

@@ -91,7 +91,7 @@ describe('dish stars (star system doc §4)', () => {
   it('cooks a 3-star tanghulu from two 3-star strawberries the player picked (the floor-10 path)', () => {
     const world: World = {
       ...newWorld(),
-      recipes: { known: ['strawberry_skewer'], bestStars: {} },
+      recipes: { known: ['strawberry_skewer'], bestStars: {}, fragments: {} },
       bag: [
         { item: 'produce_strawberry', count: 4 },
         { item: 'produce_strawberry@3', count: 2 },
@@ -185,8 +185,8 @@ describe('save version 12', () => {
     const { tray: _tray, monsters: _monsters, ...world } = newWorld();
     const old = { ...world, farm: { plots: world.farm.plots.map(({ fertilizer: _fertilizer, ...plot }) => plot) }, bag: [{ item: 'produce_tomato', count: 3 }] };
     const parsed = parseSaveFile({ version: 11, savedAt: 'x', world: old })!;
-    expect(SAVE_VERSION).toBe(22);
-    expect(parsed.version).toBe(22);
+    expect(SAVE_VERSION).toBe(23);
+    expect(parsed.version).toBe(23);
     expect(parsed.world.farm.plots.every((plot) => plot.fertilizer === 0)).toBe(true);
     expect(parsed.world.tray).toEqual({ level: 0, plates: [null, null, null] });
     expect(parsed.world.monsters).toEqual({ affection: {}, plannedDay: 0, arrivals: [], twins: { revealed: false, revealDay: 0, quizWon: false }, tasted: {} });

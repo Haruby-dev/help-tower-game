@@ -284,6 +284,28 @@ export function checkProject(): string[] {
       }
     }
   }
+  // ที่มาของสูตร (ขั้นที่ 8): ครูสอนสูตร teacher มีบทสอน · ของหวาน reputation อยู่ในรายการดาวของร้าน · สูตร chest อยู่ในเศษม้วน · shop_heart เป็นเมนูประจำใจ
+  const monsterData = monstersSchema.parse(readJson('src/data/monsters.json'));
+  const taught = new Set<string>();
+  for (const [id, monster] of Object.entries(monsterData)) {
+    for (const lesson of monster.teaches ?? []) {
+      taught.add(lesson.recipe);
+      if (recipesData[lesson.recipe]?.source !== 'teacher') problems.push(`src/data/monsters.json: ${id} teaches ${lesson.recipe} which is not a teacher recipe`);
+      if (!dialogueData.teach[id]?.[lesson.recipe]) problems.push(`src/data/dialogue.json: ${id} has no teach line for ${lesson.recipe}`);
+    }
+  }
+  const shopFile8 = shopSchema.parse(readJson('src/data/shop.json'));
+  const reputationList = new Set(Object.values(shopFile8.reputationRecipes).flat());
+  const fragmentList = chestsSchema.parse(readJson('src/data/chests.json')).fragments;
+  if (!fragmentList.recipes[fragmentList.rare.recipe]) problems.push(`src/data/chests.json: rare fragment ${fragmentList.rare.recipe} is not in the fragment list`);
+  for (const id of [...reputationList, ...Object.keys(fragmentList.recipes)]) if (!recipesData[id]) problems.push(`unknown recipe ${id} in shop.json or chests.json`);
+  for (const [id, recipe] of Object.entries(recipesData)) {
+    const wrong = (where: string): void => void problems.push(`src/data/recipes.json: ${id} has source ${recipe.source} but ${where}`);
+    if (recipe.source === 'teacher' && !taught.has(id)) wrong('no monster teaches it');
+    if ((recipe.source === 'reputation') !== reputationList.has(id)) wrong('the reputation list in shop.json does not match');
+    if ((recipe.source === 'chest') !== (fragmentList.recipes[id] !== undefined)) wrong('the fragment list in chests.json does not match');
+    if (recipe.source === 'shop_heart' && !Object.values(monsterData).some((monster) => !monster.twinOf && monster.signature.recipe === id)) wrong('it is no monster’s heart menu');
+  }
   for (const item of Object.keys(balanceData.fertilizer.tiers)) {
     if (!translations[`item.${item}.name`]) problems.push(`src/i18n/th.json: ${item} has no name`);
     if (!registry[item]) problems.push(`assets-src/registry.json: ${item} has no bag image`);

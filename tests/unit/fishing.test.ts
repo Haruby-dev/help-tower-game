@@ -89,7 +89,9 @@ describe('chests from fishing', () => {
     for (let i = 0; i < 30; i += 1) {
       const opened = openChest(next, 'chest_silver', rng)!;
       expect(opened.rewards[0]!.kind).toBe('coins');
-      expect(opened.rewards.slice(1)).toHaveLength(3);
+      // ของ 3 ชิ้นต่อหีบเงิน · เศษม้วนสูตรได้เพิ่มทีละชิ้นจนครบ 7 สูตร (14 ชิ้น) แล้วหยุด
+      expect(opened.rewards.filter((reward) => reward.kind !== 'coins' && reward.kind !== 'fragment')).toHaveLength(3);
+      expect(opened.rewards.filter((reward) => reward.kind === 'fragment')).toHaveLength(i < 14 ? 1 : 0);
       for (const reward of opened.rewards) if (reward.kind !== 'coins') expect(reward.item.startsWith('outfit_')).toBe(false);
       next = opened.world;
     }
@@ -110,7 +112,7 @@ describe('chests from fishing', () => {
   });
 
   it('gives a cosmetic after 8 chests in a row without one', () => {
-    const due = world({ bag: [{ item: 'chest_wooden', count: 1 }], chests: { sinceCosmetic: chestData.pityAfter } });
+    const due = world({ bag: [{ item: 'chest_wooden', count: 1 }], chests: { sinceCosmetic: chestData.pityAfter, sinceRareFragment: 0 } });
     const opened = openChest(due, 'chest_wooden', createRng(5))!;
     expect(opened.rewards[1]!.kind).toBe('cosmetic');
     expect(opened.world.chests.sinceCosmetic).toBe(0);
@@ -223,8 +225,8 @@ describe('bath and saves', () => {
       },
     };
     const parsed = parseSaveFile(v5);
-    expect(SAVE_VERSION).toBe(22);
-    expect(parsed?.version).toBe(22);
+    expect(SAVE_VERSION).toBe(23);
+    expect(parsed?.version).toBe(23);
     expect(parsed?.world.weather).toBe('sunny');
     expect(parsed?.world.fishing).toEqual({ rods: ['bamboo'], caught: {} });
     expect(parsed?.world.cosmetics.owned.clips).toEqual([]);

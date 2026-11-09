@@ -95,6 +95,22 @@ export const affectionOf = (world: World, id: string): Affection => world.monste
 
 export const requiredPoints = (id: string): number => info(id).points;
 
+/** เคยมาเยี่ยมแล้ว: มีความชอบ เคยได้กินหรืองอน หรือเคยโผล่มาแล้ว */
+export const hasMet = (world: World, id: string): boolean =>
+  world.monsters.affection[id] !== undefined ||
+  (world.monsters.tasted[id]?.length ?? 0) > 0 ||
+  world.monsters.arrivals.some((arrival) => arrival.monster === id && arrival.done);
+
+/** มอนสเตอร์ครู (สเปก 8.1): ความชอบถึงขั้นแล้วสอนสูตรที่ยังไม่รู้ ครั้งเดียว */
+export function teachRecipes(world: World, id: string): { world: World; taught: string[] } {
+  const lessons = monsterTable[id]?.teaches ?? [];
+  if (lessons.length === 0) return { world, taught: [] };
+  const share = affectionOf(world, id).points / requiredPoints(id);
+  const taught = lessons.filter((lesson) => share >= lesson.at && !world.recipes.known.includes(lesson.recipe)).map((lesson) => lesson.recipe);
+  if (taught.length === 0) return { world, taught };
+  return { world: { ...world, recipes: { ...world.recipes, known: [...world.recipes.known, ...taught] } }, taught };
+}
+
 /** เปอร์เซ็นต์ที่แสดง ก่อนได้เมนูประจำใจหยุดที่ 90% */
 export function affectionPercent(world: World, id: string): number {
   return Math.min(PERCENT, (affectionOf(world, id).points / requiredPoints(id)) * PERCENT);
@@ -438,6 +454,8 @@ export interface Taken {
   set: boolean;
   /** ความชอบที่ได้เพิ่มจากโบนัสเซ็ต (ชนเพดาน 90% อาจเป็น 0) */
   setBonus: number;
+  /** สูตรที่มอนสเตอร์ครูสอนเพราะความชอบถึงขั้นตอนหยิบครั้งนี้ */
+  taught: string[];
 }
 
 /** หยิบจากจานแล้วกินทีละที่ ความชอบเข้าทันที (ภาพค่อย ๆ เล่นตามทีหลัง) · ครบเซ็ตครั้งแรกได้โบนัส (setBonus − 1) × ความชอบของคู่นั้น */
@@ -469,7 +487,8 @@ export function takePlate(world: World, id: string, take: PlateTake, memo: Visit
     next = added.world;
     setBonus = added.added;
   }
-  return { world: next, gains, taken: removed.taken, cleared, set, setBonus };
+  const lesson = teachRecipes(next, id);
+  return { world: lesson.world, gains, taken: removed.taken, cleared, set, setBonus, taught: lesson.taught };
 }
 
 /** ที่กินตามความชอบตอนมาถึง: ยังระแวงคว้าแล้ววิ่งกลับโพรง · กลางนั่งกินใกล้โพรง · สนิทนั่งกินที่ลานหน้าบ้าน (ร้านยังไม่เปิด) */

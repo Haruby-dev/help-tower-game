@@ -4,6 +4,7 @@ import balance from '../data/balance.json';
 import dialogueJson from '../data/dialogue.json';
 import type { Dialogue } from '../data/schema';
 import { eligibleMonsters, isCleared, isTwin, monsterTable, twinA } from './monsters';
+import { chestData } from './chests';
 import { comboReachable, setTable } from './sets';
 
 /** แต่ละตัวเล่าตามลำดับนี้ เมนูประจำใจท้ายสุด เพราะใช้ตอนความชอบถึง 90% */
@@ -11,6 +12,11 @@ const KINDS: TipKind[] = ['favourite', 'drink', 'signature'];
 const TWIN_KINDS: TipKind[] = ['favourite', 'drink', 'twin_clue', 'signature'];
 const twinNews = (dialogueJson as unknown as Dialogue).twins.gio_news;
 const tiers = balance.gioCare.newsByTier;
+
+/** ข่าวใบ้ม้วนสูตรไม่ได้เป็นของมอนสเตอร์ตัวไหน */
+const SCROLL_TIP = 'recipe_scrolls';
+/** ยังมีสูตรจากเศษม้วนที่ยังไม่ได้ */
+const fragmentsLeft = (world: World): boolean => Object.keys(chestData.fragments.recipes).some((id) => !world.recipes.known.includes(id));
 
 const known = (world: World, monster: string, kind: TipKind): boolean => world.gio.tips.some((tip) => tip.monster === monster && tip.kind === kind);
 
@@ -67,11 +73,16 @@ export function gainTips(world: World): World {
       ? [{ monster: twinA, kind: 'twin_reveal', day: report.day, read: false }]
       : [];
   const hint = nextSetHint(world, report.day);
+  // จีโอใบ้ครั้งเดียวว่าม้วนสูตรลอยมากับน้ำ (สเปก 8.1) หลังตกปลาได้ครั้งแรก ไม่นับในจำนวนข่าว
+  const scroll: Tip[] =
+    !world.gio.tips.some((tip) => tip.kind === 'scroll_hint') && Object.keys(world.fishing.caught).length > 0 && fragmentsLeft(world)
+      ? [{ monster: SCROLL_TIP, kind: 'scroll_hint', day: report.day, read: false }]
+      : [];
   return {
     ...world,
     gio: {
       ...world.gio,
-      tips: [...world.gio.tips, ...reveal, ...fresh, ...hint],
+      tips: [...world.gio.tips, ...reveal, ...fresh, ...hint, ...scroll],
       tipsReportDay: report.day,
       lastTipDay: fresh.length > 0 ? report.day : world.gio.lastTipDay,
     },
@@ -90,6 +101,7 @@ const dishName = (recipe: string): string => t(`dish.${recipe}.name` as TextKey)
 /** ประโยคที่จีโอเล่า ประกอบจากชิ้นข้อความใน th.json */
 export function tipText(tip: Tip): string {
   if (tip.kind === 'set_hint') return t(`news.set_hint.${tip.monster}` as TextKey);
+  if (tip.kind === 'scroll_hint') return t('news.scroll_hint');
   const monster = monsterTable[tip.monster];
   const name = t(`monster.${tip.monster}.name` as TextKey);
   if (!monster) return name;

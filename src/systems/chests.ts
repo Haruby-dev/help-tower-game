@@ -55,7 +55,30 @@ function rollEntry(tier: ChestTier, rng: Rng, force: { category?: Category; minR
 
 export type Reward =
   | { kind: 'coins'; amount: number }
-  | { kind: Entry['kind']; item: string; count: number; duplicateStars: number };
+  | { kind: Entry['kind']; item: string; count: number; duplicateStars: number }
+  /** เศษม้วนสูตร item คือรหัสสูตร have คือเศษที่มีหลังได้ชิ้นนี้ learned ครบแล้วได้สูตร */
+  | { kind: 'fragment'; item: string; have: number; need: number; learned: boolean };
+
+/**
+ * เศษม้วนสูตร (สเปก 8.1): หีบทุกใบได้ 1 ชิ้นจนครบทุกสูตร สุ่มตามน้ำหนักจากสูตรที่ยังไม่ครบ
+ * สูตรหายาก (ข้าวต้มปลา) ได้เศษอย่างอื่นติดกันครบจำนวนแล้ว ใบถัดไปได้เศษสูตรนั้นแน่
+ */
+function rollFragment(world: World, rng: Rng): { world: World; reward: Reward | null } {
+  const { perRecipe, recipes: weights, rare } = chestData.fragments;
+  const { known, fragments } = world.recipes;
+  const open = Object.entries(weights).filter(([id]) => !known.includes(id) && (fragments[id] ?? 0) < perRecipe);
+  if (open.length === 0) return { world, reward: null };
+  const rareOpen = open.some(([id]) => id === rare.recipe);
+  const recipe = rareOpen && world.chests.sinceRareFragment >= rare.after ? rare.recipe : weighted(open, rng);
+  const have = (fragments[recipe] ?? 0) + 1;
+  const learned = have >= perRecipe;
+  const next: World = {
+    ...world,
+    recipes: { ...world.recipes, fragments: { ...fragments, [recipe]: have }, known: learned ? [...known, recipe] : known },
+    chests: { ...world.chests, sinceRareFragment: !rareOpen || recipe === rare.recipe ? 0 : world.chests.sinceRareFragment + 1 },
+  };
+  return { world: next, reward: { kind: 'fragment', item: recipe, have, need: perRecipe, learned } };
+}
 
 const ownedCosmetic = (cosmetics: Cosmetics, id: string): boolean => {
   const slot = cosmeticTable[id]?.slot;
@@ -104,7 +127,11 @@ export function openChest(world: World, item: string, rng: Rng): { world: World;
     rewards.push({ kind: entry.kind, item: given, count, duplicateStars });
   }
 
-  let next: World = { ...world, bag, cosmetics, toys, stash, chests: { sinceCosmetic: gotCosmetic ? 0 : world.chests.sinceCosmetic + 1 } };
+  let next: World = { ...world, bag, cosmetics, toys, stash, chests: { ...world.chests, sinceCosmetic: gotCosmetic ? 0 : world.chests.sinceCosmetic + 1 } };
+  // เศษม้วนสูตรสุ่มหลังของอื่น ของเดิมในหีบจึงเหมือนเดิม
+  const fragment = rollFragment(next, rng);
+  next = fragment.world;
+  if (fragment.reward) rewards.push(fragment.reward);
   next = applyTransaction(next, 'coins', coins, 'wallet.chest', 'wallet.category_chest');
   if (stars > 0) next = applyTransaction(next, 'stars', stars, 'wallet.chest_duplicate', 'wallet.category_chest');
   return { world: next, rewards };

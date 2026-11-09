@@ -493,6 +493,8 @@ export const shopSchema = z.strictObject({
       .min(1),
     random: z.array(z.strictObject({ item: z.string().regex(/^(ing|bait)_[a-z_]+$/), price: z.number().int().positive(), chance: z.number().min(0).max(1), stock: rangeSchema })),
   }),
+  /** สูตรของหวานรางวัลชื่อเสียงร้าน (สเปก 8.1): ถึงดาวนี้แล้วขายถาวรในหมวดสูตร */
+  reputationRecipes: z.record(z.string().regex(/^[1-9]$/), z.array(z.string().regex(/^[a-z_]+$/)).min(1)),
   /** ท็อปปิ้ง: สุ่มวันละ kinds ชนิด ชนิดละ stock ชิ้น ทุกแถวเป็นของ "วันนี้" */
   toppings: z.strictObject({
     kinds: rangeSchema,
@@ -524,6 +526,8 @@ export const monstersSchema = z.record(
     dislikes: tasteListSchema,
     /** เมนูประจำใจ ขอเมื่อความชอบถึง 90% ต้องได้จึงไปถึง 100% */
     signature: z.strictObject({ recipe: z.string().regex(/^[a-z_]+$/), stars: z.number().int().min(1).max(3) }),
+    /** มอนสเตอร์ครู (สเปก 8.1): สอนสูตรเมื่อความชอบถึง at (0–1) ครั้งเดียว บทสอนอยู่ใน dialogue.json หัวข้อ teach */
+    teaches: z.array(z.strictObject({ at: z.number().gt(0).lt(1), recipe: z.string().regex(/^[a-z_]+$/) })).optional(),
     /** แฝดตัวที่ซ่อน (น้อง) ชี้ไปหาพี่ ใช้ชั้น บทพูด และชื่อก่อนเฉลยร่วมกับพี่ */
     twinOf: z.string().regex(/^[a-z_]+$/).optional(),
     art: z
@@ -571,6 +575,8 @@ export const dialogueSchema = z.strictObject({
   ),
   pets: z.record(z.string().regex(/^[a-z_]+$/), z.record(z.string().min(1), z.array(z.string().min(1)))),
   gio: z.record(z.string().min(1), z.array(z.string().min(1))),
+  /** บทของมอนสเตอร์ครูตอนสอนสูตร มอนสเตอร์ → สูตร → ประโยค (ร่างฝั่งโค้ด รอผู้ใช้ตรวจ) */
+  teach: z.record(z.string().regex(/^[a-z_]+$/), z.record(z.string().regex(/^[a-z_]+$/), z.string().min(1))),
   /** แฝดขี้แกล้งชั้น 5 (ร่าง ผู้ใช้ยังแก้คำได้) A = พี่ B = น้อง */
   twins: z.strictObject({
     _note: z.string().optional(),
@@ -648,7 +654,8 @@ export const saveFileSchema = z.strictObject({
         .strictObject({ recipe: z.string().min(1), stars: z.number().int().positive(), minutesLeft: z.number().nonnegative(), count: z.number().int().positive() })
         .nullable(),
     }),
-    recipes: z.strictObject({ known: z.array(z.string().min(1)), bestStars: z.record(z.string(), z.number().int().positive()) }),
+    /** สูตรที่รู้ ดาวสูงสุด และเศษม้วนสูตรจากหีบที่เก็บได้ต่อสูตร (ครบแล้วได้สูตร) */
+    recipes: z.strictObject({ known: z.array(z.string().min(1)), bestStars: z.record(z.string(), z.number().int().positive()), fragments: z.record(z.string().min(1), z.number().int().positive()) }),
     cosmetics: z.strictObject({
       equipped: z.strictObject({
         charm: z.string().min(1).nullable(),
@@ -666,7 +673,8 @@ export const saveFileSchema = z.strictObject({
     seed: z.number().int(),
     weather: weatherSchema,
     fishing: z.strictObject({ rods: z.array(z.string().min(1)).min(1), caught: z.record(z.string(), z.number().int().positive()) }),
-    chests: z.strictObject({ sinceCosmetic: z.number().int().nonnegative() }),
+    /** หีบที่เปิดติดกันโดยไม่ได้ของแต่ง · หีบที่ได้เศษติดกันโดยไม่ได้เศษสูตรหายาก (ข้าวต้มปลา) */
+    chests: z.strictObject({ sinceCosmetic: z.number().int().nonnegative(), sinceRareFragment: z.number().int().nonnegative() }),
     /** ของเล่นจีโอ ระบบใช้ของเล่นมาใน M6 */
     toys: z.array(z.string().min(1)),
     /** ของจากหีบที่ยังไม่มีระบบ เก็บจำนวนไว้ก่อน */
@@ -683,7 +691,7 @@ export const saveFileSchema = z.strictObject({
       /** แมวเลียรสที่จีโอเคยกินแล้ว เปิดรูปในอัลบั้ม */
       album: z.array(z.string().min(1)),
       /** ข่าวมอนสเตอร์ที่จีโอเล่าแล้ว (เมนูโปรด เครื่องดื่มโปรด เมนูประจำใจ) */
-      tips: z.array(z.strictObject({ monster: z.string().min(1), kind: z.enum(['favourite', 'drink', 'signature', 'twin_clue', 'twin_reveal', 'set_hint']), day: z.number().int().positive(), read: z.boolean() })),
+      tips: z.array(z.strictObject({ monster: z.string().min(1), kind: z.enum(['favourite', 'drink', 'signature', 'twin_clue', 'twin_reveal', 'set_hint', 'scroll_hint']), day: z.number().int().positive(), read: z.boolean() })),
       /** สรุปยอดวันล่าสุดที่ให้ข่าวไปแล้ว และวันล่าสุดที่ได้ข่าวจริง (ช่วงความสุขต่ำได้ข่าวทุก 2 วัน) */
       tipsReportDay: z.number().int().nonnegative(),
       lastTipDay: z.number().int().nonnegative(),
@@ -768,7 +776,7 @@ const recipeSchema = z.strictObject({
    * วิธีได้สูตร (GDD "การได้สูตร") start รู้ตั้งแต่วันแรก · quest เควสวันที่ 4 · gate สูตรลับเกต · shop ร้านสุ่ม · shop_permanent ร้านขายถาวร
    * chest เศษสูตรจากหีบตกปลา · teacher มอนสเตอร์สอน · mortar รู้เองตอนเจอครก · special_quest ภารกิจพิเศษ · rank_special สูตรพิเศษแรงก์ตัวละคร
    */
-  source: z.enum(['start', 'quest', 'gate', 'shop', 'shop_permanent', 'chest', 'teacher', 'mortar', 'special_quest', 'rank_special']),
+  source: z.enum(['start', 'quest', 'gate', 'shop', 'shop_permanent', 'shop_heart', 'reputation', 'chest', 'teacher', 'mortar', 'special_quest', 'rank_special']),
   /** ภาชนะตามวิธีทำ (zone1 food update 2) mortar ทำที่ครกหินเก่าเท่านั้น ไม่ทำที่กองไฟ */
   method: z.enum(['grill', 'iron_pan', 'clay_pot', 'bowl', 'pot', 'pan', 'oven', 'mortar']),
   /** นับเป็นกับข้าวตอนจัดชุด */
@@ -969,6 +977,15 @@ export const chestsSchema = z.strictObject({
   categories: z.record(chestCategorySchema, tierWeights),
   rarity: z.strictObject({ common: z.number().min(0), uncommon: z.number().min(0), rare: z.number().min(0) }),
   pityAfter: z.number().int().positive(),
+  /**
+   * เศษม้วนสูตร (สเปก 8.1): ทุกหีบได้เศษ 1 ชิ้นจนครบทุกสูตร สูตรละ perRecipe ชิ้น สุ่มตามน้ำหนักใน recipes
+   * สูตร rare.recipe ออกยาก แต่ได้เศษอย่างอื่นติดกัน rare.after ใบแล้ว ใบถัดไปได้เศษสูตรนั้นแน่
+   */
+  fragments: z.strictObject({
+    perRecipe: z.number().int().positive(),
+    recipes: z.record(z.string().regex(/^[a-z_]+$/), z.number().positive()),
+    rare: z.strictObject({ recipe: z.string().regex(/^[a-z_]+$/), after: z.number().int().positive() }),
+  }),
   pool: z.array(
     z.strictObject({
       category: chestCategorySchema,

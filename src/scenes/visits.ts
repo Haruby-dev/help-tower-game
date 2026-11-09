@@ -383,6 +383,14 @@ export class Visits {
       monster.sparkles();
       yield { kind: 'ms', left: rules.bubbleMs / 2 };
     }
+    // มอนสเตอร์ครูสอนสูตรเมื่อความชอบถึงขั้น (สเปก 8.1) บทสอนแล้วป้ายได้สูตร
+    for (const taught of result.taught) {
+      const line = dialogue.teach[monster.id]?.[taught];
+      if (line) this.speak(run, line);
+      monster.sparkles();
+      eventBus.emit('notice-text', `${t('recipe.learned')} ${t(`dish.${taught}.name` as TextKey)} ${t('recipe.learned_end')}`);
+      yield { kind: 'ms', left: rules.bubbleMs };
+    }
     yield { kind: 'ms', left: rules.eatGapMs };
   }
 

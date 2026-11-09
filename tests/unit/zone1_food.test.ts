@@ -105,7 +105,7 @@ describe('ingredient groups', () => {
   });
 
   it('cooks grilled shrimp from two shrimps and takes them from the bag', () => {
-    const world: World = { ...newWorld(), recipes: { known: ['grilled_shrimp'], bestStars: {} }, bag: [{ item: 'fish_shrimp', count: 3 }, { item: 'ing_salt', count: 1 }] };
+    const world: World = { ...newWorld(), recipes: { known: ['grilled_shrimp'], bestStars: {}, fragments: {} }, bag: [{ item: 'fish_shrimp', count: 3 }, { item: 'ing_salt', count: 1 }] };
     expect(canCook(world, 'grilled_shrimp')).toBe(true);
     const next = startCooking(world, 'grilled_shrimp', 1, {}, NO_BONUS)!;
     expect(countOf(next.bag, 'fish_shrimp')).toBe(1);
@@ -114,7 +114,7 @@ describe('ingredient groups', () => {
   it('a meatball skewer uses fish and shrimp balls together in bag order', () => {
     const world: World = {
       ...newWorld(),
-      recipes: { known: ['grilled_meatball_skewer'], bestStars: {} },
+      recipes: { known: ['grilled_meatball_skewer'], bestStars: {}, fragments: {} },
       bag: [
         { item: 'ing_shrimp_ball', count: 1 },
         { item: 'ing_fish_ball', count: 1 },
@@ -157,8 +157,8 @@ describe('save version 17', () => {
     const file = toSaveFile(newWorld());
     const known = file.world.recipes.known.filter((id) => id !== 'plain_rice');
     const parsed = parseSaveFile({ ...file, version: 16, world: { ...file.world, recipes: { ...file.world.recipes, known } } })!;
-    expect(SAVE_VERSION).toBe(22);
-    expect(parsed.version).toBe(22);
+    expect(SAVE_VERSION).toBe(23);
+    expect(parsed.version).toBe(23);
     expect(parsed.world.recipes.known).toContain('plain_rice');
   });
 });

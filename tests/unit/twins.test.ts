@@ -36,10 +36,12 @@ const cleared = (world: World, id: string): World => withAffection(world, id, mo
 const twins = (world: World, revealed: boolean, quizWon: boolean, revealDay = 1): World => ({ ...world, monsters: { ...world.monsters, twins: { revealed, revealDay, quizWon } } });
 
 describe('twins on floor 5 (GDD "แฝดขี้แกล้ง")', () => {
-  it('twin B is the opposite of twin A but also likes boiled egg, 36 points each, signature grilled corn 3 stars', () => {
+  it('twin B has its own tastes (GDD 7 Nov), 36 points each, signature grilled corn 3 stars', () => {
     const b = monsters.tangkrading_b;
     expect(b).toMatchObject({ floor: 5, points: 36, twinOf: A, favourite: ['grilled_corn'], favouriteDrink: 'warm_honey_milk', dislikes: ['grilled_fish'] });
-    expect(b.likes).toEqual(['boiled_egg', 'warm_honey_milk']);
+    expect(b.likes).toEqual(['garlic_shrimp', 'squid_salad']);
+    expect(b.favouriteTopping).toBe('blueberry');
+    expect(monsters.tangkrading.favouriteTopping).toBe('chili_flakes');
     expect(b.signature).toEqual({ recipe: 'grilled_corn', stars: 3 });
     expect(monsters.tangkrading).toMatchObject({ points: 36, favourite: ['grilled_fish'], favouriteDrink: 'tomato_juice', dislikes: ['grilled_corn'] });
     expect(voiceOf(B)).toBe(A);

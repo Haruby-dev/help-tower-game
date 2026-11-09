@@ -1,12 +1,13 @@
 import { registry } from '../core/assets';
 import { eventBus } from '../core/events';
-import { t } from '../core/i18n';
+import { t, type TextKey } from '../core/i18n';
 import { createRng } from '../core/rng';
 import { audioSettings, sound, type SoundHandle } from '../core/audio';
 import { gameState } from '../core/state';
 import { chestTierOfItem, cosmeticTable, openChest, type Reward } from '../systems/chests';
+import { recipes } from '../systems/cooking';
 import { itemImage, itemName } from './inventory';
-import { artUrl } from './pixelArt';
+import { artUrl, sizedArt } from './pixelArt';
 import { setMoney } from './money';
 
 const WINDOW = 'chest';
@@ -20,7 +21,11 @@ const MAX_ICON_PX = 40;
 
 const rng = createRng(Date.now());
 
+/** เศษม้วนสูตรใช้ภาพม้วนสูตรของร้าน อาหารคาวม้วนคาว ของหวานกับเครื่องดื่มม้วนหวาน */
+const scrollArt = (recipe: string): string => (recipes[recipe]?.category === 'savory' ? 'shop_item_recipe_scroll_savory' : 'shop_item_recipe_scroll_sweet');
+
 function rewardImage(reward: Exclude<Reward, { kind: 'coins' }>): HTMLElement {
+  if (reward.kind === 'fragment') return sizedArt(scrollArt(reward.item), '', '--px');
   if (reward.kind !== 'cosmetic') return itemImage(reward.item, false);
   const art = cosmeticTable[reward.item]?.art;
   const entry = art ? registry[art] : undefined;
@@ -50,6 +55,14 @@ function rewardRow(reward: Reward): HTMLElement {
     return row;
   }
   row.dataset.reward = reward.item;
+  if (reward.kind === 'fragment') {
+    // เศษม้วนสูตร 1/2 · ครบแล้วบอกว่าได้สูตร
+    const dish = t(`dish.${reward.item}.name` as TextKey);
+    row.dataset.fragment = reward.learned ? 'learned' : String(reward.have);
+    const text = reward.learned ? `${t('chest.fragment_done')} ${dish}` : `${t('chest.fragment')} ${dish} ${reward.have}/${reward.need}`;
+    row.append(rewardImage(reward), Object.assign(document.createElement('span'), { textContent: text }));
+    return row;
+  }
   const text = reward.count > 1 ? `${itemName(reward.item)} ×${reward.count}` : itemName(reward.item);
   row.append(rewardImage(reward), Object.assign(document.createElement('span'), { textContent: text }));
   if (reward.duplicateStars > 0) {

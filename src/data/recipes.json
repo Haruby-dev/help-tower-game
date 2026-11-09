@@ -48,7 +48,7 @@
       "ing_sugar": 1
     },
     "price": 400,
-    "source": "shop",
+    "source": "shop_heart",
     "method": "grill",
     "icon": "dish_icon_grilled_corn",
     "bagIcon": "dish_bag_grilled_corn"
@@ -61,7 +61,7 @@
       "ing_sugar": 1
     },
     "price": 750,
-    "source": "shop",
+    "source": "shop_heart",
     "method": "iron_pan",
     "icon": "dish_icon_strawberry_skewer",
     "bagIcon": "dish_bag_strawberry_skewer"
@@ -92,7 +92,7 @@
       "ing_fish_sauce": 1
     },
     "price": 600,
-    "source": "shop",
+    "source": "shop_heart",
     "method": "iron_pan",
     "sideDish": true,
     "icon": "dish_icon_scallion_omelet",
@@ -107,7 +107,7 @@
       "ing_salt": 1
     },
     "price": 600,
-    "source": "shop",
+    "source": "teacher",
     "method": "clay_pot",
     "soup": true,
     "icon": "dish_icon_tomato_soup",
@@ -121,7 +121,7 @@
       "ing_honey": 1
     },
     "price": 650,
-    "source": "shop",
+    "source": "teacher",
     "method": "grill",
     "icon": "dish_icon_honey_apple_grill",
     "bagIcon": "dish_bag_honey_apple_grill"
@@ -149,7 +149,7 @@
       "produce_garlic": 1
     },
     "price": 1200,
-    "source": "shop",
+    "source": "chest",
     "method": "pot",
     "soup": true,
     "icon": "dish_icon_fish_congee",
@@ -166,7 +166,7 @@
       "produce_scallion": 1
     },
     "price": 1200,
-    "source": "shop",
+    "source": "shop_heart",
     "method": "pan",
     "icon": "dish_icon_corn_egg_fried_rice",
     "bagIcon": "dish_bag_corn_egg_fried_rice"
@@ -181,7 +181,7 @@
       "ing_salt": 1
     },
     "price": 1800,
-    "source": "shop",
+    "source": "shop_heart",
     "method": "pot",
     "soup": true,
     "icon": "dish_icon_potato_carrot_stew",
@@ -247,7 +247,7 @@
       "produce_strawberry": 3
     },
     "price": 1080,
-    "source": "shop",
+    "source": "teacher",
     "method": "bowl",
     "icon": "dish_icon_strawberry_juice",
     "bagIcon": "dish_bag_strawberry_juice"
@@ -260,7 +260,7 @@
       "ing_sugar": 1
     },
     "price": 400,
-    "source": "shop",
+    "source": "reputation",
     "method": "bowl",
     "icon": "food_slime24",
     "bagIcon": "food_bag_food_slime24"
@@ -274,7 +274,7 @@
       "ing_slime_jelly_scrap": 1
     },
     "price": 500,
-    "source": "shop",
+    "source": "reputation",
     "method": "clay_pot",
     "icon": "food_slime2",
     "bagIcon": "food_bag_food_slime2"
@@ -288,7 +288,7 @@
       "ing_sugar": 2
     },
     "price": 500,
-    "source": "shop",
+    "source": "reputation",
     "method": "clay_pot",
     "icon": "food_slime9",
     "bagIcon": "food_bag_food_slime9"
@@ -303,7 +303,7 @@
       "ing_sugar": 1
     },
     "price": 1050,
-    "source": "shop",
+    "source": "reputation",
     "method": "clay_pot",
     "icon": "food_slime8",
     "bagIcon": "food_bag_food_slime8"
@@ -317,7 +317,7 @@
       "ing_slime_jelly_scrap": 1
     },
     "price": 600,
-    "source": "shop",
+    "source": "reputation",
     "method": "bowl",
     "icon": "food_slime1",
     "bagIcon": "food_bag_food_slime1"
@@ -332,7 +332,7 @@
       "ing_sugar": 1
     },
     "price": 800,
-    "source": "shop",
+    "source": "reputation",
     "method": "bowl",
     "icon": "food_slime12",
     "bagIcon": "food_bag_food_slime12"
@@ -346,7 +346,7 @@
       "ing_honey": 1
     },
     "price": 800,
-    "source": "shop",
+    "source": "reputation",
     "method": "clay_pot",
     "icon": "food_bee22",
     "bagIcon": "food_bag_food_bee22"
@@ -361,7 +361,7 @@
       "ing_cherry": 1
     },
     "price": 1200,
-    "source": "shop",
+    "source": "reputation",
     "method": "pot",
     "icon": "food_bee7",
     "bagIcon": "food_bag_food_bee7"
@@ -376,7 +376,7 @@
       "ing_sugar": 1
     },
     "price": 1200,
-    "source": "shop",
+    "source": "reputation",
     "method": "pot",
     "icon": "food_bee12",
     "bagIcon": "food_bag_food_bee12"
@@ -391,7 +391,7 @@
       "ing_butter": 1
     },
     "price": 1500,
-    "source": "shop",
+    "source": "reputation",
     "method": "pot",
     "icon": "food_bee6",
     "bagIcon": "food_bag_food_bee6"
@@ -406,7 +406,7 @@
       "ing_sugar": 1
     },
     "price": 1650,
-    "source": "shop",
+    "source": "reputation",
     "method": "pan",
     "icon": "food_bee13",
     "bagIcon": "food_bag_food_bee13"
@@ -421,7 +421,7 @@
       "ing_cream": 1
     },
     "price": 2350,
-    "source": "shop",
+    "source": "reputation",
     "method": "pot",
     "icon": "food_bee17",
     "bagIcon": "food_bag_food_bee17"
@@ -436,7 +436,7 @@
       "produce_strawberry": 1
     },
     "price": 2200,
-    "source": "shop",
+    "source": "reputation",
     "method": "pan",
     "icon": "food_bee14",
     "bagIcon": "food_bag_food_bee14"
@@ -452,7 +452,7 @@
       "ing_golden_wheat": 1
     },
     "price": 3500,
-    "source": "shop",
+    "source": "reputation",
     "method": "oven",
     "icon": "food_slime23",
     "bagIcon": "food_bag_food_slime23"
@@ -468,7 +468,7 @@
       "ing_honey": 1
     },
     "price": 3500,
-    "source": "shop",
+    "source": "reputation",
     "method": "oven",
     "icon": "food_slime22",
     "bagIcon": "food_bag_food_slime22"

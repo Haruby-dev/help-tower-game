@@ -129,6 +129,8 @@ export interface Cooking {
 export interface RecipeBook {
   known: string[];
   bestStars: Record<string, number>;
+  /** เศษม้วนสูตรจากหีบที่เก็บได้ต่อสูตร ครบแล้วได้สูตร */
+  fragments: Record<string, number>;
 }
 
 export type Tool = 'hoe' | 'can' | 'sickle' | 'seeds' | 'rod';
@@ -165,7 +167,7 @@ export interface GioReport {
 
 /** twin_clue ข่าวแฝดที่จีโอเล่าขัดกันเองก่อนเฉลย · twin_reveal ข่าวด่วนวันหลังเฉลย */
 /** set_hint: จีโอใบ้ชุดลับที่ยังไม่เจอ (ขั้นที่ 6) ช่อง monster เก็บรหัสชุดแทน */
-export type TipKind = 'favourite' | 'drink' | 'signature' | 'twin_clue' | 'twin_reveal' | 'set_hint';
+export type TipKind = 'favourite' | 'drink' | 'signature' | 'twin_clue' | 'twin_reveal' | 'set_hint' | 'scroll_hint';
 
 /** ข่าวหนึ่งข้อที่จีโอเล่า */
 export interface Tip {
@@ -242,7 +244,8 @@ export interface World {
   seed: number;
   weather: Weather;
   fishing: Fishing;
-  chests: { sinceCosmetic: number };
+  /** หีบติดกันที่ไม่ได้ของแต่ง · หีบติดกันที่ไม่ได้เศษสูตรหายาก */
+  chests: { sinceCosmetic: number; sinceRareFragment: number };
   toys: string[];
   stash: Record<string, number>;
   gio: GioCare;

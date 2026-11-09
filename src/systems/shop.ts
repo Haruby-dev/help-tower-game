@@ -5,7 +5,8 @@ import { createRng } from '../core/rng';
 import { canUseCampfire, recipes } from './cooking';
 import { applyTransaction } from './economy';
 import { addToBag, crops, seedItem } from './farm';
-import { giveBigTable, setTable } from './sets';
+import { hasMet, monsterTable } from './monsters';
+import { giveBigTable, reputationStars, setTable } from './sets';
 
 const shop = shopJson as ShopData;
 /** สุ่มของวันนี้จาก seed ของเซฟกับวันที่ เปิดร้านกี่ครั้งก็ได้ของเดิม */
@@ -58,6 +59,20 @@ const between = ([low = 0, high = low]: readonly number[], rng: Rng): number => 
 
 /** สัตว์เลี้ยงยังไม่มีในเกม (มาใน M8) จึงยังไม่มีตัวไหน นม เนย น้ำผึ้ง จึงราคาสองเท่าไปก่อน */
 const hasPet = (_pet: string): boolean => false;
+
+/**
+ * สูตรขายถาวร (สเปก 8.1): สลัดผักผลไม้ตั้งแต่แรก · เมนูประจำใจชั้น 2/3/7/8/10 เมื่อเคยเจอมอนสเตอร์ตัวนั้น
+ * ของหวานเมื่อชื่อเสียงร้านถึงดาวของชุดนั้น (ไม่สุ่ม)
+ */
+function onPermanentShelf(world: World, id: string, source: string): boolean {
+  if (source === 'shop_permanent') return true;
+  if (source === 'shop_heart') {
+    return Object.entries(monsterTable).some(([monster, data]) => data.twinOf === undefined && data.signature.recipe === id && hasMet(world, monster));
+  }
+  if (source !== 'reputation') return false;
+  const { stars } = reputationStars(world.sets.reputation);
+  return Object.entries(shop.reputationRecipes).some(([level, list]) => Number(level) <= stars && list.includes(id));
+}
 
 const recipeOffer = (id: string, tab: ShopTab): Offer => ({
   id: `recipes:${id}`,
@@ -154,7 +169,7 @@ export function offersFor(world: World): Offer[] {
   const recipeOffers = pick(unknown, shop.randomRecipes, rng).map((id) => recipeOffer(id, 'random'));
   // สูตรขายถาวรอยู่เหนือสูตรสุ่ม (ขั้นที่ 7) ซื้อแล้วหายจากชั้นเหมือนสูตรอื่น
   const permanent = Object.entries(recipes)
-    .filter(([, recipe]) => recipe.source === 'shop_permanent')
+    .filter(([id, recipe]) => onPermanentShelf(world, id, recipe.source))
     .map(([id]) => recipeOffer(id, 'daily'));
   // ปุ๋ยสุ่มหลังของเดิม ของสุ่มเดิมของแต่ละวันจึงไม่เปลี่ยน
   const fertilizers = shop.fertilizers

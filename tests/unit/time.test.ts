@@ -23,7 +23,7 @@ describe('clock', () => {
       seed: expect.any(Number),
       weather: 'sunny',
       fishing: { rods: ['bamboo'], caught: {} },
-      chests: { sinceCosmetic: 0 },
+      chests: { sinceCosmetic: 0, sinceRareFragment: 0 },
       toys: [],
       stash: {},
       gio: newGioCare(),

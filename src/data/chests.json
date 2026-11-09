@@ -12,6 +12,11 @@
   },
   "rarity": { "common": 0.7, "uncommon": 0.25, "rare": 0.05 },
   "pityAfter": 8,
+  "fragments": {
+    "perRecipe": 2,
+    "recipes": { "squid_salad": 1, "cabbage_crispy_shrimp": 1, "garlic_shrimp": 1, "hor_mok": 1, "corn_milk": 1, "pumpkin_custard": 1, "fish_congee": 0.4 },
+    "rare": { "recipe": "fish_congee", "after": 8 }
+  },
   "pool": [
     { "category": "seasoning", "rarity": "common", "kind": "bag", "item": "ing_salt", "min": 2, "max": 3 },
     { "category": "seasoning", "rarity": "common", "kind": "bag", "item": "ing_sugar", "min": 2, "max": 3 },

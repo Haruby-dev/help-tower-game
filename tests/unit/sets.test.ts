@@ -31,6 +31,8 @@ const egg = 'dish_boiled_egg_1';
 const corn = 'dish_grilled_corn_1';
 const milk = 'dish_warm_honey_milk_1';
 const skewer = 'dish_strawberry_skewer_1';
+/** เมนูโปรดของปุยนุ่น (GDD รสนิยมอาหาร 7 พ.ย.) */
+const salad = 'dish_fruit_veg_salad_1';
 
 const withBag = (bag: World['bag'], extra: Partial<World> = {}): World => ({ ...newWorld(), bag, ...extra });
 
@@ -177,7 +179,7 @@ describe('monsters eat sets (spec 6.3, 6.4)', () => {
   });
 
   it('takes a set only when at least one dish is liked, one set per take', () => {
-    const liked = setItem('small', [corn, egg]);
+    const liked = setItem('small', [skewer, egg]);
     const disliked = setItem('small', [fish, egg]);
     const world: World = { ...newWorld(), tray: { ...newWorld().tray, plates: [{ item: liked, count: 2 }, { item: disliked, count: 1 }, null] } };
     const plan = planVisit(world, 'puinun', createRng(3));
@@ -186,11 +188,11 @@ describe('monsters eat sets (spec 6.3, 6.4)', () => {
     const taken = takePlate(world, 'puinun', plan.takes[0]!, newVisitMemo());
     expect(taken.taken).toBe(1);
     expect(taken.world.tray.plates[0]).toEqual({ item: liked, count: 1 });
-    expect(taken.world.monsters.tasted.puinun).toEqual(expect.arrayContaining(['grilled_corn', 'boiled_egg']));
+    expect(taken.world.monsters.tasted.puinun).toEqual(expect.arrayContaining(['strawberry_skewer', 'boiled_egg']));
   });
 
   it('walks to the big table for a set with a favourite dish', () => {
-    const set = setItem('medium', [rice, skewer, egg]);
+    const set = setItem('medium', [rice, salad, egg]);
     const world: World = { ...newWorld(), sets: { reputation: 0, combos: [], bigTable: { owned: true, sets: [null, set, null] } } };
     const plan = planVisit(world, 'puinun', createRng(1));
     const take = planBigTable(world, 'puinun', plan)!;
@@ -205,8 +207,8 @@ describe('monsters eat sets (spec 6.3, 6.4)', () => {
   });
 
   it('takes one set from the big table per visit, the best one first', () => {
-    const liked = setItem('medium', [rice, corn, egg]);
-    const favourite = setItem('large', [rice, skewer, egg, fish]);
+    const liked = setItem('medium', [rice, skewer, egg]);
+    const favourite = setItem('large', [rice, salad, egg, fish]);
     const world: World = { ...newWorld(), sets: { reputation: 0, combos: [], bigTable: { owned: true, sets: [liked, favourite, liked] } } };
     const plan = planVisit(world, 'puinun', createRng(1));
     const take = planBigTable(world, 'puinun', plan)!;
@@ -245,8 +247,8 @@ describe('save versions 20 and 21', () => {
     const file = toSaveFile(newWorld());
     const { sets: _sets, ...oldWorld } = file.world;
     const parsed = parseSaveFile({ ...file, version: 19, world: oldWorld })!;
-    expect(SAVE_VERSION).toBe(22);
-    expect(parsed.version).toBe(22);
+    expect(SAVE_VERSION).toBe(23);
+    expect(parsed.version).toBe(23);
     expect(parsed.world.sets).toEqual({ reputation: 0, combos: [], bigTable: { owned: false, sets: [null, null, null] } });
   });
 
