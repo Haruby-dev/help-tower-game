@@ -210,13 +210,11 @@ export function checkProject(): string[] {
 
   if (registry[balanceSchema.parse(readJson('src/data/balance.json')).hud.interactIcon]?.type !== 'local') problems.push('src/data/balance.json: hud.interactIcon is not a local image');
 
-  // ร้านจีโอมาร์ท (ขั้นที่ 7): วัตถุดิบเป็นของจริงหรือเหยื่อจริง สัตว์เลี้ยงมีจริง ท็อปปิ้งอยู่ใน toppings.json
+  // ร้านจีโอมาร์ท (ขั้นที่ 7): วัตถุดิบเป็นของจริงหรือเหยื่อจริง ท็อปปิ้งอยู่ใน toppings.json
   const shopFile = shopSchema.parse(readJson('src/data/shop.json'));
   const baitItems = new Set(Object.values(baitsSchema.parse(readJson('src/data/baits.json'))).map((bait) => bait.item));
-  const petIds = new Set(petsSchema.parse(readJson('src/data/pets.json')).pets.map((pet) => pet.id));
   for (const entry of [...shopFile.ingredients.daily, ...shopFile.ingredients.random]) {
     if (!knownItem(entry.item) && !baitItems.has(entry.item)) problems.push(`src/data/shop.json: ${entry.item} is not an ingredient or bait`);
-    if ('pet' in entry && entry.pet !== undefined && !petIds.has(entry.pet)) problems.push(`src/data/shop.json: ${entry.item} needs unknown pet ${entry.pet}`);
   }
   const toppingItems = new Set(Object.values(toppingData).map((topping) => topping.item));
   for (const entry of shopFile.toppings.items) if (!toppingItems.has(entry.item)) problems.push(`src/data/shop.json: ${entry.item} is not a topping`);

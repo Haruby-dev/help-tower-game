@@ -31,9 +31,9 @@ describe('Geo Mart ingredients (zone1 food update 7.1)', () => {
 
   it('sells milk 2, butter 1 and honey 1 a day at double price before the matching pet', () => {
     const world = newWorld();
-    expect(offer(world, 'ingredients:ing_milk')).toMatchObject({ tab: 'daily', price: 240, stock: 2, pricierUntil: 'mumu' });
-    expect(offer(world, 'ingredients:ing_butter')).toMatchObject({ price: 400, stock: 1, pricierUntil: 'mumu' });
-    expect(offer(world, 'ingredients:ing_honey')).toMatchObject({ price: 240, stock: 1, pricierUntil: 'boomboom' });
+    expect(offer(world, 'ingredients:ing_milk')).toMatchObject({ tab: 'daily', price: 120, stock: 2 });
+    expect(offer(world, 'ingredients:ing_butter')).toMatchObject({ price: 200, stock: 1 });
+    expect(offer(world, 'ingredients:ing_honey')).toMatchObject({ price: 120, stock: 1 });
   });
 
   it('stops selling milk after 2 a day and sells again the next day', () => {

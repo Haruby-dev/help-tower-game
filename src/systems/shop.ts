@@ -31,7 +31,6 @@ export interface Offer {
   /** จำนวนที่ขายวันนี้ null คือไม่จำกัด */
   stock: number | null;
   /** ราคาคูณเพราะยังไม่มีสัตว์เลี้ยงตัวนี้ */
-  pricierUntil?: string;
 }
 
 type Rng = ReturnType<typeof createRng>;
@@ -56,9 +55,6 @@ function pick<T>(items: T[], count: number, rng: Rng): T[] {
 
 /** จำนวนเต็มสุ่มในช่วง [น้อยสุด, มากสุด] ของไฟล์ข้อมูล */
 const between = ([low = 0, high = low]: readonly number[], rng: Rng): number => low + Math.floor(rng.next() * (high - low + 1));
-
-/** สัตว์เลี้ยงยังไม่มีในเกม (มาใน M8) จึงยังไม่มีตัวไหน นม เนย น้ำผึ้ง จึงราคาสองเท่าไปก่อน */
-const hasPet = (_pet: string): boolean => false;
 
 /**
  * สูตรขายถาวร (สเปก 8.1): สลัดผักผลไม้ตั้งแต่แรก · เมนูประจำใจชั้น 2/3/7/8/10 เมื่อเคยเจอมอนสเตอร์ตัวนั้น
@@ -87,22 +83,20 @@ const recipeOffer = (id: string, tab: ShopTab): Offer => ({
 
 /** วัตถุดิบ: เครื่องปรุงไม่จำกัด นม เนย น้ำผึ้ง จำกัดต่อวัน · สุ่มวันนี้ เชอร์รีกับเหยื่อเรียกหีบ */
 function ingredientOffers(world: World): Offer[] {
-  const { daily, random, beforePetMultiplier } = shop.ingredients;
+  const { daily, random } = shop.ingredients;
   const rng = createRng(world.seed + world.day * DAY_MIX + INGREDIENT_STREAM);
-  const everyDay = daily.map((entry): Offer => {
-    const pricier = entry.pet !== undefined && !hasPet(entry.pet);
-    return {
+  const everyDay = daily.map(
+    (entry): Offer => ({
       id: `ingredients:${entry.item}`,
       tab: 'daily',
       group: 'ingredients',
       kind: 'item',
       target: entry.item,
-      price: pricier ? Math.round(entry.price * beforePetMultiplier) : entry.price,
+      price: entry.price,
       currency: 'coins',
       stock: entry.perDay ?? null,
-      ...(pricier && entry.pet !== undefined ? { pricierUntil: entry.pet } : {}),
-    };
-  });
+    }),
+  );
   // สุ่มทุกแถวทุกวันเสมอ ลำดับการสุ่มจึงไม่ขึ้นกับว่าแถวก่อนออกหรือไม่
   const today = random.flatMap((entry): Offer[] => {
     const shows = rng.next() < entry.chance;

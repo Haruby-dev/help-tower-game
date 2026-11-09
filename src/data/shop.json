@@ -39,7 +39,6 @@
     }
   ],
   "ingredients": {
-    "beforePetMultiplier": 2,
     "daily": [
       {
         "item": "ing_salt",
@@ -56,20 +55,17 @@
       {
         "item": "ing_milk",
         "price": 120,
-        "perDay": 2,
-        "pet": "mumu"
+        "perDay": 2
       },
       {
         "item": "ing_butter",
         "price": 200,
-        "perDay": 1,
-        "pet": "mumu"
+        "perDay": 1
       },
       {
         "item": "ing_honey",
         "price": 120,
-        "perDay": 1,
-        "pet": "boomboom"
+        "perDay": 1
       }
     ],
     "random": [

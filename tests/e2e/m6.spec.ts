@@ -95,7 +95,7 @@ test('Geo Mart sells ingredients with a daily limit, today’s toppings and the 
   await page.locator('[data-app="shop"]').click();
   // อุปกรณ์ยังไม่มีของขาย ป้ายหมวดจึงซ่อน (ข้อ B6)
   await expect(page.locator('.ps-chip')).toHaveCount(7);
-  // วัตถุดิบ: เครื่องปรุง 10 ขายทุกวันอยู่บน นมวันละ 2 ขวด ราคาสองเท่าจนกว่าจะมีมูมู่เมฆ
+  // วัตถุดิบ: เครื่องปรุง 10 ขายทุกวันอยู่บน นมวันละ 2 ขวด ราคาปกติตลอด (ผู้ใช้ตัดสิน 10 พ.ย. 2026)
   await page.locator('[data-shop-tab="ingredients"]').click();
   await expect(page.locator('.ps-row').first()).toHaveAttribute('data-offer', 'ingredients:ing_salt');
   // หมูสับ 150 ขายทุกวันไม่จำกัด (ผู้ใช้เลือก 9 พ.ย. 2026) อยู่หน้าแรกถัดจากเครื่องปรุง นมเลยไปอยู่หน้า 2
@@ -103,7 +103,7 @@ test('Geo Mart sells ingredients with a daily limit, today’s toppings and the 
   await expect(page.locator('[data-offer="ingredients:ing_pork"] .ps-left')).toHaveCount(0);
   await page.locator('#shop-next').click();
   await page.locator('[data-offer="ingredients:ing_milk"]').click();
-  await expect(page.locator('#shop-card .ps-price')).toContainText('240');
+  await expect(page.locator('#shop-card .ps-price')).toContainText('120');
   await expect(page.locator('[data-offer="ingredients:ing_milk"] .ps-left')).toHaveText('เหลือ 2');
   // ขายวันละ 2 ขวด ปุ่ม + จึงหยุดที่ 2
   await page.locator('#shop-more').click();

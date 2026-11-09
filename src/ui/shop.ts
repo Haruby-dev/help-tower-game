@@ -100,17 +100,14 @@ const offerName = (offer: Offer): string =>
 const categoryOf = (offer: Offer): Category => CATEGORIES.find((entry) => entry.groups.includes(offer.group))?.id ?? 'treats';
 const isRandom = (offer: Offer): boolean => offer.tab === 'random';
 
-const petName = (pet: string): string => t(`pet.${pet}.name` as TextKey);
 
-/** วัตถุดิบ: ใช้ทำอาหาร จำนวนต่อวัน ราคาสองเท่าก่อนมีสัตว์เลี้ยง · เหยื่อเรียกหีบบอกโอกาสได้หีบ */
+/** วัตถุดิบ: ใช้ทำอาหาร จำนวนต่อวัน · เหยื่อเรียกหีบบอกโอกาสได้หีบ */
 function ingredientDescription(offer: Offer): string {
   const parts: string[] = [];
   const lure = Object.values(baits).find((bait) => bait.item === offer.target);
   if (lure?.chestChance !== undefined) parts.push(`${t('shop.desc_bait_chest')} ${Math.round(lure.chestChance * PERCENT)}%`);
   else if (offer.stock === null) parts.push(t('shop.desc_ingredient'));
   if (offer.stock !== null) parts.push(`${t(isRandom(offer) ? 'shop.desc_stock_today' : 'shop.desc_per_day')} ${offer.stock} ${t('shop.desc_piece')}`);
-  // บรรทัดเดียวพอดีหน้าสินค้า เหตุผลว่ารอสัตว์ตัวไหนอยู่ในโน้ตจีโอ
-  if (offer.pricierUntil) parts.push(t('shop.desc_pricier'));
   return parts.join(' · ');
 }
 
@@ -146,7 +143,6 @@ function gioNoteOf(offer: Offer): string {
   if (offer.group === 'treats') return t(`shop.gnote_${offer.target}` as TextKey);
   if (offer.group === 'fertilizer') return t(isRandom(offer) ? 'shop.gnote_fertilizer_random' : 'shop.gnote_fertilizer');
   if (offer.group === 'ingredients') {
-    if (offer.pricierUntil) return `${t('shop.gnote_pricier_a')}${petName(offer.pricierUntil)}${t('shop.gnote_pricier_b')}`;
     if (offer.target.startsWith('bait_')) return t('shop.gnote_bait_chest');
     return t(isRandom(offer) ? 'shop.gnote_ingredient_random' : 'shop.gnote_seasoning');
   }

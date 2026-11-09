@@ -484,12 +484,11 @@ export const shopSchema = z.strictObject({
     .min(1),
   /**
    * วัตถุดิบ (งานอาหารโซน 1 ขั้นที่ 7): daily ขายทุกวัน perDay คือจำนวนต่อวัน (ไม่มีคือไม่จำกัด)
-   * pet คือสัตว์เลี้ยงที่ให้ของนี้ ก่อนมีสัตว์ตัวนั้นราคาคูณ beforePetMultiplier · random ขายบางวันตาม chance มีของ stock [น้อยสุด, มากสุด] ชิ้น
+   * นม เนย น้ำผึ้ง ราคาปกติตลอด ไม่แพงก่อนมีสัตว์เลี้ยง (ผู้ใช้ตัดสิน 10 พ.ย. 2026) · random ขายบางวันตาม chance มีของ stock [น้อยสุด, มากสุด] ชิ้น
    */
   ingredients: z.strictObject({
-    beforePetMultiplier: z.number().positive(),
     daily: z
-      .array(z.strictObject({ item: z.string().regex(/^(ing|bait)_[a-z_]+$/), price: z.number().int().positive(), perDay: z.number().int().positive().optional(), pet: z.string().regex(/^[a-z_]+$/).optional() }))
+      .array(z.strictObject({ item: z.string().regex(/^(ing|bait)_[a-z_]+$/), price: z.number().int().positive(), perDay: z.number().int().positive().optional() }))
       .min(1),
     random: z.array(z.strictObject({ item: z.string().regex(/^(ing|bait)_[a-z_]+$/), price: z.number().int().positive(), chance: z.number().min(0).max(1), stock: rangeSchema })),
   }),
